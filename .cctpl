@@ -1,0 +1,5 @@
+project = 'Railgun'
+author = 'public@korepwx.com'
+license = 'custom'
+customLicense = 'This file is released under BSD 2-clause license.'
+
