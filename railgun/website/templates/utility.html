@@ -1,0 +1,11 @@
+{% macro form_group(field, helptext) -%}
+<div class="form-group{% if field.errors %} has-error{% endif %}">
+  {{ field.label(class_="control-label") }}
+  {{ field(class_='form-control') }}
+  {% if field.errors -%}
+  {% for e in field.errors %}<p class="help-block text-danger">{{ e }}</p>{% endfor %}
+  {%- elif helptext and not field.data -%}
+  <p class="help-block">{{ helptext }}</p>
+  {%- endif %}
+</div>
+{%- endmacro %}

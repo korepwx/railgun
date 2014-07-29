@@ -1,4 +1,6 @@
+/env
 ._*
 *.*~
 *.pyc
+.DS_Store
 

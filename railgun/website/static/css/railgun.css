@@ -1,0 +1,75 @@
+/* Page basic skeleton */
+body {
+  padding-top: 50px;
+}
+
+#wrapper .content {
+  padding: 20px 15px;
+}
+
+/* Minor tweaks for navibar elements */
+.navbar-right .navbar-btn {
+  margin-left: 5px;
+}
+
+.navbar .userinfo img {
+  margin-right: 5px;
+}
+
+.navbar .userinfo .dropdown-menu {
+  width: 120px;
+}
+
+/* The flashed messages bar */
+#wrapper .flash-messages {
+}
+
+.flash-messages .message {
+  padding: 5px 10px;
+}
+
+.flash-messages .message-info {
+  background: #D9EDF7;
+}
+
+.flash-messages .message-success {
+  background: #DFF0D8;
+}
+
+.flash-messages .message-warning {
+  background: #FCF8E3;
+}
+
+.flash-messages .message-danger {
+  background: #F2DEDE;
+}
+
+/* styles specialized for `signup` */
+#wrapper .content-signup .form-signup {
+  max-width: 480px;
+  padding: 15px;
+  margin: 0 auto;
+}
+
+.form-signup .form-heading {
+  margin-bottom: 20px;
+}
+
+.form-signup button[type=submit] {
+  margin-top: 10px;
+}
+
+/* styles specialized for `signin` */
+#wrapper .content-signin .form-signin {
+  max-width: 480px;
+  padding: 15px;
+  margin: 0 auto;
+}
+
+.form-signin .form-heading {
+  margin-bottom: 20px;
+}
+
+.form-signin button[type=submit] {
+  margin-top: 10px;
+}

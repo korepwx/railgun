@@ -1,0 +1,8 @@
+sqlalchemy >= 0.9.7
+celery >= 3.1.13
+flask >= 0.10.1
+flask-wtf
+flask-babel
+flask-cache
+flask-sqlalchemy
+flask-login
