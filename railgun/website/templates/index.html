@@ -2,3 +2,17 @@
 {% block subtitle -%}
 {{ _('Homepage') }}
 {%- endblock %}
+{% block content -%}
+  {% if not current_user.is_authenticated() -%}
+  <div class="jumbotron" id="site-description">
+    <h1>{{ _('Welcome to Railgun') }}</h1>
+    <p>{{ _('Railgun is an online Software Enginnering homework judger.') }}<br />
+       {{ _('To take the course, you should join Railgun first.') }}</p>
+    <p>
+      <a class="btn btn-primary btn-lg" role="button" href="{{ url_for('signup') }}">
+        {{ _('Create your account') }}
+      </a>
+    </p>
+  </div>
+  {%- endif %}
+{%- endblock %}

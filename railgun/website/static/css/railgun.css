@@ -1,6 +1,6 @@
 /* Page basic skeleton */
 body {
-  padding-top: 55px;
+  padding-top: 50px;
 }
 
 #wrapper .content {
@@ -10,6 +10,12 @@ body {
 /* Minor tweaks for navibar elements */
 .navbar-right .navbar-btn {
   margin-left: 5px;
+}
+
+.navbar .userinfo .dropdown-toggle {
+  padding-top: 10px;
+  padding-bottom: 10px;
+  line-height: 30px;
 }
 
 .navbar .userinfo img {
@@ -37,4 +43,12 @@ body {
 
 .form-single button[type=submit] {
   margin-top: 10px;
+}
+
+/* Site description at index page for anonymous users */
+.content #site-description {
+  margin-top: 20px;
+}
+.content #site-description p {
+  padding-top: 10px;
 }
