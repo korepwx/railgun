@@ -4,7 +4,7 @@
 {{ _('Sign in') }}
 {%- endblock %}
 {% block content -%}
-<form role="form" class="form-signin" method="POST" action="{{ url_for('signin') }}">
+<form role="form" class="form-signin form-single" method="POST" action="{{ url_for('signin', next=next) }}">
   <h2 class="form-heading">{{ _('Sign in') }}</h2>
   {{ utility.form_group(form.login) }}
   {{ utility.form_group(form.password) }}

@@ -55,6 +55,9 @@
               </a>
               <ul class="dropdown-menu" role="menu">
                 <li role="presentation">
+                  <a role="menuitem" tabindex="-1" href="{{ url_for('profile_edit') }}">{{ _('Edit profile') }}</a>
+                </li>
+                <li role="presentation">
                   <a role="menuitem" tabindex="-1" href="{{ url_for('signout') }}">{{ _('Sign out') }}</a>
                 </li>
               </ul>
@@ -68,18 +71,18 @@
       </div>
     </div>
 
-    <!-- Flashed messages -->
-    <div class="flash-messages">
-      {% for c, m in get_flashed_messages(with_categories=True) -%}
-      <div class="message message-{{ c }}">{{ m }}</div>
-      {%- endfor %}
-    </div>
-
     <!-- General content area -->
     {% block wrapper -%}
     <div class="container" id="wrapper">
-      <!-- Body contents -->
       <div class="content content-{{ request.endpoint }}">
+        <!-- Flashed messages -->
+        <div class="flash-messages">
+          {% for c, m in get_flashed_messages(with_categories=True) -%}
+          <div class="flash flash-{{ c }} panel panel-{{ c }}">
+            <div class="panel-heading">{{ m }}</div>
+          </div>
+          {%- endfor %}
+        </div>
         {% block content %}{% endblock %}
       </div>
     </div>

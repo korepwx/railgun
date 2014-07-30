@@ -8,14 +8,15 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # This file is released under BSD 2-clause license.
 
-from flask import render_template, url_for, redirect, flash
+from flask import render_template, url_for, redirect, flash, request
 from flask.ext.babel import lazy_gettext, gettext as _
-from flask.ext.login import login_user, logout_user
-from sqlalchemy import or_
+from flask.ext.login import login_user, logout_user, current_user, \
+    login_required, fresh_login_required
+from sqlalchemy import or_, and_
 
 from .context import app, db
 from .navibar import navigates
-from .forms import SignupForm, SigninForm
+from .forms import SignupForm, SigninForm, ProfileForm
 from .credential import UserContext
 from railgun.common.models import User
 
@@ -57,6 +58,7 @@ def signup():
 @app.route('/signin/', methods=['GET', 'POST'])
 def signin():
     form = SigninForm()
+    next_url = request.args.get('next')
     if (form.validate_on_submit()):
         # Check whether the user exists
         user = db.session.query(User).filter(
@@ -67,16 +69,49 @@ def signin():
             if (user.check_password(form.password.data)):
                 # Now we can login this user and redirect to index!
                 login_user(UserContext(user))
-                return redirect(url_for('index'))
+                return redirect(next_url or url_for('index'))
         # Report username or password error
         flash(_('Incorrect username or password.'), 'danger')
-    return render_template('signin.html', form=form)
+    return render_template('signin.html', form=form, next=next_url)
 
 
 @app.route('/signout/')
 def signout():
     logout_user()
     return redirect(url_for('index'))
+
+
+@app.route('/profile/edit/', methods=['GET', 'POST'])
+@fresh_login_required
+def profile_edit():
+    form = ProfileForm()
+    if (form.validate_on_submit()):
+        # Check whether the email is taken.
+        is_taken = (db.session.query(User).filter(and_(
+            User.email == form.email.data, User.id != current_user.id)
+        ).count() > 0)
+        if (is_taken):
+            form.email.errors.append(_('Email already taken'))
+        # Check whether password is correct
+        pwd_ok = (not form.password.data or (len(form.password.data) >= 7 and
+                                             len(form.password.data) <= 32))
+        if (not pwd_ok):
+            form.password.errors.append(_("Password must be no shorter than 7 "
+                                          "and no longer than 32 characters"))
+        # Do update the user
+        if (not is_taken and pwd_ok):
+            current_user.dbo.email = form.email.data
+            if (form.password.data):
+                current_user.dbo.set_password(form.password.data)
+            db.session.commit()
+            flash(_('Profile saved.'), 'info')
+            return redirect(url_for('profile_edit'))
+    # Initialize the form value if not POSTed
+    if (request.method != 'POST'):
+        form.email.data = current_user.email
+    return render_template(
+        'profile_edit.html', form=form, username=current_user.name
+    )
 
 
 # Register all pages into navibar

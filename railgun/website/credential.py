@@ -8,7 +8,9 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # This file is released under BSD 2-clause license.
 
+from flask import redirect, flash, request, url_for
 from flask.ext.login import LoginManager, current_user
+from flask.ext.babel import gettext as _
 
 from railgun.common.models import User
 from railgun.common.gravatar import get_avatar
@@ -53,6 +55,13 @@ def __load_user_before_request(uid):
 @app.context_processor
 def __inject_template_context():
     return dict(current_user=current_user)
+
+
+# Response to unauthorized requests
+@login_manager.unauthorized_handler
+def unauthorized():
+    flash(_('Please log in to access this page.'), 'danger')
+    return redirect(url_for('signin', next=request.script_root + request.path))
 
 
 # Inject `get_avatar` as `gravatar` filter into Jinja2 template engine.

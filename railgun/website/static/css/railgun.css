@@ -1,6 +1,6 @@
 /* Page basic skeleton */
 body {
-  padding-top: 50px;
+  padding-top: 55px;
 }
 
 #wrapper .content {
@@ -24,52 +24,17 @@ body {
 #wrapper .flash-messages {
 }
 
-.flash-messages .message {
-  padding: 5px 10px;
-}
-
-.flash-messages .message-info {
-  background: #D9EDF7;
-}
-
-.flash-messages .message-success {
-  background: #DFF0D8;
-}
-
-.flash-messages .message-warning {
-  background: #FCF8E3;
-}
-
-.flash-messages .message-danger {
-  background: #F2DEDE;
-}
-
-/* styles specialized for `signup` */
-#wrapper .content-signup .form-signup {
+/* styles specialized for forms that occupy the whole page */
+#wrapper .content .form-single {
   max-width: 480px;
   padding: 15px;
   margin: 0 auto;
 }
 
-.form-signup .form-heading {
+.form-single .form-heading {
   margin-bottom: 20px;
 }
 
-.form-signup button[type=submit] {
-  margin-top: 10px;
-}
-
-/* styles specialized for `signin` */
-#wrapper .content-signin .form-signin {
-  max-width: 480px;
-  padding: 15px;
-  margin: 0 auto;
-}
-
-.form-signin .form-heading {
-  margin-bottom: 20px;
-}
-
-.form-signin button[type=submit] {
+.form-single button[type=submit] {
   margin-top: 10px;
 }

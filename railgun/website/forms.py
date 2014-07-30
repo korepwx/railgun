@@ -45,3 +45,18 @@ class SigninForm(Form):
 
     login = StringField(_('Username or Email'), validators=[InputRequired()])
     password = PasswordField(_('Password'), validators=[InputRequired()])
+
+
+class ProfileForm(Form):
+    """Form for `profile_edit` view."""
+
+    # Passport fields
+    email = StringField(_('Email Address'), validators=[
+        DataRequired(message=_("Email can't be blank")),
+        Email(message=_("Email is invalid")),
+        Length(max=80, message=_("Email must be no longer than 80 characters")),
+    ])
+    password = PasswordField(_('Password'), validators=[
+        EqualTo('confirm', message=_("Passwords must match")),
+    ])
+    confirm = PasswordField(_('Confirm your password'))

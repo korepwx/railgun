@@ -4,7 +4,7 @@
 {{ _('Join Railgun') }}
 {%- endblock %}
 {% block content -%}
-<form role="form" class="form-signup" method="POST" action="{{ url_for('signup') }}">
+<form role="form" class="form-signup form-single" method="POST" action="{{ url_for('signup') }}">
   <h2 class="form-heading">{{ _('Join Railgun') }}</h2>
   {{ utility.form_group(form.name, _('You may use your username to sign in Railgun later')) }}
   {{ utility.form_group(form.email, _('You may receive homework related emails. You may also sign in Railgun with your email address later')) }}
