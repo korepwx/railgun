@@ -6,3 +6,4 @@ flask-babel
 flask-cache
 flask-sqlalchemy
 flask-login
+rarfile

@@ -13,7 +13,9 @@ from flask import request
 
 
 def get_avatar(user_or_email, size):
-    """Get the url of avatar to given user object, or email if is string."""
+    """Get the gravatar url of `user_or_email`.email if it is a user object, or
+    treat `user_or_email` as email address if is string."""
+
     if (isinstance(user_or_email, str) or isinstance(user_or_email, unicode)):
         email = user_or_email
     else:

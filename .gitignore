@@ -1,6 +1,8 @@
 /env
+/tmp
 ._*
 *.*~
 *.pyc
 .DS_Store
+/test.py
 
