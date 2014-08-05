@@ -8,14 +8,14 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # This file is released under BSD 2-clause license.
 
-from flask import render_template, url_for, redirect, flash, request
+from flask import render_template, url_for, redirect, flash, request, g
 from flask.ext.babel import lazy_gettext, gettext as _
 from flask.ext.login import login_user, logout_user, current_user, \
     login_required, fresh_login_required
 from sqlalchemy import or_, and_
 
 from .context import app, db
-from .navibar import navigates
+from .navibar import navigates, NaviItem, set_navibar_identity
 from .forms import SignupForm, SigninForm, ProfileForm
 from .credential import UserContext
 from railgun.common.models import User
@@ -23,6 +23,9 @@ from railgun.common.models import User
 
 @app.route('/')
 def index():
+    # only logged user can see the homeworks
+    if (current_user.is_authenticated()):
+        pass
     return render_template('index.html')
 
 
@@ -114,5 +117,26 @@ def profile_edit():
     )
 
 
+@app.route('/homework/<slug>/')
+@login_required
+def homework(slug):
+    set_navibar_identity('homework.%s' % slug)
+    return render_template('index.html')
+
+
 # Register all pages into navibar
-navigates.add_page(lazy_gettext('Home'), 'index')
+navigates.add_view(title=lazy_gettext('Home'), endpoint='index')
+navigates.add(
+    NaviItem(
+        title=lazy_gettext('Homework'),
+        url=None,
+        identity='homework',
+        # title of homework is affected by request.accept_languages
+        # so we should build subitems until they are used
+        subitems=lambda: [
+            NaviItem(title=hw.info.name, url=url_for('homework', slug=hw.slug),
+                     identity='homework.%s' % hw.slug)
+            for hw in g.homeworks
+        ]
+    )
+)

@@ -13,9 +13,9 @@ import os
 import pprint
 from datetime import datetime
 from xml.etree import ElementTree
-from itertools import ifilter, imap
+from itertools import ifilter
 
-from babel.dates import get_timezone
+from babel.dates import get_timezone, UTC
 
 import config
 from . import fileutil
@@ -38,17 +38,14 @@ def file_get_contents(path):
         pass
 
 
-class _UtcDateConvertor(object):
+def to_utc(dt):
     """Convert datetime instance `dt` to UTC datetime."""
+    return dt.astimezone(UTC)
 
-    UTC = get_timezone('UTC')
 
-    @staticmethod
-    def convert(dt):
-        return dt.astimezone(get_timezone('UTC'))
-
-# the class wrapper is used to store `UTC` timezone instance.
-to_utc = _UtcDateConvertor.convert
+def utc_now():
+    """get now datetime whose timezone is UTC."""
+    return UTC.localize(datetime.utcnow())
 
 
 class ConfigNode(object):
@@ -130,8 +127,8 @@ class FileRules(object):
         # if no rule matches, default takes lock action
         return FileRules.LOCK
 
-    def add_action(self, action, pattern):
-        """Add (action, pattern) into rule collection."""
+    def _make_action(self, action, pattern):
+        """Check the type and value of (action, pattern)."""
 
         act = None
         if (action.isalpha()):
@@ -139,7 +136,15 @@ class FileRules(object):
         if (act is None):
             raise ValueError('Unknown action "%s" in file rule.' % action)
         pat = re.compile(pattern)
-        self.data.append((act, pat))
+        return (act, pat)
+
+    def append_action(self, action, pattern):
+        """Append (action, pattern) into rule collection."""
+        self.data.append(self._make_action(action, pattern))
+
+    def prepend_action(self, action, pattern):
+        """Prepend (action, pattern) into rule collection."""
+        self.data.insert(0, self._make_action(action, pattern))
 
     def filter(self, files, allow_actions):
         """Remove items in `files` whose action not in `allow_actions`."""
@@ -156,11 +161,11 @@ class FileRules(object):
         ret = FileRules()
 
         # there should be at least one rule in file_rules: code.xml is
-        ret.add_action('hide', '^code\\.xml$')
+        ret.append_action('hide', '^code\\.xml$')
 
         if (xmlnode is not None):
             for nd in xmlnode:
-                ret.add_action(nd.tag, nd.text.strip())
+                ret.append_action(nd.tag, nd.text.strip())
         return ret
 
 
@@ -224,6 +229,8 @@ class Homework(object):
     def __init__(self):
         """Initialize all homework settings to empty."""
 
+        # url slug of this homework, usually last part of path
+        self.slug = None
         # root path of this homework
         self.path = None
         # string of unique id
@@ -235,8 +242,8 @@ class Homework(object):
         # settings of scoring
         self.reportAll = False
         self.lower_better = False
-        # file match rules for data directory
-        self.data_rules = None
+        # file match rules for root directory
+        self.file_rules = None
         # list of `HwCode` instances
         self.codes = []
 
@@ -247,6 +254,7 @@ class Homework(object):
         # Stage 1: load the homework meta data from hw.xml
         ret = Homework()
         ret.path = path
+        ret.slug = os.path.split(path)[1]
         tree = ElementTree.parse(os.path.join(path, 'hw.xml'))
 
         for nd in tree.getroot():
@@ -282,8 +290,8 @@ class Homework(object):
             elif (nd.tag == 'scoring'):
                 ret.reportAll = parse_bool(nd.find('reportAll').text)
                 ret.lower_better = nd.find('better').text.lower() == 'lower'
-            elif (nd.tag == 'data'):
-                ret.data_rules = FileRules.parse_xml(nd)
+            elif (nd.tag == 'files'):
+                ret.file_rules = FileRules.parse_xml(nd)
 
         # Stage 2: discover all programming languages
         code_path = os.path.join(path, 'code')
@@ -297,6 +305,18 @@ class Homework(object):
             # load the programming language definition
             ret.codes.append(HwCode.load(pl_path, pl))
 
+        # Stage 3: check integrity
+        if (not ret.info):
+            raise ValueError('Homework name is missing.')
+
+        # Stage 4: set default hidden rules
+        ret.file_rules.prepend_action('hide', '^code/\.*')
+        ret.file_rules.prepend_action('hide', '^code$')
+        ret.file_rules.prepend_action('hide', '^desc/\.*')
+        ret.file_rules.prepend_action('hide', '^desc$')
+        for r in config.DEFAULT_HIDE_RULES:
+            ret.file_rules.prepend_action('hide', r)
+
         return ret
 
     def get_name_locales(self):
@@ -305,7 +325,7 @@ class Homework(object):
 
     def get_code_languages(self):
         """Get the programming languages provided by this homework."""
-        return [c.lang for c in self.codes]
+        return sorted([c.lang for c in self.codes])
 
     def pack_assignment(self, lang, filename):
         """Pack assignment zipfile for `lang` programming language."""
@@ -313,19 +333,14 @@ class Homework(object):
         # select the code package
         code = [c for c in self.codes if c.lang == lang][0]
 
-        # prepare the file list in data directory.
+        # prepare the file list in root directory.
         # only acceptable and locked files are given to students.
         #
-        # note that items in dirtree(data-dir) will not contain 'data' in path.
-        # so I prepend this structure using imap.
-        data_files = imap(
-            lambda f: 'data/' + f,
-            self.data_rules.filter(
-                fileutil.dirtree(os.path.join(self.path, 'data')),
-                (FileRules.ACCEPT, FileRules.LOCK)
-            )
+        # note that `code` and `desc` directories are defaultly hidden.
+        root_files = self.file_rules.filter(
+            fileutil.dirtree(self.path),
+            (FileRules.ACCEPT, FileRules.LOCK)
         )
-        data_files = list(data_files)
 
         # prepare the file list for given `lang`.
         code_files = code.file_rules.filter(
@@ -335,5 +350,13 @@ class Homework(object):
 
         # make target file name
         with fileutil.makezip(filename) as zipf:
-            fileutil.packzip(self.path, data_files, zipf)
+            fileutil.packzip(self.path, root_files, zipf)
             fileutil.packzip(code.path, code_files, zipf)
+
+    def get_next_deadline(self):
+        """get the next deadline of this homework. return (timedelta, scale)."""
+
+        now = utc_now()
+        for ddl in self.deadlines:
+            if (ddl[0] >= now):
+                return (ddl[0] - now, ddl[1])

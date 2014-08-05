@@ -3,7 +3,7 @@
   <!--
     `uuid` is the unique identity for each homework.
   -->
-  <uuid>60aaba9199f94218ab7868f53fdcfc68</uuid>
+  <uuid>df3332f645ed41838ac6a2fc52bd9b29</uuid>
 
   <!--
     the readable name of this homework.
@@ -13,41 +13,23 @@
     info node is selected.
   -->
   <names>
-    <name lang="zh-cn">示例作业</name>
-    <name lang="en">Example Homework</name>
+    <name lang="zh-cn">示例作业2</name>
+    <name lang="en">Example Homework 2</name>
   </names>
 
   <!--
     deadlines and score factors of this homework
   -->
   <deadlines>
-    <!--
-      the due date for full-score submissions
-    -->
     <due>
-      <!-- time zone of this due date. default is BABEL_DEFAULT_TIMEZONE -->
       <timezone>Asia/Shanghai</timezone>
-      <!-- due date, formatted in YYYY-MM-dd HH:mm:ss -->
-      <date>2014-7-31 18:00:00</date>
-      <!-- the score scale factor, range from 0.0 to 1.0 -->
+      <date>2014-8-1 23:00:00</date>
       <scale>1.0</scale>
     </due>
 
-    <!--
-      the due date for half-score submissions
-    -->
     <due>
-      <timezone>Asia/Shanghai</timezone>
-      <date>2014-8-1 18:00:00</date>
+      <date>2014-8-10 18:00:00</date>
       <scale>0.5</scale>
-    </due>
-
-    <!--
-      the due date for no-score submissions
-    -->
-    <due>
-      <date>2014-8-2 18:00:00</date>
-      <scale>0.0</scale>
     </due>
   </deadlines>
 
@@ -84,8 +66,8 @@
     rules are applied in order. once any rule is matched, the other rules will
     be ignored. if no rule is matched, file will be locked.
   -->
-  <data>
-    <accept>payload\.txt</accept>
-    <hide>hide\.txt</hide>
-  </data>
+  <files>
+    <accept>^data/payload\.txt$</accept>
+    <hide>^data/hide\.txt$</hide>
+  </files>
 </homework>

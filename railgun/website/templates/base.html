@@ -34,15 +34,32 @@
           <a class="navbar-brand" href="javascript: void(0);">{{ _('Railgun') }}</a>
         </div>
         <div class="collapse navbar-collapse">
-          <!-- Navigate links -->
+          <!--
+            Navigate links
+            TODO: support multi-level navi items
+          -->
           <ul class="nav navbar-nav">
-            {%- for (title, url, is_active) in navibar -%}
-              {%- if is_active -%}
-                <li class="active"><a href="javascript: void(0);">{{ title }}</a></li>
+            {%- macro show_navi_item(itm) -%}
+              {%- if not itm.has_child -%}
+              <li{% if itm.is_active %} class="active"{% endif %}>
+                <a href="{{ itm.url }}">{{ itm.title }}</a>
+              </li>
               {%- else -%}
-                <li><a href="{{ url }}">{{ title }}</a></li>
+              <li class="dropdown{% if itm.is_active %} active{% endif %}">
+                <a href="{{ itm.url }}" class="dropdown-toggle" data-toggle="dropdown">{{ itm.title }}</a>
+                <ul class="dropdown-menu" role="menu">
+                  {%- for citm in itm.subitems %}
+                  <li role="presentation"{% if citm.is_active %} class="active"{% endif %}>
+                    <a role="menuitem" tabindex="-1" href="{{ citm.url }}">{{ citm.title }}</a>
+                  </li>
+                  {%- endfor %}
+                </ul>
+              </li>
               {%- endif -%}
-            {%- endfor -%}
+            {%- endmacro -%}
+            {%- for item in navibar %}
+              {{ show_navi_item(item) }}
+            {%- endfor %}
           </ul>
           <!-- Logged user info, or signup / signin links -->
           <ul class="nav navbar-nav navbar-right userinfo">

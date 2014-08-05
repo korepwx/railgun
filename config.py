@@ -10,6 +10,9 @@
 
 import os
 
+# RAILGUN_ROOT stores the path of railgun project
+RAILGUN_ROOT = os.path.realpath(os.path.dirname(__file__))
+
 # When DEBUG is set to True, Flask debugging console will be enabled.
 DEBUG = True
 
@@ -25,13 +28,22 @@ BABEL_DEFAULT_LOCALE = 'en'
 BABEL_DEFAULT_TIMEZONE = 'Asia/Shanghai'
 
 # SQLALCHEMY_DATABASE_URI configures the database of Railgun system
-SQLALCHEMY_DATABASE_URI = 'sqlite:////tmp/railgun.db'
+SQLALCHEMY_DATABASE_URI = (
+    'sqlite:///%s' % os.path.join(RAILGUN_ROOT, 'db/main.db')
+)
 
-# RAILGUN_ROOT stores the path of railgun project
-RAILGUN_ROOT = os.path.realpath(os.path.dirname(__file__))
+# DEFAULT_HIDE_RULES hides particular files from all homework packs
+DEFAULT_HIDE_RULES = (
+    'Thumbs\.db$',      # windows picture preview database
+    '\.DS_Store$',      # OS X directory meta
+    '\.directory$',     # dolphin directory meta
+)
 
 # HOMEWORK_DIR stores the definitions of homeworks
 HOMEWORK_DIR = os.path.join(RAILGUN_ROOT, 'hw')
+
+# HOMEWORK_PACK_DIR stores the packed archives of all homeworks
+HOMEWORK_PACK_DIR = os.path.join(HOMEWORK_DIR, '.pack')
 
 # TEMPORARY_DIR stores the temporary directory for all system components
 TEMPORARY_DIR = os.path.join(HOMEWORK_DIR, 'tmp')

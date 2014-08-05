@@ -52,3 +52,12 @@ body {
 .content #site-description p {
   padding-top: 10px;
 }
+
+/* tweak for index page */
+.content-index .hw-heading {
+  padding-bottom: 20px;
+}
+
+.content-index .hw-languages span {
+  padding-right: 5px;
+}

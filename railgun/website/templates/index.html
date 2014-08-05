@@ -14,5 +14,38 @@
       </a>
     </p>
   </div>
+  {%- else -%}
+    <h3 class="hw-heading">{{ _('Your Homeworks') }}</h3>
+    <table class="table table-hover">
+      <tr>
+        <th>{{ _('Name') }}</th>
+        <th>{{ _('Languages') }}</th>
+        <th>{{ _('Due / Scale') }}</th>
+        <th>{{ _('Submission') }}</th>
+      </tr>
+      {%- for hw in g.homeworks %}
+      <tr>
+        <td class="hw-name">
+          <a href="{{ url_for('homework', slug=hw.slug) }}">{{ hw.info.name }}</a>
+        </td>
+        <td class="hw-languages">
+          {% for c in hw.get_code_languages() %}<span>{{ c }}</span>{% endfor %}
+        </td>
+        <td class="hw-deadline">
+          {%- set next_deadline = hw.get_next_deadline() -%}
+          {% if next_deadline -%}
+            {%- set ddl_date, ddl_scale = next_deadline -%}
+            <span class="hw-ddl-date">{{ ddl_date | timedeltaformat }}</span> /
+            <span class="hw-ddl-scale">{{ ddl_scale }}</span>
+          {%- else -%}
+            {{ _('Out of date') }}
+          {%- endif %}
+        </td>
+        <td class="hw-status">
+          {{ _('Not yet') }}
+        </td>
+      </tr>
+      {%- endfor %}
+    </table>
   {%- endif %}
 {%- endblock %}

@@ -8,4 +8,4 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # This file is released under BSD 2-clause license.
 
-from . import context, credential, forms, i18n, navibar, views
+from . import context, credential, forms, hw, i18n, navibar, views
