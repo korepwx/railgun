@@ -25,10 +25,6 @@ class HwSet(object):
         self.hwdir = hwdir
         # `items` store all discovered homeworks in order of `slug`.
         self.items = None
-        # `__slug_to_item` hashes slug of homeworks.
-        self.__slug_to_item = None
-        # `__uuid_to_item` hashes uuid of homeworks.
-        self.__uuid_to_item = None
 
         self.reload()
 
@@ -44,21 +40,9 @@ class HwSet(object):
                 self.items.append(Homework.load(fp))
         self.items = sorted(self.items, cmp=lambda a, b: cmp(a.slug, b.slug))
 
-        # hash slugs
-        self.__slug_to_item = {v.slug: v for v in self.items}
-        self.__uuid_to_item = {v.uuid: v for v in self.items}
-
-    def get_proxies(self):
-        """get list of `HwProxy` for current request."""
-        return [HwProxy(hw) for hw in self.items]
-
-    def get_by_slug(self, slug):
-        """get homework by slug, None if not exist."""
-        return self.__slug_to_item.get(slug, None)
-
-    def get_by_uuid(self, uuid):
-        """get homework by uuid, None if not exist."""
-        return self.__uuid_to_item.get(uuid, None)
+    def __iter__(self):
+        """get iterable object through all homeworks."""
+        return iter(self.items)
 
 
 class HwProxy(object):
@@ -82,6 +66,30 @@ class HwProxy(object):
         return getattr(self.hw, key)
 
 
+class HwSetProxy(object):
+    """per-request proxy to `HwSet`, whose iterable items are all `HwProxy`."""
+
+    def __init__(self, hwset):
+        # cache all HwProxy instances
+        self.items = [HwProxy(hw) for hw in hwset]
+
+        # build slug-to-hw and uuid-to-hw lookup dictionary
+        self.__slug_to_hw = {hw.slug: hw for hw in self.items}
+        self.__uuid_to_hw = {hw.uuid: hw for hw in self.items}
+
+    def __iter__(self):
+        """get iterable object through all HwProxy instances."""
+        return iter(self.items)
+
+    def get_by_uuid(self, uuid):
+        """get HwProxy by uuid."""
+        return self.__uuid_to_hw.get(uuid, None)
+
+    def get_by_slug(self, slug):
+        """get HwProxy by slug."""
+        return self.__slug_to_hw.get(slug, None)
+
+
 # global homework set instance
 homeworks = HwSet(app.config['HOMEWORK_DIR'])
 
@@ -89,4 +97,4 @@ homeworks = HwSet(app.config['HOMEWORK_DIR'])
 # inject homework proxies into `g` object
 @app.before_request
 def __inject_flask_g(*args, **kwargs):
-    g.homeworks = homeworks.get_proxies()
+    g.homeworks = HwSetProxy(homeworks)

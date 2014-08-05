@@ -12,8 +12,10 @@ from flask import render_template, url_for, redirect, flash, request, g
 from flask.ext.babel import lazy_gettext, gettext as _
 from flask.ext.login import login_user, logout_user, current_user, \
     login_required, fresh_login_required
+from werkzeug.exceptions import NotFound
 from sqlalchemy import or_, and_
 
+from .hw import homeworks
 from .context import app, db
 from .navibar import navigates, NaviItem, set_navibar_identity
 from .forms import SignupForm, SigninForm, ProfileForm
@@ -121,7 +123,10 @@ def profile_edit():
 @login_required
 def homework(slug):
     set_navibar_identity('homework.%s' % slug)
-    return render_template('index.html')
+    hw = g.homeworks.get_by_slug(slug)
+    if (not hw):
+        raise NotFound()
+    return render_template('homework.html')
 
 
 # Register all pages into navibar
