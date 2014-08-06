@@ -33,11 +33,11 @@ def dirtree(path):
     return F(os.path.realpath(path), '')
 
 
-def packzip(base_path, files, target):
+def packzip(base_path, files, target, path_prefix=''):
     """Pack all items in `files` under `base_path` into `target` zipfile."""
     for f in files:
         fp = os.path.join(base_path, f)
-        target.write(fp, f)
+        target.write(fp, path_prefix + f)
     return target
 
 

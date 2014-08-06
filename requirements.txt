@@ -7,3 +7,5 @@ flask-cache
 flask-sqlalchemy
 flask-login
 rarfile
+markdown >= 2.4.1
+pygments >= 1.6

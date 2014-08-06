@@ -10,9 +10,9 @@
 
 import os
 
-from flask import request, g
+from flask import request, g, url_for
 
-from railgun.common.hw import Homework
+from railgun.common.hw import Homework, utc_now
 from .context import app
 
 
@@ -65,6 +65,21 @@ class HwProxy(object):
     def __getattr__(self, key):
         return getattr(self.hw, key)
 
+    # the following methods are extensions to common.hw.Homework.
+    def attach_url(self, lang):
+        """get the attachment url for given `lang`"""
+        return url_for('hwpack', slug=self.slug, lang=lang)
+
+    def attach_size(self, lang):
+        """get the size of attachment for given `lang`"""
+        fpath = os.path.join(
+            app.config['HOMEWORK_PACK_DIR'],
+            '%s/%s.zip' % (self.slug, lang)
+        )
+        if (os.path.isfile(fpath)):
+            return os.path.getsize(fpath)
+        return None
+
 
 class HwSetProxy(object):
     """per-request proxy to `HwSet`, whose iterable items are all `HwProxy`."""
@@ -98,3 +113,6 @@ homeworks = HwSet(app.config['HOMEWORK_DIR'])
 @app.before_request
 def __inject_flask_g(*args, **kwargs):
     g.homeworks = HwSetProxy(homeworks)
+    # g.utcnow will be used in templates/homework.html to determine some
+    # visual styles
+    g.utcnow = utc_now()

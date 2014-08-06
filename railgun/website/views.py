@@ -8,18 +8,19 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # This file is released under BSD 2-clause license.
 
-from flask import render_template, url_for, redirect, flash, request, g
+from flask import render_template, url_for, redirect, flash, request, g, \
+    send_from_directory
 from flask.ext.babel import lazy_gettext, gettext as _
 from flask.ext.login import login_user, logout_user, current_user, \
     login_required, fresh_login_required
 from werkzeug.exceptions import NotFound
 from sqlalchemy import or_, and_
 
-from .hw import homeworks
 from .context import app, db
 from .navibar import navigates, NaviItem, set_navibar_identity
 from .forms import SignupForm, SigninForm, ProfileForm
 from .credential import UserContext
+from .codelang import languages
 from railgun.common.models import User
 
 
@@ -119,14 +120,44 @@ def profile_edit():
     )
 
 
-@app.route('/homework/<slug>/')
+@app.route('/homework/<slug>/', methods=['GET', 'POST'])
 @login_required
 def homework(slug):
+    # set the identity for navibar (so that current page will be activated)
     set_navibar_identity('homework.%s' % slug)
+    # load requested homework instance
     hw = g.homeworks.get_by_slug(slug)
     if (not hw):
         raise NotFound()
-    return render_template('homework.html')
+    # generate multiple forms with different prefix
+    hwlangs = hw.get_code_languages()
+    forms = {
+        k: languages[k].upload_form(hw) for k in hwlangs
+    }
+    # detect which form is used
+    handin_lang = None
+    if (request.method == 'POST' and 'handin_lang' in request.form):
+        handin_lang = request.form['handin_lang']
+        # check the data integrity of uploaded data
+        if (forms[handin_lang].validate_on_submit()):
+            flash(_("Here we go! you uploaded %(lang)s!", lang=handin_lang))
+    # if handin_lang not determine, choose the first lang
+    if handin_lang is None:
+        handin_lang = hwlangs[0]
+    return render_template(
+        'homework.html', hw=hw, forms=forms, active_lang=handin_lang,
+        hwlangs=hwlangs
+    )
+
+
+@app.route('/hwpack/<slug>/<lang>.zip')
+def hwpack(slug, lang):
+    # NOTE: I suppose that there's no need to guard the homework archives
+    #       by @login_required. regarding this, the packed archives can be
+    #       served by nginx, not flask framework, which should be much
+    #       faster to be responded.
+    filename = '%(slug)s/%(lang)s.zip' % {'slug': slug, 'lang': lang}
+    return send_from_directory(app.config['HOMEWORK_PACK_DIR'], filename)
 
 
 # Register all pages into navibar

@@ -23,13 +23,18 @@
   <deadlines>
     <due>
       <timezone>Asia/Shanghai</timezone>
-      <date>2014-8-1 23:00:00</date>
+      <date>2014-7-31 23:00:00</date>
       <scale>1.0</scale>
     </due>
 
     <due>
       <date>2014-8-10 18:00:00</date>
       <scale>0.5</scale>
+    </due>
+
+    <due>
+      <date>2014-8-2 18:00:00</date>
+      <scale>0.1</scale>
     </due>
   </deadlines>
 
@@ -70,4 +75,5 @@
     <accept>^data/payload\.txt$</accept>
     <hide>^data/hide\.txt$</hide>
   </files>
+
 </homework>

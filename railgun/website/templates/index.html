@@ -15,7 +15,7 @@
     </p>
   </div>
   {%- else -%}
-    <h3 class="hw-heading">{{ _('Your Homeworks') }}</h3>
+    <h3 class="hw-heading">{{ _('Your Homework') }}</h3>
     <table class="table table-hover">
       <tr>
         <th>{{ _('Name') }}</th>
@@ -24,19 +24,28 @@
         <th>{{ _('Submission') }}</th>
       </tr>
       {%- for hw in g.homeworks %}
-      <tr>
+        {%- set next_deadline = hw.get_next_deadline() -%}
+        {%- if not next_deadline -%}
+          {%- set line_style = 'danger' -%}
+        {%- else -%}
+          {%- set line_style = 'default' -%}
+        {%- endif -%}
+      <tr class="{{line_style}} text-{{line_style}}">
         <td class="hw-name">
           <a href="{{ url_for('homework', slug=hw.slug) }}">{{ hw.info.name }}</a>
         </td>
         <td class="hw-languages">
-          {% for c in hw.get_code_languages() %}<span>{{ c }}</span>{% endfor %}
+          {% for c in hw.get_code_languages() %}<span>{{ c | codelang }}</span>{% endfor %}
         </td>
         <td class="hw-deadline">
-          {%- set next_deadline = hw.get_next_deadline() -%}
           {% if next_deadline -%}
             {%- set ddl_date, ddl_scale = next_deadline -%}
-            <span class="hw-ddl-date">{{ ddl_date | timedeltaformat }}</span> /
-            <span class="hw-ddl-scale">{{ ddl_scale }}</span>
+            <div class="hw-ddl-date">
+              <span class="text-{{ ddl_date | duestyle }}">
+                {{ ddl_date | timedelta }}
+              <span>
+            </div> /
+            <span class="hw-ddl-scale text-{{ ddl_scale | scalestyle }}">{{ ddl_scale }}</span>
           {%- else -%}
             {{ _('Out of date') }}
           {%- endif %}

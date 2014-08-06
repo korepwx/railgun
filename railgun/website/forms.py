@@ -9,9 +9,10 @@
 # This file is released under BSD 2-clause license.
 
 from flask_wtf import Form
+from flask_wtf.file import FileField, FileAllowed, FileRequired
 from wtforms import StringField, PasswordField
 from wtforms.validators import DataRequired, Length, Email, InputRequired, \
-    EqualTo, Regexp
+    EqualTo, Regexp, URL
 
 from flask.ext.babel import lazy_gettext as _
 
@@ -60,3 +61,29 @@ class ProfileForm(Form):
         EqualTo('confirm', message=_("Passwords must match")),
     ])
     confirm = PasswordField(_('Confirm your password'))
+
+
+class UploadHandinForm(Form):
+    """Form for `homework` view that uploads an archive."""
+
+    handin = FileField(
+        _('Please choose an archive to handin:'),
+        validators=[
+            FileRequired(),
+            FileAllowed(
+                ['rar', 'zip', 'tar', 'tgz', 'tbz', 'gz', 'bz2'],
+                message=_('Only these file formats are accepted: '
+                          'rar, zip, tar, tar.gz, tgz, tar.bz2, tbz')
+            )
+        ])
+
+
+class AddressHandinForm(Form):
+    """Form for `homework` view that handin an address."""
+
+    address = StringField(
+        _('Please enter your API address:'),
+        validators=[
+            InputRequired(),
+            URL(message=_('Please input a valid url address!'))
+        ])

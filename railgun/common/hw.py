@@ -220,6 +220,9 @@ class HwCode(object):
         # parse the file match rules
         ret.file_rules = FileRules.parse_xml(root.find('files'))
 
+        # set default hidden rules
+        ret.file_rules.prepend_action('hide', '^code\.xml$')
+
         return ret
 
 
@@ -310,6 +313,7 @@ class Homework(object):
             raise ValueError('Homework name is missing.')
 
         # Stage 4: set default hidden rules
+        ret.file_rules.prepend_action('hide', '^hw\.xml$')
         ret.file_rules.prepend_action('hide', '^code/\.*')
         ret.file_rules.prepend_action('hide', '^code$')
         ret.file_rules.prepend_action('hide', '^desc/\.*')
@@ -350,13 +354,14 @@ class Homework(object):
 
         # make target file name
         with fileutil.makezip(filename) as zipf:
-            fileutil.packzip(self.path, root_files, zipf)
-            fileutil.packzip(code.path, code_files, zipf)
+            path_prefix = self.slug + '/'
+            fileutil.packzip(self.path, root_files, zipf, path_prefix)
+            fileutil.packzip(code.path, code_files, zipf, path_prefix)
 
     def get_next_deadline(self):
-        """get the next deadline of this homework. return (timedelta, scale)."""
+        """get the next deadline of this homework. return (date, scale)."""
 
         now = utc_now()
         for ddl in self.deadlines:
             if (ddl[0] >= now):
-                return (ddl[0] - now, ddl[1])
+                return (ddl[0], ddl[1])
