@@ -47,13 +47,6 @@
       runtime errors?
     -->
     <reportAll>true</reportAll>
-
-    <!--
-      whether the score of this homework is lower-better or higher-better?
-
-      when the score is lower-better, the score factor will be used as divider.
-    -->
-    <better>higher</better>
   </scoring>
 
   <!--

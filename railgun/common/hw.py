@@ -222,6 +222,8 @@ class HwCode(object):
 
         # set default hidden rules
         ret.file_rules.prepend_action('hide', '^code\.xml$')
+        for r in config.DEFAULT_HIDE_RULES:
+            ret.file_rules.prepend_action('hide', r)
 
         return ret
 
@@ -244,7 +246,6 @@ class Homework(object):
         self.deadlines = []
         # settings of scoring
         self.reportAll = False
-        self.lower_better = False
         # file match rules for root directory
         self.file_rules = None
         # list of `HwCode` instances
@@ -292,7 +293,6 @@ class Homework(object):
                     ret.deadlines.append((to_utc(duedate), scale))
             elif (nd.tag == 'scoring'):
                 ret.reportAll = parse_bool(nd.find('reportAll').text)
-                ret.lower_better = nd.find('better').text.lower() == 'lower'
             elif (nd.tag == 'files'):
                 ret.file_rules = FileRules.parse_xml(nd)
 

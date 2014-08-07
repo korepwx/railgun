@@ -34,9 +34,11 @@ SQLALCHEMY_DATABASE_URI = (
 
 # DEFAULT_HIDE_RULES hides particular files from all homework packs
 DEFAULT_HIDE_RULES = (
-    'Thumbs\.db$',      # windows picture preview database
-    '\.DS_Store$',      # OS X directory meta
-    '\.directory$',     # dolphin directory meta
+    'Thumbs\.db$',          # windows picture preview database
+    '\.DS_Store$',          # OS X directory meta
+    '\.directory$',         # dolphin directory meta
+    '\.py[cdo]$',           # hide all python binary files
+    '^(py|java)host.*',     # prevent runlib from overwritten
 )
 
 # HOMEWORK_DIR stores the definitions of homeworks
