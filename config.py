@@ -8,36 +8,30 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # This file is released under BSD 2-clause license.
 
+"""
+this file contains common configurations shared by website and runner
+Flask and Celery specified configurations can be found in each directory.
+"""
+
 import os
 
 # RAILGUN_ROOT stores the path of railgun project
 RAILGUN_ROOT = os.path.realpath(os.path.dirname(__file__))
 
-# When DEBUG is set to True, Flask debugging console will be enabled.
-DEBUG = True
+# DEFAULT_LOCALE is selected to serve the client when prefered locale
+# is not available.
+DEFAULT_LOCALE = 'en'
 
-# SECRET_KEY is the private key for session encryption.
-SECRET_KEY = 'This is not the final secret key'
-
-# BABEL_DEFAULT_LOCALE language is provided to the client when prefered
-# locale is not available.
-BABEL_DEFAULT_LOCALE = 'en'
-
-# BABEL_DEFAULT_TIMEZONE is used to represent the date and times when
-# user configuration is not available.
-BABEL_DEFAULT_TIMEZONE = 'Asia/Shanghai'
-
-# SQLALCHEMY_DATABASE_URI configures the database of Railgun system
-SQLALCHEMY_DATABASE_URI = (
-    'sqlite:///%s' % os.path.join(RAILGUN_ROOT, 'db/main.db')
-)
+# DEFAULT_TIMEZONE is used to represent the date and times when user
+# configuration is not available.
+DEFAULT_TIMEZONE = 'Asia/Shanghai'
 
 # DEFAULT_HIDE_RULES hides particular files from all homework packs
 DEFAULT_HIDE_RULES = (
-    'Thumbs\.db$',          # windows picture preview database
-    '\.DS_Store$',          # OS X directory meta
-    '\.directory$',         # dolphin directory meta
-    '\.py[cdo]$',           # hide all python binary files
+    'Thumbs\\.db$',         # windows picture preview database
+    '\\.DS_Store$',         # OS X directory meta
+    '\\.directory$',        # dolphin directory meta
+    '\\.py[cdo]$',          # hide all python binary files
     '^(py|java)host.*',     # prevent runlib from overwritten
 )
 
@@ -48,4 +42,11 @@ HOMEWORK_DIR = os.path.join(RAILGUN_ROOT, 'hw')
 HOMEWORK_PACK_DIR = os.path.join(HOMEWORK_DIR, '.pack')
 
 # TEMPORARY_DIR stores the temporary directory for all system components
-TEMPORARY_DIR = os.path.join(HOMEWORK_DIR, 'tmp')
+TEMPORARY_DIR = os.path.join(RAILGUN_ROOT, 'tmp')
+
+# RUNLIB_DIR is the root directory of all host libraries
+RUNLIB_DIR = os.path.join(RAILGUN_ROOT, 'runlib')
+
+# RUNNER_DEFAULT_TIMEOUT controls the default timeout config for testing
+# module to run
+RUNNER_DEFAULT_TIMEOUT = 10

@@ -10,10 +10,9 @@
 
 import re
 import os
-import pprint
 from datetime import datetime
 from xml.etree import ElementTree
-from itertools import ifilter
+from itertools import ifilter, chain
 
 from babel.dates import get_timezone, UTC
 
@@ -46,62 +45,6 @@ def to_utc(dt):
 def utc_now():
     """get now datetime whose timezone is UTC."""
     return UTC.localize(datetime.utcnow())
-
-
-class ConfigNode(object):
-    """Class to represent a configuration node."""
-
-    def __init__(self):
-        # a `ConfigNode` can either have a value or children nodes.
-        self.name = None
-        self.value = None
-        self.children = None
-
-        # any type of `ConfigNode` can have attrs
-        self.attrs = None
-
-    def __repr__(self):
-        def F(c, depth=0):
-            ret = {'name': c.name}
-            if (c.has_child):
-                ret['children'] = [F(cc) for cc in c.children]
-            else:
-                ret['value'] = c.value
-            if (c.attrs):
-                ret['attrs'] = c.attrs
-            return ret
-        return pprint.pformat(F(self))
-
-    def get(self, name, default=None):
-        """Get `name` attr value. return `default` if not defined."""
-        return self.attrs.get(name, default)
-
-    @property
-    def has_child(self):
-        """Whether this node has children nodes?"""
-        return self.children is not None
-
-    @staticmethod
-    def parse_xml(xmlnode):
-        """Create the root `ConfigNode` according to given `xmlnode`."""
-
-        def F(nd):
-            ret = ConfigNode()
-            ret.name = nd.tag
-            ret.attrs = nd.attrib
-
-            if (len(nd) > 0):
-                # a node can not have both value and children
-                # so we should ignore nd.text
-                ret.children = []
-                for cnd in nd:
-                    ret.children.append(F(cnd))
-            else:
-                ret.value = nd.text.strip() if nd.text else None
-
-            return ret
-
-        return F(xmlnode) if xmlnode is not None else ConfigNode()
 
 
 class FileRules(object):
@@ -214,14 +157,14 @@ class HwCode(object):
         root = tree.getroot()
 
         # store compiler & runner param nodes
-        ret.compiler_params = ConfigNode.parse_xml(root.find('compiler'))
-        ret.runner_params = ConfigNode.parse_xml(root.find('runner'))
+        ret.compiler_params = root.find('compiler')
+        ret.runner_params = root.find('runner')
 
         # parse the file match rules
         ret.file_rules = FileRules.parse_xml(root.find('files'))
 
         # set default hidden rules
-        ret.file_rules.prepend_action('hide', '^code\.xml$')
+        ret.file_rules.prepend_action('hide', '^code\\.xml$')
         for r in config.DEFAULT_HIDE_RULES:
             ret.file_rules.prepend_action('hide', r)
 
@@ -280,7 +223,7 @@ class Homework(object):
                     timezone = due.find('timezone')
                     timezone = timezone.text if timezone is not None else None
                     if (not timezone):
-                        timezone = config.BABEL_DEFAULT_TIMEZONE
+                        timezone = config.DEFAULT_TIMEZONE
                     timezone = get_timezone(timezone.strip())
                     # parse the date string
                     duedate = timezone.localize(
@@ -313,10 +256,10 @@ class Homework(object):
             raise ValueError('Homework name is missing.')
 
         # Stage 4: set default hidden rules
-        ret.file_rules.prepend_action('hide', '^hw\.xml$')
-        ret.file_rules.prepend_action('hide', '^code/\.*')
+        ret.file_rules.prepend_action('hide', '^hw\\.xml$')
+        ret.file_rules.prepend_action('hide', '^code/\\.*')
         ret.file_rules.prepend_action('hide', '^code$')
-        ret.file_rules.prepend_action('hide', '^desc/\.*')
+        ret.file_rules.prepend_action('hide', '^desc/\\.*')
         ret.file_rules.prepend_action('hide', '^desc$')
         for r in config.DEFAULT_HIDE_RULES:
             ret.file_rules.prepend_action('hide', r)
@@ -331,11 +274,15 @@ class Homework(object):
         """Get the programming languages provided by this homework."""
         return sorted([c.lang for c in self.codes])
 
+    def get_code(self, lang):
+        """Get HwCode instance for `lang`"""
+        return [c for c in self.codes if c.lang == lang][0]
+
     def pack_assignment(self, lang, filename):
         """Pack assignment zipfile for `lang` programming language."""
 
         # select the code package
-        code = [c for c in self.codes if c.lang == lang][0]
+        code = self.get_code(lang)
 
         # prepare the file list in root directory.
         # only acceptable and locked files are given to students.
@@ -357,6 +304,23 @@ class Homework(object):
             path_prefix = self.slug + '/'
             fileutil.packzip(self.path, root_files, zipf, path_prefix)
             fileutil.packzip(code.path, code_files, zipf, path_prefix)
+
+    def list_files(self, lang):
+        """List all files for `lang` programming language."""
+        # select the code package
+        code = self.get_code(lang)
+
+        # get list of root files
+        root_hide = re.compile('^code$|^code/\\.*|^desc$|^desc/\\.*|^hw\\.xml$')
+        root_files = ifilter(
+            lambda s: not root_hide.match(s),
+            fileutil.dirtree(self.path)
+        )
+
+        # get list of code files
+        code_files = fileutil.dirtree(code.path)
+
+        return chain(root_files, code_files)
 
     def get_next_deadline(self):
         """get the next deadline of this homework. return (date, scale)."""

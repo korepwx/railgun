@@ -12,8 +12,8 @@ from flask import redirect, flash, request, url_for
 from flask.ext.login import LoginManager, current_user
 from flask.ext.babel import gettext as _
 
-from railgun.common.models import User
 from railgun.common.gravatar import get_avatar
+from .models import User
 from .context import app, db
 
 # The global login manager for web application

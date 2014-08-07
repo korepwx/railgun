@@ -12,7 +12,6 @@ import os
 
 from flask import request
 from flask.ext.babel import Babel, get_locale
-from babel.dates import get_timezone
 
 from .context import app
 

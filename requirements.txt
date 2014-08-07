@@ -9,3 +9,5 @@ flask-login
 rarfile
 markdown >= 2.4.1
 pygments >= 1.6
+redis >= 2.10.1
+

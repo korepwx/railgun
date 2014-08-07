@@ -17,6 +17,14 @@ import tarfile
 rarfile.PATH_SEP = '/'
 
 
+def remove_firstdir(path):
+    """Remove the first level directory from `path`"""
+    slash_pos = path.find('/')
+    if (slash_pos >= 0):
+        path = path[slash_pos+1:]
+    return path
+
+
 def dirtree(path):
     """Get all file entries under directory `path`."""
 
@@ -65,10 +73,35 @@ class Extractor(object):
     def __iter__(self):
         return self.extract()
 
-    # the basic method to get next file from archive
+    # canonical path: replace '\\' to '/'
+    def _canonical_path(self, p):
+        return p.replace('\\', '/')
+
+    # basic method to get next file from archive
     def extract(self):
         """Get iterable (fname, fobj) from the archive."""
         raise NotImplementedError()
+
+    # basic method to get names of all files
+    def filelist(self):
+        """Get iterable fname from the archive."""
+        raise NotImplementedError()
+
+    def onedir(self):
+        """Check whether this archive contains only one directory"""
+        last_dname = None
+        for fname in self.filelist():
+            # get the first directory name
+            slash_pos = fname.find('/')
+            if (slash_pos >= 0):
+                dname = fname[: slash_pos]
+            else:
+                dname = fname
+            if (last_dname is None):
+                last_dname = dname
+            if (last_dname != dname):
+                return False
+        return True
 
     @staticmethod
     def open(fpath):
@@ -92,10 +125,16 @@ class ZipExtractor(Extractor):
     def extract(self):
         for mi in self.fobj.infolist():
             # ignore directory entries
-            if (mi.compress_type == 0):
+            if (mi.filename[-1] == '/'):
                 continue
             f = self.fobj.open(mi)
-            yield mi.filename, f
+            yield self._canonical_path(mi.filename), f
+
+    def filelist(self):
+        for mi in self.fobj.infolist():
+            if (mi.filename[-1] == '/'):
+                continue
+            yield self._canonical_path(mi.filename)
 
 
 class RarExtractor(Extractor):
@@ -108,7 +147,13 @@ class RarExtractor(Extractor):
             if (mi.isdir()):
                 continue
             f = self.fobj.open(mi)
-            yield mi.filename, f
+            yield self._canonical_path(mi.filename), f
+
+    def filelist(self):
+        for mi in self.fobj.infolist():
+            if (mi.isdir()):
+                continue
+            yield self._canonical_path(mi.filename)
 
 
 class TarExtractor(Extractor):
@@ -119,4 +164,9 @@ class TarExtractor(Extractor):
     def extract(self):
         for mi in self.fobj:
             if (not mi.isdir()):
-                yield mi.name, self.fobj.extractfile(mi)
+                yield self._canonical_path(mi.name), self.fobj.extractfile(mi)
+
+    def filelist(self):
+        for mi in self.fobj:
+            if (not mi.isdir()):
+                yield self._canonical_path(mi.name)

@@ -21,7 +21,7 @@ from .navibar import navigates, NaviItem, set_navibar_identity
 from .forms import SignupForm, SigninForm, ProfileForm
 from .credential import UserContext
 from .codelang import languages
-from railgun.common.models import User
+from .models import User
 
 
 @app.route('/')
