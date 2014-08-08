@@ -1,14 +1,68 @@
-{% extends "base.html" %}
-{% import "utility.html" as utility %}
-{% block subtitle -%}
-{{ _('Sign in') }}
-{%- endblock %}
-{% block content -%}
-<form role="form" class="form-signin form-single" method="POST" action="{{ url_for('signin', next=next) }}">
-  <h2 class="form-heading">{{ _('Sign in') }}</h2>
-  {{ utility.form_group(form.login) }}
-  {{ utility.form_group(form.password) }}
-  <button type="submit" class="btn btn-default">{{ _('Sign in') }}</button>
-  {{ form.hidden_tag() }}
-</form>
-{%- endblock %}
+<!DOCTYPE html>
+<html>
+    <!-- Mirrored from www.zi-han.net/theme/se7en/login1.html by HTTrack Website Copier/3.x [XR&CO'2010], Sat, 26 Apr 2014 14:30:43 GMT -->
+    <head>
+        <title>
+        <!--TODO-->
+        </title>
+        <meta charset="utf-8">
+        <link href="{{ url_for('static', filename='css/bootstrap-switch.css') }}" rel="stylesheet">
+        <link href="{{ url_for('static', filename='css/bootstrap-theme.min.css') }}" rel="stylesheet">
+        <link href="{{ url_for('static', filename='css/bootstrap.min.css') }}" rel="stylesheet">
+        <link href="{{ url_for('static', filename='css/codehilite.css') }}" rel="stylesheet">
+        <link href="{{ url_for('static', filename='css/color/gray.css') }}" rel="stylesheet">
+        <link href="{{ url_for('static', filename='css/color/green.css') }}" rel="stylesheet">
+        <link href="{{ url_for('static', filename='css/color/magenta.css') }}" rel="stylesheet">
+        <link href="{{ url_for('static', filename='css/color/orange.css') }}" rel="stylesheet">
+        <link href="{{ url_for('static', filename='css/colorpicker.css') }}" rel="stylesheet">
+        <link href="{{ url_for('static', filename='css/datatables.css') }}" rel="stylesheet">
+        <link href="{{ url_for('static', filename='css/datepicker.css') }}" rel="stylesheet">
+        <link href="{{ url_for('static', filename='css/daterange-picker.css') }}" rel="stylesheet">
+        <link href="{{ url_for('static', filename='css/docs.css') }}" rel="stylesheet">
+        <link href="{{ url_for('static', filename='css/font-awesome.css') }}" rel="stylesheet">
+        <link href="{{ url_for('static', filename='css/fullcalendar.css') }}" rel="stylesheet">
+        <link href="{{ url_for('static', filename='css/isotope.css') }}" rel="stylesheet">
+        <link href="{{ url_for('static', filename='css/jquery.fancybox.css') }}" rel="stylesheet">
+        <link href="{{ url_for('static', filename='css/morris.css') }}" rel="stylesheet">
+        <link href="{{ url_for('static', filename='css/pygments.css') }}" rel="stylesheet">
+        <link href="{{ url_for('static', filename='css/railgun.css') }}" rel="stylesheet">
+        <link href="{{ url_for('static', filename='css/se7en-font.css') }}" rel="stylesheet">
+        <link href="{{ url_for('static', filename='css/select2.css') }}" rel="stylesheet">
+        <link href="{{ url_for('static', filename='css/style.css') }}" rel="stylesheet">
+        <link href="{{ url_for('static', filename='css/summernote.css') }}" rel="stylesheet">
+        <link href="{{ url_for('static', filename='css/timepicker.css') }}" rel="stylesheet">
+        <link href="{{ url_for('static', filename='css/typeahead.css') }}" rel="stylesheet">
+        <link href="{{ url_for('static', filename='css/wizard.css') }}" rel="stylesheet">
+    <style id="clearly_highlighting_css" type="text/css">/* selection */ html.clearly_highlighting_enabled ::-moz-selection { background: rgba(246, 238, 150, 0.99); } html.clearly_highlighting_enabled ::selection { background: rgba(246, 238, 150, 0.99); } /* cursor */ html.clearly_highlighting_enabled {    /* cursor and hot-spot position -- requires a default cursor, after the URL one */    cursor: url("safari-extension://com.evernote.safari.clipper-Q79WDW8YH9/8a314a2d/clearly/images/highlight--cursor.png") 14 16, text; } /* highlight tag */ em.clearly_highlight_element {    font-style: inherit !important; font-weight: inherit !important;    background-image: url("safari-extension://com.evernote.safari.clipper-Q79WDW8YH9/8a314a2d/clearly/images/highlight--yellow.png");    background-repeat: repeat-x; background-position: top left; background-size: 100% 100%; } /* the delete-buttons are positioned relative to this */ em.clearly_highlight_element.clearly_highlight_first { position: relative; } /* delete buttons */ em.clearly_highlight_element a.clearly_highlight_delete_element {    display: none; cursor: pointer;    padding: 0; margin: 0; line-height: 0;    position: absolute; width: 34px; height: 34px; left: -17px; top: -17px;    background-image: url("safari-extension://com.evernote.safari.clipper-Q79WDW8YH9/8a314a2d/clearly/images/highlight--delete-sprite.png"); background-repeat: no-repeat; background-position: 0px 0px; } em.clearly_highlight_element a.clearly_highlight_delete_element:hover { background-position: -34px 0px; } /* retina */ @media (min--moz-device-pixel-ratio: 2), (-webkit-min-device-pixel-ratio: 2), (min-device-pixel-ratio: 2) {    em.clearly_highlight_element { background-image: url("safari-extension://com.evernote.safari.clipper-Q79WDW8YH9/8a314a2d/clearly/images/highlight--yellow@2x.png"); }    em.clearly_highlight_element a.clearly_highlight_delete_element { background-image: url("safari-extension://com.evernote.safari.clipper-Q79WDW8YH9/8a314a2d/clearly/images/highlight--delete-sprite@2x.png"); background-size: 68px 34px; } } </style>
+        
+    </head>
+    <body class="login1">
+        <!-- Login Screen -->
+        <div class="login-wrapper">
+            <div class="login-container active">
+                <a href="index.html">
+                <img width="100" height="30" src="{{ url_for('static', filename='images/logo.png') }}" /></a>
+                <form action="{{ url_for('signin', next=next) }}">
+                    <div class="form-group">
+                        <input class="form-control" placeholder="用户名/邮箱地址" type="text">
+                    </div>
+                    <div class="form-group">
+                        <input class="form-control" placeholder="密码" type="text"><input type="submit" value="&#xf054;">
+                    </div>
+                    <div class="form-options clearfix">
+                        <a class="pull-right" href="#">忘记密码了？</a>
+                        <div class="text-left">
+                            <label class="checkbox"><input type="checkbox"><span>自动登录</span></label>
+                        </div>
+                    </div>
+                </form>
+                <p class="signup">
+                还没有账号？<a href="signup1.html">立即注册</a>
+                </p>
+            </div>
+        </div>
+        <!-- End Login Screen -->
+
+    </body>
+    <!-- Mirrored from www.zi-han.net/theme/se7en/login1.html by HTTrack Website Copier/3.x [XR&CO'2010], Sat, 26 Apr 2014 14:30:44 GMT -->
+</html>
