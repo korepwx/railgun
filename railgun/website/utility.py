@@ -85,3 +85,14 @@ def __inject_template_scalestyle(scale):
     if (scale >= 0.5):
         return 'warning'
     return 'danger'
+
+
+# get a suitable bootstrap "tr" class name according to handin state
+@app.template_filter(name='handinstyle')
+def __inject_template_handinstyle(state):
+    return {
+        'Accepted': 'success',
+        'Pending': 'warning',
+        'Error': 'danger',
+        'Running': 'info',
+    }.get(state, 'default')

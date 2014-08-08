@@ -17,6 +17,15 @@ import tarfile
 rarfile.PATH_SEP = '/'
 
 
+def file_get_contents(path):
+    """Get the content of `path`, or None if exception raised."""
+    try:
+        with open(path, 'rb') as f:
+            return unicode(f.read(), 'utf-8')
+    except Exception:
+        pass
+
+
 def remove_firstdir(path):
     """Remove the first level directory from `path`"""
     slash_pos = path.find('/')

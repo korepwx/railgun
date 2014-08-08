@@ -18,6 +18,7 @@ from babel.dates import get_timezone, UTC
 
 import config
 from . import fileutil
+from .fileutil import file_get_contents
 
 
 def parse_bool(s):
@@ -26,15 +27,6 @@ def parse_bool(s):
         return False
     s = str(s).lower()
     return (s == 'true' or s == 'on' or s == '1' or s == 'yes')
-
-
-def file_get_contents(path):
-    """Get the content of `path`, or None if exception raised."""
-    try:
-        with open(path, 'rb') as f:
-            return unicode(f.read(), 'utf-8')
-    except Exception:
-        pass
 
 
 def to_utc(dt):

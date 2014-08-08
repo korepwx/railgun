@@ -11,9 +11,11 @@
 import os
 
 from flask.ext.babel import lazy_gettext
+from flask.ext.login import current_user
 
-from .context import app
+from .context import app, db
 from .forms import UploadHandinForm, AddressHandinForm
+from .models import Handin
 
 
 class CodeLanguage(object):
@@ -22,6 +24,13 @@ class CodeLanguage(object):
     def __init__(self, lang, lang_name):
         self.lang = lang
         self.name = lang_name
+
+    def db_add_record(self, handid, hw, lang, options={}):
+        """add a Handin record into database"""
+        handin = Handin(uuid=handid, hwid=hw.uuid, lang=lang, state='Pending',
+                        user_id=current_user.id, options=options)
+        db.session.add(handin)
+        db.session.commit()
 
     def upload_form(self, hw):
         """make handin form for given `hw`."""
@@ -47,6 +56,9 @@ class StandardLanguage(CodeLanguage):
         filename = ('%s%s' %
                     (handid, os.path.splitext(form.handin.data.filename)[1]))
         form.handin.data.save(os.path.join(app.config['UPLOAD_DIR'], filename))
+
+        # save handin into the database
+        self.db_add_record(handid, hw, lang)
 
 
 class PythonLanguage(StandardLanguage):

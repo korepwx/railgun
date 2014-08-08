@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block subtitle -%}
+{{ _('Dashboard') }}
+{%- endblock %}
+{% block content -%}
+  <h3 class="handin-heading">{{ _('Your Handins') }}</h3>
+  <table class="table table-hover">
+    <tr>
+      <th>{{ _('Homework') }}</th>
+      <th>{{ _('Handin Date') }}</th>
+      <th>{{ _('Score / Status') }}</th>
+    </tr>
+    {% for handin in handins -%}
+    {%- set hw = g.homeworks.get_by_uuid(handin.hwid) -%}
+    <tr class="{{ handin.state | handinstyle }}">
+      <td class="handin-hw">
+        {% if hw -%}
+          <a href="{{ url_for('homework', slug=hw.slug) }}">{{ hw.info.name }}</a>
+        {%- else -%}
+          <span class="text-muted">{{ _('(Deleted)') }}</span>
+        {%- endif %}
+      </td>
+      <td class="handin-date">
+        {{ handin.get_ctime() | datetimeformat }}
+      </td>
+      <td class="handin-status">
+        {% if handin.state == 'Accepted' -%}
+          {{ handin.score * handin.scale }}
+        {%- else -%}
+          {{ handin.get_state() }}
+        {%- endif %}
+      </td>
+    </tr>
+    {%- endfor %}
+  </table>
+{%- endblock %}

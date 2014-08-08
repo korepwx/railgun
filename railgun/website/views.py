@@ -23,7 +23,7 @@ from .navibar import navigates, NaviItem, set_navibar_identity
 from .forms import SignupForm, SigninForm, ProfileForm
 from .credential import UserContext
 from .codelang import languages
-from .models import User
+from .models import User, Handin
 
 
 @app.route('/')
@@ -154,9 +154,7 @@ def homework(slug):
                 )
                 flash(_('You handin is accepted, please wait for results.'),
                       'success')
-                return redirect(
-                    url_for('homework', slug=slug)
-                )
+                return redirect(url_for('dashboard'))
             except Exception:
                 app.logger.exception('Error when saving user handin.')
                 flash(_('Internal server error, please try again.'))
@@ -180,6 +178,13 @@ def hwpack(slug, lang):
     return send_from_directory(app.config['HOMEWORK_PACK_DIR'], filename)
 
 
+@app.route('/dashboard/')
+@login_required
+def dashboard():
+    handins = db.session.query(Handin).filter(Handin.user_id == current_user.id)
+    return render_template('dashboard.html', handins=handins)
+
+
 # Register all pages into navibar
 navigates.add_view(title=lazy_gettext('Home'), endpoint='index')
 navigates.add(
@@ -196,3 +201,4 @@ navigates.add(
         ]
     )
 )
+navigates.add_view(title=lazy_gettext('Dashboard'), endpoint='dashboard')
