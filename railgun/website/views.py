@@ -8,6 +8,8 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # This file is released under BSD 2-clause license.
 
+import uuid
+
 from flask import render_template, url_for, redirect, flash, request, g, \
     send_from_directory
 from flask.ext.babel import lazy_gettext, gettext as _
@@ -137,10 +139,28 @@ def homework(slug):
     # detect which form is used
     handin_lang = None
     if (request.method == 'POST' and 'handin_lang' in request.form):
+        # check deadline
+        if (not hw.get_next_deadline()):
+            flash(_('This homework is out of date! '
+                    'You cannot submit your handin.'), 'danger')
+            return redirect(url_for('homework', slug=slug))
         handin_lang = request.form['handin_lang']
         # check the data integrity of uploaded data
         if (forms[handin_lang].validate_on_submit()):
-            flash(_("Here we go! you uploaded %(lang)s!", lang=handin_lang))
+            handid = uuid.uuid4().get_hex()
+            try:
+                languages[handin_lang].handle_upload(
+                    handid, hw, handin_lang, forms[handin_lang]
+                )
+                flash(_('You handin is accepted, please wait for results.'),
+                      'success')
+                return redirect(
+                    url_for('homework', slug=slug)
+                )
+            except Exception:
+                app.logger.exception('Error when saving user handin.')
+                flash(_('Internal server error, please try again.'))
+
     # if handin_lang not determine, choose the first lang
     if handin_lang is None:
         handin_lang = hwlangs[0]

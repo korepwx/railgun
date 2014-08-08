@@ -17,11 +17,11 @@ from railgun.common.tempdir import TempDir
 
 
 class BaseHost(object):
-    """Basic language running host, manage a testing module."""
+    """Basic handin running host, manage a working directory."""
 
-    def __init__(self, taskid, hw, lang):
+    def __init__(self, uuid, hw, lang):
         """Create a host to store testing module."""
-        self.tempdir = TempDir(taskid)
+        self.tempdir = TempDir(uuid)
 
         # store hw & code instance
         self.hw = hw
@@ -48,10 +48,10 @@ class BaseHost(object):
 
 
 class PythonHost(BaseHost):
-    """Python language running host"""
+    """Python handin running host"""
 
-    def __init__(self, taskid, hw):
-        super(PythonHost, self).__init__(taskid, hw, 'python')
+    def __init__(self, uuid, hw):
+        super(PythonHost, self).__init__(uuid, hw, 'python')
 
         # PYTHONPATH of this running environment
         self.python_path = [

@@ -8,6 +8,8 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # This file is released under BSD 2-clause license.
 
+import os
+
 from flask.ext.babel import lazy_gettext
 
 from .context import app
@@ -24,6 +26,9 @@ class CodeLanguage(object):
     def upload_form(self, hw):
         """make handin form for given `hw`."""
 
+    def handle_upload(self, handid, hw, lang, form):
+        """handle upload request from student."""
+
 
 class StandardLanguage(CodeLanguage):
     """standard code language that accepts a packed archive as handin"""
@@ -34,6 +39,14 @@ class StandardLanguage(CodeLanguage):
     def upload_form(self, hw):
         """make a handin form that uploads an archive"""
         return UploadHandinForm()
+
+    def handle_upload(self, handid, hw, lang, form):
+        """save uploaded file as UPLOAD_DIR/[handid].[ext]"""
+
+        # filename should be [handid].[ext]
+        filename = ('%s%s' %
+                    (handid, os.path.splitext(form.handin.data.filename)[1]))
+        form.handin.data.save(os.path.join(app.config['UPLOAD_DIR'], filename))
 
 
 class PythonLanguage(StandardLanguage):

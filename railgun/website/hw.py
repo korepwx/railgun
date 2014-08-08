@@ -12,37 +12,8 @@ import os
 
 from flask import request, g, url_for
 
-from railgun.common.hw import Homework, utc_now
+from railgun.common.hw import HwSet, utc_now
 from .context import app
-
-
-class HwSet(object):
-    """Collection of all homeworks."""
-
-    def __init__(self, hwdir):
-
-        # `hwdir` is the root path of homework
-        self.hwdir = hwdir
-        # `items` store all discovered homeworks in order of `slug`.
-        self.items = None
-
-        self.reload()
-
-    def reload(self):
-        """reload the homeworks from directory."""
-
-        # load all homeworks
-        self.items = []
-        for fn in os.listdir(self.hwdir):
-            fp = os.path.join(self.hwdir, fn)
-            if (os.path.isdir(fp) and
-                    os.path.isfile(os.path.join(fp, 'hw.xml'))):
-                self.items.append(Homework.load(fp))
-        self.items = sorted(self.items, cmp=lambda a, b: cmp(a.slug, b.slug))
-
-    def __iter__(self):
-        """get iterable object through all homeworks."""
-        return iter(self.items)
 
 
 class HwProxy(object):

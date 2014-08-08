@@ -11,15 +11,13 @@
   <!--
     The runner settings. same as compiler settings.
   -->
-  <runner />
+  <runner entry="run.py" />
 
   <!--
     The file acceptable rules.
   -->
   <files>
-    <lock>^utility\.py$</lock>
     <hide>^run\.py$</hide>
-    <accept>^adder\.py$</accept>
-    <accept>.*</accept>
+    <accept>.*\.py$</accept>
   </files>
 </code>

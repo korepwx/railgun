@@ -8,6 +8,7 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # This file is released under BSD 2-clause license.
 
+import unittest
 from time import time
 
 from railgun.common.lazy_i18n import gettext_lazy
@@ -32,6 +33,19 @@ class Scorer(object):
 
     def run(self):
         """run the testing module and generate the score"""
+
+
+class ScorerSet(object):
+    """Set of scorers with their individual weights."""
+
+    def __init__(self):
+        self.items = []
+
+    def add(self, scorer, weight):
+        self.items.append((scorer, weight))
+
+    def __iter__(self):
+        return iter(self.items)
 
 
 class UnitTestScorer(Scorer):
@@ -61,3 +75,10 @@ class UnitTestScorer(Scorer):
         )
         # format the detailed report
         self.detail = result.details
+
+    @staticmethod
+    def fromTestCase(testcase):
+        """Make a `UnitTestScorer` instance from `testcase`"""
+        return UnitTestScorer(
+            unittest.TestLoader().loadTestsFromTestCase(testcase)
+        )

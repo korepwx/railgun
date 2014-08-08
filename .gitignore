@@ -1,10 +1,12 @@
 /env
 /tmp
-._*
-*.*~
-*.pyc
-.DS_Store
+/upload
 /test.py
 /hw/.pack
 /db
 /keys
+/dump.rdb
+._*
+*.*~
+*.pyc
+.DS_Store

@@ -329,3 +329,46 @@ class Homework(object):
         for ddl in self.deadlines:
             if (ddl[0] >= now):
                 return (ddl[0], ddl[1])
+
+
+class HwSet(object):
+    """Collection of all homeworks."""
+
+    def __init__(self, hwdir):
+
+        # `hwdir` is the root path of homework
+        self.hwdir = hwdir
+        # `items` store all discovered homeworks in order of `slug`.
+        self.items = None
+
+        # hash uuid & slug to items
+        self.__uuid_to_hw = {}
+        self.__slug_to_hw = {}
+
+        self.reload()
+
+    def reload(self):
+        """reload the homeworks from directory."""
+
+        # load all homeworks
+        self.items = []
+        for fn in os.listdir(self.hwdir):
+            fp = os.path.join(self.hwdir, fn)
+            if (os.path.isdir(fp) and
+                    os.path.isfile(os.path.join(fp, 'hw.xml'))):
+                self.items.append(Homework.load(fp))
+        self.items = sorted(self.items, cmp=lambda a, b: cmp(a.slug, b.slug))
+
+        # hash all items
+        self.__uuid_to_hw = {hw.uuid: hw for hw in self.items}
+        self.__slug_to_hw = {hw.slug: hw for hw in self.items}
+
+    def __iter__(self):
+        """get iterable object through all homeworks."""
+        return iter(self.items)
+
+    def get_by_uuid(self, uuid):
+        return self.__uuid_to_hw.get(uuid, None)
+
+    def get_by_slug(self, slug):
+        return self.__slug_to_hw.get(slug, None)

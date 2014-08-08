@@ -35,7 +35,9 @@
           <a href="{{ url_for('homework', slug=hw.slug) }}">{{ hw.info.name }}</a>
         </td>
         <td class="hw-languages">
-          {% for c in hw.get_code_languages() %}<span>{{ c | codelang }}</span>{% endfor %}
+          {% for c in hw.get_code_languages() -%}
+            <span class="label label-primary">{{ c | codelang }}</span>
+          {%- endfor %}
         </td>
         <td class="hw-deadline">
           {% if next_deadline -%}
