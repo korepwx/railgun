@@ -6,6 +6,7 @@ flask-babel
 flask-cache
 flask-sqlalchemy
 flask-login
+flask-paginate
 rarfile
 markdown >= 2.4.1
 pygments >= 1.6
