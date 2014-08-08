@@ -9,4 +9,4 @@
 # This file is released under BSD 2-clause license.
 
 from . import codelang, context, credential, forms, hw, i18n, \
-    navibar, utility, views, webconfig
+    models, navibar, utility, views, webconfig
