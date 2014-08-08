@@ -154,7 +154,7 @@ def homework(slug):
                 )
                 flash(_('You handin is accepted, please wait for results.'),
                       'success')
-                return redirect(url_for('dashboard'))
+                return redirect(url_for('handins'))
             except Exception:
                 app.logger.exception('Error when saving user handin.')
                 flash(_('Internal server error, please try again.'))
@@ -178,11 +178,27 @@ def hwpack(slug, lang):
     return send_from_directory(app.config['HOMEWORK_PACK_DIR'], filename)
 
 
-@app.route('/dashboard/')
+@app.route('/handin/')
 @login_required
-def dashboard():
-    handins = db.session.query(Handin).filter(Handin.user_id == current_user.id)
-    return render_template('dashboard.html', handins=handins)
+def handins():
+    # get pagination argument
+    try:
+        page = int(request.args.get('page', 1))
+    except ValueError:
+        page = 1
+    try:
+        perpage = int(request.args.get('perpage', 10))
+    except ValueError:
+        perpage = 10
+    # query about all handins
+    handins = (
+        Handin.query.filter(Handin.user_id == current_user.id).
+        order_by('-id')
+    )
+    # build pagination object
+    return render_template(
+        'handins.html', the_page=handins.paginate(page, perpage)
+    )
 
 
 # Register all pages into navibar
@@ -201,4 +217,4 @@ navigates.add(
         ]
     )
 )
-navigates.add_view(title=lazy_gettext('Dashboard'), endpoint='dashboard')
+navigates.add_view(title=lazy_gettext('Handins'), endpoint='handins')

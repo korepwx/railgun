@@ -8,11 +8,13 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # This file is released under BSD 2-clause license.
 
-from cStringIO import StringIO
+import os
 
+from . import runconfig
 from .hw import homeworks
 from .errors import InternalServerError, InvalidHandinError
 from railgun.common.lazy_i18n import gettext_lazy
+from railgun.common.fileutil import Extractor
 
 
 class BaseHandin(object):
@@ -40,11 +42,13 @@ class BaseHandin(object):
 class PythonHandin(BaseHandin):
     """Python handin management class."""
 
-    def __init__(self, handid, hwid, upload):
+    def __init__(self, handid, hwid, filename):
         super(PythonHandin, self).__init__(handid, hwid, 'python')
 
-        # make upload file object
-        self.archive = StringIO(upload)
+        # load uploaded archive
+        self.archive = Extractor.open(
+            os.path.join(runconfig.UPLOAD_DIR, filename)
+        )
 
     def execute(self):
         """Execute this handin as Python script."""

@@ -16,6 +16,7 @@ from flask.ext.login import current_user
 from .context import app, db
 from .forms import UploadHandinForm, AddressHandinForm
 from .models import Handin
+from railgun.runner.tasks import run_python
 
 
 class CodeLanguage(object):
@@ -25,10 +26,10 @@ class CodeLanguage(object):
         self.lang = lang
         self.name = lang_name
 
-    def db_add_record(self, handid, hw, lang, options={}):
+    def db_add_record(self, handid, hw, lang):
         """add a Handin record into database"""
         handin = Handin(uuid=handid, hwid=hw.uuid, lang=lang, state='Pending',
-                        user_id=current_user.id, options=options)
+                        user_id=current_user.id)
         db.session.add(handin)
         db.session.commit()
 
@@ -59,6 +60,9 @@ class StandardLanguage(CodeLanguage):
 
         # save handin into the database
         self.db_add_record(handid, hw, lang)
+
+        # post the job to run queue
+        run_python.delay(handid, hw.uuid, filename)
 
 
 class PythonLanguage(StandardLanguage):

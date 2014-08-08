@@ -13,7 +13,6 @@ from flask_wtf.csrf import CsrfProtect
 from flask.ext.sqlalchemy import SQLAlchemy
 
 from . import webconfig
-from . import models
 
 # Initialize the Flask application
 app = Flask(__name__)
@@ -24,4 +23,3 @@ csrf = CsrfProtect(app)
 
 # Initialize the website database engine
 db = SQLAlchemy(app)
-models.create_all(db.engine)
