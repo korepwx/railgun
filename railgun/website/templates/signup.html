@@ -62,11 +62,8 @@
             {{ utility.form_group(form.email, _('email')) }}
             {{ utility.form_group(form.password, _('password')) }}
             {{ utility.form_group_with_submit(form.confirm, _('confirm password')) }}
-            <div class="form-options clearfix">
-              <a class="pull-right" href="#">忘记密码了？</a>
-              <div class="text-left">
-                <label class="checkbox"><input type="checkbox"><span>自动登录</span></label>
-              </div>
+            <div class="form-options">
+                <label class="checkbox"><input type="checkbox"><span>同意《注册条款》</span></label>
             </div>
             {{ form.hidden_tag() }}
 
