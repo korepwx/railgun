@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+
+<!-- Mirrored from www.zi-han.net/theme/se7en/404-page.html by HTTrack Website Copier/3.x [XR&CO'2010], Sat, 26 Apr 2014 14:30:46 GMT -->
+<head>
+  <title>
+    404 not found
+  </title>
+  <meta charset="utf-8">
+  <link href="http://fonts.googleapis.com/css?family=Lato:100,300,400,700" media="all" rel="stylesheet" type="text/css" />
+  <link href="{{ url_for('static', filename='css/bootstrap.min.css') }}" media="all" rel="stylesheet" type="text/css" />
+  <link href="{{ url_for('static', filename='css/font-awesome.css') }}" media="all" rel="stylesheet" type="text/css" />
+  <link href="{{ url_for('static', filename='css/se7en-font.css') }}" media="all" rel="stylesheet" type="text/css" />
+  <link href="{{ url_for('static', filename='css/style.css') }}" media="all" rel="stylesheet" type="text/css" />
+  <script src="http://code.jquery.com/jquery-1.10.2.min.js" type="text/javascript"></script>
+  <script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js" type="text/javascript"></script>
+  <script src="{{ url_for('static', filename='js/bootstrap.min.js') }}" type="text/javascript"></script>
+  <script src="{{ url_for('static', filename='js/modernizr.custom.js') }}" type="text/javascript"></script>
+  <script src="{{ url_for('static', filename='js/main.js') }}" type="text/javascript"></script>
+  <script src="{{ url_for('static', filename='js/application.js') }}" type="text/javascript"></script>
+  <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport">
+</head>
+<body class="fourofour">
+  <!-- Login Screen -->
+  <div class="fourofour-container">
+    <h1>
+      404
+    </h1>
+    <h2>
+      {{ _("You got lost.") }}
+    </h2>
+    <a class="btn btn-lg btn-default-outline" href="/"><i class="icon-home"></i>
+      {{ _("Back home") }}
+    </a>
+  </div>
+
+</body>
+
+</html>
