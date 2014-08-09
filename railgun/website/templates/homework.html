@@ -1,30 +1,30 @@
 {% extends "base.html" %}
 {%- macro render_handin_form(lang) -%}
-  <form name="handin-{{ lang }}" action="{{ url_for('homework', slug=hw.slug) }}#handins"
-        method="POST" enctype="multipart/form-data" role="form">
-    {{ forms[lang].hidden_tag() }}
-    <div style="display: hidden;">
-      <input type="hidden" name="handin_lang" value="{{ lang }}">
-    </div>
-    {% for field in forms[lang] -%}
-      {% if field.name != 'csrf_token' -%}
-      <div class="form-group{% if field.errors %} has-error{% endif %}">
-        {{ field.label(class_="control-label") }}
-        {% if field.type == 'StringField' -%}
-          {{ field(class_='form-control') }}
-        {%- else -%}
-          {{ field }}
-        {%- endif %}
-        {% if field.errors -%}
-          {% for e in field.errors %}<p class="help-block text-danger">{{ e }}</p>{% endfor %}
-        {%- endif %}
-      </div>
-      {%- endif %}
-    {%- endfor %}
-    <div class="pull-right">
-      <button type="submit" class="btn btn-default">{{ _('Submit') }}</button>
-    </div>
-  </form>
+<form name="handin-{{ lang }}" action="{{ url_for('homework', slug=hw.slug) }}#handins"
+method="POST" enctype="multipart/form-data" role="form">
+{{ forms[lang].hidden_tag() }}
+<div style="display: hidden;">
+  <input type="hidden" name="handin_lang" value="{{ lang }}">
+</div>
+{% for field in forms[lang] -%}
+{% if field.name != 'csrf_token' -%}
+<div class="form-group{% if field.errors %} has-error{% endif %}">
+  {{ field.label(class_="control-label") }}
+  {% if field.type == 'StringField' -%}
+  {{ field(class_='form-control') }}
+  {%- else -%}
+  {{ field }}
+  {%- endif %}
+  {% if field.errors -%}
+  {% for e in field.errors %}<p class="help-block text-danger">{{ e }}</p>{% endfor %}
+  {%- endif %}
+</div>
+{%- endif %}
+{%- endfor %}
+<div class="pull-right">
+  <button type="submit" class="btn btn-default">{{ _('Submit') }}</button>
+</div>
+</form>
 {%- endmacro -%}
 {% block subtitle -%}
 {{ hw.info.name }} - {{ _('Homework') }}
@@ -34,100 +34,136 @@
 <link href="{{ url_for('static', filename='css/codehilite.css') }}" rel="stylesheet">
 {% endblock %}
 {% block content -%}
-  <h3 class="hw-heading">{{ hw.info.name }}</h3>
-  
-  <!-- Homework description here -->
-  <div class="hw-desc panel panel-default">
-    <div class="panel-heading">{{ _('Description') }}</div>
-    <div class="panel-body">{{ hw.info.desc | markdown | safe }}</div>
-  </div>
+<div class="page-title">
+  <h1 class="hw-heading">{{ hw.info.name }}</h1>
+</div>
 
-  <!-- Homework attachments here -->
-  <div class="hw-attach panel panel-default">
-    <div class="panel-heading">{{ _('Attachments') }}</div>
-    <div class="panel-body">
-      {% for c in hwlangs -%}
-        <div class="lang">
-          <a href="{{ hw.attach_url(c) }}">{{ c | codelang }}</a>
-          <span class="size">({{ hw.attach_size(c) | sizeformat }})</span>
-        </div>
-      {%- endfor %}
-    </div>
-  </div>
+<div class="row">
 
-  <!-- Homework deadlines here -->
-  {% set next_ddl = hw.get_next_deadline() -%}
-  {%- set ddl_text_class = 'default' if next_ddl else 'danger' -%}
-  <div class="hw-deadlines panel panel-{{ ddl_text_class }} text-{{ ddl_text_class }}">
-    <div class="panel-heading">{{ _('Deadlines') }}</div>
-    <div class="panel-body">
-      {%- if not next_ddl -%}
-        {{ _('This homework is already out of date.') }}
-      {%- else -%}
-        {{ _('This homework will reach next deadline in '
-             '<span class="text-%(duestyle)s">%(due)s</span>, '
-             'and the score will be scaled by '
-             '<span class="text-%(scalestyle)s">%(scale)s</span>.',
-             due=next_ddl[0] | timedelta, scale=next_ddl[1],
-             duestyle=next_ddl[0] | duestyle, scalestyle=next_ddl[1] | scalestyle)
-           | safe }}
-      {%- endif -%}
-    </div>
-    <table class="table table-hover">
-      <tr>
-        <th>{{ _('Due date') }}</th>
-        <th>{{ _('Score scale ') }}</th>
-      </tr>
-      {% for ddl in hw.deadlines %}
-        {%- if ddl[0] < g.utcnow -%}
-          <tr class="text-muted">
-            <td>{{ ddl[0] | datetimeformat }}</td>
-            <td>{{ ddl[1] }}</td>
-          </tr>
-        {%- else -%}
-          <tr{% if next_ddl and ddl[0] == next_ddl[0] %} class="info"{% endif %}>
-            <td class="text-{{ ddl[0] | duestyle }}">{{ ddl[0] | datetimeformat }}</td>
-            <td class="text-{{ ddl[1] | scalestyle }}">{{ ddl[1] }}</td>
-          </tr>
-        {%- endif -%}
-      {% endfor %}
-    </table>
-  </div>
-
-  <!-- Upload handins here -->
-  {% if next_ddl -%}
-  <div class="hw-handins panel panel-default" id="handins">
-    <div class="panel-heading">{{ _('Handin') }}</div>
-    {% if (hwlangs | count) > 1 -%}
-    <div class="panel-body container-fluid">
-      <div class="row">
-        <!-- Select the code language to upload handin -->
-        <div class="col-md-3">
-          <ul class="nav nav-pills nav-stacked" role="tablist">
-            {% for lang in hwlangs -%}
-              <li{% if lang == active_lang %} class="active"{% endif %}>
-                <a href="#handin-{{ lang }}" role="tab" data-toggle="tab">{{ lang | codelang }}</a>
-              </li>
-            {%- endfor %}
-          </ul>
-        </div>
-        <!-- upload form areas -->
-        <div class="col-md-9 tab-content">
-          <div class="tab-pane " id="home">...</div>
-          {% for lang in hwlangs -%}
-            <div class="tab-pane{% if lang == active_lang %} active{% endif %}" id="handin-{{ lang }}">
-              {{ render_handin_form(lang) }}
+  <div class="col-sm-9">
+    <div class="widget-container fluid-height">
+      <div class="panel-group" id="homework">
+        <!-- Homework description here -->
+        <div class="panel">
+          <div class="panel-heading">
+            <div class="panel-title">
+              <a class="accordion-toggle" data-parent="#homework" data-toggle="collapse" href="#description">
+                <div class="caret pull-right"></div>
+                {{_('Description') }}
+              </a>
             </div>
-          {%- endfor %}
+          </div>
+          <div class="panel-collapse in" id="description" style="height: auto;">
+            <div class="panel-body">
+              {{ hw.info.desc | markdown | safe }}
+            </div>
+          </div>
+        </div>
+
+        <!-- Homework attachments here -->
+        <div class="panel">
+          <div class="panel-heading">
+            <div class="panel-title">
+              <a class="accordion-toggle" data-parent="#homework" data-toggle="collapse" href="#attachment">
+                <div class="caret pull-right"></div>
+                {{_('Attachments') }}
+              </a>
+            </div>
+          </div>
+          <div class="panel-collapse in" id="description" style="height: auto;">
+            <div class="panel-body">
+              {% for c in hwlangs -%}
+              <div class="lang">
+                <a href="{{ hw.attach_url(c) }}">{{ c | codelang }}</a>
+                <span class="size">({{ hw.attach_size(c) | sizeformat }})</span>
+              </div>
+              {%- endfor %}
+            </div>
+          </div>
         </div>
       </div>
-    {%- else -%}
+    </div>
+  </div>
+
+  <div class="col-sm-3">
+
+    <!-- Homework deadlines here -->
+    {% set next_ddl = hw.get_next_deadline() -%}
+    {%- set ddl_text_class = 'default' if next_ddl else 'danger' -%}
+    <div class="hw-deadlines panel panel-{{ ddl_text_class }} text-{{ ddl_text_class }}">
+      <div class="panel-heading">{{ _('Deadlines') }}</div>
       <div class="panel-body">
-        {%- set lang = hwlangs[0] -%}
-        {{ render_handin_form(lang) }}
+        {%- if not next_ddl -%}
+        {{ _('This homework is already out of date.') }}
+        {%- else -%}
+        {{ _('This homework will reach next deadline in '
+        '<span class="text-%(duestyle)s">%(due)s</span>, '
+        'and the score will be scaled by '
+        '<span class="text-%(scalestyle)s">%(scale)s</span>.',
+        due=next_ddl[0] | timedelta, scale=next_ddl[1],
+        duestyle=next_ddl[0] | duestyle, scalestyle=next_ddl[1] | scalestyle)
+        | safe }}
+        {%- endif -%}
       </div>
-    {%- endif %}
+      <table class="table table-hover">
+        <tr>
+          <th>{{ _('Due date') }}</th>
+          <th>{{ _('Score scale ') }}</th>
+        </tr>
+        {% for ddl in hw.deadlines %}
+        {%- if ddl[0] < g.utcnow -%}
+        <tr class="text-muted">
+          <td>{{ ddl[0] | datetimeformat }}</td>
+          <td>{{ ddl[1] }}</td>
+        </tr>
+        {%- else -%}
+        <tr{% if next_ddl and ddl[0] == next_ddl[0] %} class="info"{% endif %}>
+        <td class="text-{{ ddl[0] | duestyle }}">{{ ddl[0] | datetimeformat }}</td>
+        <td class="text-{{ ddl[1] | scalestyle }}">{{ ddl[1] }}</td>
+        {%- endif -%}
+        {% endfor %}
+      </table>
+
+
+      <!-- Upload handins here -->
+      {% if next_ddl -%}
+      <div class="hw-handins panel panel-default" id="handins">
+        <div class="panel-heading">{{ _('Handin') }}</div>
+        {% if (hwlangs | count) > 1 -%}
+        <div class="panel-body container-fluid">
+          <div class="row">
+            <!-- Select the code language to upload handin -->
+            <div class="col-md-3">
+              <ul class="nav nav-pills nav-stacked" role="tablist">
+                {% for lang in hwlangs -%}
+                <li{% if lang == active_lang %} class="active"{% endif %}>
+                  <a href="#handin-{{ lang }}" role="tab" data-toggle="tab">
+                    {{ lang | codelang }}
+                  </a>
+                </li>
+              {%- endfor %}
+              </ul>
+            </div>
+            <!-- upload form areas -->
+            <div class="col-md-9 tab-content">
+              <div class="tab-pane " id="home">...</div>
+              {% for lang in hwlangs -%}
+                <div class="tab-pane{% if lang == active_lang %} active{% endif %}" id="handin-{{ lang }}">
+                  {{ render_handin_form(lang) }}
+                </div>
+              {%- endfor %}
+            </div>
+          </div>
+        </div>
+        {%- else -%}
+        <div class="panel-body">
+          {%- set lang = hwlangs[0] -%}
+          {{ render_handin_form(lang) }}
+        </div>
+      </div>
+      {%- endif %}
+
     </div>
   </div>
   {%- endif %}
-{%- endblock %}
+  {%- endblock %}
