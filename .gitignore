@@ -10,3 +10,6 @@
 *.*~
 *.pyc
 .DS_Store
+railgun.sublime-project
+railgun.sublime-workspace
+sftp-config.json
