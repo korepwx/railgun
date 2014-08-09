@@ -34,6 +34,28 @@ def index():
     return render_template('index.html')
 
 
+@app.route('/test/', methods=['GET', 'POST'])
+def test_page():
+    form = SigninForm()
+    next_url = request.args.get('next')
+    if (form.validate_on_submit()):
+        # Check whether the user exists
+        user = db.session.query(User).filter(
+            or_(User.name == form.login.data, User.email == form.login.data)
+        ).first()
+        # Check whether password match
+        if (user):
+            if (user.check_password(form.password.data)):
+                # Now we can login this user and redirect to index!
+                login_user(UserContext(user))
+                print("Here!")
+                return redirect(next_url or url_for('index'))
+        # Report username or password error
+        print("Incorrect!")
+        flash(_('Incorrect username or password.'), 'danger')
+    return render_template('signin.html', form=form, next=next_url)
+
+
 @app.route('/signup/', methods=['GET', 'POST'])
 def signup():
     form = SignupForm()
@@ -157,7 +179,7 @@ def homework(slug):
                 return redirect(url_for('handins'))
             except Exception:
                 app.logger.exception('Error when saving user handin.')
-                flash(_('Internal server error, please try again.'))
+                flash(_('Internal server error, please try again.'), 'danger')
 
     # if handin_lang not determine, choose the first lang
     if handin_lang is None:
@@ -199,6 +221,11 @@ def handins():
     return render_template(
         'handins.html', the_page=handins.paginate(page, perpage)
     )
+
+
+@app.errorhandler(404)
+def page_notfound(error):
+    return render_template('404.html'), 404
 
 
 # Register all pages into navibar
