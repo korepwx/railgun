@@ -59,17 +59,11 @@
       <div class="login-container">
         <a href="./">
           <img width="100" height="30" src="/static/images/logo.png" /></a>
-          <form action="./" method="POST">
-            {{ utility.form_group(form.login, "username/email") }}
-            <div class="form-group{% if form.password.errors %} has-error{% endif %}">
-              {{ form.password(class_='form-control', placeholder="password") }}
-              {% if form.password.errors -%}
-                {% for e in form.password.errors %}<p class="help-block text-danger">{{ e }}</p>{% endfor %}
-              {%- elif helptext and not form.password.data -%}
-                <p class="help-block">{{ "help text" }}</p>
-              {%- endif %}
-              <input type="submit" value="&#xf054;"/>
-            </div>
+          <form action="{{ url_for('signup') }}" method="POST">
+            {{ utility.form_group(form.name, _('username') }}
+            {{ utility.form_group(form.email, _('email') }}
+            {{ utility.form_group(form.password, _('password') }}
+            {{ utility.form_group(form.confirm) }}
             <div class="form-options clearfix">
               <a class="pull-right" href="#">忘记密码了？</a>
               <div class="text-left">
@@ -80,7 +74,7 @@
 
           </form>
           <p class="signup">
-           还没有账号？<a href="/signup/">立即注册</a>
+           已经有账户了？<a href="/signin/">登录</a>
          </p>
        </div>
      </div>

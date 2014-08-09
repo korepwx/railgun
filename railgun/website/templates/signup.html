@@ -1,3 +1,4 @@
+{% import "utility.html" as utility %}
 <!DOCTYPE html>
 <html>
 <!-- Mirrored from www.zi-han.net/theme/se7en/login1.html by HTTrack Website Copier/3.x [XR&CO'2010], Sat, 26 Apr 2014 14:30:43 GMT -->
@@ -51,26 +52,25 @@
 
 <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport">
 </head>
-<body class="login1">
+<body class="login1 signup">
     <!-- Signup Screen -->
     <div class="login-wrapper">
       <div class="login-container">
-        <a href="index-2.html"><img width="100" height="30" src="/static/images/logo.png" /></a>
-        <form action="http://www.zi-han.net/theme/se7en/index.html">
-          <div class="form-group">
-            <input class="form-control" type="text" placeholder="输入您的邮箱地址">
-        </div>
-        <div class="form-group">
-            <input class="form-control" type="text" placeholder="输入密码">
-        </div>
-        <div class="form-group">
-            <input class="form-control" type="password" placeholder="确认密码">
-            <input type="submit" value="&#xf054;">
-        </div>
-        <div class="form-options">
-            <label class="checkbox"><input type="checkbox"><span>同意《注册条款》</span></label>
-        </div>
-    </form>
+        <a href="./"><img width="100" height="30" src="/static/images/logo.png" /></a>
+          <form action="{{ url_for('signup') }}" method="POST">
+            {{ utility.form_group(form.name, _('username')) }}
+            {{ utility.form_group(form.email, _('email')) }}
+            {{ utility.form_group(form.password, _('password')) }}
+            {{ utility.form_group_with_submit(form.confirm, _('confirm password')) }}
+            <div class="form-options clearfix">
+              <a class="pull-right" href="#">忘记密码了？</a>
+              <div class="text-left">
+                <label class="checkbox"><input type="checkbox"><span>自动登录</span></label>
+              </div>
+            </div>
+            {{ form.hidden_tag() }}
+
+          </form>
     <p class="signup">
     已经有账户了？ <a href="/signin/">立即登录</a>
   </p>
