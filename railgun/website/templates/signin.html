@@ -1,3 +1,5 @@
+{% import "utility.html" as utility %}
+
 <!DOCTYPE html>
 <html>
 <!-- Mirrored from www.zi-han.net/theme/se7en/login1.html by HTTrack Website Copier/3.x [XR&CO'2010], Sat, 26 Apr 2014 14:30:43 GMT -->
@@ -57,12 +59,16 @@
       <div class="login-container">
         <a href="./">
           <img width="100" height="30" src="/static/images/logo.png" /></a>
-          <form action="./">
-            <div class="form-group">
-              <input class="form-control" placeholder="用户名/邮箱地址" type="text">
-            </div>
-            <div class="form-group">
-              <input class="form-control" placeholder="密码" type="password"><input type="submit" value="&#xf054;">
+          <form action="./" method="POST">
+            {{ utility.form_group(form.login, "username/email") }}
+            <div class="form-group{% if form.password.errors %} has-error{% endif %}">
+              {{ form.password(class_='form-control', placeholder="password") }}
+              {% if form.password.errors -%}
+                {% for e in form.password.errors %}<p class="help-block text-danger">{{ e }}</p>{% endfor %}
+              {%- elif helptext and not form.password.data -%}
+                <p class="help-block">{{ "help text" }}</p>
+              {%- endif %}
+              <input type="submit" value="&#xf054;"/>
             </div>
             <div class="form-options clearfix">
               <a class="pull-right" href="#">忘记密码了？</a>
@@ -70,6 +76,8 @@
                 <label class="checkbox"><input type="checkbox"><span>自动登录</span></label>
               </div>
             </div>
+            {{ form.hidden_tag() }}
+
           </form>
           <p class="signup">
            还没有账号？<a href="/signup/">立即注册</a>
