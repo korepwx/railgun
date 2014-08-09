@@ -179,7 +179,7 @@ def homework(slug):
                 return redirect(url_for('handins'))
             except Exception:
                 app.logger.exception('Error when saving user handin.')
-                flash(_('Internal server error, please try again.'))
+                flash(_('Internal server error, please try again.'), 'danger')
 
     # if handin_lang not determine, choose the first lang
     if handin_lang is None:

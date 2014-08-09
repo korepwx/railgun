@@ -159,7 +159,7 @@
                   <li><a href="#">
                     <i class="icon-gear"></i>账户设置</a>
                   </li>
-                  <li><a href="login1.html">
+                  <li><a href="/signout/">
                     <i class="icon-signout"></i>退出</a>
                   </li>
                 </ul>
@@ -329,8 +329,9 @@
           <!-- Flashed messages -->
           <div class="flash-messages">
             {% for c, m in get_flashed_messages(with_categories=True) -%}
-            <div class="flash flash-{{ c }} panel panel-{{ c }}">
-              <div class="panel-heading">{{ m }}</div>
+            <div class="alert alert-{{ c }}">
+            <button class="close" data-dismiss="alert" type="button">×</button>
+              {{ m }}
             </div>
             {%- endfor %}
           </div>
@@ -351,7 +352,7 @@
     <script src="{{ url_for('static', filename='js/bootstrap-fileupload.js') }}" type="text/javascript"></script>
     <script src="{{ url_for('static', filename='js/bootstrap-switch.min.js') }}" type="text/javascript"></script>
     <script src="{{ url_for('static', filename='js/bootstrap-timepicker.js') }}" type="text/javascript"></script>
-    <!-- <script src="{{ url_for('static', filename='js/bootstrap.min.js') }}" type="text/javascript"></script> -->
+    <script src="{{ url_for('static', filename='js/bootstrap.min.js') }}" type="text/javascript"></script>
     <script src="{{ url_for('static', filename='js/datatable-editable.js') }}" type="text/javascript"></script>
     <script src="{{ url_for('static', filename='js/date.js') }}" type="text/javascript"></script>
     <script src="{{ url_for('static', filename='js/daterange-picker.js') }}" type="text/javascript"></script>
