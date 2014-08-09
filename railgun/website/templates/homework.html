@@ -41,7 +41,50 @@ method="POST" enctype="multipart/form-data" role="form">
 <div class="row">
 
 
-  <div class="col-sm-3">
+<div class="col-lg-8">
+  <div class="widget-container fluid-height">
+    <div class="panel-group" id="accordion">
+      <!-- Homework description here -->
+      <div class="panel">
+        <div class="panel-heading">
+          <div class="panel-title">
+            <a class="accordion-toggle" data-parent="#accordion" data-toggle="collapse">
+              {{_('Description') }}
+            </a>
+          </div>
+        </div>
+        <div class="panel-collapse collapse in" id="description">
+          <div class="panel-body">
+            {{ hw.info.desc | markdown | safe }}
+          </div>
+        </div>
+      </div>
+
+      <!-- Homework attachments here -->
+      <div class="panel">
+        <div class="panel-heading">
+          <div class="panel-title">
+            <a class="accordion-toggle" data-parent="#accordion" data-toggle="collapse">
+              {{_('Attachments') }}
+            </a>
+          </div>
+        </div>
+        <div class="panel-collapse collapse in" id="attachment">
+          <div class="panel-body">
+            {% for c in hwlangs -%}
+            <div class="lang">
+              <a href="{{ hw.attach_url(c) }}">{{ c | codelang }}</a>
+              <span class="size">({{ hw.attach_size(c) | sizeformat }})</span>
+            </div>
+            {%- endfor %}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+  <div class="col-sm-4">
     <div class="widget-containter fluid-height">
 
       <!-- Homework deadlines here -->
@@ -138,47 +181,4 @@ method="POST" enctype="multipart/form-data" role="form">
   </div>
 
 </div>
-<div class="col-sm-9">
-  <div class="widget-container fluid-height">
-    <div class="panel-group" id="accordion">
-      <!-- Homework description here -->
-      <div class="panel">
-        <div class="panel-heading">
-          <div class="panel-title">
-            <a class="accordion-toggle" data-parent="#accordion" data-toggle="collapse">
-              {{_('Description') }}
-            </a>
-          </div>
-        </div>
-        <div class="panel-collapse collapse in" id="description">
-          <div class="panel-body">
-            {{ hw.info.desc | markdown | safe }}
-          </div>
-        </div>
-      </div>
-
-      <!-- Homework attachments here -->
-      <div class="panel">
-        <div class="panel-heading">
-          <div class="panel-title">
-            <a class="accordion-toggle" data-parent="#accordion" data-toggle="collapse">
-              {{_('Attachments') }}
-            </a>
-          </div>
-        </div>
-        <div class="panel-collapse collapse in" id="attachment">
-          <div class="panel-body">
-            {% for c in hwlangs -%}
-            <div class="lang">
-              <a href="{{ hw.attach_url(c) }}">{{ c | codelang }}</a>
-              <span class="size">({{ hw.attach_size(c) | sizeformat }})</span>
-            </div>
-            {%- endfor %}
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-
 {%- endblock %}
