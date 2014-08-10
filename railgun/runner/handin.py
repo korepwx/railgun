@@ -12,8 +12,8 @@ import os
 
 from . import runconfig
 from .hw import homeworks
-from .errors import InternalServerError, InvalidHandinError
-from railgun.common.lazy_i18n import gettext_lazy
+from .errors import InternalServerError, LanguageNotSupportError
+from .host import PythonHost
 from railgun.common.fileutil import Extractor
 
 
@@ -27,10 +27,7 @@ class BaseHandin(object):
             raise InternalServerError()
         # check whether the desired language is supported by this homework.
         if (lang not in self.hw.get_code_languages()):
-            raise InvalidHandinError(gettext_lazy(
-                'Language "%(lang)s" is not supported by this homework.',
-                lang=lang
-            ))
+            raise LanguageNotSupportError(lang)
         # store handid & lang
         self.handid = handid
         self.lang = lang
@@ -51,4 +48,10 @@ class PythonHandin(BaseHandin):
         )
 
     def execute(self):
-        """Execute this handin as Python script."""
+        """Execute this handin as Python script. Should return
+        (exitcode, stdout, stderr)."""
+
+        with PythonHost(self.handid, self.hw) as host:
+            host.prepare_hwcode()
+            host.extract_handin(self.archive)
+            return host.run()

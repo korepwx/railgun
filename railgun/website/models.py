@@ -18,7 +18,7 @@ from .context import db
 
 # define the states of all handins
 _ = lambda s: s
-HANDIN_STATES = (_('Pending'), _('Running'), _('Error'), _('Accepted'))
+HANDIN_STATES = (_('Pending'), _('Running'), _('Rejected'), _('Accepted'))
 
 
 class User(db.Model):
@@ -73,8 +73,21 @@ class Handin(db.Model):
     score = db.Column(db.Float)
     scale = db.Column(db.Float)
     run_time = db.Column(db.Float)
-    brief_report = db.Column(db.PickleType)
-    detail_report = db.Column(db.PickleType)
+
+    # handin result text
+    result = db.Column(db.PickleType)
+
+    # the exit code of the handin
+    exitcode = db.Column(db.Integer)
+
+    # the stdout of the handin
+    stdout = db.Column(db.Text)
+
+    # the stderr of the handin
+    stderr = db.Column(db.Text)
+
+    # list of HwPartialScore instance to record more details about this handin
+    partials = db.Column(db.PickleType)
 
     # db.ForeignKey to the User
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))

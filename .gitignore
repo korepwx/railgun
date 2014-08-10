@@ -5,10 +5,13 @@
 /hw/.pack
 /db
 /keys
+/runlib/python/pyhost/CSafeRunner/build
 /dump.rdb
 ._*
 *.*~
 *.pyc
+*.so
+*-my.sh
 .DS_Store
 railgun.sublime-project
 railgun.sublime-workspace

@@ -34,3 +34,19 @@ class GetTextString(object):
 
 
 gettext_lazy = GetTextString
+
+
+def lazystr_to_plain(s):
+    """Convert string or unicode or GetTextString to plain object."""
+    if (s is None or isinstance(s, str) or isinstance(s, unicode)):
+        return s
+    if (isinstance(s, GetTextString)):
+        return {'text': s.text, 'kwargs': s.kwargs}
+    raise TypeError('"%s" is not a string object.' % s)
+
+
+def plain_to_lazystr(s):
+    """Convert plain object to unicode or GetTextString."""
+    if (s is None or isinstance(s, str) or isinstance(s, unicode)):
+        return s
+    return GetTextString(s['text'], **s['kwargs'])

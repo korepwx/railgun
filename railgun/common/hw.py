@@ -19,6 +19,7 @@ from babel.dates import get_timezone, UTC
 import config
 from . import fileutil
 from .fileutil import file_get_contents
+from .lazy_i18n import lazystr_to_plain, plain_to_lazystr
 
 
 def parse_bool(s):
@@ -37,6 +38,12 @@ def to_utc(dt):
 def utc_now():
     """get now datetime whose timezone is UTC."""
     return UTC.localize(datetime.utcnow())
+
+
+def get_comm_key():
+    """Load encryption key from `keys/commKey.txt`."""
+    with open(os.path.join(config.RAILGUN_ROOT, 'keys/commKey.txt'), 'rb') as f:
+        return f.read().strip()
 
 
 class FileRules(object):
@@ -364,3 +371,82 @@ class HwSet(object):
 
     def get_by_slug(self, slug):
         return self.__slug_to_hw.get(slug, None)
+
+
+class HwPartialScore(object):
+    """A serializable partial score object."""
+
+    def __init__(self, scorer_name, score, weight, time, brief_report,
+                 detail_report):
+        self.name = scorer_name
+        self.score = score
+        self.weight = weight
+        self.time = time
+        self.brief = brief_report
+        self.detail = detail_report
+
+    def to_plain(self):
+        """Convert this partial score object to plain object."""
+        return {
+            'name': lazystr_to_plain(self.name),
+            'score': self.score,
+            'weight': self.weight,
+            'time': self.time,
+            'brief': lazystr_to_plain(self.brief),
+            'detail': [lazystr_to_plain(d) for d in self.detail]
+        }
+
+    @staticmethod
+    def from_plain(obj):
+        """Convert plain object to partial score object."""
+        return HwPartialScore(
+            plain_to_lazystr(obj['name']),
+            obj['score'],
+            obj['weight'],
+            obj['time'],
+            plain_to_lazystr(obj['brief']),
+            [plain_to_lazystr(o) for o in obj['detail']],
+        )
+
+
+class HwScore(object):
+    """A serializable final score object, set of `HwPartialScore`."""
+
+    def __init__(self, accepted, result=None):
+        # `accepted` indicate whether final state of this handin is Accepted
+        # or Rejected.
+        self.accepted = accepted
+        # brief result message string
+        self.result = result
+        # all partial scores to be sumed up
+        self.partials = []
+
+    def get_score(self):
+        """Sum the final score."""
+        total_weight = sum([p.weight for p in self.partials])
+        return sum([p.weight * p.score / total_weight for p in self.partials])
+
+    def get_time(self):
+        """Sum the runner time."""
+        return sum([p.time for p in self.partials])
+
+    def add_partial(self, partial):
+        """Add a partial score into this final score."""
+        self.partials.append(partial)
+
+    def to_plain(self):
+        """Convert this final score object to plain object."""
+        return {
+            'accepted': self.accepted,
+            'result': lazystr_to_plain(self.result),
+            'partials': [p.to_plain() for p in self.partials],
+        }
+
+    @staticmethod
+    def from_plain(obj):
+        """Convert plain object to final score object."""
+
+        ret = HwScore(obj['accepted'], plain_to_lazystr(obj['result']))
+        for p in obj['partials']:
+            ret.partials.append(HwPartialScore.from_plain(p))
+        return ret

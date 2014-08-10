@@ -53,3 +53,6 @@ RUNLIB_DIR = os.path.join(RAILGUN_ROOT, 'runlib')
 # RUNNER_DEFAULT_TIMEOUT controls the default timeout config for testing
 # module to run
 RUNNER_DEFAULT_TIMEOUT = 10
+
+# WEBSITE_API_BASEURL tells runner what is the base url of api client
+WEBSITE_API_BASEURL = 'http://localhost:5000/api'

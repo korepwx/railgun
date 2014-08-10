@@ -10,6 +10,7 @@
 
 import os
 
+from flask import g
 from flask.ext.babel import lazy_gettext
 from flask.ext.login import current_user
 
@@ -28,8 +29,11 @@ class CodeLanguage(object):
 
     def db_add_record(self, handid, hw, lang):
         """add a Handin record into database"""
+        # Note: g.ddl_scale is setup in views.homework
+        #       we must only rely on this scale, because such deadline may
+        #       pass when processing the request
         handin = Handin(uuid=handid, hwid=hw.uuid, lang=lang, state='Pending',
-                        user_id=current_user.id)
+                        user_id=current_user.id, scale=g.ddl_scale)
         db.session.add(handin)
         db.session.commit()
 
