@@ -3,75 +3,60 @@
 {{ _('Homepage') }}
 {%- endblock %}
 {% block content -%}
-{% if not current_user.is_authenticated() -%}
-<div class="jumbotron" id="site-description">
-  <h1>{{ _('Welcome to Railgun') }}</h1>
-  <p>{{ _('Railgun is an online Software Enginnering homework judger.') }}<br />
-   {{ _('To take the course, you should join Railgun first.') }}</p>
-   <p>
-    <a class="btn btn-primary btn-lg" role="button" href="{{ url_for('signup') }}">
-      {{ _('Create your account') }}
-    </a>
-  </p>
-</div>
-{%- else -%}
-<div class="page-title">
-  <h1>{{ _('Your homework') }}</h1>
-</div>
-
-<div class="row">
-  <div class="col-lg-12">
-    <div class="widget-container fluid-height clearfix">
-      <div class="widget-content padded clearfix">
-        <table class="table table-hover">
-          <thead>
-            <tr>
-              <th>{{ _('Name') }}</th>
-              <th>{{ _('Languages') }}</th>
-              <th>{{ _('Due / Scale') }}</th>
-              <th>{{ _('Submission') }}</th>
-            </tr>
-          </thead>
-          {%- for hw in g.homeworks %}
-          {%- set next_deadline = hw.get_next_deadline() -%}
-          {%- if not next_deadline -%}
+  {% if not current_user.is_authenticated() -%}
+  <div class="jumbotron" id="site-description">
+    <h1>{{ _('Welcome to Railgun') }}</h1>
+    <p>{{ _('Railgun is an online Software Enginnering homework judger.') }}<br />
+       {{ _('To take the course, you should join Railgun first.') }}</p>
+    <p>
+      <a class="btn btn-primary btn-lg" role="button" href="{{ url_for('signup') }}">
+        {{ _('Create your account') }}
+      </a>
+    </p>
+  </div>
+  {%- else -%}
+    <h3 class="hw-heading">{{ _('Your Homework') }}</h3>
+    <table class="table table-hover">
+      <tr>
+        <th>{{ _('Name') }}</th>
+        <th>{{ _('Languages') }}</th>
+        <th>{{ _('Due / Scale') }}</th>
+        <th>{{ _('Submission') }}</th>
+      </tr>
+      {%- for hw in g.homeworks %}
+        {%- set next_deadline = hw.get_next_deadline() -%}
+        {%- if not next_deadline -%}
           {%- set line_style = 'danger' -%}
-          {%- else -%}
+        {%- else -%}
           {%- set line_style = 'default' -%}
-          {%- endif -%}
-          <tr class="{{line_style}} text-{{line_style}}">
-            <td class="hw-name">
-              <a href="{{ url_for('homework', slug=hw.slug) }}">{{ hw.info.name }}</a>
-            </td>
-            <td class="hw-languages">
-              {% for c in hw.get_code_languages() -%}
-              <span class="label label-primary">{{ c | codelang }}</span>
-              {%- endfor %}
-            </td>
-            <td class="hw-deadline">
-              {% if next_deadline -%}
-              {%- set ddl_date, ddl_scale = next_deadline -%}
-              <div class="hw-ddl-date">
-                <span class="text-{{ ddl_date | duestyle }}">
-                  {{ ddl_date | timedelta }}
-                  <span>
-                  </div> /
-                  <span class="hw-ddl-scale text-{{ ddl_scale | scalestyle }}">{{ ddl_scale }}</span>
-                  {%- else -%}
-                  {{ _('Out of date') }}
-                  {%- endif %}
-                </td>
-                <td class="hw-status">
-                  {{ _('Not yet') }}
-                </td>
-              </tr>
-              {%- endfor %}
-            </table>
-          </div>
-        </div>
-      </div>
-    </div>
-
-
-    {%- endif %}
+        {%- endif -%}
+      <tr class="{{line_style}} text-{{line_style}}">
+        <td class="hw-name">
+          <a href="{{ url_for('homework', slug=hw.slug) }}">{{ hw.info.name }}</a>
+        </td>
+        <td class="hw-languages">
+          {% for c in hw.get_code_languages() -%}
+            <span class="label label-primary">{{ c | codelang }}</span>
+          {%- endfor %}
+        </td>
+        <td class="hw-deadline">
+          {% if next_deadline -%}
+            {%- set ddl_date, ddl_scale = next_deadline -%}
+            <div class="hw-ddl-date">
+              <span class="text-{{ ddl_date | duestyle }}">
+                {{ ddl_date | timedelta }}
+              <span>
+            </div> /
+            <span class="hw-ddl-scale text-{{ ddl_scale | scalestyle }}">{{ ddl_scale }}</span>
+          {%- else -%}
+            {{ _('Out of date') }}
+          {%- endif %}
+        </td>
+        <td class="hw-status">
+          {{ _('Not yet') }}
+        </td>
+      </tr>
+      {%- endfor %}
+    </table>
+  {%- endif %}
 {%- endblock %}
