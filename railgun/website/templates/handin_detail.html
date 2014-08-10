@@ -70,16 +70,21 @@
   </div>
 
   <!-- Standard output and Error output of the process -->
-  {% if hw.reportAll and (handin.stdout or handin.stderr) -%}
-    <div class="panel panel-default detail-proclog">
-      <div class="panel-heading">{{ _('Process Output') }}</div>
+  {% if hw.reportAll and handin.stdout -%}
+    <div class="panel panel-default detail-stdout">
+      <div class="panel-heading">{{ _('Standard Output') }}</div>
       <div class="panel-body">
         {% if handin.stdout -%}
-          <h4>{{ _('Standard Output') }}</h4>
           <pre>{{ handin.get_stdout() }}</pre>
         {%- endif %}
+      </div>
+    </div>
+  {%- endif %}
+  {% if hw.reportAll and handin.stderr -%}
+    <div class="panel panel-default detail-stderr">
+      <div class="panel-heading">{{ _('Standard Error Output') }}</div>
+      <div class="panel-body">
         {% if handin.stderr -%}
-          <h4>{{ _('Standard Error Output') }}</h4>
           <pre>{{ handin.get_stderr() }}</pre>
         {%- endif %}
       </div>
