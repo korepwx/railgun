@@ -52,8 +52,8 @@
   <div class="modal-shiftfix">
 
         <!-- General navigation bar -->
-    <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
-      <div class="container">
+    <div class="navbar navbar-fixed-top" role="navigation">
+      <div class="container-fluid top-bar clearfix">
         <div class="navbar-header">
           <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
             <span class="sr-only">{{ _('Toggle navigation') }}</span>
@@ -63,7 +63,7 @@
           </button>
           <a class="navbar-brand" href="javascript: void(0);">{{ _('Railgun') }}</a>
         </div>
-        <div class="collapse navbar-collapse">
+        <div class="nav-collapse">
           <!--
             Navigate links
             TODO: support multi-level navi items
@@ -72,7 +72,7 @@
             {%- macro show_navi_item(itm) -%}
               {%- if not itm.has_child -%}
               <li{% if itm.is_active %} class="active"{% endif %}>
-                <a href="{{ itm.url }}">{{ itm.title }}</a>
+                <a{%if itm.is_active %} class="current"{% endif %} href="{{ itm.url }}">{{ itm.title }}</a>
               </li>
               {%- else -%}
               <li class="dropdown{% if itm.is_active %} active{% endif %}">
@@ -92,13 +92,13 @@
             {%- endfor %}
           </ul>
           <!-- Logged user info, or signup / signin links -->
-          <ul class="nav navbar-nav navbar-right userinfo">
+          <ul class="nav navbar-nav pull-right userinfo">
           {% if current_user.is_authenticated() -%}
             <li class="dropdown">
               <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                 <img src="{{ current_user | gravatar }}" />
                 {{ current_user.name }}
-                <span class="caret"></span>
+                <b class="caret"></b>
               </a>
               <ul class="dropdown-menu" role="menu">
                 <li role="presentation">
@@ -117,6 +117,9 @@
         </div><!--/.nav-collapse -->
       </div>
     </div>
+
+    
+
 
     <!-- General content area -->
     {% block wrapper -%}
