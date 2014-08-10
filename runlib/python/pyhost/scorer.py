@@ -12,7 +12,7 @@ import unittest
 from time import time
 
 from railgun.common.lazy_i18n import gettext_lazy
-from .utility import UnitTestScorerDetailResult
+from .utility import UnitTestScorerDetailResult, load_class_from_str
 from coverage import coverage
 
 
@@ -75,9 +75,10 @@ class UnitTestScorer(Scorer):
 class CoverageScorer(Scorer):
     """scorer according to the result of coverage."""
 
-    def __init__(self, suite):
+    def __init__(self, suite, filelist):
         super(CoverageScorer, self).__init__(gettext_lazy('Coverage Scorer'))
-        self.suite = suite
+        self.suite = load_class_from_str(suite)
+        self.filelist = filelist
 
     def run(self):
         cov = coverage()

@@ -76,3 +76,14 @@ class UnitTestScorerDetailResult(unittest.TestResult):
 
     def printErrors(self):
         pass
+
+
+def load_class_from_str(strOrClass):
+    if isinstance(strOrClass, str):
+        mod = __import__(strOrClass)
+        components = strOrClass.split('.')
+        for comp in components[1:]:
+            mod = getattr(mod, comp)
+        return mod
+    else:
+        return strOrClass
