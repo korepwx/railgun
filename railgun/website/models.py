@@ -30,8 +30,8 @@ class User(db.Model):
     email = db.Column(db.String(80), unique=True)
     password = db.Column(db.String(50))
 
-    # Relationship between User and Handin records
-    handins = db.relationship('Handin')
+    # Relationship between User and final score records
+    scores = db.relationship('FinalScore')
 
     # Basic model object interfaces
     def __repr__(self):
@@ -44,6 +44,31 @@ class User(db.Model):
 
     def check_password(self, password):
         return check_password_hash(self.password, password)
+
+    def gather_scores(self):
+        """Gather dict(hwid => score) of this user."""
+        return {sc.hwid: sc.score for sc in self.scores}
+
+
+class FinalScore(db.Model):
+    __tablename__ = 'finalscore'
+
+    id = db.Column(db.Integer, db.Sequence('finalscore_id_seq'),
+                   primary_key=True)
+
+    # db.ForeignKey to the User
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+
+    # associated with certain homework
+    hwid = db.Column(db.String(32), index=True)
+
+    # the final score of such homework
+    score = db.Column(db.Float, default=0.0)
+
+    # Basic model object interfaces
+    def __repr__(self):
+        return ("<FinalScore(uid=%d,hwid=%s,score=%f)>" %
+                (self.user_id, self.hwid, self.score))
 
 
 class Handin(db.Model):

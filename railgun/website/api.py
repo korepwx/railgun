@@ -14,7 +14,7 @@ from functools import wraps
 from flask import request, make_response
 
 from .context import app, db, csrf
-from .models import Handin
+from .models import Handin, FinalScore
 from railgun.common.hw import HwScore
 from railgun.common.crypto import DecryptMessage
 from railgun.common.lazy_i18n import gettext_lazy
@@ -76,6 +76,18 @@ def api_handin_report(uuid):
     else:
         handin.result = gettext_lazy('Your handin is rejected.')
     handin.partials = score.partials
+
+    # update hwscore table and set the final score of this homework
+    if (handin.is_accepted()):
+        final_score = handin.score * handin.scale
+        hwscore = (FinalScore.query.filter(FinalScore.hwid == handin.hwid).
+                   filter(FinalScore.user_id == handin.user_id)).first()
+        if (not hwscore):
+            hwscore = FinalScore(user_id=handin.user_id, hwid=handin.hwid,
+                                 score=final_score)
+            db.session.add(hwscore)
+        elif (final_score > hwscore.score):
+            hwscore.score = final_score
 
     try:
         db.session.commit()

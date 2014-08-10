@@ -65,11 +65,11 @@
         {{ _('This homework is already out of date.') }}
       {%- else -%}
         {{ _('This homework will reach next deadline in '
-             '<span class="text-%(duestyle)s">%(due)s</span>, '
+             '<span style="color: %(duecolor)s">%(due)s</span>, '
              'and the score will be scaled by '
-             '<span class="text-%(scalestyle)s">%(scale)s</span>.',
+             '<span style="color: %(scalecolor)s">%(scale)s</span>.',
              due=next_ddl[0] | timedelta, scale=next_ddl[1],
-             duestyle=next_ddl[0] | duestyle, scalestyle=next_ddl[1] | scalestyle)
+             duecolor=next_ddl[0] | duecolor, scalecolor=next_ddl[1] | scalecolor)
            | safe }}
       {%- endif -%}
     </div>
@@ -86,8 +86,8 @@
           </tr>
         {%- else -%}
           <tr{% if next_ddl and ddl[0] == next_ddl[0] %} class="info"{% endif %}>
-            <td class="text-{{ ddl[0] | duestyle }}">{{ ddl[0] | datetimeformat }}</td>
-            <td class="text-{{ ddl[1] | scalestyle }}">{{ ddl[1] }}</td>
+            <td style="color: {{ ddl[0] | duecolor }}">{{ ddl[0] | datetimeformat }}</td>
+            <td style="color: {{ ddl[1] | scalecolor }}">{{ ddl[1] }}</td>
           </tr>
         {%- endif -%}
       {% endfor %}

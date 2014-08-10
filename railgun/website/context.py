@@ -23,3 +23,8 @@ csrf = CsrfProtect(app)
 
 # Initialize the website database engine
 db = SQLAlchemy(app)
+
+# Create the debugging toolbar
+if app.config['DEBUG']:
+    from flask_debugtoolbar import DebugToolbarExtension
+    toolbar = DebugToolbarExtension(app)

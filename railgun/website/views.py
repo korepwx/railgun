@@ -31,7 +31,9 @@ def index():
     # only logged user can see the homeworks
     if (current_user.is_authenticated()):
         pass
-    return render_template('index.html')
+    return render_template(
+        'index.html', finalScores=current_user.gather_scores()
+    )
 
 
 @app.route('/test/', methods=['GET', 'POST'])

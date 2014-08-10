@@ -30,17 +30,17 @@
         <tr>
           <th>{{ _('Base Score') }}</th>
           <td>
-            <span class="text-{{ handin.score | scorestyle }}">{{ handin.score }}</span>
+            <span style="color: {{ handin.score | scorecolor }}">{{ handin.score }}</span>
           </td>
         </tr>
         <tr>
           <th>{{ _('Score Scale') }}</th>
-          <td><span class="text-{{ handin.scale | scalestyle }}">{{ handin.scale }}</span></td>
+          <td><span style="color: {{ handin.scale | scalecolor }}">{{ handin.scale }}</span></td>
         </tr>
         <tr>
           <th>{{ _('Final Score') }}</th>
           {%- set final_score = handin.score * handin.scale -%}
-          <td><span class="text-{{ final_score | scalestyle }}">{{ final_score }}</span></td>
+          <td><span style="color: {{ final_score | scorecolor }}">{{ final_score }}</span></td>
         </tr>
       {%- else -%}
         <tr>
@@ -99,7 +99,7 @@
         <tr>
           <th style="width: 20%">{{ _('Score') }}</th>
           <td>
-            <span class="text-{{ p.score | scorestyle }}">{{ p.score }}</span>
+            <span style="color: {{ p.score | scorecolor }}">{{ p.score }}</span>
           </td>
         </tr>
         <tr>

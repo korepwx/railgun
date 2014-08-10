@@ -8,6 +8,7 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # This file is released under BSD 2-clause license.
 
+import colorsys
 from datetime import datetime
 
 from markdown import markdown
@@ -16,6 +17,18 @@ from flask.ext.babel import gettext as _
 from babel.dates import format_timedelta
 
 from .context import app
+
+
+def float_color(v):
+    """Get a color to describe the float `v` range in [0, 1]. When `v` is
+    close to 1.0 the color will close to green, and when `v` is close to 0.0
+    the color will close to red."""
+
+    h = v / 3.0
+    l = 0.3
+    s = 1.0
+    rgb = map((lambda i: int(i * 255)), colorsys.hls_to_rgb(h, l, s))
+    return '#%02X%02X%02X' % tuple(rgb)
 
 
 # hw.info.desc should be formatted by markdown parser
@@ -61,40 +74,30 @@ def __inject_template_sizeformat(size):
 
 
 # get a suitable bootstrap class name according to time delta
-@app.template_filter(name='duestyle')
-def __inject_template_duestyle(delta_or_date):
+@app.template_filter(name='duecolor')
+def __inject_template_duecolor(delta_or_date):
     if (isinstance(delta_or_date, datetime)):
         delta_or_date = delta_or_date - g.utcnow
     # exam the time delta through absolute second count
-    totsec = delta_or_date.total_seconds()
-    # if delta <= 0, we should report 'danger'
-    if (totsec <= 0):
-        return 'danger'
-    # if delta <= 3days, we should report 'warning'
-    if (totsec <= 3 * 86400):
-        return 'warning'
-    # otherwise we should report all right
-    return 'success'
+    val = delta_or_date.total_seconds() / (3.0 * 86400)
+    if (val < 0.0):
+        val = 0.0
+    if (val > 1.0):
+        val = 1.0
+    # get the color of this time delta
+    return float_color(val)
 
 
 # get a suitable bootstrap class name according to scale
-@app.template_filter(name='scalestyle')
-def __inject_template_scalestyle(scale):
-    if (scale >= 1.0 - 1e-6):
-        return 'success'
-    if (scale >= 0.5):
-        return 'warning'
-    return 'danger'
+@app.template_filter(name='scalecolor')
+def __inject_template_scalecolor(scale):
+    return float_color(scale)
 
 
 # get a suitable bootstrap class name according to score
-@app.template_filter(name='scorestyle')
-def __inject_template_scorestyle(score):
-    if (score >= 100.0 - 1e-6):
-        return 'success'
-    if (score >= 50.0):
-        return 'warning'
-    return 'danger'
+@app.template_filter(name='scorecolor')
+def __inject_template_scorecolor(score):
+    return float_color(score / 100.0)
 
 
 # get a suitable bootstrap "tr" class name according to handin state

@@ -21,11 +21,13 @@
         <th>{{ _('Name') }}</th>
         <th>{{ _('Languages') }}</th>
         <th>{{ _('Due / Scale') }}</th>
-        <th>{{ _('Submission') }}</th>
+        <th>{{ _('My Score') }}</th>
       </tr>
       {%- for hw in g.homeworks %}
         {%- set next_deadline = hw.get_next_deadline() -%}
-        {%- if not next_deadline -%}
+        {%- if hw.uuid in finalScores -%}
+          {%- set line_style = 'success' -%}
+        {%- elif not next_deadline -%}
           {%- set line_style = 'danger' -%}
         {%- else -%}
           {%- set line_style = 'default' -%}
@@ -43,17 +45,23 @@
           {% if next_deadline -%}
             {%- set ddl_date, ddl_scale = next_deadline -%}
             <div class="hw-ddl-date">
-              <span class="text-{{ ddl_date | duestyle }}">
+              <span style="color: {{ ddl_date | duecolor }}">
                 {{ ddl_date | timedelta }}
               <span>
             </div> /
-            <span class="hw-ddl-scale text-{{ ddl_scale | scalestyle }}">{{ ddl_scale }}</span>
+            <span class="hw-ddl-scale" style="color: {{ ddl_scale | scalecolor }}">{{ ddl_scale }}</span>
           {%- else -%}
             {{ _('Out of date') }}
           {%- endif %}
         </td>
-        <td class="hw-status">
-          {{ _('Not yet') }}
+        <td class="hw-score">
+          {% if hw.uuid in finalScores -%}
+            <span style="color: {{ finalScores[hw.uuid] | scorecolor }}">
+              {{ finalScores[hw.uuid] }}
+            </span>
+          {%- else -%}
+            <span class="text-muted">{{ _('Not accepted') }}</span>
+          {%- endif %}
         </td>
       </tr>
       {%- endfor %}
