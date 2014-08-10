@@ -63,7 +63,7 @@
           </button>
           <a class="navbar-brand" href="javascript: void(0);">{{ _('Railgun') }}</a>
         </div>
-        <div class="nav-collapse">
+        <div class="nav">
           <!--
             Navigate links
             TODO: support multi-level navi items
@@ -92,20 +92,26 @@
             {%- endfor %}
           </ul>
           <!-- Logged user info, or signup / signin links -->
-          <ul class="nav navbar-nav pull-right userinfo">
+          <ul class="nav navbar-nav pull-right">
           {% if current_user.is_authenticated() -%}
-            <li class="dropdown">
+            <li class="dropdown user hidden-xs">
               <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                 <img src="{{ current_user | gravatar }}" />
                 {{ current_user.name }}
                 <b class="caret"></b>
               </a>
-              <ul class="dropdown-menu" role="menu">
-                <li role="presentation">
-                  <a role="menuitem" tabindex="-1" href="{{ url_for('profile_edit') }}">{{ _('Edit profile') }}</a>
+              <ul class="dropdown-menu">
+                <li>
+                  <a href="{{ url_for('profile_edit') }}">
+                    <i class="icon-user"></i>
+                    {{ _('Edit profile') }}
+                  </a>
                 </li>
-                <li role="presentation">
-                  <a role="menuitem" tabindex="-1" href="{{ url_for('signout') }}">{{ _('Sign out') }}</a>
+                <li>
+                  <a href="{{ url_for('signout') }}">
+                    <i class="icon-signout"></i>
+                    {{ _('Sign out') }}
+                  </a>
                 </li>
               </ul>
             </li>
