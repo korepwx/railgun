@@ -8,5 +8,5 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # This file is released under BSD 2-clause license.
 
-from . import codelang, context, credential, forms, hw, i18n, \
+from . import api, codelang, context, credential, forms, hw, i18n, \
     models, navibar, utility, views, webconfig

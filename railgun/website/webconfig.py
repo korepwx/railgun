@@ -19,6 +19,12 @@ SECRET_KEY = (
     open(os.path.join(RAILGUN_ROOT, 'keys/webKey.txt'), 'rb').read().strip()
 )
 
+# COMM_KEY is the secret key to encrypt /api/handin/update/<uuid>/
+# payloads.
+COMM_KEY = (
+    open(os.path.join(RAILGUN_ROOT, 'keys/commKey.txt'), 'rb').read().strip()
+)
+
 # BABEL_DEFAULT_LOCALE language is provided to the client when prefered
 # locale is not available.
 BABEL_DEFAULT_LOCALE = DEFAULT_LOCALE

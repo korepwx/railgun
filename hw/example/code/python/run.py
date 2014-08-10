@@ -9,7 +9,8 @@
 # This file is released under BSD 2-clause license.
 
 import unittest
-from pyhost.scorer import ScorerSet, UnitTestScorer
+from pyhost.scorer import UnitTestScorer
+from pyhost import SafeRunner
 
 
 class AdderTestCase(unittest.TestCase):
@@ -28,6 +29,7 @@ class AdderTestCase(unittest.TestCase):
 
 
 if (__name__ == '__main__'):
-    scorers = ScorerSet()
-    scorers.add(UnitTestScorer.fromTestCase(AdderTestCase), 1.0)
-    # safeRunner.run(scorers)
+    scorers = [
+        (UnitTestScorer.fromTestCase(AdderTestCase), 1.0),
+    ]
+    SafeRunner.run(scorers)

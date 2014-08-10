@@ -140,10 +140,15 @@ def homework(slug):
     handin_lang = None
     if (request.method == 'POST' and 'handin_lang' in request.form):
         # check deadline
-        if (not hw.get_next_deadline()):
+        next_ddl = hw.get_next_deadline()
+        if (not next_ddl):
             flash(_('This homework is out of date! '
                     'You cannot submit your handin.'), 'danger')
             return redirect(url_for('homework', slug=slug))
+        # we must record the current next_ddl. during the request processing,
+        # such deadline may pass so that our program may fail later
+        g.ddl_date = next_ddl[0]
+        g.ddl_scale = next_ddl[1]
         handin_lang = request.form['handin_lang']
         # check the data integrity of uploaded data
         if (forms[handin_lang].validate_on_submit()):
@@ -199,6 +204,17 @@ def handins():
     return render_template(
         'handins.html', the_page=handins.paginate(page, perpage)
     )
+
+
+@app.route('/handin/<uuid>/')
+@login_required
+def handin_detail(uuid):
+    # Query about the handin record
+    handin = Handin.query.filter(Handin.user_id == current_user.id,
+                                 Handin.uuid == uuid).one()
+
+    # render the handin
+    return render_template('handin_detail.html', handin=handin)
 
 
 # Register all pages into navibar

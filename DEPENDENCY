@@ -1,0 +1,7 @@
+python-pip
+python-virtualenv
+redis-server
+libsodium
+json-c
+boost-python
+cryptopp

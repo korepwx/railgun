@@ -20,7 +20,7 @@ class RunnerError(Exception):
 
 
 class InternalServerError(RunnerError):
-    """Error that indicate that server meets some trouble."""
+    """Error indicating that server meets some trouble."""
 
     def __init__(self):
         super(RunnerError, self).__init__(gettext_lazy(
@@ -28,5 +28,39 @@ class InternalServerError(RunnerError):
         ))
 
 
-class InvalidHandinError(RunnerError):
-    """Error that indicate the handin of a student is invalid."""
+class LanguageNotSupportError(RunnerError):
+    """Error indicating that the handin requires a not supported language."""
+
+    def __init__(self, lang):
+        super(RunnerError, self).__init__(gettext_lazy(
+            'Language "%(lang)s" is not supported by this homework.',
+            lang=lang
+        ))
+
+
+class BadArchiveError(RunnerError):
+    """Error indicating that the handin of a student is bad archive."""
+
+    def __init__(self):
+        super(RunnerError, self).__init__(gettext_lazy(
+            'Your handin is not a valid archive file.'
+        ))
+
+
+class FileDenyError(RunnerError):
+    """Error indicating that the handin contains a denied file."""
+
+    def __init__(self, fname):
+        super(RunnerError, self).__init__(gettext_lazy(
+            'Archive contains denied file %(filename)s.',
+            filename=fname
+        ))
+
+
+class RunnerTimeout(RunnerError):
+    """Error indicating that the handin has run out of time."""
+
+    def __init__(self):
+        super(RunnerError, self).__init__(gettext_lazy(
+            'Your handin has run out of time.'
+        ))

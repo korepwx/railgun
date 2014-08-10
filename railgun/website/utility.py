@@ -91,8 +91,8 @@ def __inject_template_scalestyle(scale):
 @app.template_filter(name='handinstyle')
 def __inject_template_handinstyle(state):
     return {
-        'Accepted': 'success',
         'Pending': 'warning',
-        'Error': 'danger',
         'Running': 'info',
+        'Rejected': 'danger',
+        'Accepted': 'success',
     }.get(state, 'default')

@@ -10,6 +10,7 @@
       <th>{{ _('Homework') }}</th>
       <th>{{ _('Handin Date') }}</th>
       <th>{{ _('Score / Status') }}</th>
+      <th>{{ _('Detail') }}</th>
     </tr>
     {% for handin in the_page.items -%}
     {%- set hw = g.homeworks.get_by_uuid(handin.hwid) -%}
@@ -30,6 +31,11 @@
         {%- else -%}
           {{ handin.get_state() }}
         {%- endif %}
+      </td>
+      <td class="handin-detail">
+        <a href="{{ url_for('handin_detail', uuid=handin.uuid) }}">
+          {{ _('View') }}
+        </a>
       </td>
     </tr>
     {%- endfor %}

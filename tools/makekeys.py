@@ -12,6 +12,8 @@ import os
 import string
 import random
 
+import nacl.secret
+
 
 # make a new randomized key
 def make_key(n):
@@ -32,5 +34,5 @@ def create_keyfile(keyfile, keysize=32):
     os.chmod(keyfile, 0700)
 
 
-create_keyfile('keys/commKey.txt')
+create_keyfile('keys/commKey.txt', keysize=nacl.secret.SecretBox.KEY_SIZE)
 create_keyfile('keys/webKey.txt')

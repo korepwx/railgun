@@ -5,8 +5,13 @@
 /hw/.pack
 /db
 /keys
+/cryptolib/build
+/runlib/python/pyhost/CSafeRunner/build
+/railgun/crypto/build
 /dump.rdb
 ._*
 *.*~
 *.pyc
+*.so
+*-my.sh
 .DS_Store

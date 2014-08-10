@@ -12,6 +12,11 @@ import os
 import copy
 
 from . import runconfig
+from .context import logger
+from .errors import RunnerError, InternalServerError, FileDenyError, \
+    RunnerTimeout
+from railgun.common.hw import FileRules
+from railgun.common.fileutil import dirtree, remove_firstdir
 from railgun.common.osutil import ProcessTimeout, execute
 from railgun.common.tempdir import TempDir
 
@@ -22,6 +27,7 @@ class BaseHost(object):
     def __init__(self, uuid, hw, lang):
         """Create a host to store testing module."""
         self.tempdir = TempDir(uuid)
+        self.uuid = uuid
 
         # store hw & code instance
         self.hw = hw
@@ -44,7 +50,48 @@ class BaseHost(object):
         pass
 
     def run(self):
-        """Run this testing module."""
+        """Run this testing module. Should return (exitcode, stdout, stderr)"""
+
+    def prepare_hwcode(self):
+        """Copy files from hw.code directory into tempdir."""
+
+        try:
+            self.tempdir.copyfiles(self.hwcode.path, dirtree(self.hwcode.path))
+        except Exception:
+            logger.exception(
+                'Cannot copy code files into tempdir for homework %(hwid)s '
+                'when executing handin %(handid)s.' %
+                {'hwid': self.hw.uuid, 'handid': self.uuid}
+            )
+            raise InternalServerError()
+
+    def extract_handin(self, archive):
+        """Extract handin archive files into tempdir."""
+
+        try:
+            # if the archive contains only one dir, remove first dir from path
+            onedir = archive.onedir()
+            canonical_path = remove_firstdir if onedir else (lambda s: s)
+
+            # use hwcode.file_rules to filter archive files
+            def should_skip(path):
+                path = canonical_path(path)
+                action = self.hwcode.file_rules.get_action(path)
+                if (action == FileRules.DENY):
+                    raise FileDenyError(path)
+                return (action != FileRules.ACCEPT)
+
+            # now extract the archive files
+            self.tempdir.extract(archive, should_skip)
+        except RunnerError:
+            raise
+        except Exception:
+            logger.exception(
+                'Cannot extract archive into tempdir for homework %(hwid)s '
+                'when executing handin %(handid)s.' %
+                {'hwid': self.hw.uuid, 'handid': self.uuid}
+            )
+            raise InternalServerError()
 
 
 class PythonHost(BaseHost):
@@ -60,7 +107,7 @@ class PythonHost(BaseHost):
         ]
 
         # get interested config values of this task
-        self.entry = self.runner_param.get('entry')
+        self.entry = self.runner_params.get('entry')
         self.entry_path = os.path.join(self.tempdir.path, self.entry)
 
     def compile(self):
@@ -72,17 +119,30 @@ class PythonHost(BaseHost):
             # setup new PYTHONPATH environment
             python_path = os.environ.get('PYTHONPATH', None)
             if (not python_path):
-                python_path = []
-            python_path = os.pathsep.join(self.python_path + python_path)
+                python_path = self.python_path
+            else:
+                python_path = self.python_path + [python_path]
+            python_path = os.pathsep.join(python_path)
             env = copy.copy(os.environ)
             env['PYTHONPATH'] = python_path
+            # Setup other environment variables
+            env['RAILGUN_API_BASEURL'] = runconfig.WEBSITE_API_BASEURL
+            env['RAILGUN_ROOT'] = runconfig.RAILGUN_ROOT
+            env['RAILGUN_HANDID'] = self.uuid
+            env['RAILGUN_HWID'] = self.hw.uuid
             # execute the testing module
-            execute(
-                ['python', self.entry_path],
+            return execute(
+                'python "%s"' % self.entry_path,
                 runconfig.RUNNER_DEFAULT_TIMEOUT,
                 cwd=self.tempdir.path,
                 env=env,
                 close_fds=True
             )
         except ProcessTimeout:
-            raise
+            raise RunnerTimeout()
+        except Exception:
+            logger.exception(
+                'Error when executing handin %(handid)s of homework %(hwid)s.' %
+                {'hwid': self.hw.uuid, 'handid': self.uuid}
+            )
+            raise InternalServerError()

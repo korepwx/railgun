@@ -35,19 +35,6 @@ class Scorer(object):
         """run the testing module and generate the score"""
 
 
-class ScorerSet(object):
-    """Set of scorers with their individual weights."""
-
-    def __init__(self):
-        self.items = []
-
-    def add(self, scorer, weight):
-        self.items.append((scorer, weight))
-
-    def __iter__(self):
-        return iter(self.items)
-
-
 class UnitTestScorer(Scorer):
     """scorer according to the result of unit test"""
 
