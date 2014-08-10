@@ -59,11 +59,16 @@ body {
   padding-top: 10px;
 }
 
-/* tweak for index page */
-.content-index .hw-heading {
+/* page headings */
+.content-index .hw-heading,
+.content-homework .hw-heading,
+.content-handins .handin-heading,
+.content-handin_detail .detail-heading {
   padding-bottom: 20px;
 }
 
+
+/* tweak for index page */
 .content-index .hw-languages span {
   margin-right: 5px;
 }
@@ -73,10 +78,6 @@ body {
 }
 
 /* tweak for homework detail page */
-.content-homework .hw-heading {
-  padding-bottom: 20px;
-}
-
 .content-homework .hw-attach .lang {
   padding-right: 20px;
   display: inline;
@@ -87,8 +88,9 @@ body {
   color: gray;
 }
 
-/* tweak for handins page */
-.content-handins .handin-heading {
-  padding-bottom: 20px;
+/* tweak for handin detail page */
+.content-handin_detail .label {
+  left: 5px;
+  top: -3px;
+  position: relative;
 }
-

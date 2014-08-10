@@ -24,7 +24,7 @@ class InternalServerError(RunnerError):
 
     def __init__(self):
         super(RunnerError, self).__init__(gettext_lazy(
-            'Internal server error, please upload your handin again.'
+            'Internal server error.'
         ))
 
 

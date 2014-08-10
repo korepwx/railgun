@@ -181,10 +181,12 @@ def homework(slug):
                 )
                 flash(_('You handin is accepted, please wait for results.'),
                       'success')
-                return redirect(url_for('handins'))
             except Exception:
-                app.logger.exception('Error when saving user handin.')
+                app.logger.exception('Error when add handin to run queue.')
                 flash(_('Internal server error, please try again.'), 'danger')
+            # homework page is too long, so redirect to handins page, to
+            # let flashed message clearer
+            return redirect(url_for('handins'))
 
     # if handin_lang not determine, choose the first lang
     if handin_lang is None:

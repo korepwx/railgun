@@ -32,7 +32,7 @@ def report_start(handid):
     api.start(handid)
 
 
-def run_handin(handler, handid, hwid, filename):
+def run_handin(handler, handid, hwid):
     """Run given handin with `handler`."""
     try:
         report_start(handid)
@@ -82,8 +82,8 @@ def run_handin(handler, handid, hwid, filename):
 
 
 @app.task
-def run_python(handid, hwid, filename):
+def run_python(handid, hwid, upload, options):
     """Run a given handin as Python."""
     return run_handin(
-        PythonHandin(handid, hwid, filename), handid, hwid, filename
+        PythonHandin(handid, hwid, upload, options), handid, hwid
     )

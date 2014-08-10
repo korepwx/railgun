@@ -8,7 +8,7 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # This file is released under BSD 2-clause license.
 
-import os
+import base64
 
 from flask import g
 from flask.ext.babel import lazy_gettext
@@ -18,6 +18,7 @@ from .context import app, db
 from .forms import UploadHandinForm, AddressHandinForm
 from .models import Handin
 from railgun.runner.tasks import run_python
+from railgun.common.lazy_i18n import gettext_lazy
 
 
 class CodeLanguage(object):
@@ -27,8 +28,8 @@ class CodeLanguage(object):
         self.lang = lang
         self.name = lang_name
 
-    def db_add_record(self, handid, hw, lang):
-        """add a Handin record into database"""
+    def make_db_record(self, handid, hw, lang):
+        """Make a Handin record"""
         # Note: g.ddl_scale is setup in views.homework
         #       we must only rely on this scale, because such deadline may
         #       pass when processing the request
@@ -36,6 +37,7 @@ class CodeLanguage(object):
                         user_id=current_user.id, scale=g.ddl_scale)
         db.session.add(handin)
         db.session.commit()
+        return handin
 
     def upload_form(self, hw):
         """make handin form for given `hw`."""
@@ -57,16 +59,23 @@ class StandardLanguage(CodeLanguage):
     def handle_upload(self, handid, hw, lang, form):
         """save uploaded file as UPLOAD_DIR/[handid].[ext]"""
 
-        # filename should be [handid].[ext]
-        filename = ('%s%s' %
-                    (handid, os.path.splitext(form.handin.data.filename)[1]))
-        form.handin.data.save(os.path.join(app.config['UPLOAD_DIR'], filename))
-
         # save handin into the database
-        self.db_add_record(handid, hw, lang)
+        handin = self.make_db_record(handid, hw, lang)
 
         # post the job to run queue
-        run_python.delay(handid, hw.uuid, filename)
+        try:
+            fcnt = base64.b64encode(form.handin.data.stream.read())
+            run_python.delay(handid, hw.uuid, fcnt, {
+                'filename': form.handin.data.filename
+            })
+        except Exception:
+            # if we cannot post to run queue, modify the handin status to error
+            handin.state = 'Rejected'
+            handin.result = gettext_lazy('Could not commit to run queue.')
+            handin.partials = []
+            db.session.commit()
+            # re-raise this exception
+            raise
 
 
 class PythonLanguage(StandardLanguage):
