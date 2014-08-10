@@ -18,7 +18,7 @@ struct HwPartialScore
   GetTextString name;
   double score;
   double weight;
-  double time;
+  VariantPtr time;
   GetTextString brief;
   std::vector<GetTextString> detail;
 

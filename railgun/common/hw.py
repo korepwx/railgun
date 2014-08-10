@@ -14,7 +14,7 @@ from datetime import datetime
 from xml.etree import ElementTree
 from itertools import ifilter, chain
 
-from babel.dates import get_timezone, UTC
+from babel.dates import timedelta, get_timezone, UTC
 
 import config
 from . import fileutil
@@ -395,6 +395,11 @@ class HwPartialScore(object):
             'brief': lazystr_to_plain(self.brief),
             'detail': [lazystr_to_plain(d) for d in self.detail]
         }
+
+    @property
+    def get_time(self):
+        """Get timedelta object for the run time."""
+        return timedelta(seconds=self.time) if self.time else None
 
     @staticmethod
     def from_plain(obj):

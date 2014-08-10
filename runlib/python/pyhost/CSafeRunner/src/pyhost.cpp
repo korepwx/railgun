@@ -15,13 +15,11 @@ namespace bp = boost::python;
 #include <stdlib.h>
 #include <string>
 #include <iostream>
-#include <sodium.h>
 #include <curl/curl.h>
 
 // Project header files
 #include "gettext.h"
 #include "score.h"
-#include "railgun_crypto.h"
 #include "apiclient.h"
 
 namespace
@@ -45,8 +43,6 @@ namespace
     while (pos >= 0 && (keystr[pos] == '\n' || keystr[pos] == '\r'))
       keystr[pos--] = 0;
 
-    if (pos+1 != crypto_secretbox_KEYBYTES)
-      throw std::runtime_error("Length of commKey invalid.");
     return std::string(keystr, pos+1);
   }
 
@@ -111,11 +107,6 @@ namespace
       );
     }
 
-    // Initialize the sodium library
-    if (sodium_init() == -1) {
-      throw std::runtime_error("Cannot initialize sodium library.");
-    }
-
     // Initialize the CURL library
     curl_global_init(CURL_GLOBAL_ALL);
 
@@ -141,9 +132,9 @@ namespace
       score.result = GetTextString("No scorer defined, please contact TA.");
     }
     for (bp::ssize_t i=0; i<n; ++i) {
-      bp::tuple scorer_scale = bp::extract<bp::tuple>(scorers[i]);
-      bp::object scorer = scorer_scale[0];
-      double scale = bp::extract<double>(scorer_scale[1]);
+      bp::tuple scorer_weight = bp::extract<bp::tuple>(scorers[i]);
+      bp::object scorer = scorer_weight[0];
+      double weight = bp::extract<double>(scorer_weight[1]);
 
       // Run the scorer!
       scorer.attr("run")();
@@ -161,6 +152,10 @@ namespace
         FillLazyString(detail[j], &lazystr);
         partial.detail.push_back(lazystr);
       }
+
+      // Set other properties
+      partial.weight = weight;
+      partial.time = ExtractVariant(scorer.attr("time"));
 
       // Add this partial score the total scorer
       score.partials.push_back(partial);

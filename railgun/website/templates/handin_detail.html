@@ -1,0 +1,151 @@
+{% extends "base.html" %}
+{% block subtitle -%}
+{{ _('Handin Detail') }} - {% if hw %}{{ hw.info.name }}
+                           {%- else %}{{ _('Homework Deleted') }}{% endif %}
+{%- endblock %}
+{% block content -%}
+  <div class="page-title">
+    <h2 class="detail-title">
+      {% if hw -%}
+        {{ _('Handin for <a href="%(url)s">%(name)s</a>',
+             url=url_for('homework', slug=hw.slug), name=hw.info.name) }}
+      {%- else -%}
+        {{ _('Handin for <span class="text-muted">(%(name)s)</a>', name=_('Deleted')) }}
+      {%- endif %}
+      <span class="label label-{{ handin.state | handinstyle }}">{{ handin.get_state() }}</span>
+    </h2>
+  </div>
+
+
+<div class="row">
+  <div class="col-lg-12">
+    <div class="fluid-height">
+      <!-- Summary panel -->
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <div class="panel-title">
+            <a class="accordion-toggle">{{ _('Summary') }}</a>
+          </div>
+        </div>
+        <table class="table table-hover">
+          <tr>
+            <th style="width: 20%">{{ _('Upload time') }}</th>
+            <td>{{ handin.ctime | datetimeformat }}</td>
+          </tr>
+          <tr>
+            <th>{{ _('Code Language') }}</th>
+            <td>{{ handin.lang | codelang }}</td>
+          </tr>
+          {% if handin.is_accepted() -%}
+            <tr>
+              <th>{{ _('Base Score') }}</th>
+              <td>
+                <span class="text-{{ handin.score | scorestyle }}">{{ handin.score }}</span>
+              </td>
+            </tr>
+            <tr>
+              <th>{{ _('Score Scale') }}</th>
+              <td><span class="text-{{ handin.scale | scalestyle }}">{{ handin.scale }}</span></td>
+            </tr>
+          {%- endif %}
+          <tr>
+            <th>{{ _('Exit Code') }}</th>
+            <td>
+              {% if handin.exitcode is none -%}
+                <span class="text-muted">{{ _('Not started') }}</span>
+              {%- elif handin.exitcode != 0 -%}
+                <span class="text-danger">{{ handin.exitcode }}</span>
+              {%- else -%}
+                <span class="text-success">{{ handin.exitcode }}</span>
+              {%- endif %}
+            </td>
+          </tr>
+          <tr>
+            <th>{{ _('Summary') }}</th>
+            <td>
+              {% if handin.result -%}
+                {{ handin.result }}
+              {%- else -%}
+                <span class="text-muted">{{ _('No summary') }}</span>
+              {%- endif %}
+            </td>
+          </tr>
+        </table>
+      </div>
+
+      <!-- Standard output and Error output of the process -->
+      {% if hw.reportAll and (handin.stdout or handin.stderr) -%}
+        <div class="panel panel-default handin-stdout">
+          <div class="panel-heading">
+            <div class="panel-title">
+              <a class="accordion-toggle">{{ _('Process Output') }}</a>
+            </div>
+          </div>
+          <div class="panel-body">
+            {% if handin.stdout -%}
+              <h4>{{ _('Standard Output') }}</h4>
+              <pre>{{ handin.get_stdout() }}</pre>
+            {%- endif %}
+            {% if handin.stderr -%}
+              <h4>{{ _('Standard Error Output') }}</h4>
+              <pre>{{ handin.get_stderr() }}</pre>
+            {%- endif %}
+          </div>
+        </div>
+      {%- endif %}
+    </div>
+
+    <!-- Report from each partial scorer -->
+    {% for p in handin.partials %}
+      <div class="panel panel-default handin-partial">
+        <div class="panel-heading">
+          <div class="panel-title">
+            <a class="accordion-toggle">{{ p.name }}</a>
+          </div>
+        </div>
+        <table class="table table-hover">
+          <tr>
+            <th style="width: 20%">{{ _('Score') }}</th>
+            <td>
+              <span class="text-{{ p.score | scorestyle }}">{{ p.score }}</span>
+            </td>
+          </tr>
+          <tr>
+            <th>{{ _('Weight') }}</th>
+            <td>{{ p.weight }}</td>
+          </tr>
+          <tr>
+            <th>{{ _('Run time') }}</th>
+            <td>
+              {% if p.time -%}
+                {{ p.time | timedeltaformat }}
+              {%- else -%}
+                <span class="time-muted">{{ _('Not measured') }}</span>
+              {%- endif %}
+            </td>
+          </tr>
+          <tr>
+            <th>{{ _('Summary') }}</th>
+            <td>
+              {% if p.brief -%}
+                {{ p.brief }}
+              {%- else -%}
+                <span class="text-muted">{{ _('No summary') }}</span>
+              {%- endif %}
+            </td>
+          </tr>
+          {% if hw.reportAll and p.detail -%}
+            <tr>
+              <th>{{ _('Details') }}</th>
+              <td>
+                {% for d in p.detail %}<pre>{{ d }}</pre>{% endfor %}
+              </td>
+            </tr>
+          {%- endif %}
+        </table>
+      </div>
+    {% endfor %}
+  </div>
+</div>
+
+{%- endblock %}

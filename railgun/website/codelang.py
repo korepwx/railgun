@@ -87,7 +87,7 @@ class NetApiLanguage(CodeLanguage):
     """code language that accepts a URL address as handin"""
 
     def __init__(self):
-        super(NetApiLanguage, self).__init__('netapi', 'Network API')
+        super(NetApiLanguage, self).__init__('netapi', 'NetAPI')
 
     def upload_form(self, hw):
         """make a handin form that inputs an address"""

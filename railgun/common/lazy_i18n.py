@@ -24,6 +24,11 @@ class GetTextString(object):
 
     def render(self):
         """render lazy string and get translated text"""
+
+        # There's a very strange behaviour: gettext('') will return the version
+        # string of babel. Get rid of it!
+        if (not self.text):
+            return ''
         return _babel_gettext(self.text, **self.kwargs)
 
     def __unicode__(self):

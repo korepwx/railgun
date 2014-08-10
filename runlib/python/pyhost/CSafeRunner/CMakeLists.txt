@@ -9,16 +9,11 @@ find_package(CURL REQUIRED)
 find_package(PythonLibs REQUIRED)
 find_package(Boost COMPONENTS python REQUIRED)
 
-find_package(PkgConfig REQUIRED)
-pkg_check_modules(Sodium REQUIRED libsodium)
-
 include_directories(
     ${Boost_INCLUDE_DIR}
     ${PYTHON_INCLUDE_DIRS}
-    ${Sodium_INCLUDE_DIRS}
     ${CURL_INCLUDE_DIR}
 )
-link_directories(${Sodium_LIBRARY_DIRS})
 
 aux_source_directory(src SafeRunner_files)
 add_library(SafeRunner SHARED ${SafeRunner_files})
@@ -27,7 +22,6 @@ target_link_libraries(
   ${PYTHON_LIBRARY}
   ${CURL_LIBRARY}
   ${Boost_LIBRARIES}
-  ${Sodium_LIBRARIES}
   cryptopp
 )
 

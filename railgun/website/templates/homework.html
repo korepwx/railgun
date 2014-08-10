@@ -84,8 +84,8 @@ method="POST" enctype="multipart/form-data" role="form">
   </div>
 </div>
 
-  <div class="col-sm-4">
-    <div class="widget-containter fluid-height">
+  <div class="col-lg-4">
+    <div class="fluid-height">
 
       <!-- Homework deadlines here -->
       {% set next_ddl = hw.get_next_deadline() -%}
@@ -124,13 +124,14 @@ method="POST" enctype="multipart/form-data" role="form">
           </tr>
           {%- else -%}
           <tr{% if next_ddl and ddl[0] == next_ddl[0] %} class="info"{% endif %}>
-          <td class="text-{{ ddl[0] | duestyle }}">{{ ddl[0] | datetimeformat }}</td>
-          <td class="text-{{ ddl[1] | scalestyle }}">{{ ddl[1] }}</td>
+            <td class="text-{{ ddl[0] | duestyle }}">{{ ddl[0] | datetimeformat }}</td>
+            <td class="text-{{ ddl[1] | scalestyle }}">{{ ddl[1] }}</td>
+          </tr>
           {%- endif -%}
           {% endfor %}
         </table>
       </div>
-      <div class="widget-containter fluid-height">
+      <div class="fluid-height">
 
         <!-- Upload handins here -->
         {% if next_ddl -%}
@@ -146,7 +147,7 @@ method="POST" enctype="multipart/form-data" role="form">
           <div class="panel-body container-fluid">
             <div class="row">
               <!-- Select the code language to upload handin -->
-              <div class="col-md-3">
+              <div class="col-sm-3">
                 <ul class="nav nav-pills nav-stacked" role="tablist">
                   {% for lang in hwlangs -%}
                   <li{% if lang == active_lang %} class="active"{% endif %}>
@@ -158,7 +159,7 @@ method="POST" enctype="multipart/form-data" role="form">
               </ul>
             </div>
             <!-- upload form areas -->
-            <div class="col-md-9 tab-content">
+            <div class="col-sm-9 tab-content">
               <div class="tab-pane " id="home">...</div>
               {% for lang in hwlangs -%}
               <div class="tab-pane{% if lang == active_lang %} active{% endif %}" id="handin-{{ lang }}">

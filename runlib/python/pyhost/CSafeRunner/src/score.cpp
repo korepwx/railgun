@@ -10,13 +10,19 @@
 #include "utility.h"
 
 // -------- HwPartialScore --------
-HwPartialScore::HwPartialScore() : score(0), weight(1), time(0) {}
+HwPartialScore::HwPartialScore()
+: score(0), weight(1), time(NullObject::New())
+{
+}
+
 void HwPartialScore::writeJson(std::ostream* os) const
 {
   *os << "{\"name\": ";
   name.writeJson(os);
   *os << ", \"score\": " << score << ", \"weight\": " << weight
-      << ", \"time\": " << time << ", \"brief\": ";
+      << ", \"time\": ";
+  this->time->writeJson(os);
+  *os << ", \"brief\": ";
   brief.writeJson(os);
   *os << ", \"detail\": [";
 

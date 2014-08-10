@@ -57,7 +57,7 @@ def run_handin(handler, handid, hwid, filename):
         if (exitcode != 0):
             score = HwScore(
                 False,
-                gettext_lazy('Exitcode of your handin is %(exitcode)s != 0.',
+                gettext_lazy('Exitcode %(exitcode)s != 0.',
                              exitcode=exitcode)
             )
             api.report(handid, score)

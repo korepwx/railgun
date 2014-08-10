@@ -235,8 +235,11 @@ def handin_detail(uuid):
     handin = Handin.query.filter(Handin.user_id == current_user.id,
                                  Handin.uuid == uuid).one()
 
+    # Get the homework
+    hw = g.homeworks.get_by_uuid(handin.hwid)
+
     # render the handin
-    return render_template('handin_detail.html', handin=handin)
+    return render_template('handin_detail.html', handin=handin, hw=hw)
 
 
 @app.errorhandler(404)

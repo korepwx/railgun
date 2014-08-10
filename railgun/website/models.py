@@ -70,8 +70,8 @@ class Handin(db.Model):
     #
     # the brief report and detailed report should be lazy_gettext instance,
     # so we should use db.PickleType to store these reports
-    score = db.Column(db.Float)
-    scale = db.Column(db.Float)
+    score = db.Column(db.Float, default=0.0)
+    scale = db.Column(db.Float, default=0.0)
     run_time = db.Column(db.Float)
 
     # handin result text
@@ -107,5 +107,21 @@ class Handin(db.Model):
     def get_state(self):
         """Get translated state name"""
         return gettext(self.state)
+
+    def is_accepted(self):
+        """Whether this handin has been accepted?"""
+        return self.state == 'Accepted'
+
+    def get_result(self):
+        """Get the localized version of result."""
+        return unicode(self.result) if self.result else u''
+
+    def get_stdout(self):
+        """Get the standard output of this result."""
+        return self.stdout if self.stdout else u''
+
+    def get_stderr(self):
+        """Get the standard error output of this result."""
+        return self.stderr if self.stderr else u''
 
 db.create_all()

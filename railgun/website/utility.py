@@ -87,6 +87,16 @@ def __inject_template_scalestyle(scale):
     return 'danger'
 
 
+# get a suitable bootstrap class name according to score
+@app.template_filter(name='scorestyle')
+def __inject_template_scorestyle(score):
+    if (score >= 100.0 - 1e-6):
+        return 'success'
+    if (score >= 50.0):
+        return 'warning'
+    return 'danger'
+
+
 # get a suitable bootstrap "tr" class name according to handin state
 @app.template_filter(name='handinstyle')
 def __inject_template_handinstyle(state):
