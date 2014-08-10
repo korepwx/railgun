@@ -13,6 +13,7 @@ from time import time
 
 from railgun.common.lazy_i18n import gettext_lazy
 from .utility import UnitTestScorerDetailResult
+from coverage import coverage
 
 
 class Scorer(object):
@@ -56,7 +57,7 @@ class UnitTestScorer(Scorer):
         self.score = 100.0 * success / total
         # format the brief report
         self.brief = gettext_lazy(
-            'Ran %(total)d tests in %(time).3f seconds, where '
+            'Ran %(total)d tests in %(time).3f seconds, while '
             '%(success)d tests passed.',
             total=total, time=self.time, success=success
         )
@@ -69,3 +70,32 @@ class UnitTestScorer(Scorer):
         return UnitTestScorer(
             unittest.TestLoader().loadTestsFromTestCase(testcase)
         )
+
+
+class CoverageScorer(Scorer):
+    """scorer according to the result of coverage."""
+
+    def __init__(self, suite):
+        super(CoverageScorer, self).__init__(gettext_lazy('Coverage Scorer'))
+        self.suite = suite
+
+    def run(self):
+        cov = coverage()
+        cov.start()
+
+        startTime = time()
+        self.suite.run()
+        self.time = time() - startTime
+
+        cov.stop()
+        cov.save()
+        cov.html_report()
+        self.cover_rate = 0.5 * 100
+
+        self.brief = gettext_lazy(
+            'Ran coverage in %(time).3f seconds,'
+            ' coverage rate: %(cover_rate)2.1f%%',
+            time=self.time, cover_rate=self.cover_rate
+        )
+
+        self.detail = 'TODO'
