@@ -9,9 +9,7 @@
     <tr>
       <th>{{ _('Homework') }}</th>
       <th>{{ _('Handin Date') }}</th>
-      <th>{{ _('Status') }}</th>
-      <th>{{ _('Score') }}</th>
-      <th style="width: 40%">{{ _('Summary') }}</th>
+      <th>{{ _('Score / Status') }}</th>
     </tr>
     {% for handin in the_page.items -%}
     {%- set hw = g.homeworks.get_by_uuid(handin.hwid) -%}
@@ -27,23 +25,10 @@
         {{ handin.get_ctime() | datetimeformat }}
       </td>
       <td class="handin-status">
-        {{ handin.get_state() }}
-      </td>
-      <td class="handin-score">
-        {% if handin.is_accepted() -%}
+        {% if handin.state == 'Accepted' -%}
           {{ handin.score * handin.scale }}
         {%- else -%}
-          <span class="text-muted">{{ _('No score') }}</span>
-        {%- endif %}
-      </td>
-      <td class="handin-detail">
-        {% if handin.result -%}
-          {{ handin.get_result() }}
-          <a href="{{ url_for('handin_detail', uuid=handin.uuid) }}" style="margin-left: 10px">
-            {{ _('More &raquo;') }}
-          </a>
-        {%- else -%}
-          <span class="text-muted">{{ _('No summary') }}</span>
+          {{ handin.get_state() }}
         {%- endif %}
       </td>
     </tr>
