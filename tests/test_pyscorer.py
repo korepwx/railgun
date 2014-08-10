@@ -9,7 +9,7 @@
 # This file is released under BSD 2-clause license.
 
 import unittest
-from pyhost.scorer import UnitTestScorer
+from pyhost.scorer import UnitTestScorer, CoverageScorer
 
 
 class UnitTestScorerTestCase(unittest.TestCase):
@@ -46,3 +46,13 @@ class UnitTestScorerTestCase(unittest.TestCase):
         scorer.run()
         # check the result patterns
         self.assertAlmostEqual(4*100.0/6, scorer.score)
+
+    def test_coverage(self):
+        scorer = CoverageScorer(
+            unittest.TestLoader().loadTestsFromTestCase(
+                UnitTestScorerTestCase.MyTest
+            )
+        )
+        scorer.run()
+        self.assertLessEqual(0.0, scorer.cover_rate)
+        self.assertLessEqual(scorer.cover_rate, 100.0)
