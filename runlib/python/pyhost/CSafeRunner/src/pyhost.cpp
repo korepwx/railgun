@@ -143,6 +143,7 @@ namespace
       HwPartialScore partial;
       FillLazyString(scorer.attr("name"), &partial.name);
       partial.score = bp::extract<double>(scorer.attr("score"));
+      FillLazyString(scorer.attr("brief"), &partial.brief);
 
       // The details should be list instance
       bp::object detail = scorer.attr("detail");

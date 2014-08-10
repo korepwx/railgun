@@ -56,7 +56,7 @@ class UnitTestScorer(Scorer):
         self.score = 100.0 * success / total
         # format the brief report
         self.brief = gettext_lazy(
-            'Ran %(total)d tests in %(time).3f seconds, among which '
+            'Ran %(total)d tests in %(time).3f seconds, where '
             '%(success)d tests passed.',
             total=total, time=self.time, success=success
         )
