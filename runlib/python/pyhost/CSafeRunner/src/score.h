@@ -15,6 +15,10 @@
 
 struct HwPartialScore
 {
+  // Type name provides the generator of this Partial Score.
+  // Website can print pretty report about this Partial score according to
+  // this field.
+  std::string typeName;
   GetTextString name;
   double score;
   double weight;

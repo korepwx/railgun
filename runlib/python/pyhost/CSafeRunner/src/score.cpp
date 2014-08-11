@@ -19,7 +19,9 @@ void HwPartialScore::writeJson(std::ostream* os) const
 {
   *os << "{\"name\": ";
   name.writeJson(os);
-  *os << ", \"score\": " << score << ", \"weight\": " << weight
+  *os << ", \"typeName\": \"";
+  WriteEscapeString(typeName, os);
+  *os << "\", \"score\": " << score << ", \"weight\": " << weight
       << ", \"time\": ";
   this->time->writeJson(os);
   *os << ", \"brief\": ";

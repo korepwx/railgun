@@ -380,9 +380,10 @@ class HwSet(object):
 class HwPartialScore(object):
     """A serializable partial score object."""
 
-    def __init__(self, scorer_name, score, weight, time, brief_report,
-                 detail_report):
+    def __init__(self, scorer_name, scorer_type_name, score, weight, time,
+                 brief_report, detail_report):
         self.name = scorer_name
+        self.typeName = scorer_type_name
         self.score = score
         self.weight = weight
         self.time = time
@@ -393,6 +394,7 @@ class HwPartialScore(object):
         """Convert this partial score object to plain object."""
         return {
             'name': lazystr_to_plain(self.name),
+            'typeName': self.typeName,
             'score': self.score,
             'weight': self.weight,
             'time': self.time,
@@ -410,6 +412,7 @@ class HwPartialScore(object):
         """Convert plain object to partial score object."""
         return HwPartialScore(
             plain_to_lazystr(obj['name']),
+            obj['typeName'],
             obj['score'],
             obj['weight'],
             obj['time'],

@@ -142,6 +142,7 @@ namespace
       // Extract scorer results
       HwPartialScore partial;
       FillLazyString(scorer.attr("name"), &partial.name);
+      partial.typeName = TypeName(scorer);
       partial.score = bp::extract<double>(scorer.attr("score"));
       FillLazyString(scorer.attr("brief"), &partial.brief);
 

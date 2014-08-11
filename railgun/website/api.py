@@ -37,6 +37,7 @@ def secret_api(method):
         try:
             request.payload = json.loads(payload)
         except Exception:
+            app.logger.debug('Not valid json: %s.' % repr(payload))
             return 'not valid json'
 
         return method(*args, **kwargs)
