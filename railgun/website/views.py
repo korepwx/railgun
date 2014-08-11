@@ -249,11 +249,6 @@ def handin_detail(uuid):
     return render_template('handin_detail.html', handin=handin, hw=hw)
 
 
-@app.errorhandler(404)
-def page_notfound(error):
-    return render_template('404.html'), 404
-
-
 # Register all pages into navibar
 navigates.add_view(title=lazy_gettext('Home'), endpoint='index')
 navigates.add(
