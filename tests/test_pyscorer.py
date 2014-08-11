@@ -52,8 +52,11 @@ class UnitTestScorerTestCase(unittest.TestCase):
             unittest.TestLoader().loadTestsFromTestCase(
                 UnitTestScorerTestCase.MyTest
             ),
-            None
+            ['test_pyscorer.py']
         )
         scorer.run()
         self.assertLessEqual(0.0, scorer.cover_rate)
         self.assertLessEqual(scorer.cover_rate, 100.0)
+        print(scorer.score)
+        print(scorer.detail)
+        print(scorer.brief)

@@ -93,14 +93,25 @@ class CoverageScorer(Scorer):
         self.time = time() - startTime
 
         cov.stop()
-        cov.save()
-        print(cov.html_report())
-        self.cover_rate = 0.5 * 100
+
+        # count coverage rate
+        total_exec = 0
+        total_miss = 0
+        self.detail = []
+        for filename in self.filelist:
+            (name, exec_statements, miss_statement, formatted) = cov.analysis(filename)
+            total_exec += len(exec_statements)
+            total_miss += len(miss_statement)
+            self.detail.append(gettext_lazy(
+                '%(filename)s: missing %(formatted)s\n',
+                filename=filename, formatted=formatted
+            ))
+
+        self.cover_rate = 100 - 100.0 * total_miss / total_exec
+        self.score = self.cover_rate
 
         self.brief = gettext_lazy(
             'Ran coverage in %(time).3f seconds,'
             ' coverage rate: %(cover_rate)2.1f%%',
             time=self.time, cover_rate=self.cover_rate
         )
-
-        self.detail = 'TODO'
