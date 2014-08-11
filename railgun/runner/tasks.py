@@ -53,16 +53,14 @@ def run_handin(handler, handid, hwid):
                 {'handid': handid, 'hwid': hwid, 'stdout': repr(stdout),
                  'stderr': repr(stderr)}
             )
-        else:
-            logger.info(
-                'Handin[%(handid)s] of hw[%(hwid)s]: OK.' %
-                {'handid': handid, 'hwid': hwid}
-            )
         # Create the api client, we may use it once or twice
         api = ApiClient(runconfig.WEBSITE_API_BASEURL)
         # Report failure if exitcode != 0. In this case the host itself may
         # not have the chance to report handin scores
         if (exitcode != 0):
+            # We do not raise RunnerError here, because under this situation,
+            # we must have logged such exception, and do not want to log
+            # again.
             score = HwScore(
                 False,
                 gettext_lazy('Exitcode %(exitcode)s != 0.',
@@ -71,7 +69,16 @@ def run_handin(handler, handid, hwid):
             api.report(handid, score)
         # Update exitcode, stdout and stderr here, which cannot be set in
         # the host itself.
+        #
+        # This process may also change Handin.state, if previous process
+        # exit with code 0 before it reported the score. See website/api.py
+        # for more details.
         api.proclog(handid, exitcode, stdout, stderr)
+        # Log that we've succesfully done this job.
+        logger.info(
+            'Handin[%(handid)s] of hw[%(hwid)s]: OK.' %
+            {'handid': handid, 'hwid': hwid}
+        )
 
     except RunnerError, ex:
         # RunnerError is logically OK and sent to client only.

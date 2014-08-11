@@ -92,6 +92,7 @@
   {%- endif %}
 
   <!-- Report from each partial scorer -->
+  {% if handin.partials -%}
   {% for p in handin.partials %}
     <div class="panel panel-default detail-partial">
       <div class="panel-heading">{{ p.name }}</div>
@@ -137,5 +138,6 @@
       </table>
     </div>
   {% endfor %}
+  {%- endif %}
 
 {%- endblock %}

@@ -66,6 +66,11 @@ def api_handin_report(uuid):
     if (not handin):
         return 'requested handin not found'
 
+    # if handin.state not in ['Running', 'Pending'], it must already have a
+    # score. reject the API call.
+    if (handin.state != 'Running' and handin.state != 'Pending'):
+        return 'score already reported'
+
     # update result of handin
     handin.state = 'Accepted' if score.accepted else 'Rejected'
     handin.score = score.get_score()
@@ -144,6 +149,14 @@ def api_handin_proclog(uuid):
     handin = Handin.query.filter(Handin.uuid == uuid).first()
     if (not handin):
         return 'requested handin not found'
+
+    # if handin.state != 'Accepted' and handin.state != 'Rejected',
+    # the process must have exited without report the score.
+    # mark such handin as "Rejected"
+    if (handin.state != 'Accepted' and handin.state != 'Rejected'):
+        handin.state = 'Rejected'
+        handin.result = gettext_lazy('Process exited before reporting score.')
+        handin.partials = []
 
     try:
         handin.exitcode = obj['exitcode']

@@ -22,7 +22,7 @@
         <th>{{ _('Name') }}</th>
         <th>{{ _('Languages') }}</th>
         <th>{{ _('Due / Scale') }}</th>
-        <th>{{ _('My Score') }}</th>
+        <th>{{ _('Score') }}</th>
       </tr>
       {%- for hw in g.homeworks %}
         {%- set next_deadline = hw.get_next_deadline() -%}

@@ -37,3 +37,7 @@ BABEL_DEFAULT_TIMEZONE = DEFAULT_TIMEZONE
 SQLALCHEMY_DATABASE_URI = (
     'sqlite:///%s' % os.path.join(RAILGUN_ROOT, 'db/main.db')
 )
+
+# DEBUG_TB_INTERCEPT_REDIRECTS disables flask-DebugToolBar redirection
+# hook
+DEBUG_TB_INTERCEPT_REDIRECTS = False
