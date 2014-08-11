@@ -30,6 +30,7 @@ DEFAULT_TIMEZONE = 'Asia/Shanghai'
 DEFAULT_HIDE_RULES = (
     'Thumbs\\.db$',         # windows picture preview database
     '\\.DS_Store$',         # OS X directory meta
+    '__MACOSX',             # OS X archive file meta data
     '\\.directory$',        # dolphin directory meta
     '\\.py[cdo]$',          # hide all python binary files
     '^(py|java)host.*',     # prevent runlib from overwritten
@@ -40,6 +41,10 @@ HOMEWORK_DIR = os.path.join(RAILGUN_ROOT, 'hw')
 
 # HOMEWORK_PACK_DIR stores the packed archives of all homeworks
 HOMEWORK_PACK_DIR = os.path.join(HOMEWORK_DIR, '.pack')
+
+# IGNORE_HANDINS_OF_REMOVED_HW determines whether to list handins for deleted
+# homeworks
+IGNORE_HANDINS_OF_REMOVED_HW = True
 
 # TEMPORARY_DIR stores the temporary directory for runner
 TEMPORARY_DIR = os.path.join(RAILGUN_ROOT, 'tmp')

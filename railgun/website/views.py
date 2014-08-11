@@ -24,6 +24,7 @@ from .forms import SignupForm, SigninForm, ProfileForm
 from .credential import UserContext
 from .codelang import languages
 from .models import User, Handin
+from .hw import homeworks
 
 
 @app.route('/')
@@ -222,10 +223,12 @@ def handins():
     except ValueError:
         perpage = 10
     # query about all handins
-    handins = (
-        Handin.query.filter(Handin.user_id == current_user.id).
-        order_by('-id')
-    )
+    handins = Handin.query.filter(Handin.user_id == current_user.id)
+    # filter out the handins for deleted homeworks
+    if (app.config['IGNORE_HANDINS_OF_REMOVED_HW']):
+        handins = handins.filter(Handin.hwid.in_(homeworks.get_uuid_list()))
+    # Sort the handins
+    handins = handins.order_by('-id')
     # build pagination object
     return render_template(
         'handins.html', the_page=handins.paginate(page, perpage)

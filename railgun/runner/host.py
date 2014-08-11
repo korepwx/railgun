@@ -43,7 +43,8 @@ class BaseHost(object):
         return self
 
     def __exit__(self, ignore1, ignore2, ignore3):
-        self.tempdir.close()
+        #self.tempdir.close()
+        pass
 
     def compile(self):
         """Compile this testing module."""
@@ -76,7 +77,22 @@ class BaseHost(object):
             # use hwcode.file_rules to filter archive files
             def should_skip(path):
                 path = canonical_path(path)
-                action = self.hwcode.file_rules.get_action(path)
+                # First, check the rules in HwCode
+                action = self.hwcode.file_rules.get_action(
+                    path, default_action=-1
+                )
+                if (action == FileRules.DENY):
+                    raise FileDenyError(path)
+                if (action == FileRules.ACCEPT):
+                    return False
+                if (action != -1):
+                    # action is not None, and action != ACCEPT, this means
+                    # that rules in `hwcode` rejects this file.
+                    return True
+                # Next, check the rules in Homework
+                action = self.hw.file_rules.get_action(
+                    path, default_action=FileRules.LOCK
+                )
                 if (action == FileRules.DENY):
                     raise FileDenyError(path)
                 return (action != FileRules.ACCEPT)

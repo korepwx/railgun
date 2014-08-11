@@ -59,7 +59,7 @@ class FileRules(object):
     def __repr__(self):
         return repr(self.data)
 
-    def get_action(self, filename):
+    def get_action(self, filename, default_action=LOCK):
         """Get the action for given `filename`."""
 
         for a, p in self.data:
@@ -67,7 +67,7 @@ class FileRules(object):
                 return a
 
         # if no rule matches, default takes lock action
-        return FileRules.LOCK
+        return default_action
 
     def _make_action(self, action, pattern):
         """Check the type and value of (action, pattern)."""
@@ -233,8 +233,8 @@ class Homework(object):
                     scale = float(due.find('scale').text.strip())
                     # add to deadline list
                     ret.deadlines.append((to_utc(duedate), scale))
-            elif (nd.tag == 'scoring'):
-                ret.reportAll = parse_bool(nd.find('reportAll').text)
+            elif (nd.tag == 'reportAll'):
+                ret.reportAll = parse_bool(nd.text)
             elif (nd.tag == 'files'):
                 ret.file_rules = FileRules.parse_xml(nd)
 
@@ -371,6 +371,10 @@ class HwSet(object):
 
     def get_by_slug(self, slug):
         return self.__slug_to_hw.get(slug, None)
+
+    def get_uuid_list(self):
+        """Get uuid list of all homeworks."""
+        return [hw.uuid for hw in self.items]
 
 
 class HwPartialScore(object):

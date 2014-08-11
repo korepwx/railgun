@@ -106,6 +106,13 @@ class Extractor(object):
                 dname = fname[: slash_pos]
             else:
                 dname = fname
+            # ignore some meta data directories
+            if (dname == '__MACOSX'):
+                # OS X will add a hidden directory named "__MACOSX" to archive
+                # even the user just wants to compress a single directory.
+                # So ignore this directory.
+                continue
+            # check whether one dir.
             if (last_dname is None):
                 last_dname = dname
             if (last_dname != dname):

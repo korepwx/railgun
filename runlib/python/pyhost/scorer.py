@@ -44,6 +44,10 @@ class UnitTestScorer(Scorer):
         self.suite = suite
 
     def run(self):
+        # if self.suite is callable, then load the suite now
+        # this is useful when dealing with student uploaded test case.
+        if (callable(self.suite)):
+            self.suite = self.suite()
         # get the result of unittest
         result = UnitTestScorerDetailResult()
         startTime = time()
@@ -65,10 +69,10 @@ class UnitTestScorer(Scorer):
         self.detail = result.details
 
     @staticmethod
-    def fromTestCase(testcase):
+    def FromTestCase(testcase):
         """Make a `UnitTestScorer` instance from `testcase`"""
         return UnitTestScorer(
-            unittest.TestLoader().loadTestsFromTestCase(testcase)
+            lambda: unittest.TestLoader().loadTestsFromTestCase(testcase)
         )
 
 

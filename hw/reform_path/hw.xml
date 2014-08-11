@@ -3,7 +3,7 @@
   <!--
     `uuid` is the unique identity for each homework.
   -->
-  <uuid>60aaba9199f94218ab7868f53fdcfc68</uuid>
+  <uuid>b388ad5b25ee44bbac9be46c43851768</uuid>
 
   <!--
     the readable name of this homework.
@@ -13,8 +13,8 @@
     info node is selected.
   -->
   <names>
-    <name lang="zh-cn">示例作业</name>
-    <name lang="en">Example Homework</name>
+    <name lang="zh-cn">格式化路径</name>
+    <name lang="en">Format Path</name>
   </names>
 
   <!--
@@ -28,7 +28,7 @@
       <!-- time zone of this due date. default is BABEL_DEFAULT_TIMEZONE -->
       <timezone>Asia/Shanghai</timezone>
       <!-- due date, formatted in YYYY-MM-dd HH:mm:ss -->
-      <date>2014-7-31 14:29:00</date>
+      <date>2014-8-11 23:59:59</date>
       <!-- the score scale factor, range from 0.0 to 1.0 -->
       <scale>1.0</scale>
     </due>
@@ -38,7 +38,7 @@
     -->
     <due>
       <timezone>Asia/Shanghai</timezone>
-      <date>2014-8-12 14:29:00</date>
+      <date>2014-8-21 23:59:59</date>
       <scale>0.5</scale>
     </due>
 
@@ -46,28 +46,16 @@
       the due date for no-score submissions
     -->
     <due>
-      <date>2014-8-22 14:29:00</date>
+      <date>2014-8-31 23:59:59</date>
       <scale>0.0</scale>
     </due>
   </deadlines>
 
   <!--
-    scoring settings of this homework
+    whether this homework should report details of mismatch results and
+    runtime errors?
   -->
-  <scoring>
-    <!--
-      whether this homework should report details of mismatch results and
-      runtime errors?
-    -->
-    <reportAll>true</reportAll>
-
-    <!--
-      whether the score of this homework is lower-better or higher-better?
-
-      when the score is lower-better, the score factor will be used as divider.
-    -->
-    <better>higher</better>
-  </scoring>
+  <reportAll>true</reportAll>
 
   <!--
     rules of files in homework root directory.
@@ -86,8 +74,5 @@
 
     note that `code` and `readme` directory are defaultly marked as hidden.
   -->
-  <files>
-    <accept>^data/payload\.txt$</accept>
-    <hide>^data/hide\.txt$</hide>
-  </files>
+  <files />
 </homework>
