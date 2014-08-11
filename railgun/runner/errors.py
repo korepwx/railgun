@@ -71,5 +71,5 @@ class NonUTF8OutputError(RunnerError):
 
     def __init__(self):
         super(RunnerError, self).__init__(gettext_lazy(
-            'Non UTF-8 output produced.'
+            'Not valid UTF-8 sequence produced.'
         ))

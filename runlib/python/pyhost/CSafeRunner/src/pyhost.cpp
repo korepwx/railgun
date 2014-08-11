@@ -189,7 +189,7 @@ namespace
       score = HwScore();
       UTF8toUnicode(handid, &score.uuid);
       score.accepted = false;
-      score.result = GetTextString("Non UTF-8 output produced.");
+      score.result = GetTextString("Not valid UTF-8 sequence produced.");
     }
 
     // Post the score object to remote API

@@ -43,8 +43,7 @@ class BaseHost(object):
         return self
 
     def __exit__(self, ignore1, ignore2, ignore3):
-        #self.tempdir.close()
-        pass
+        self.tempdir.close()
 
     def compile(self):
         """Compile this testing module."""

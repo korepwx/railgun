@@ -34,6 +34,8 @@ def report_start(handid):
 
 def run_handin(handler, handid, hwid):
     """Run given handin with `handler`."""
+    # Create the api client, we may use it once or twice
+    api = ApiClient(runconfig.WEBSITE_API_BASEURL)
     try:
         report_start(handid)
         exitcode, stdout, stderr = handler.execute()
@@ -43,6 +45,9 @@ def run_handin(handler, handid, hwid):
             stdout = unicode(stdout, 'utf-8')
             stderr = unicode(stderr, 'utf-8')
         except UnicodeError:
+            # This routine will terminate the try-catch structure so that
+            # we must report the exitcode earlier as well.
+            api.proclog(handid, exitcode, None, None)
             raise NonUTF8OutputError()
         # log the handin execution
         if (exitcode != 0):
@@ -53,8 +58,6 @@ def run_handin(handler, handid, hwid):
                 {'handid': handid, 'hwid': hwid, 'stdout': repr(stdout),
                  'stderr': repr(stderr)}
             )
-        # Create the api client, we may use it once or twice
-        api = ApiClient(runconfig.WEBSITE_API_BASEURL)
         # Report failure if exitcode != 0. In this case the host itself may
         # not have the chance to report handin scores
         if (exitcode != 0):
