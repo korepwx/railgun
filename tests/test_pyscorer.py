@@ -51,7 +51,8 @@ class UnitTestScorerTestCase(unittest.TestCase):
         scorer = CoverageScorer(
             unittest.TestLoader().loadTestsFromTestCase(
                 UnitTestScorerTestCase.MyTest
-            )
+            ),
+            None
         )
         scorer.run()
         self.assertLessEqual(0.0, scorer.cover_rate)

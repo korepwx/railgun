@@ -89,12 +89,12 @@ class CoverageScorer(Scorer):
         cov.start()
 
         startTime = time()
-        self.suite.run()
+        self.suite.run(unittest.TestResult())
         self.time = time() - startTime
 
         cov.stop()
         cov.save()
-        cov.html_report()
+        print(cov.html_report())
         self.cover_rate = 0.5 * 100
 
         self.brief = gettext_lazy(
