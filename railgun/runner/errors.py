@@ -64,3 +64,12 @@ class RunnerTimeout(RunnerError):
         super(RunnerError, self).__init__(gettext_lazy(
             'Your handin has run out of time.'
         ))
+
+
+class NonUTF8OutputError(RunnerError):
+    """Error indicating that the handin produced non UTF-8 output."""
+
+    def __init__(self):
+        super(RunnerError, self).__init__(gettext_lazy(
+            'Non UTF-8 output produced.'
+        ))

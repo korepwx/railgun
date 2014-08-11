@@ -12,15 +12,17 @@
 #include <map>
 #include <iosfwd>
 #include <memory>
+#include "utility.h"
 #include "variant.h"
 
 struct GetTextString
 {
-  std::string text;
-  std::map<std::string, std::shared_ptr<Variant> > kwargs;
+  UnicodeString text;
+  std::map<UnicodeString, std::shared_ptr<Variant> > kwargs;
 
   GetTextString();
   explicit GetTextString(std::string const& text);
+  explicit GetTextString(UnicodeString const& text);
   ~GetTextString();
 
   void writeJson(std::ostream *os) const;

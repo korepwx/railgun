@@ -12,7 +12,7 @@ from . import runconfig
 from .apiclient import ApiClient
 from .context import app, logger
 from .handin import PythonHandin
-from .errors import RunnerError, InternalServerError
+from .errors import RunnerError, InternalServerError, NonUTF8OutputError
 from railgun.common.hw import HwScore
 from railgun.common.lazy_i18n import gettext_lazy
 
@@ -37,13 +37,21 @@ def run_handin(handler, handid, hwid):
     try:
         report_start(handid)
         exitcode, stdout, stderr = handler.execute()
+        # try to convert stdout & stderr to unicode in UTF-8 encoding
+        # if not success, report the client has produced non UTF-8 output
+        try:
+            stdout = unicode(stdout, 'utf-8')
+            stderr = unicode(stderr, 'utf-8')
+        except UnicodeError:
+            raise NonUTF8OutputError()
         # log the handin execution
         if (exitcode != 0):
             logger.warning(
-                'Handin[%(handid)s] of hw[%(hwid)s]: Error.\n%(stdout)s\n'
-                '%(stderr)s' %
-                {'handid': handid, 'hwid': hwid, 'stdout': stdout,
-                 'stderr': stderr}
+                'Handin[%(handid)s] of hw[%(hwid)s]: Error.\n'
+                '  stdout: %(stdout)s\n'
+                '  stderr: %(stderr)s' %
+                {'handid': handid, 'hwid': hwid, 'stdout': repr(stdout),
+                 'stderr': repr(stderr)}
             )
         else:
             logger.info(

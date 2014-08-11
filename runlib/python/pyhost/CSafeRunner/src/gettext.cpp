@@ -13,7 +13,12 @@ GetTextString::GetTextString()
 {
 }
 
-GetTextString::GetTextString(std::string const& text) : text(text)
+GetTextString::GetTextString(std::string const& text)
+{
+  UTF8toUnicode(text, &(this->text));
+}
+
+GetTextString::GetTextString(UnicodeString const& text) : text(text)
 {
 }
 
@@ -23,10 +28,12 @@ GetTextString::~GetTextString()
 
 namespace
 {
-  void WriteKeyValuePair(std::string const& name, Variant const& value,
+  void WriteKeyValuePair(UnicodeString const& name, Variant const& value,
                          std::ostream *os)
   {
-    *os << "\"" << name << "\": ";
+    *os << "\"";
+    WriteEscapeString(name, os);
+    *os << "\": ";
     value.writeJson(os);
   }
 }

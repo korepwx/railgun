@@ -35,14 +35,16 @@ void ApiClient::report(HwScore const& score)
 
   // Construct post action
   char action[128];
-  snprintf(action, sizeof(action), "/handin/report/%s/", score.uuid.c_str());
+  std::string uuid_s;
+  UnicodetoUTF8(score.uuid, &uuid_s);
+  snprintf(action, sizeof(action), "/handin/report/%s/", uuid_s.c_str());
 
   // Do post
   std::string result = doPOST(action, cipher);
   if (result != "OK") {
     char exmsg[256];
     snprintf(exmsg, sizeof(exmsg), "Save result failed for handin(%s): %s.",
-             score.uuid.c_str(), result.c_str());
+             uuid_s.c_str(), result.c_str());
     throw std::runtime_error(exmsg);
   }
 }

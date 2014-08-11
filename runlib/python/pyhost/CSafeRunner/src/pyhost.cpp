@@ -51,6 +51,20 @@ namespace
     return bp::extract<std::string>(obj.attr("__class__").attr("__name__"));
   }
 
+  UnicodeString ExtractUnicode(bp::object const& obj)
+  {
+    UnicodeString ret;
+    std::string objType = TypeName(obj);
+
+    if (objType == "str") {
+      UTF8toUnicode(bp::extract<std::string>(obj), &ret);
+    } else {
+      std::string s = bp::extract<std::string>(obj.attr("encode")("utf-8"));
+      UTF8toUnicode(s, &ret);
+    }
+    return ret;
+  }
+
   // TODO: add more type coversions here!
   VariantPtr ExtractVariant(bp::object const& obj)
   {
@@ -63,7 +77,7 @@ namespace
     } else if (objType == "float") {
       return Double::New(bp::extract<double>(obj));
     } else if (objType == "str" || objType == "unicode") {
-      return String::New(bp::extract<std::string>(obj));
+      return Unicode::New(ExtractUnicode(obj));
     }
 
     char errmsg[128];
@@ -83,19 +97,19 @@ namespace
 
     // Convert pure string / unicode to lazy string
     if (objType == "str" || objType == "unicode") {
-      target->text = "%(RAW_MESSAGE)s";
-      target->kwargs["RAW_MESSAGE"] =
-        String::New(bp::extract<std::string>(obj));
+      target->text = UTF8toUnicode("%(RAW_MESSAGE)s");
+      target->kwargs[UTF8toUnicode("RAW_MESSAGE")] =
+        Unicode::New(ExtractUnicode(obj));
       return;
     }
 
     // Extract GetTextString instance
-    target->text = bp::extract<std::string>(obj.attr("text"));
+    target->text = ExtractUnicode(obj.attr("text"));
     bp::dict kwargs = bp::extract<bp::dict>(obj.attr("kwargs"));
     bp::list keys = kwargs.keys();
 
     for (bp::ssize_t i=0; i<bp::len(keys); ++i) {
-      std::string key = bp::extract<std::string>(keys[i]);
+      UnicodeString key = ExtractUnicode(keys[i]);
       target->kwargs[key] = ExtractVariant(kwargs[keys[i]]);
     }
   }
@@ -124,49 +138,59 @@ namespace
     // Downgrade user privilege
     // TODO: downgrade user privilege.
 
-    // Run each scorer to evaluate the handin
+    // The returned score object
     HwScore score;
-    score.uuid = handid;
+    UTF8toUnicode(handid, &score.uuid);
     score.accepted = false;
-    bp::ssize_t n = bp::len(scorers);
 
-    if (!n) {
-      score.result = GetTextString("No scorer defined, please contact TA.");
-    }
-    for (bp::ssize_t i=0; i<n; ++i) {
-      bp::tuple scorer_weight = bp::extract<bp::tuple>(scorers[i]);
-      bp::object scorer = scorer_weight[0];
-      double weight = bp::extract<double>(scorer_weight[1]);
+    try {
+      // Run each scorer to evaluate the handin
+      bp::ssize_t n = bp::len(scorers);
 
-      // Run the scorer!
-      scorer.attr("run")();
+      if (!n) {
+        score.result = GetTextString("No scorer defined, please contact TA.");
+      }
+      for (bp::ssize_t i=0; i<n; ++i) {
+        bp::tuple scorer_weight = bp::extract<bp::tuple>(scorers[i]);
+        bp::object scorer = scorer_weight[0];
+        double weight = bp::extract<double>(scorer_weight[1]);
 
-      // Extract scorer results
-      HwPartialScore partial;
-      FillLazyString(scorer.attr("name"), &partial.name);
-      partial.typeName = TypeName(scorer);
-      partial.score = bp::extract<double>(scorer.attr("score"));
-      FillLazyString(scorer.attr("brief"), &partial.brief);
+        // Run the scorer!
+        scorer.attr("run")();
 
-      // The details should be list instance
-      bp::object detail = scorer.attr("detail");
-      bp::ssize_t detail_n = bp::len(detail);
-      for (bp::ssize_t j=0; j<detail_n; ++j) {
-        GetTextString lazystr;
-        FillLazyString(detail[j], &lazystr);
-        partial.detail.push_back(lazystr);
+        // Extract scorer results
+        HwPartialScore partial;
+        FillLazyString(scorer.attr("name"), &partial.name);
+        UTF8toUnicode(TypeName(scorer), &(partial.typeName));
+        partial.score = bp::extract<double>(scorer.attr("score"));
+        FillLazyString(scorer.attr("brief"), &partial.brief);
+
+        // The details should be list instance
+        bp::object detail = scorer.attr("detail");
+        bp::ssize_t detail_n = bp::len(detail);
+        for (bp::ssize_t j=0; j<detail_n; ++j) {
+          GetTextString lazystr;
+          FillLazyString(detail[j], &lazystr);
+          partial.detail.push_back(lazystr);
+        }
+
+        // Set other properties
+        partial.weight = weight;
+        partial.time = ExtractVariant(scorer.attr("time"));
+
+        // Add this partial score the total scorer
+        score.partials.push_back(partial);
       }
 
-      // Set other properties
-      partial.weight = weight;
-      partial.time = ExtractVariant(scorer.attr("time"));
+      // We've now run all scorers, accept this score
+      score.accepted = (n > 0);
 
-      // Add this partial score the total scorer
-      score.partials.push_back(partial);
+    } catch (UnicodeError) {
+      score = HwScore();
+      UTF8toUnicode(handid, &score.uuid);
+      score.accepted = false;
+      score.result = GetTextString("Non UTF-8 output produced.");
     }
-
-    // We've now run all scorers, accept this score
-    score.accepted = true;
 
     // Post the score object to remote API
     ApiClient client(api_baseurl, commKey);

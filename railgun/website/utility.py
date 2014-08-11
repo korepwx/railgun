@@ -109,3 +109,9 @@ def __inject_template_handinstyle(state):
         'Rejected': 'danger',
         'Accepted': 'success',
     }.get(state, 'default')
+
+
+# Round score number to 0.1 precision
+@app.template_filter(name='roundscore')
+def __inject_template_roundscore(score):
+    return round(score * 10) * 0.1

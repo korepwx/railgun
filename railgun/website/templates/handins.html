@@ -31,7 +31,7 @@
       </td>
       <td class="handin-score">
         {% if handin.is_accepted() -%}
-          {{ handin.score * handin.scale }}
+          {{ (handin.score * handin.scale) | roundscore }}
         {%- else -%}
           <span class="text-muted">{{ _('No score') }}</span>
         {%- endif %}

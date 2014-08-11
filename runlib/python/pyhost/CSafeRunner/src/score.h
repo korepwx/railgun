@@ -12,13 +12,14 @@
 #include <vector>
 #include <iosfwd>
 #include "gettext.h"
+#include "utility.h"
 
 struct HwPartialScore
 {
   // Type name provides the generator of this Partial Score.
   // Website can print pretty report about this Partial score according to
   // this field.
-  std::string typeName;
+  UnicodeString typeName;
   GetTextString name;
   double score;
   double weight;
@@ -36,7 +37,7 @@ struct HwScore
 {
   // HwScore actually does not carry `uuid`. However, we must contain it
   // in payload when posting to remote api.
-  std::string uuid;
+  UnicodeString uuid;
 
   bool accepted;
   GetTextString result;

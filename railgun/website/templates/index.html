@@ -15,6 +15,7 @@
     </p>
   </div>
   {%- else -%}
+    {%- set finalScores = current_user.gather_scores() -%}
     <h3 class="hw-heading">{{ _('Your Homework') }}</h3>
     <table class="table table-hover">
       <tr>
@@ -57,7 +58,7 @@
         <td class="hw-score">
           {% if hw.uuid in finalScores -%}
             <span style="color: {{ finalScores[hw.uuid] | scorecolor }}">
-              {{ finalScores[hw.uuid] }}
+              {{ finalScores[hw.uuid] | roundscore }}
             </span>
           {%- else -%}
             <span class="text-muted">{{ _('Not accepted') }}</span>

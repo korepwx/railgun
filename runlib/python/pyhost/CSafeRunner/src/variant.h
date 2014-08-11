@@ -11,6 +11,7 @@
 #include <string>
 #include <iosfwd>
 #include <memory>
+#include "utility.h"
 
 /// @brief Raised when given `Variant` cannot convert to desired type.
 class ConversionError {};
@@ -27,11 +28,13 @@ public:
   virtual bool isInt() const { return false; }
   virtual bool isDouble() const { return false; }
   virtual bool isString() const { return false; }
+  virtual bool isUnicode() const { return false; }
 
   // extract variant values
   virtual int asInt() const { throw ConversionError(); }
   virtual double asDouble() const { throw ConversionError(); }
   virtual std::string asString() const { throw ConversionError(); }
+  virtual 
 
   // Write given value to json output stream
   // This method should output "full" representation of Json value
@@ -88,7 +91,7 @@ private:
   double value_;
 };
 
-// @brief Variant object for string values
+// @brief Variant object for UTF-8 string values
 class String : public Variant
 {
 public:
@@ -103,6 +106,24 @@ public:
   }
 private:
   std::string value_;
+};
+
+// @brief Variant object for unicode values
+class Unicode : public Variant
+{
+public:
+  Unicode(UnicodeString const& value);
+
+  virtual bool isUnicode() const { return true; }
+  virtual UnicodeString asUnicode() const { return value_; }
+  virtual void writeJson(std::ostream *os) const;
+
+  static VariantPtr New(UnicodeString const& value) {
+    return VariantPtr(new Unicode(value));
+  }
+
+private:
+  UnicodeString value_;
 };
 
 #endif // RUNLIB_PYTHON_PYHOST_CSAFERUNNER_SRC_VARIANT_H_FB54E4571FA611E4BE9C84383555E6CC

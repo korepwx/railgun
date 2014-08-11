@@ -42,3 +42,12 @@ void String::writeJson(std::ostream *os) const
   WriteEscapeString(value_, os);
   *os << "\"";
 }
+
+// -------- Unicode --------
+Unicode::Unicode(UnicodeString const& value) : Variant(), value_(value) {}
+void Unicode::writeJson(std::ostream *os) const
+{
+  *os << "\"";
+  WriteEscapeString(value_, os);
+  *os << "\"";
+}

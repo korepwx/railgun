@@ -6,7 +6,9 @@
 // This file is released under BSD 2-clause license.
 
 #include <iostream>
+#include <iterator>
 #include "utility.h"
+#include "3rdparty/utf8.h"
 
 namespace
 {
@@ -18,15 +20,38 @@ namespace
   }
 }
 
-bool IsPrintableChar(char ch)
+void UTF8toUnicode(std::string const& s, UnicodeString *dst)
+{
+  dst->clear();
+  try {
+    utf8::utf8to16(s.begin(), s.end(), std::back_inserter(*dst));
+  } catch (...) {
+    throw UnicodeError();
+  }
+}
+
+void UnicodetoUTF8(UnicodeString const& s, std::string *dst)
+{
+  dst->clear();
+  try {
+    utf8::utf16to8(s.begin(), s.end(), std::back_inserter(*dst));
+  } catch (...) {
+    throw UnicodeError();
+  }
+}
+
+bool IsPrintableChar(UChar ch)
 {
   return (ch >= 0x20 && ch < 0x7f);
 }
 
-void WriteEscapeString(std::string const& s, std::ostream *os)
+void WriteEscapeString(UnicodeString const& s, std::ostream *os)
 {
-  for (char c: s) {
+  for (UChar c: s) {
     switch (c) {
+      case '\\':
+        *os << "\\\\";
+        break;
       case '"':
         *os << "\\\"";
         break;
@@ -41,12 +66,26 @@ void WriteEscapeString(std::string const& s, std::ostream *os)
         break;
       default:
         if (!IsPrintableChar(c)) {
-          int cv = (unsigned char)c;
-          *os << "\\u00" << ToHex(c / 16) << ToHex(c % 16);
+          char hexdigit[4];
+          for (int i=3; i>=0; --i) {
+            hexdigit[i] = ToHex(c % 16);
+            c /= 16;
+          }
+          *os << "\\u";
+          for (int i=0; i<4; ++i) {
+            *os << hexdigit[i];
+          }
         } else {
-          *os << c;
+          *os << (char)c;
         }
         break;
     }
   }
+}
+
+void WriteEscapeString(std::string const& s, std::ostream *os)
+{
+  UnicodeString ustring;
+  UTF8toUnicode(s, &ustring);
+  WriteEscapeString(ustring, os);
 }

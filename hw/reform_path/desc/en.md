@@ -1,6 +1,6 @@
 Finish <code>reform_path</code> in path.py, so that it will produce output for input <code>path</code> that satisfies given requirements.
 
-The homework has 6 test points. Please upload your handin before deadline.
+The homework has 6 test points. Furthermore, you must make sure that your programs follow the code styles. Please upload your handin before deadline.
 
 ```python
 def reform_path(path):
