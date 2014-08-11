@@ -18,8 +18,8 @@ this module contains a serializable lazy gettext utility.
 class GetTextString(object):
     """keyword formattable and serializable lazy gettext string"""
 
-    def __init__(self, text, **kwargs):
-        self.text = text
+    def __init__(self, __s, **kwargs):
+        self.text = __s
         self.kwargs = kwargs
 
     def render(self):

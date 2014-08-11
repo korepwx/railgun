@@ -438,10 +438,6 @@ class HwScore(object):
         total_weight = sum([p.weight for p in self.partials])
         return sum([p.weight * p.score / total_weight for p in self.partials])
 
-    def get_time(self):
-        """Sum the runner time."""
-        return sum([p.time for p in self.partials])
-
     def add_partial(self, partial):
         """Add a partial score into this final score."""
         self.partials.append(partial)

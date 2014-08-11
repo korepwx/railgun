@@ -69,7 +69,6 @@ def api_handin_report(uuid):
     # update result of handin
     handin.state = 'Accepted' if score.accepted else 'Rejected'
     handin.score = score.get_score()
-    handin.run_time = score.get_time()
     if (score.accepted):
         handin.result = gettext_lazy('Your handin is accepted.')
     elif (score.result):

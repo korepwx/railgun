@@ -31,6 +31,7 @@ DEFAULT_HIDE_RULES = (
     'Thumbs\\.db$',         # windows picture preview database
     '\\.DS_Store$',         # OS X directory meta
     '__MACOSX',             # OS X archive file meta data
+    '^\\._.*$|/\\._.*$',    # OS X special backup files
     '\\.directory$',        # dolphin directory meta
     '\\.py[cdo]$',          # hide all python binary files
     '^(py|java)host.*',     # prevent runlib from overwritten

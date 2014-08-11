@@ -83,7 +83,9 @@ namespace
 
     // Convert pure string / unicode to lazy string
     if (objType == "str" || objType == "unicode") {
-      target->text = bp::extract<std::string>(obj);
+      target->text = "%(RAW_MESSAGE)s";
+      target->kwargs["RAW_MESSAGE"] =
+        String::New(bp::extract<std::string>(obj));
       return;
     }
 

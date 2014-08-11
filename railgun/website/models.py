@@ -97,7 +97,6 @@ class Handin(db.Model):
     # so we should use db.PickleType to store these reports
     score = db.Column(db.Float, default=0.0)
     scale = db.Column(db.Float, default=0.0)
-    run_time = db.Column(db.Float)
 
     # handin result text
     result = db.Column(db.PickleType)

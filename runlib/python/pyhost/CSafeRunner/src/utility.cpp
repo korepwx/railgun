@@ -42,7 +42,7 @@ void WriteEscapeString(std::string const& s, std::ostream *os)
       default:
         if (!IsPrintableChar(c)) {
           int cv = (unsigned char)c;
-          *os << "\\x" << ToHex(c / 16) << ToHex(c % 16);
+          *os << "\\u00" << ToHex(c / 16) << ToHex(c % 16);
         } else {
           *os << c;
         }

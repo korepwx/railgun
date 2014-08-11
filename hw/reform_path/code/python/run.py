@@ -9,7 +9,7 @@
 # This file is released under BSD 2-clause license.
 
 import unittest
-from pyhost.scorer import UnitTestScorer
+from pyhost.scorer import UnitTestScorer, CodeStyleScorer
 from pyhost import SafeRunner
 
 
@@ -74,6 +74,7 @@ class ReformPathTestCase(unittest.TestCase):
 
 if (__name__ == '__main__'):
     scorers = [
-        (UnitTestScorer.FromTestCase(ReformPathTestCase), 1.0),
+        (CodeStyleScorer.FromHandinDir('run.py'), 0.1),
+        (UnitTestScorer.FromTestCase(ReformPathTestCase), 0.9),
     ]
     SafeRunner.run(scorers)

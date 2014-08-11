@@ -8,11 +8,14 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # This file is released under BSD 2-clause license.
 
+import pep8
 import unittest
 from time import time
 
+from railgun.common.fileutil import dirtree
 from railgun.common.lazy_i18n import gettext_lazy
-from .utility import UnitTestScorerDetailResult, load_class_from_str
+from .utility import UnitTestScorerDetailResult, Pep8DetailReport, \
+    load_class_from_str
 from coverage import coverage
 
 
@@ -74,6 +77,52 @@ class UnitTestScorer(Scorer):
         return UnitTestScorer(
             lambda: unittest.TestLoader().loadTestsFromTestCase(testcase)
         )
+
+
+class CodeStyleScorer(Scorer):
+    """scorer according to the code style."""
+
+    def __init__(self, filelist, skipfile=None):
+        """Check the code style of `filelist`, skip if `skipfile(path)` is
+        True."""
+
+        super(CodeStyleScorer, self).__init__(gettext_lazy('CodeStyle Scorer'))
+        skipfile = skipfile or (lambda path: False)
+        is_pyfile = lambda p: (p[-3:].lower() == '.py')
+        self.filelist = [p for p in filelist
+                         if not skipfile(p) and is_pyfile(p)]
+
+    def run(self):
+        guide = pep8.StyleGuide()
+        guide.options.show_source = True
+        guide.options.report = Pep8DetailReport(guide.options)
+        result = guide.check_files(self.filelist)
+
+        # the final score should be count_trouble_files() / total_file
+        total_file = len(self.filelist)
+        trouble_file = result.count_trouble_files()
+        self.score = 100.0 * (total_file - trouble_file) / total_file
+
+        # format the brief report
+        if (trouble_file > 0):
+            self.brief = gettext_lazy(
+                '%(trouble)d files out of %(total)d did not pass PEP8 code '
+                'style check',
+                total=total_file, trouble=trouble_file
+            )
+        else:
+            self.brief = gettext_lazy('All files passed PEP8 code style check.')
+
+        # format detailed reports
+        self.detail = result.build_report()
+
+    @staticmethod
+    def FromHandinDir(ignore_files=None):
+        """Create a `CodeStyleScorer` for all files under handin directory
+        except `ignore_files`."""
+
+        ignore_files = ignore_files or []
+        return CodeStyleScorer(dirtree('.'), (lambda p: p in ignore_files))
 
 
 class CoverageScorer(Scorer):

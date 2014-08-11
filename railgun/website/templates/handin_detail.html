@@ -94,7 +94,7 @@
   <!-- Report from each partial scorer -->
   {% for p in handin.partials %}
     <div class="panel panel-default detail-partial">
-      <div class="panel-heading">{{ p.name }} ({{ p.typeName }})</div>
+      <div class="panel-heading">{{ p.name }}</div>
       <table class="table table-hover">
         <tr>
           <th style="width: 20%">{{ _('Score') }}</th>
@@ -112,7 +112,7 @@
             {% if p.time -%}
               {{ p.time | timedeltaformat }}
             {%- else -%}
-              <span class="time-muted">{{ _('Not measured') }}</span>
+              <span class="text-muted">{{ _('Not measured') }}</span>
             {%- endif %}
           </td>
         </tr>
