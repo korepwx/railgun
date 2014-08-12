@@ -51,7 +51,7 @@ class UnitTestScorerTestCase(unittest.TestCase):
     def test_coverage(self):
         scorer = CoverageScorer.FromHandinDir(
             ['sample.py'],
-            ['test_pyscorer.py', 'test_pyscorer.pyc', '.DS_Store']
+            ['test_pyscorer.py']
         )
         scorer.run()
         self.assertLessEqual(0.0, scorer.cover_rate)
