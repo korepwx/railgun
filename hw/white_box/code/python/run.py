@@ -15,6 +15,6 @@ from pyhost import SafeRunner
 if (__name__ == '__main__'):
     scorers = [
         (CodeStyleScorer.FromHandinDir('run.py'), 0.1),
-        (CoverageScorer.FromHandinDir('myfunc.py', ignore_files=['run.py']))
+        (CoverageScorer.FromHandinDir('myfunc.py', ignore_files=['run.py']), 0.9)
     ]
     SafeRunner.run(scorers)
