@@ -14,8 +14,7 @@ from time import time
 
 from railgun.common.fileutil import dirtree
 from railgun.common.lazy_i18n import gettext_lazy
-from .utility import UnitTestScorerDetailResult, Pep8DetailReport, \
-    load_class_from_str
+from .utility import UnitTestScorerDetailResult, Pep8DetailReport, load_module_from_file
 from coverage import coverage
 
 
@@ -128,9 +127,18 @@ class CodeStyleScorer(Scorer):
 class CoverageScorer(Scorer):
     """scorer according to the result of coverage."""
 
-    def __init__(self, suite, filelist):
+    def __init__(self, test_files, filelist):
+        '''
+        `test_files` is a list of filename, provided by students,
+        to test files in `filelist`, provided by teachers.
+        '''
         super(CoverageScorer, self).__init__(gettext_lazy('Coverage Scorer'))
-        self.suite = load_class_from_str(suite)
+
+        self.suites_list = map(
+            lambda filename: unittest.TestLoader().loadTestsFromModule(load_module_from_file(filename)),
+            test_files
+        )
+
         self.filelist = filelist
 
     def run(self):
@@ -138,7 +146,10 @@ class CoverageScorer(Scorer):
         cov.start()
 
         startTime = time()
-        self.suite.run(unittest.TestResult())
+
+        for suites in self.suites_list:
+            for suite in suites:
+                suite.run(unittest.TestResult())
         self.time = time() - startTime
 
         cov.stop()
@@ -164,3 +175,13 @@ class CoverageScorer(Scorer):
             ' coverage rate: %(cover_rate)2.1f%%',
             time=self.time, cover_rate=self.cover_rate
         )
+
+    @staticmethod
+    def FromHandinDir(files_to_coverage, ignore_files=None):
+        """Create a `CodeStyleScorer` for all files under handin directory
+        except `ignore_files`."""
+        ignore_files = ignore_files or []
+        all_files = dirtree('.')
+        suite_files = set(all_files) - set(ignore_files)
+
+        return CoverageScorer(suite_files, files_to_coverage)

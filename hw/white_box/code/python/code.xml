@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<code>
+  <!--
+    The compiler settings.
+
+    all children will be converted to `ConfigNode` instances. see more details
+    in railgun.common.hw
+  -->
+  <compiler version="2.7" />
+
+  <!--
+    The runner settings. same as compiler settings.
+  -->
+  <runner entry="run.py" />
+
+  <!--
+    The file acceptable rules.
+  -->
+  <files>
+    <hide>^run\.py$</hide>
+    <accept>^path\.py$</accept>
+    <accept>.*\.py$</accept>
+  </files>
+</code>
