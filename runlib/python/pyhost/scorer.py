@@ -135,6 +135,7 @@ class CoverageScorer(Scorer):
         '''
         super(CoverageScorer, self).__init__(gettext_lazy('Coverage Scorer'))
 
+        print(filelist)
         self.suites_list = map(
             lambda filename: unittest.TestLoader().loadTestsFromModule(load_module_from_file(filename)),
             test_files
@@ -148,9 +149,8 @@ class CoverageScorer(Scorer):
 
         startTime = time()
 
-        for suites in self.suites_list:
-            for suite in suites:
-                suite.run(unittest.TestResult())
+        for suite in self.suites_list:
+            suite.run(unittest.TestResult())
         self.time = time() - startTime
 
         cov.stop()
