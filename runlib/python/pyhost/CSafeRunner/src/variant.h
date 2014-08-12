@@ -34,7 +34,7 @@ public:
   virtual int asInt() const { throw ConversionError(); }
   virtual double asDouble() const { throw ConversionError(); }
   virtual std::string asString() const { throw ConversionError(); }
-  virtual 
+  // virtual 
 
   // Write given value to json output stream
   // This method should output "full" representation of Json value
