@@ -1,4 +1,6 @@
-Observe function <code>myfunc</code> in myfunc.py. Write white-box tests and improve the coverage rate as you can.
+Observe function <code>myfunc</code> in myfunc.py. Write white-box unit tests and improve the coverage rate as you can.
+
+Note that unit test classes in Python must inherit <code>unittest.TestCase</code>, and be placed in test_*.py files.
 
 You must make sure that your programs follow the code styles. Please upload your handin before deadlines. Otherwise there will be discounts on your scores.
 

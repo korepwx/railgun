@@ -9,16 +9,16 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # This file is released under BSD 2-clause license.
 
+import re
+import os
 import pep8
 import unittest
-import re
 from time import time
 
 from railgun.common.fileutil import dirtree
 from railgun.common.lazy_i18n import gettext_lazy
 from .errors import ScorerFailure
-from .utility import UnitTestScorerDetailResult, Pep8DetailReport, \
-    load_module_from_file
+from .utility import UnitTestScorerDetailResult, Pep8DetailReport
 from coverage import coverage
 
 
@@ -140,28 +140,29 @@ class CodeStyleScorer(Scorer):
 class CoverageScorer(Scorer):
     """scorer according to the result of coverage."""
 
-    def __init__(self, test_files, filelist):
+    def __init__(self, suite, filelist):
         '''
-        `test_files` is a list of filename, provided by students,
-        to test files in `filelist`, provided by teachers.
+        Run all test cases in `suite` and then get the coverage of all files
+        in `filelist`.
         '''
         super(CoverageScorer, self).__init__(gettext_lazy('Coverage Scorer'))
 
-        self.suites_list = map(
-            lambda filename: unittest.TestLoader().loadTestsFromModule(load_module_from_file(filename)),
-            test_files
-        )
-
+        self.suite = suite
         self.filelist = filelist
 
     def _run(self):
         cov = coverage()
         cov.start()
 
-        startTime = time()
+        # If self.suite is callable, generate test suite first
+        if (callable(self.suite)):
+            self.suite = self.suite()
 
-        for suite in self.suites_list:
-            suite.run(unittest.TestResult())
+        # Run the test suite
+        # the `result` is now ignored, but we can get use of it if necessary
+        result = UnitTestScorerDetailResult()
+        startTime = time()
+        self.suite.run(result)
         self.time = time() - startTime
 
         cov.stop()
@@ -171,7 +172,8 @@ class CoverageScorer(Scorer):
         total_miss = 0
         self.detail = []
         for filename in self.filelist:
-            (name, exec_statements, miss_statement, formatted) = cov.analysis(filename)
+            (name, exec_statements, miss_statement, formatted) = \
+                cov.analysis(filename)
             total_exec += len(exec_statements)
             total_miss += len(miss_statement)
             self.detail.append(gettext_lazy(
@@ -189,12 +191,20 @@ class CoverageScorer(Scorer):
         )
 
     @staticmethod
-    def FromHandinDir(files_to_coverage, ignore_files=None, accepted_pattern='.*\.py$'):
-        """Create a `CodeStyleScorer` for all files under handin directory
-        except `ignore_files`."""
-        ignore_files = ignore_files or []
-        all_files = dirtree('.')
-        suite_files = set(all_files) - set(ignore_files)
-        suite_files = filter(lambda name: re.match(accepted_pattern, name), suite_files)
+    def FromHandinDir(files_to_cover, test_pattern='test_.*\\.py$'):
+        """Create a `CoverageScorer` to get score for all unit tests provided
+        by students according to the coverage of files in `files_to_cover`.
 
-        return CoverageScorer(suite_files, files_to_coverage)
+        Only the files matching `test_pattern` will be regarded as unit test
+        file.
+        """
+
+        p = re.compile(test_pattern)
+        test_modules = []
+        for f in dirtree('.'):
+            fpath, fext = os.path.splitext(f)
+            if (fext.lower() == '.py' and p.match(f)):
+                test_modules.append(fpath.replace('/', '.'))
+
+        suite = lambda: unittest.TestLoader().loadTestsFromNames(test_modules)
+        return CoverageScorer(suite, files_to_cover)

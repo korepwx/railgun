@@ -145,19 +145,3 @@ class Pep8DetailReport(pep8.BaseReport):
 def format_exeception():
     """Format the exception traceback."""
     return traceback.format_exec().rstrip()
-
-
-def load_module_from_file(filename):
-    ''' Get all the subclasses of unittest.TestCase in filename.'''
-    import os
-    module_dir, module_file = os.path.split(filename)
-    if module_dir == '':
-        module_dir = '.'
-    module_name, module_ext = os.path.splitext(module_file)
-    save_cwd = os.getcwd()
-    os.chdir(module_dir)
-    module_obj = __import__(module_name)
-    module_obj.__file__ = filename
-    globals()[module_name] = module_obj
-    os.chdir(save_cwd)
-    return module_obj

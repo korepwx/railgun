@@ -18,7 +18,7 @@
   -->
   <files>
     <hide>^run\.py$</hide>
-    <accept>^path\.py$</accept>
+    <lock>^myfunc\.py$</lock>
     <accept>.*\.py$</accept>
   </files>
 </code>
