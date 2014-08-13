@@ -88,8 +88,7 @@ class UnitTestScorer(Scorer):
     def FromTestCase(testcase):
         """Make a `UnitTestScorer` instance from `testcase`"""
         return UnitTestScorer(
-            lambda: unittest.TestLoader().loadTestsFromTestCase(testcase)
-        )
+            lambda: unittest.TestLoader().loadTestsFromTestCase(testcase))
 
 
 class CodeStyleScorer(Scorer):

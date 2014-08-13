@@ -85,5 +85,6 @@ class AddressHandinForm(Form):
         _('Please enter your API address:'),
         validators=[
             InputRequired(),
-            URL(message=_('Please input a valid url address!'))
+            URL(message=_('Please input a valid url address!'),
+                require_tld=False)
         ])

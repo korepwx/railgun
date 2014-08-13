@@ -9,7 +9,6 @@
 # This file is released under BSD 2-clause license.
 
 import os
-import copy
 
 from . import runconfig
 from .context import logger
@@ -19,6 +18,45 @@ from railgun.common.hw import FileRules
 from railgun.common.fileutil import dirtree, remove_firstdir
 from railgun.common.osutil import ProcessTimeout, execute
 from railgun.common.tempdir import TempDir
+
+
+class HostConfig(object):
+    """Configuration values to be passed to host process by environmental
+    variables.
+
+    Any non-callable object attribute will be uppercased and put into the
+    new envinronment.
+    """
+
+    def __init__(self, **kwargs):
+        # Read implicit values from kwargs
+        for k, v in kwargs.iteritems():
+            setattr(self, k, v)
+        # Dictionary for explicit values.
+        self._values = {}
+
+    def putenv(self, key, value):
+        """Put explicit value into config."""
+        self._values[key] = value
+
+    def getenv(self, key):
+        """Get explicit value from config."""
+        return self._values[key]
+
+    def make_environ(self):
+        """Make the new environ from current process and config values."""
+        ret = os.environ.copy()
+        # setup default values
+        ret['RAILGUN_API_BASEURL'] = runconfig.WEBSITE_API_BASEURL
+        ret['RAILGUN_ROOT'] = runconfig.RAILGUN_ROOT
+        # setup implicit values
+        for k, v in self.__dict__.iteritems():
+            if (not k.startswith('_') and not callable(v)):
+                ret['RAILGUN_%s' % str(k).upper()] = str(v)
+        # setup explicit values
+        for k, v in self._values.iteritems():
+            ret[k] = v
+        return ret
 
 
 class BaseHost(object):
@@ -37,6 +75,9 @@ class BaseHost(object):
         self.compiler_params = self.hwcode.compiler_params
         self.runner_params = self.hwcode.runner_params
 
+        # the host config object
+        self.config = HostConfig(handid=uuid, hwid=self.hw.uuid)
+
     def __enter__(self):
         """Initialize the host directory"""
         self.tempdir.open()
@@ -44,6 +85,27 @@ class BaseHost(object):
 
     def __exit__(self, ignore1, ignore2, ignore3):
         self.tempdir.close()
+
+    def _spawn(self, cmdline, timeout=None):
+        """Spawn external process."""
+
+        try:
+            # execute the testing module
+            return execute(
+                cmdline,
+                timeout or runconfig.RUNNER_DEFAULT_TIMEOUT,
+                cwd=self.tempdir.path,
+                env=self.config.make_environ(),
+                close_fds=True
+            )
+        except ProcessTimeout:
+            raise RunnerTimeout()
+        except Exception:
+            logger.exception(
+                'Error when executing handin %(handid)s of homework %(hwid)s.' %
+                {'hwid': self.hw.uuid, 'handid': self.uuid}
+            )
+            raise InternalServerError()
 
     def compile(self):
         """Compile this testing module."""
@@ -112,17 +174,24 @@ class BaseHost(object):
 class PythonHost(BaseHost):
     """Python handin running host"""
 
-    def __init__(self, uuid, hw):
-        super(PythonHost, self).__init__(uuid, hw, 'python')
+    def __init__(self, uuid, hw, lang="python"):
+        super(PythonHost, self).__init__(uuid, hw, lang)
 
-        # PYTHONPATH of this running environment
-        self.python_path = [
-            runconfig.RAILGUN_ROOT,
-            os.path.join(runconfig.RUNLIB_DIR, 'python')
-        ]
+        # Update process running environment
+        python_path = os.environ.get('PYTHONPATH', None)
+        python_path = [python_path] if python_path else []
+        self.config.putenv(
+            'PYTHONPATH',
+            os.path.pathsep.join([
+                runconfig.RAILGUN_ROOT,
+                os.path.join(runconfig.RUNLIB_DIR, 'python')
+            ] + python_path)
+        )
 
-        # get interested config values of this task
+        # get interested parameters of this task
         self.entry = self.runner_params.get('entry')
+        self.timeout = int(self.runner_params.get('timeout') or
+                           runconfig.RUNNER_DEFAULT_TIMEOUT)
         self.entry_path = os.path.join(self.tempdir.path, self.entry)
 
     def compile(self):
@@ -130,34 +199,12 @@ class PythonHost(BaseHost):
 
     def run(self):
         """Run this Python testing module."""
-        try:
-            # setup new PYTHONPATH environment
-            python_path = os.environ.get('PYTHONPATH', None)
-            if (not python_path):
-                python_path = self.python_path
-            else:
-                python_path = self.python_path + [python_path]
-            python_path = os.pathsep.join(python_path)
-            env = copy.copy(os.environ)
-            env['PYTHONPATH'] = python_path
-            # Setup other environment variables
-            env['RAILGUN_API_BASEURL'] = runconfig.WEBSITE_API_BASEURL
-            env['RAILGUN_ROOT'] = runconfig.RAILGUN_ROOT
-            env['RAILGUN_HANDID'] = self.uuid
-            env['RAILGUN_HWID'] = self.hw.uuid
-            # execute the testing module
-            return execute(
-                'python "%s"' % self.entry_path,
-                runconfig.RUNNER_DEFAULT_TIMEOUT,
-                cwd=self.tempdir.path,
-                env=env,
-                close_fds=True
-            )
-        except ProcessTimeout:
-            raise RunnerTimeout()
-        except Exception:
-            logger.exception(
-                'Error when executing handin %(handid)s of homework %(hwid)s.' %
-                {'hwid': self.hw.uuid, 'handid': self.uuid}
-            )
-            raise InternalServerError()
+        return self._spawn('python "%s"' % self.entry_path, self.timeout)
+
+
+class NetApiHost(PythonHost):
+    """NetAPI handin running host"""
+
+    def __init__(self, remote_addr, uuid, hw):
+        super(NetApiHost, self).__init__(uuid, hw, 'netapi')
+        self.config.remote_addr = remote_addr

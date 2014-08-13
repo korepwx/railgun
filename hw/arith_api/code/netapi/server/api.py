@@ -39,6 +39,11 @@ def json_api(method):
     return inner
 
 
+@app.route('/')
+def index():
+    return 'Your API address: <input type="text" value="%s" />' % request.url
+
+
 @app.route('/add/', methods=['POST'])
 @json_api
 def add():

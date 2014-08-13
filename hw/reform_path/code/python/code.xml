@@ -11,7 +11,7 @@
   <!--
     The runner settings. same as compiler settings.
   -->
-  <runner entry="run.py" />
+  <runner entry="run.py" timeout="3" />
 
   <!--
     The file acceptable rules.

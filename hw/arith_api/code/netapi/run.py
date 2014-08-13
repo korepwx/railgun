@@ -21,29 +21,48 @@ class ArithApiUnitTest(unittest.TestCase):
 
     def __init__(self, *args, **kwargs):
         super(ArithApiUnitTest, self).__init__(*args, **kwargs)
-        self.base_url = os.environ['RAILGUN_API_URL'].rstrip('/')
+        self.base_url = os.environ['RAILGUN_REMOTE_ADDR'].rstrip('/')
 
     def _post(self, action, payload):
+        """Do post and get remote api result."""
+
         payload = json.dumps(payload)
+        # Get remote response
         try:
             ret = requests.post(self.base_url + action, data=payload,
                                 headers={'Content-Type': 'application/json'})
-            ret = ret.text
         except Exception:
-            raise Exception("Cannot get response from remote API.")
+            raise RuntimeError("Cannot get response from remote API.")
+
+        # Check response status
+        if (ret.status_code != 200):
+            raise RuntimeError("HTTP status %d != 200." % ret.status_code)
+        ret = ret.text
+
+        # Convert response to object
         try:
             return json.loads(ret)
         except Exception:
-            raise ValueError("%(msg)s not json." % {'msg': ret})
+            raise ValueError(
+                "Response '%(msg)s' is not json." % {'msg': ret})
+
+    def _get_result(self, action, payload):
+        """Ensure the remote api does not return error, and get 'value' from
+        remote api result."""
+
+        ret = self._post(action, payload)
+        if (ret['error'] != 0):
+            raise RuntimeError("Remote API error: %s." % ret['message'])
+        return ret['result']
 
     def test_add(self):
-        self.assertTrue(self._post('/add/', {'a': 1, 'b': 2}), 3)
+        self.assertEqual(self._get_result('/add/', {'a': 1, 'b': 2}), 3)
 
     def test_pow(self):
-        self.assertTrue(self._post('/pow/', {'a': 2, 'b': 100}), 2**100)
+        self.assertEqual(self._get_result('/pow/', {'a': 2, 'b': 100}), 2**100)
 
     def test_gcd(self):
-        self.assertTrue(self._post('/gcd/', {'a': 2, 'b': 4}), 2)
+        self.assertEqual(self._get_result('/gcd/', {'a': 2, 'b': 4}), 2)
 
 if (__name__ == '__main__'):
     scorers = [
