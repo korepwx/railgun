@@ -11,11 +11,14 @@
 
 import pep8
 import unittest
+import re
 from time import time
 
 from railgun.common.fileutil import dirtree
 from railgun.common.lazy_i18n import gettext_lazy
-from .utility import UnitTestScorerDetailResult, Pep8DetailReport, load_module_from_file
+from .errors import ScorerFailure
+from .utility import UnitTestScorerDetailResult, Pep8DetailReport, \
+    load_module_from_file
 from coverage import coverage
 
 
@@ -35,8 +38,18 @@ class Scorer(object):
         # detail explanation of the score
         self.detail = None
 
+    def _run(self):
+        pass
+
     def run(self):
-        """run the testing module and generate the score"""
+        """Run the testing module and generate the score. If a `ScorerFailure`
+        is generated, the score will be set to 0.0."""
+        try:
+            self._run()
+        except ScorerFailure, ex:
+            self.brief = ex.brief
+            self.detail = ex.detail
+            self.score = ex.score
 
 
 class UnitTestScorer(Scorer):
@@ -46,7 +59,7 @@ class UnitTestScorer(Scorer):
         super(UnitTestScorer, self).__init__(gettext_lazy('UnitTest Scorer'))
         self.suite = suite
 
-    def run(self):
+    def _run(self):
         # if self.suite is callable, then load the suite now
         # this is useful when dealing with student uploaded test case.
         if (callable(self.suite)):
@@ -75,8 +88,7 @@ class UnitTestScorer(Scorer):
     def FromTestCase(testcase):
         """Make a `UnitTestScorer` instance from `testcase`"""
         return UnitTestScorer(
-            lambda: unittest.TestLoader().loadTestsFromTestCase(testcase)
-        )
+            lambda: unittest.TestLoader().loadTestsFromTestCase(testcase))
 
 
 class CodeStyleScorer(Scorer):
@@ -92,7 +104,7 @@ class CodeStyleScorer(Scorer):
         self.filelist = [p for p in filelist
                          if not skipfile(p) and is_pyfile(p)]
 
-    def run(self):
+    def _run(self):
         guide = pep8.StyleGuide()
         guide.options.show_source = True
         guide.options.report = Pep8DetailReport(guide.options)
@@ -142,15 +154,14 @@ class CoverageScorer(Scorer):
 
         self.filelist = filelist
 
-    def run(self):
+    def _run(self):
         cov = coverage()
         cov.start()
 
         startTime = time()
 
-        for suites in self.suites_list:
-            for suite in suites:
-                suite.run(unittest.TestResult())
+        for suite in self.suites_list:
+            suite.run(unittest.TestResult())
         self.time = time() - startTime
 
         cov.stop()
@@ -178,11 +189,12 @@ class CoverageScorer(Scorer):
         )
 
     @staticmethod
-    def FromHandinDir(files_to_coverage, ignore_files=None):
+    def FromHandinDir(files_to_coverage, ignore_files=None, accepted_pattern='.*\.py$'):
         """Create a `CodeStyleScorer` for all files under handin directory
         except `ignore_files`."""
         ignore_files = ignore_files or []
         all_files = dirtree('.')
         suite_files = set(all_files) - set(ignore_files)
+        suite_files = filter(lambda name: re.match(accepted_pattern, name), suite_files)
 
         return CoverageScorer(suite_files, files_to_coverage)

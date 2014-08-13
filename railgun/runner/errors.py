@@ -33,7 +33,7 @@ class LanguageNotSupportError(RunnerError):
 
     def __init__(self, lang):
         super(RunnerError, self).__init__(gettext_lazy(
-            'Language "%(lang)s" is not supported by this homework.',
+            'Language "%(lang)s" is not provided.',
             lang=lang
         ))
 

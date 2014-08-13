@@ -11,14 +11,12 @@
   <!--
     The runner settings. same as compiler settings.
   -->
-  <runner entry="run.py" timeout="3" />
+  <runner entry="run.py" />
 
   <!--
     The file acceptable rules.
   -->
   <files>
     <hide>^run\.py$</hide>
-    <accept>^path\.py$</accept>
-    <accept>.*\.py$</accept>
   </files>
 </code>

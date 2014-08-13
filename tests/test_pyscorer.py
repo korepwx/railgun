@@ -49,9 +49,9 @@ class UnitTestScorerTestCase(unittest.TestCase):
         self.assertAlmostEqual(4*100.0/6, scorer.score)
 
     def test_coverage(self):
-        scorer = CoverageScorer(
-            ['test_sample.py'],
-            ['sample.py']
+        scorer = CoverageScorer.FromHandinDir(
+            ['sample.py'],
+            ['test_pyscorer.py']
         )
         scorer.run()
         self.assertLessEqual(0.0, scorer.cover_rate)

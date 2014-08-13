@@ -14,7 +14,7 @@ import base64
 from . import runconfig
 from .hw import homeworks
 from .errors import InternalServerError, LanguageNotSupportError
-from .host import PythonHost
+from .host import PythonHost, NetApiHost
 from railgun.common.fileutil import Extractor
 
 
@@ -87,3 +87,20 @@ class PythonHandin(BaseHandin):
                 host.prepare_hwcode()
                 host.extract_handin(self.archive)
                 return host.run()
+
+
+class NetApiHandin(BaseHandin):
+    """NetApi handin management class."""
+
+    def __init__(self, handid, hwid, upload, options):
+        super(NetApiHandin, self).__init__(handid, hwid, 'netapi', upload,
+                                           options)
+        self.remote_addr = upload
+
+    def execute(self):
+        """Execute this handin as NetAPI script. Shoudl return
+        (exitcode, stdout, stderr)."""
+
+        with NetApiHost(self.remote_addr, self.handid, self.hw) as host:
+            host.prepare_hwcode()
+            return host.run()

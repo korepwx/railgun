@@ -11,7 +11,7 @@
 from . import runconfig
 from .apiclient import ApiClient
 from .context import app, logger
-from .handin import PythonHandin
+from .handin import PythonHandin, NetApiHandin
 from .errors import RunnerError, InternalServerError, NonUTF8OutputError
 from railgun.common.hw import HwScore
 from railgun.common.lazy_i18n import gettext_lazy
@@ -33,11 +33,14 @@ def report_start(handid):
 
 
 def run_handin(handler, handid, hwid):
-    """Run given handin with `handler`."""
+    """Run given handin with `handler_class`."""
     # Create the api client, we may use it once or twice
     api = ApiClient(runconfig.WEBSITE_API_BASEURL)
     try:
         report_start(handid)
+        # create and launch this handler
+        if (callable(handler)):
+            handler = handler()
         exitcode, stdout, stderr = handler.execute()
         # try to convert stdout & stderr to unicode in UTF-8 encoding
         # if not success, report the client has produced non UTF-8 output
@@ -102,6 +105,20 @@ def run_handin(handler, handid, hwid):
 @app.task
 def run_python(handid, hwid, upload, options):
     """Run a given handin as Python."""
+    # The actual creation of `PythonHandin` is delayed until `run_handin` is
+    # started, so that exceptions raised in the constructor can be reported.
     return run_handin(
-        PythonHandin(handid, hwid, upload, options), handid, hwid
+        (lambda: PythonHandin(handid, hwid, upload, options)),
+        handid,
+        hwid
+    )
+
+
+@app.task
+def run_netapi(handid, hwid, remote_addr, options):
+    """Check the given `remote_addr` as NetAPI handin."""
+    return run_handin(
+        (lambda: NetApiHandin(handid, hwid, remote_addr, options)),
+        handid,
+        hwid
     )

@@ -3,7 +3,7 @@
   <!--
     `uuid` is the unique identity for each homework.
   -->
-  <uuid>69e937823ac04e0fbe8cfefd0bb197ab</uuid>
+  <uuid>9f286333b778488c9a14d66aaf559f48</uuid>
 
   <!--
     the readable name of this homework.
@@ -13,8 +13,8 @@
     info node is selected.
   -->
   <names>
-    <name lang="zh-cn">白盒测试</name>
-    <name lang="en">Whitebox Test</name>
+    <name lang="zh-cn">数学运算 API</name>
+    <name lang="en">Arithmetic API</name>
   </names>
 
   <!--
@@ -28,9 +28,9 @@
       <!-- time zone of this due date. default is BABEL_DEFAULT_TIMEZONE -->
       <timezone>Asia/Shanghai</timezone>
       <!-- due date, formatted in YYYY-MM-dd HH:mm:ss -->
-      <date>2014-8-12 23:59:59</date>
+      <date>2014-8-11 23:59:59</date>
       <!-- the score scale factor, range from 0.0 to 1.0 -->
-      <scale>0.8</scale>
+      <scale>1.0</scale>
     </due>
 
     <!--
@@ -39,13 +39,7 @@
     <due>
       <timezone>Asia/Shanghai</timezone>
       <date>2014-8-21 23:59:59</date>
-      <scale>0.4</scale>
-    </due>
-    
-    <due>
-      <timezone>Asia/Shanghai</timezone>
-      <date>2014-8-25 23:59:59</date>
-      <scale>0.2</scale>
+      <scale>0.5</scale>
     </due>
 
     <!--

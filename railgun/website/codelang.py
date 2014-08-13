@@ -17,7 +17,7 @@ from flask.ext.login import current_user
 from .context import app, db
 from .forms import UploadHandinForm, AddressHandinForm
 from .models import Handin
-from railgun.runner.tasks import run_python
+from railgun.runner.tasks import run_python, run_netapi
 from railgun.common.lazy_i18n import gettext_lazy
 
 
@@ -42,8 +42,25 @@ class CodeLanguage(object):
     def upload_form(self, hw):
         """make handin form for given `hw`."""
 
+    def _handle_upload(self, handid, hw, lang, form):
+        pass
+
     def handle_upload(self, handid, hw, lang, form):
         """handle upload request from student."""
+        # save handin into the database
+        handin = self.make_db_record(handid, hw, lang)
+
+        # post the job to run queue
+        try:
+            self._handle_upload(handid, hw, lang, form)
+        except Exception:
+            # if we cannot post to run queue, modify the handin status to error
+            handin.state = 'Rejected'
+            handin.result = gettext_lazy('Could not commit to run queue.')
+            handin.partials = []
+            db.session.commit()
+            # re-raise this exception
+            raise
 
 
 class StandardLanguage(CodeLanguage):
@@ -56,26 +73,11 @@ class StandardLanguage(CodeLanguage):
         """make a handin form that uploads an archive"""
         return UploadHandinForm()
 
-    def handle_upload(self, handid, hw, lang, form):
-        """save uploaded file as UPLOAD_DIR/[handid].[ext]"""
-
-        # save handin into the database
-        handin = self.make_db_record(handid, hw, lang)
-
-        # post the job to run queue
-        try:
-            fcnt = base64.b64encode(form.handin.data.stream.read())
-            run_python.delay(handid, hw.uuid, fcnt, {
-                'filename': form.handin.data.filename
-            })
-        except Exception:
-            # if we cannot post to run queue, modify the handin status to error
-            handin.state = 'Rejected'
-            handin.result = gettext_lazy('Could not commit to run queue.')
-            handin.partials = []
-            db.session.commit()
-            # re-raise this exception
-            raise
+    def _handle_upload(self, handid, hw, lang, form):
+        fcnt = base64.b64encode(form.handin.data.stream.read())
+        run_python.delay(handid, hw.uuid, fcnt, {
+            'filename': form.handin.data.filename
+        })
 
 
 class PythonLanguage(StandardLanguage):
@@ -97,6 +99,9 @@ class NetApiLanguage(CodeLanguage):
 
     def __init__(self):
         super(NetApiLanguage, self).__init__('netapi', 'NetAPI')
+
+    def _handle_upload(self, handid, hw, lang, form):
+        run_netapi.delay(handid, hw.uuid, form.address.data, {})
 
     def upload_form(self, hw):
         """make a handin form that inputs an address"""
