@@ -8,6 +8,7 @@
 /runlib/python/pyhost/CSafeRunner/build
 /dump.rdb
 /.cctpl
+/build
 ._*
 *.*~
 *.pyc
