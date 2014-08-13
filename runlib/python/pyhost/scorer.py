@@ -11,6 +11,7 @@
 
 import pep8
 import unittest
+import re
 from time import time
 
 from railgun.common.fileutil import dirtree
@@ -160,9 +161,8 @@ class CoverageScorer(Scorer):
 
         startTime = time()
 
-        for suites in self.suites_list:
-            for suite in suites:
-                suite.run(unittest.TestResult())
+        for suite in self.suites_list:
+            suite.run(unittest.TestResult())
         self.time = time() - startTime
 
         cov.stop()
@@ -190,11 +190,12 @@ class CoverageScorer(Scorer):
         )
 
     @staticmethod
-    def FromHandinDir(files_to_coverage, ignore_files=None):
+    def FromHandinDir(files_to_coverage, ignore_files=None, accepted_pattern='.*\.py$'):
         """Create a `CodeStyleScorer` for all files under handin directory
         except `ignore_files`."""
         ignore_files = ignore_files or []
         all_files = dirtree('.')
         suite_files = set(all_files) - set(ignore_files)
+        suite_files = filter(lambda name: re.match(accepted_pattern, name), suite_files)
 
         return CoverageScorer(suite_files, files_to_coverage)
