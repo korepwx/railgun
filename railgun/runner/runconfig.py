@@ -26,10 +26,16 @@ CELERY_ROUTES = {
 CELERY_IMPORTS = ()
 
 ## Date and time settings
-CELERY_TIMEZONE = 'Asia/Shanghai'
+CELERY_TIMEZONE = DEFAULT_TIMEZONE
 CELERY_ENABLE_UTC = True
 
 ## serialization settings
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_SERIALIZER = 'json'
 CELERY_ACCEPT_CONTENT = ['json']
+
+# Load un-versioned general config values from config/general.py
+LoadConfig(
+    sys.modules[__name__],
+    os.path.join(RAILGUN_ROOT, 'config/runner.py')
+)

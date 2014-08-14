@@ -9,11 +9,28 @@
 # This file is released under BSD 2-clause license.
 
 """
-this file contains common configurations shared by website and runner
+This file contains common configurations shared by website and runner
 Flask and Celery specified configurations can be found in each directory.
+
+Since this file is version controlled by git, modify this file directly for
+production environment is not recommended. Modify config/general.py instead.
 """
 
 import os
+import re
+import sys
+
+
+# Utility to load config values from external file
+def LoadConfig(obj, fpath):
+    """Load config values from `fpath` into `obj`."""
+    if (os.path.isfile(fpath)):
+        values = {}
+        execfile(fpath, {}, values)
+        p = re.compile('^[A-Z][A-Z_]*$')
+        for k, v in values.iteritems():
+            if (p.match(k)):
+                setattr(obj, k, v)
 
 # RAILGUN_ROOT stores the path of railgun project
 RAILGUN_ROOT = os.path.realpath(os.path.dirname(__file__))
@@ -24,7 +41,7 @@ DEFAULT_LOCALE = 'en'
 
 # DEFAULT_TIMEZONE is used to represent the date and times when user
 # configuration is not available.
-DEFAULT_TIMEZONE = 'Asia/Shanghai'
+DEFAULT_TIMEZONE = 'UTC'
 
 # DEFAULT_HIDE_RULES hides particular files from all homework packs
 DEFAULT_HIDE_RULES = (
@@ -62,3 +79,9 @@ RUNNER_DEFAULT_TIMEOUT = 10
 
 # WEBSITE_API_BASEURL tells runner what is the base url of api client
 WEBSITE_API_BASEURL = 'http://localhost:5000/api'
+
+# Load un-versioned general config values from config/general.py
+LoadConfig(
+    sys.modules[__name__],
+    os.path.join(RAILGUN_ROOT, 'config/general.py')
+)

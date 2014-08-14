@@ -12,8 +12,7 @@ import os
 from config import *
 
 # When DEBUG is set to True, Flask debugging console will be enabled.
-DEBUG = True
-USE_DEBUG_TOOLBAR = False
+DEBUG = False
 
 # SECRET_KEY is the private key for session encryption.
 SECRET_KEY = (
@@ -39,6 +38,8 @@ SQLALCHEMY_DATABASE_URI = (
     'sqlite:///%s' % os.path.join(RAILGUN_ROOT, 'db/main.db')
 )
 
-# DEBUG_TB_INTERCEPT_REDIRECTS disables flask-DebugToolBar redirection
-# hook
-DEBUG_TB_INTERCEPT_REDIRECTS = False
+# Load un-versioned general config values from config/general.py
+LoadConfig(
+    sys.modules[__name__],
+    os.path.join(RAILGUN_ROOT, 'config/website.py')
+)
