@@ -9,7 +9,7 @@
 # This file is released under BSD 2-clause license.
 
 import logging
-from logging import RotatingFileHandler
+from logging.handlers import RotatingFileHandler
 from railgun.website.context import app
 
 
