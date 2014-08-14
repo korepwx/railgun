@@ -29,6 +29,7 @@ from .hw import homeworks
 
 @app.route('/')
 def index():
+    g.scripts.headScripts()
     # only logged user can see the homeworks
     if (current_user.is_authenticated()):
         pass

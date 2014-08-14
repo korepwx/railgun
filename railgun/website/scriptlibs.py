@@ -24,7 +24,10 @@ class Version(object):
         self.set(version)
 
     def __str__(self):
-        return '.'.join([str(v) for v in self.version])
+        return '.'.join([str(v) for v in self.data])
+
+    def __repr__(self):
+        return '<Version(%s)>' % str(self)
 
     def __cmp__(self, other):
         for a, b in izip_longest(self.data, other.data):
@@ -57,11 +60,14 @@ class Dependency(object):
         else:
             return self.pkgname
 
+    def __repr__(self):
+        return '<Dependency(%s)>' % str(self)
+
     def set(self, requirement):
         """Set the requirement value."""
         if (isinstance(requirement, Dependency)):
             self.pkgname = requirement.pkgname
-            self.pgkver = requirement.pkgver
+            self.pkgver = requirement.pkgver
             self.veropt = requirement.veropt
             self._checker = requirement._checker
             return
@@ -78,7 +84,7 @@ class Dependency(object):
 
         # Setup dependency params
         self.pkgname = m['name']
-        self.pkgver = m['ver']
+        self.pkgver = Version(m['ver']) if m['ver'] else None
         self.veropt = m['opt']
         if (self.veropt):
             self._checker = {
@@ -105,7 +111,10 @@ class DependencySet(object):
         self.data = {d.pkgname: d for d in deps}
 
     def __iter__(self):
-        return iter(self.data)
+        return iter(self.data.itervalues())
+
+    def __repr__(self):
+        return repr(self.data)
 
     def deps(self, requirement):
         deps = Dependency(requirement)
@@ -145,6 +154,9 @@ class ScriptLib(object):
 
     def __str__(self):
         return '%s %s' % (self.name, self.version)
+
+    def __repr__(self):
+        return '<Script(%s)>' % str(self)
 
     def deps(self, requirement):
         """Add dependency on ScriptLib `requirement`."""
@@ -188,7 +200,7 @@ class PageScripts(object):
         self._deporder = None
 
     def _depScript(self, dep):
-        """Get the script object from `dep`."""
+        """Get the script object from `dep` object."""
         dep = Dependency(dep)
         script = scripts.getScript(dep.pkgname)
         if (not script):
@@ -197,8 +209,8 @@ class PageScripts(object):
             )
         if (not dep.check(script.version)):
             raise ValueError(
-                'Dependency "%s" cannot satisfy: only "%s" is installed.' %
-                (dep, script)
+                'Dependency "%s" cannot satisfy: installed version is %s.' %
+                (dep, script.version)
             )
         return script
 
@@ -257,7 +269,7 @@ class PageScripts(object):
 @app.before_request
 def __inject_page_scripts():
     g.scripts = PageScripts(deps=[
-        'railgun >= 1.0'
+        'railgun >= 1.0',
     ])
 
 
