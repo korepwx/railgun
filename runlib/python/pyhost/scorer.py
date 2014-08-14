@@ -78,8 +78,7 @@ class UnitTestScorer(Scorer):
         self.score = 100.0 * success / total
         # format the brief report
         self.brief = gettext_lazy(
-            'Ran %(total)d tests in %(time).3f seconds, while '
-            '%(success)d tests passed.',
+            '%(success)d out of %(total)d tests passed',
             total=total, time=self.time, success=success
         )
         # format the detailed report
@@ -124,7 +123,7 @@ class CodeStyleScorer(Scorer):
                 total=total_file, trouble=trouble_file
             )
         else:
-            self.brief = gettext_lazy('All files passed PEP8 code style check.')
+            self.brief = gettext_lazy('All files passed PEP8 code style check')
 
         # format detailed reports
         self.detail = result.build_report()
@@ -171,21 +170,39 @@ class CoverageScorer(Scorer):
         total_miss = 0
         self.detail = []
         for filename in self.filelist:
-            (name, exec_statements, miss_statement, formatted) = \
+            (name, exec_stmt, miss_stmt, formatted) = \
                 cov.analysis(filename)
-            total_exec += len(exec_statements)
-            total_miss += len(miss_statement)
+            total_exec += len(exec_stmt)
+            total_miss += len(miss_stmt)
+            # convert exec_stmt and miss_stmt to set so that we can query
+            # about one line fastly
+            exec_stmt = set(exec_stmt)
+            miss_stmt = set(miss_stmt)
+            # gather all lines into detail report
+            srctext = []
+            with open(filename, 'rb') as fsrc:
+                for i, s in enumerate(fsrc, 1):
+                    if i in miss_stmt:
+                        srctext.append('- %s' % s.rstrip())
+                    elif i in exec_stmt:
+                        srctext.append('+ %s' % s.rstrip())
+                    else:
+                        srctext.append('  %s' % s.rstrip())
+            # compose final detail
+            srctext = '\n'.join(srctext)
             self.detail.append(gettext_lazy(
-                '%(filename)s: missing %(formatted)s\n',
-                filename=filename, formatted=formatted
+                '%(filename)s: %(miss)d lines not covered.\n'
+                '%(sep)s\n'
+                '%(source)s',
+                filename=filename, sep='-' * 70, miss=len(miss_stmt),
+                source=srctext
             ))
 
         self.cover_rate = 100 - 100.0 * total_miss / total_exec
         self.score = self.cover_rate
 
         self.brief = gettext_lazy(
-            'Ran coverage in %(time).3f seconds,'
-            ' coverage rate: %(cover_rate)2.1f%%',
+            'Coverage rate: %(cover_rate)2.1f%%',
             time=self.time, cover_rate=self.cover_rate
         )
 
@@ -255,7 +272,7 @@ class InputClassScorer(Scorer):
             # total up score by len(covered) / total_classes
             self.score = 100.0 * len(covered) / len(self.check_classes)
             self.brief = gettext_lazy(
-                'Covered %(cover)s input classes out of %(total)s.',
+                'Covered %(cover)s input classes out of %(total)s',
                 cover=len(covered), total=len(self.check_classes)
             )
             # build more detailed report
