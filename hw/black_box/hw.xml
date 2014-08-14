@@ -1,0 +1,84 @@
+<?xml version="1.0"?>
+<homework>
+  <!--
+    `uuid` is the unique identity for each homework.
+  -->
+  <uuid>ad19289bde3b496b88ef2421b2f2e153</uuid>
+
+  <!--
+    the readable name of this homework.
+
+    translation is supported by "lang" attribute. If no best match is found,
+    lang = BABEL_DEFAULT_LOCALE is selected. If still not found, the last
+    info node is selected.
+  -->
+  <names>
+    <name lang="zh-cn">黑盒测试</name>
+    <name lang="en">Blackbox Test</name>
+  </names>
+
+  <!--
+    deadlines and score factors of this homework
+  -->
+  <deadlines>
+    <!--
+      the due date for full-score submissions
+    -->
+    <due>
+      <!-- time zone of this due date. default is BABEL_DEFAULT_TIMEZONE -->
+      <timezone>Asia/Shanghai</timezone>
+      <!-- due date, formatted in YYYY-MM-dd HH:mm:ss -->
+      <date>2014-8-12 23:59:59</date>
+      <!-- the score scale factor, range from 0.0 to 1.0 -->
+      <scale>0.8</scale>
+    </due>
+
+    <!--
+      the due date for half-score submissions
+    -->
+    <due>
+      <timezone>Asia/Shanghai</timezone>
+      <date>2014-8-21 23:59:59</date>
+      <scale>0.4</scale>
+    </due>
+    
+    <due>
+      <timezone>Asia/Shanghai</timezone>
+      <date>2014-8-25 23:59:59</date>
+      <scale>0.2</scale>
+    </due>
+
+    <!--
+      the due date for no-score submissions
+    -->
+    <due>
+      <date>2014-8-31 23:59:59</date>
+      <scale>0.0</scale>
+    </due>
+  </deadlines>
+
+  <!--
+    whether this homework should report details of mismatch results and
+    runtime errors?
+  -->
+  <reportAll>true</reportAll>
+
+  <!--
+    rules of files in homework root directory.
+
+    there are 4 types of rules: accept, lock and hide, deny.
+
+    accepted and locked files will be given to students, but hidden and denied
+    files wil not.
+
+    accepted files can be overwritten by students. locked and hidden files
+    cannot. denied files cannot be overwritten, and once received, a 403
+    forbidden will be raised, so that such handins will not be accepted.
+
+    rules are applied in order. once any rule is matched, the other rules will
+    be ignored. if no rule is matched, file will be locked.
+
+    note that `code` and `readme` directory are defaultly marked as hidden.
+  -->
+  <files />
+</homework>

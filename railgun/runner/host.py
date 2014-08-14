@@ -208,3 +208,10 @@ class NetApiHost(PythonHost):
     def __init__(self, remote_addr, uuid, hw):
         super(NetApiHost, self).__init__(uuid, hw, 'netapi')
         self.config.remote_addr = remote_addr
+
+
+class InputClassHost(PythonHost):
+    """NetAPI handin running host"""
+
+    def __init__(self, uuid, hw):
+        super(InputClassHost, self).__init__(uuid, hw, 'input')

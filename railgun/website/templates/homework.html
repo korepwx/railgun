@@ -39,17 +39,21 @@
   </div>
 
   <!-- Homework attachments here -->
-  <div class="hw-attach panel panel-default">
-    <div class="panel-heading">{{ _('Attachments') }}</div>
-    <div class="panel-body">
-      {% for c in hwlangs -%}
-        <div class="lang">
-          <a href="{{ hw.attach_url(c) }}">{{ c | codelang }}</a>
-          <span class="size">({{ hw.attach_size(c) | sizeformat }})</span>
-        </div>
-      {%- endfor %}
+  {% if hw.count_attach() > 0 -%}
+    <div class="hw-attach panel panel-default">
+      <div class="panel-heading">{{ _('Attachments') }}</div>
+      <div class="panel-body">
+        {% for c in hwlangs -%}
+          {% if hw.get_code(c).has_attach -%}
+            <div class="lang">
+              <a href="{{ hw.attach_url(c) }}">{{ c | codelang }}</a>
+              <span class="size">({{ hw.attach_size(c) | sizeformat }})</span>
+            </div>
+          {%- endif %}
+        {%- endfor %}
+      </div>
     </div>
-  </div>
+  {%- endif %}
 
   <!-- Homework deadlines here -->
   {% set next_ddl = hw.get_next_deadline() -%}

@@ -11,10 +11,23 @@
 from flask_wtf import Form
 from flask_wtf.file import FileField, FileAllowed, FileRequired
 from wtforms import StringField, PasswordField
+from wtforms.widgets import TextArea
 from wtforms.validators import DataRequired, Length, Email, InputRequired, \
     EqualTo, Regexp, URL
 
 from flask.ext.babel import lazy_gettext as _
+
+
+class HandinTextArea(TextArea):
+    """Text area that is customized to be put in Handin Form."""
+
+    def __init__(self, rows=10):
+        super(HandinTextArea, self).__init__()
+        self.rows = rows
+
+    def __call__(self, field, **kwargs):
+        kwargs.setdefault('rows', self.rows)
+        return super(HandinTextArea, self).__call__(field, **kwargs)
 
 
 class SignupForm(Form):
@@ -88,3 +101,13 @@ class AddressHandinForm(Form):
             URL(message=_('Please input a valid url address!'),
                 require_tld=False)
         ])
+
+
+class CsvHandinForm(Form):
+    """Form form `homework` view that handin a CSV file."""
+
+    csvdata = StringField(
+        _('Csv data:'),
+        validators=[InputRequired()],
+        widget=HandinTextArea()
+    )

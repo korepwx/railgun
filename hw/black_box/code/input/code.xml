@@ -4,8 +4,8 @@
     Whether or not this code package provides downloadable attachment for
     the students?
   -->
-  <attachment>true</attachment>
-
+  <attachment>false</attachment>
+  
   <!--
     The compiler settings.
 
@@ -17,12 +17,13 @@
   <!--
     The runner settings. same as compiler settings.
   -->
-  <runner entry="run.py" />
+  <runner entry="run.py" timeout="3" />
 
   <!--
     The file acceptable rules.
   -->
   <files>
     <hide>^run\.py$</hide>
+    <lock>^data\.csv$</lock>
   </files>
 </code>

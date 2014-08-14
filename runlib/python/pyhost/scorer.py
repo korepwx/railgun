@@ -17,6 +17,7 @@ from time import time
 
 from railgun.common.fileutil import dirtree
 from railgun.common.lazy_i18n import gettext_lazy
+from railgun.common.csvdata import CsvSchema
 from .errors import ScorerFailure
 from .utility import UnitTestScorerDetailResult, Pep8DetailReport
 from coverage import coverage
@@ -45,7 +46,9 @@ class Scorer(object):
         """Run the testing module and generate the score. If a `ScorerFailure`
         is generated, the score will be set to 0.0."""
         try:
+            startTime = time()
             self._run()
+            self.time = time() - startTime
         except ScorerFailure, ex:
             self.brief = ex.brief
             self.detail = ex.detail
@@ -66,9 +69,7 @@ class UnitTestScorer(Scorer):
             self.suite = self.suite()
         # get the result of unittest
         result = UnitTestScorerDetailResult()
-        startTime = time()
         self.suite.run(result)
-        self.time = time() - startTime
         # format score and reports according to unittest result
         total = self.suite.countTestCases()
         errors, failures = map(len, (result.errors, result.failures))
@@ -161,9 +162,7 @@ class CoverageScorer(Scorer):
         # Run the test suite
         # the `result` is now ignored, but we can get use of it if necessary
         result = UnitTestScorerDetailResult()
-        startTime = time()
         self.suite.run(result)
-        self.time = time() - startTime
 
         cov.stop()
 
@@ -208,3 +207,76 @@ class CoverageScorer(Scorer):
 
         suite = lambda: unittest.TestLoader().loadTestsFromNames(test_modules)
         return CoverageScorer(suite, files_to_cover)
+
+
+class InputClassScorer(Scorer):
+    """Scorer to the input data for BlackBox testing."""
+
+    def __init__(self, schema, csvdata, check_classes=None):
+        """Construct a new `InputClassScorer` on given `csvdata`, checked by
+        rules defined in `check_classes`."""
+
+        super(InputClassScorer, self).__init__(
+            gettext_lazy('InputClass Scorer')
+        )
+
+        self.schema = schema
+        self.csvdata = csvdata
+        self.check_classes = check_classes or []
+
+    def getDescription(self, check_class):
+        """Get the description for given `check_class`."""
+
+        if (hasattr(check_class, 'description')):
+            return getattr(check_class, 'description')
+        if (hasattr(check_class, '__name__')):
+            return getattr(check_class, '__name__')
+        return str(check_class)
+
+    def rule(self, description):
+        """Decorator to add given `method` into `check_classes`."""
+        def outer(method):
+            """Direct decorator on `method` which set method.description."""
+            setattr(method, 'description', description)
+            self.check_classes.append(method)
+            return method
+        return outer
+
+    def _run(self):
+        try:
+            self.detail = []
+            covered = set()
+            for obj in CsvSchema.LoadCSV(self.schema, self.csvdata):
+                # each record should be sent to all check classes, to see
+                # what classes it covered
+                for i, c in enumerate(self.check_classes):
+                    if c(obj):
+                        covered.add(i)
+            # total up score by len(covered) / total_classes
+            self.score = 100.0 * len(covered) / len(self.check_classes)
+            self.brief = gettext_lazy(
+                'Covered %(cover)s input classes out of %(total)s.',
+                cover=len(covered), total=len(self.check_classes)
+            )
+            # build more detailed report
+            for i, c in enumerate(self.check_classes):
+                if i in covered:
+                    self.detail.append(gettext_lazy(
+                        'COVERED: %(checker)s',
+                        checker=self.getDescription(c)
+                    ))
+                else:
+                    self.detail.append(gettext_lazy(
+                        'NOT COVERED: %(checker)s',
+                        checker=self.getDescription(c)
+                    ))
+        except KeyError, ex:
+            raise ScorerFailure(
+                brief=gettext_lazy('CSV data does not match schema.'),
+                detail=[ex.args[0]]
+            )
+        except ValueError, ex:
+            raise ScorerFailure(
+                brief=gettext_lazy('CSV data does not match schema.'),
+                detail=[ex.args[0]]
+            )

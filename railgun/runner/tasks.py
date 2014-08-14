@@ -11,7 +11,7 @@
 from . import runconfig
 from .apiclient import ApiClient
 from .context import app, logger
-from .handin import PythonHandin, NetApiHandin
+from .handin import PythonHandin, NetApiHandin, InputClassHandin
 from .errors import RunnerError, InternalServerError, NonUTF8OutputError
 from railgun.common.hw import HwScore
 from railgun.common.lazy_i18n import gettext_lazy
@@ -119,6 +119,16 @@ def run_netapi(handid, hwid, remote_addr, options):
     """Check the given `remote_addr` as NetAPI handin."""
     return run_handin(
         (lambda: NetApiHandin(handid, hwid, remote_addr, options)),
+        handid,
+        hwid
+    )
+
+
+@app.task
+def run_input(handid, hwid, csvdata, options):
+    """Run black-box test with given `csvdata`."""
+    return run_handin(
+        (lambda: InputClassHandin(handid, hwid, csvdata, options)),
         handid,
         hwid
     )

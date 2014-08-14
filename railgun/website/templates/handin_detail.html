@@ -23,7 +23,7 @@
         <td>{{ handin.ctime | datetimeformat }}</td>
       </tr>
       <tr>
-        <th>{{ _('Code Language') }}</th>
+        <th>{{ _('Handin Type') }}</th>
         <td>{{ handin.lang | codelang }}</td>
       </tr>
       {% if handin.is_accepted() -%}

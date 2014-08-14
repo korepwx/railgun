@@ -15,9 +15,9 @@ from flask.ext.babel import lazy_gettext
 from flask.ext.login import current_user
 
 from .context import app, db
-from .forms import UploadHandinForm, AddressHandinForm
+from .forms import UploadHandinForm, AddressHandinForm, CsvHandinForm
 from .models import Handin
-from railgun.runner.tasks import run_python, run_netapi
+from railgun.runner.tasks import run_python, run_netapi, run_input
 from railgun.common.lazy_i18n import gettext_lazy
 
 
@@ -107,10 +107,26 @@ class NetApiLanguage(CodeLanguage):
         """make a handin form that inputs an address"""
         return AddressHandinForm()
 
+
+class InputLanguage(CodeLanguage):
+    """code language that accepts a CSV data as black-box input."""
+
+    def __init__(self):
+        super(InputLanguage, self).__init__('input', 'CsvData')
+
+    def _handle_upload(self, handid, hw, lang, form):
+        run_input.delay(handid, hw.uuid, form.csvdata.data, {})
+
+    def upload_form(self, hw):
+        """make a handin form that inputs CSV data"""
+        return CsvHandinForm()
+
+
 languages = {
     'python': PythonLanguage(),
     'java': JavaLanguage(),
-    'netapi': NetApiLanguage()
+    'netapi': NetApiLanguage(),
+    'input': InputLanguage(),
 }
 
 

@@ -14,7 +14,7 @@ import base64
 from . import runconfig
 from .hw import homeworks
 from .errors import InternalServerError, LanguageNotSupportError
-from .host import PythonHost, NetApiHost
+from .host import PythonHost, NetApiHost, InputClassHost
 from railgun.common.fileutil import Extractor
 
 
@@ -98,9 +98,27 @@ class NetApiHandin(BaseHandin):
         self.remote_addr = upload
 
     def execute(self):
-        """Execute this handin as NetAPI script. Shoudl return
+        """Execute this handin as NetAPI script. Should return
         (exitcode, stdout, stderr)."""
 
         with NetApiHost(self.remote_addr, self.handid, self.hw) as host:
             host.prepare_hwcode()
+            return host.run()
+
+
+class InputClassHandin(BaseHandin):
+    """Input class handin management."""
+
+    def __init__(self, handid, hwid, upload, options):
+        super(InputClassHandin, self).__init__(handid, hwid, 'input', upload,
+                                               options)
+
+    def execute(self):
+        """Execute this handin as InputClass script. Should return
+        (exitcode, stdout, stderr)."""
+
+        with InputClassHost(self.handid, self.hw) as host:
+            host.prepare_hwcode()
+            with open(os.path.join(host.tempdir.path, 'data.csv'), 'wb') as f:
+                f.write(self.upload)
             return host.run()

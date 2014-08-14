@@ -13,6 +13,7 @@ from datetime import datetime
 
 from markdown import markdown
 from flask import g
+from flask.ext.babel import get_locale
 from flask.ext.babel import gettext as _
 from babel.dates import format_timedelta
 
@@ -54,9 +55,11 @@ def __inject_markdown_filter(text):
 # if given paramter is datetime object, it will be compared to g.utcnow
 @app.template_filter(name='timedelta')
 def __inject_template_timedelta(o):
+    if (not o):
+        return None
     if (isinstance(o, datetime)):
         o = o - g.utcnow
-    return format_timedelta(o)
+    return format_timedelta(o, locale=get_locale())
 
 
 # format size into human readable string
@@ -76,6 +79,8 @@ def __inject_template_sizeformat(size):
 # get a suitable bootstrap class name according to time delta
 @app.template_filter(name='duecolor')
 def __inject_template_duecolor(delta_or_date):
+    if (not delta_or_date):
+        return None
     if (isinstance(delta_or_date, datetime)):
         delta_or_date = delta_or_date - g.utcnow
     # exam the time delta through absolute second count

@@ -137,6 +137,8 @@ class HwCode(object):
         # the programming language of this code package
         self.lang = lang
 
+        # whether or not this code package provides attachment
+        self.has_attach = True
         # the compiler parameters of this code package
         self.compiler_params = None
         # the runner parameters of this code package
@@ -154,6 +156,12 @@ class HwCode(object):
         ret = HwCode(path, lang)
         tree = ElementTree.parse(os.path.join(path, 'code.xml'))
         root = tree.getroot()
+
+        # whether or not this HwCode provides download attachment
+        # default value is True if not given
+        has_attach_node = root.find('attachment')
+        ret.has_attach = ((has_attach_node is None) or
+                          parse_bool(has_attach_node.text))
 
         # store compiler & runner param nodes
         ret.compiler_params = root.find('compiler')
@@ -276,6 +284,14 @@ class Homework(object):
     def get_code(self, lang):
         """Get HwCode instance for `lang`"""
         return [c for c in self.codes if c.lang == lang][0]
+
+    def count_attach(self):
+        """Count the number of HwCode packages having attachment."""
+        ret = 0
+        for c in self.codes:
+            if (c.has_attach):
+                ret += 1
+        return ret
 
     def pack_assignment(self, lang, filename):
         """Pack assignment zipfile for `lang` programming language."""

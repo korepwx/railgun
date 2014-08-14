@@ -1,6 +1,12 @@
 <?xml version="1.0"?>
 <code>
   <!--
+    Whether or not this code package provides downloadable attachment for
+    the students?
+  -->
+  <attachment>true</attachment>
+
+  <!--
     The compiler settings.
 
     all children will be converted to `ConfigNode` instances. see more details

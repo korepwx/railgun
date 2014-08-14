@@ -37,6 +37,9 @@ for hw_name in os.listdir(config.HOMEWORK_DIR):
 
         # make packed archive for each programming language
         for lang in hw.get_code_languages():
+            # Some code package may not provide downloadable attachment
+            if (not hw.get_code(lang).has_attach):
+                continue
             archive_path = os.path.join(hw_pack_path, '%s.zip' % lang)
             hw.pack_assignment(lang, archive_path)
             print('packed %s' % archive_path)

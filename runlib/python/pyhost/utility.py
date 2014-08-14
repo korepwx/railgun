@@ -13,6 +13,7 @@ import re
 import pep8
 import unittest
 import traceback
+from functools import wraps
 
 from railgun.common.lazy_i18n import gettext_lazy
 
