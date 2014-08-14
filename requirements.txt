@@ -13,6 +13,7 @@ markdown >= 2.4.1
 pygments >= 1.6
 redis >= 2.10.1
 pycrypto >= 2.6.1
+pynacl
 coverage >= 3.7.1
 pep8 >= 1.5.7
 python-ldap >= 2.4.15
