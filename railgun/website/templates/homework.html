@@ -29,10 +29,6 @@
 {% block subtitle -%}
 {{ hw.info.name }} - {{ _('Homework') }}
 {%- endblock %}
-{% block headScripts %}
-<!-- This css file controls the visual style of highlighted code block -->
-<link href="{{ url_for('static', filename='css/codehilite.css') }}" rel="stylesheet">
-{% endblock %}
 {% block content -%}
   <h3 class="hw-heading">{{ hw.info.name }}</h3>
   

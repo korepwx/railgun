@@ -6,11 +6,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>{% block title %}{% block subtitle %}{% endblock %} - {{ _('Railgun') }}{% endblock %}</title>
 
-    <!-- Bootstrap -->
-    <link href="{{ url_for('static', filename='css/bootstrap.min.css') }}" rel="stylesheet">
+    <!-- Stylesheets in head -->
+    {% for s in g.scripts.headStyles() -%}
+      <link href="{{ s }}" rel="stylesheet">
+    {%- endfor %}
 
-    <!-- Railgun project common css -->
-    <link href="{{ url_for('static', filename='css/railgun.css') }}" rel="stylesheet">
+    <!-- Javascript libraries in head -->
+    {% for s in g.scripts.headScripts() -%}
+      <script src="{{ s }}" type="text/javascript" language="javascript"></script>
+    {%- endfor %}
+
 
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -18,7 +23,6 @@
       <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
       <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
     <![endif]-->
-    {% block headScripts %}{% endblock %}
   </head>
   <body>
     <!-- General navigation bar -->
@@ -105,10 +109,9 @@
     </div>
     {%- endblock %}<!-- /.container -->
 
-    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
-    <script src="{{ url_for('static', filename='js/jquery-1.11.1.min.js') }}"></script>
-    <!-- Include all compiled plugins (below), or include individual files as needed -->
-    <script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
-    {% block tailScripts %}{% endblock %}
+    <!-- Javascript libraries in tail -->
+    {% for s in g.scripts.tailScripts() -%}
+      <script src="{{ s }}" type="text/javascript" language="javascript"></script>
+    {%- endfor %}
   </body>
 </html>

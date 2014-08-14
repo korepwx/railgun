@@ -13,6 +13,7 @@ from config import *
 
 # When DEBUG is set to True, Flask debugging console will be enabled.
 DEBUG = True
+USE_DEBUG_TOOLBAR = False
 
 # SECRET_KEY is the private key for session encryption.
 SECRET_KEY = (

@@ -25,6 +25,6 @@ csrf = CsrfProtect(app)
 db = SQLAlchemy(app)
 
 # Create the debugging toolbar
-if app.config['DEBUG']:
+if app.config['DEBUG'] and app.config['USE_DEBUG_TOOLBAR']:
     from flask_debugtoolbar import DebugToolbarExtension
     toolbar = DebugToolbarExtension(app)
