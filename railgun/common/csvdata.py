@@ -62,6 +62,16 @@ class CsvFloat(CsvField):
         return float(value)
 
 
+class CsvBoolean(CsvField):
+    def _parseString(self, value):
+        val = value.lower()
+        if (val in ('true', 'on', '1', 'yes')):
+            return True
+        if (val in ('false', 'off', '0', 'no')):
+            return False
+        raise ValueError('%s is not a boolean value.' % value)
+
+
 class CsvSchema(object):
     """Represent a data schema on CSV file."""
 
@@ -103,3 +113,23 @@ class CsvSchema(object):
             for f, g in field_getter.iteritems():
                 setattr(obj, f, g(row))
             yield obj
+
+    @staticmethod
+    def SaveCSV(cls, fileobj, items):
+        writer = csv.writer(fileobj)
+
+        # Given attrname, field, get the field name
+        def FieldName(attrname, field):
+            return field.name if field.name else attrname
+
+        # Collect meta data
+        attrs = [(k, v) for k, v in cls.__dict__.iteritems()
+                 if isinstance(v, CsvField)]
+
+        # Write the header
+        writer.writerow([FieldName(v) for k, v in attrs])
+
+        # Write value rows
+        for itm in items:
+            writer.writerow([v.toString(getattr(itm, k))
+                             for k, v in attrs])

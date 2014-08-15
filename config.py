@@ -35,6 +35,10 @@ def LoadConfig(obj, fpath):
 # RAILGUN_ROOT stores the path of railgun project
 RAILGUN_ROOT = os.path.realpath(os.path.dirname(__file__))
 
+# ALLOW_SIGNUP determines whether the railgun website allows new user
+# sign up.
+ALLOW_SIGNUP = True
+
 # DEFAULT_LOCALE is selected to serve the client when prefered locale
 # is not available.
 DEFAULT_LOCALE = 'en'

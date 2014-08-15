@@ -24,11 +24,20 @@ HANDIN_STATES = (_('Pending'), _('Running'), _('Rejected'), _('Accepted'))
 class User(db.Model):
     __tablename__ = 'users'
 
-    # User passport
+    # Primary key of the table
     id = db.Column(db.Integer, db.Sequence('user_id_seq'), primary_key=True)
+
+    # Which authenticate provider does this user come from?
+    # If None or empty, this user does not come from external providers.
+    provider = db.Column(db.String(32), default='')
+
+    # User passport
     name = db.Column(db.String(50), unique=True)
     email = db.Column(db.String(80), unique=True)
     password = db.Column(db.String(50))
+
+    # Whether this user is admin?
+    is_admin = db.Column(db.Boolean, default=False)
 
     # Relationship between User and final score records
     scores = db.relationship('FinalScore')

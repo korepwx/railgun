@@ -22,6 +22,7 @@ from .context import app, db
 from .navibar import navigates, NaviItem, set_navibar_identity
 from .forms import SignupForm, SigninForm, ProfileForm
 from .credential import UserContext
+from .userauth import authenticate
 from .codelang import languages
 from .models import User, Handin
 from .hw import homeworks
@@ -60,6 +61,10 @@ def test_page():
 
 @app.route('/signup/', methods=['GET', 'POST'])
 def signup():
+    # If railgun does not allow new user signup, show 403 forbidden
+    # TODO: beautify this page.
+    if (not app.config['ALLOW_SIGNUP']):
+        return _('Sign up is turned off.'), 403
     form = SignupForm()
     if (form.validate_on_submit()):
         # Construct user data object
@@ -93,15 +98,11 @@ def signin():
     next_url = request.args.get('next')
     if (form.validate_on_submit()):
         # Check whether the user exists
-        user = db.session.query(User).filter(
-            or_(User.name == form.login.data, User.email == form.login.data)
-        ).first()
-        # Check whether password match
+        user = authenticate(form.login.data, form.password.data)
         if (user):
-            if (user.check_password(form.password.data)):
-                # Now we can login this user and redirect to index!
-                login_user(UserContext(user))
-                return redirect(next_url or url_for('index'))
+            # Now we can login this user and redirect to index!
+            login_user(UserContext(user))
+            return redirect(next_url or url_for('index'))
         # Report username or password error
         flash(_('Incorrect username or password.'), 'danger')
     return render_template('signin.html', form=form, next=next_url)
