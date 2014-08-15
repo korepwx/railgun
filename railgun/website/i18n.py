@@ -24,10 +24,13 @@ babel = Babel(app)
 # However the browser reports zh_CN.  So load the alias names to locales
 # here.
 def __load_aliases():
-    aliases_file = os.path.dirname(__file__)
     ret = {}
+    aliases_path = os.path.join(
+        app.config['RAILGUN_ROOT'],
+        'translations/aliases.txt'
+    )
     try:
-        f = open(os.path.join(aliases_file, 'translations/aliases.txt'), 'rb')
+        f = open(aliases_path, 'rb')
         for l in f:
             arr = l.split('=')
             if (len(arr) < 2):
