@@ -73,6 +73,9 @@ UPLOAD_DIR = os.path.join(RAILGUN_ROOT, 'upload')
 # RUNLIB_DIR is the root directory of all host libraries
 RUNLIB_DIR = os.path.join(RAILGUN_ROOT, 'runlib')
 
+# TRANSLATION_DIR is the root directory of all translation resources
+TRANSLATION_DIR = os.path.join(RAILGUN_ROOT, 'railgun/website/translations')
+
 # RUNNER_DEFAULT_TIMEOUT controls the default timeout config for testing
 # module to run
 RUNNER_DEFAULT_TIMEOUT = 10

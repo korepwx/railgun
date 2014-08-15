@@ -25,10 +25,7 @@ babel = Babel(app)
 # here.
 def __load_aliases():
     ret = {}
-    aliases_path = os.path.join(
-        app.config['RAILGUN_ROOT'],
-        'translations/aliases.txt'
-    )
+    aliases_path = os.path.join(app.config['TRANSLATION_DIR'], 'aliases.txt')
     try:
         f = open(aliases_path, 'rb')
         for l in f:
