@@ -38,6 +38,15 @@ SQLALCHEMY_DATABASE_URI = (
     'sqlite:///%s' % os.path.join(RAILGUN_ROOT, 'db/main.db')
 )
 
+# LDAP Authentication related
+LDAP_ADMIN_KEY = (
+    open(os.path.join(RAILGLUN_ROOT, 'keys/ldapKey.txt'), 'rb').read().strip()
+)
+
+LDAP_BASE_DN = 'ou=People,dc=secoder,dc=net'
+LDAP_ADMIN_DN = 'cn=admin,dc=secoder,dc=net'
+LDAP_URL = 'ldap://localhost'
+
 # Load un-versioned general config values from config/general.py
 LoadConfig(
     sys.modules[__name__],
