@@ -1,76 +1,11 @@
-
 msgid ""
 msgstr ""
-"Project-Id-Version:  railgun\n"
-"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2014-08-15 18:14+0800\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: zh_Hans_CN <LL@li.org>\n"
-"Plural-Forms: nplurals=2; plural=(n != 1)\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=utf-8\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 1.3\n"
-
-#: railgun/common/csvdata.py:37
-#, python-format
-msgid "Cannot convert \"%(value)s\" to %(type)s."
-msgstr ""
-
-#: railgun/common/csvdata.py:93
-#, python-format
-msgid "Field \"%(field)s\" not found in CSV data."
-msgstr ""
-
-#: railgun/runner/errors.py:26
-#, fuzzy
-msgid "Internal server error."
-msgstr "内部服务器错误，请重试。"
-
-#: railgun/runner/errors.py:35
-#, python-format
-msgid "Language \"%(lang)s\" is not provided."
-msgstr ""
-
-#: railgun/runner/errors.py:45
-msgid "Your handin is not a valid archive file."
-msgstr ""
-
-#: railgun/runner/errors.py:54
-#, python-format
-msgid "Archive contains denied file %(filename)s."
-msgstr ""
-
-#: railgun/runner/errors.py:64
-msgid "Your handin has run out of time."
-msgstr ""
-
-#: railgun/runner/errors.py:73
-msgid "Not valid UTF-8 sequence produced."
-msgstr ""
-
-#: railgun/runner/tasks.py:72
-#, python-format
-msgid "Exitcode %(exitcode)s != 0."
-msgstr ""
-
-#: railgun/website/api.py:78
-#, fuzzy
-msgid "Your handin is accepted."
-msgstr "您handin被接受，请等待结果。"
-
-#: railgun/website/api.py:82
-msgid "Your handin is rejected."
-msgstr ""
-
-#: railgun/website/api.py:158
-msgid "Process exited before reporting score."
-msgstr ""
-
-#: railgun/website/codelang.py:59
-msgid "Could not commit to run queue."
-msgstr ""
+"X-Generator: POEditor.com\n"
+"Project-Id-Version: railgun\n"
+"Language: zh-CN\n"
 
 #: railgun/website/codelang.py:87
 msgid "Python"
@@ -146,9 +81,7 @@ msgid "Please choose an archive to handin:"
 msgstr "请选择一个存档用于切换："
 
 #: railgun/website/forms.py:88
-msgid ""
-"Only these file formats are accepted: rar, zip, tar, tar.gz, tgz, "
-"tar.bz2, tbz"
+msgid "Only these file formats are accepted: rar, zip, tar, tar.gz, tgz, tar.bz2, tbz"
 msgstr "只有这些文件格式被接受：RAR，ZIP，焦油，tar.gz的，TGZ，TAR.BZ2，TBZ"
 
 #: railgun/website/forms.py:98
@@ -180,22 +113,18 @@ msgid "Accepted"
 msgstr "接受"
 
 #: railgun/website/utility.py:71
-#, python-format
 msgid "%(size).2fG"
 msgstr "％（体积）.2fG"
 
 #: railgun/website/utility.py:73
-#, python-format
 msgid "%(size).2fM"
 msgstr "％（体积）.2fM"
 
 #: railgun/website/utility.py:75
-#, python-format
 msgid "%(size).2fK"
 msgstr "％（体积）.2fK"
 
 #: railgun/website/utility.py:76
-#, python-format
 msgid "%(size)dB"
 msgstr "％（体积）分贝"
 
@@ -288,12 +217,10 @@ msgid "Homework Deleted"
 msgstr "作业删除"
 
 #: railgun/website/templates/handin_detail.html:9
-#, python-format
 msgid "Handin for <a href=\"%(url)s\">%(name)s</a>"
 msgstr "Handin的<a href=\"%(url)s\">％（名）■</A>"
 
 #: railgun/website/templates/handin_detail.html:12
-#, python-format
 msgid "Handin for <span class=\"text-muted\">(%(name)s)</a>"
 msgstr "Handin的的<span class =“文本静音”>（％（姓名）S）</A>"
 
@@ -417,14 +344,8 @@ msgid "This homework is already out of date."
 msgstr "这个作业已经过时了。"
 
 #: railgun/website/templates/homework.html:67
-#, python-format
-msgid ""
-"This homework will reach next deadline in <span style=\"color: "
-"%(duecolor)s\">%(due)s</span>, and the score will be scaled by <span "
-"style=\"color: %(scalecolor)s\">%(scale)s</span>."
-msgstr ""
-"此作业将达到的<span style =“颜色：％（duecolor）的”>下一个截止日期％（由于）S </ SPAN>，并且将比分由的<span"
-" style =“颜色进行调整：％（scalecolor）■ “>％（规模）S </ SPAN>。"
+msgid "This homework will reach next deadline in <span style=\"color: %(duecolor)s\">%(due)s</span>, and the score will be scaled by <span style=\"color: %(scalecolor)s\">%(scale)s</span>."
+msgstr "此作业将达到的<span style =“颜色：％（duecolor）的”>下一个截止日期％（由于）S </ SPAN>，并且将比分由的<span style =“颜色进行调整：％（scalecolor）■ “>％（规模）S </ SPAN>。"
 
 #: railgun/website/templates/homework.html:78
 msgid "Due date"
@@ -507,107 +428,144 @@ msgid "You may use your username to sign in Railgun later"
 msgstr "您可以使用您的用户名后面的轨道炮签署"
 
 #: railgun/website/templates/signup.html:10
-msgid ""
-"You may receive homework related emails. You may also sign in Railgun "
-"with your email address later"
+msgid "You may receive homework related emails. You may also sign in Railgun with your email address later"
 msgstr "您可能会收到作业相关的电子邮件。您也可以登入轨道炮与您的电子邮件地址后"
+
+#: railgun/common/csvdata.py:37
+msgid "Cannot convert \"%(value)s\" to %(type)s."
+msgstr "无法将“％（价值）的”为％（类型）秒。"
+
+#: railgun/common/csvdata.py:93
+msgid "Field \"%(field)s\" not found in CSV data."
+msgstr "场“％（场）的”以CSV数据未找到。"
+
+#: railgun/runner/errors.py:26
+msgid "Internal server error."
+msgstr "内部服务器错误。"
+
+#: railgun/runner/errors.py:35
+msgid "Language \"%(lang)s\" is not provided."
+msgstr "“（郎咸平）S％”不提供语言。"
+
+#: railgun/runner/errors.py:45
+msgid "Your handin is not a valid archive file."
+msgstr "你handin不是一个有效的归档文件。"
+
+#: railgun/runner/errors.py:54
+msgid "Archive contains denied file %(filename)s."
+msgstr "存档包含否认文件％（文件名）秒。"
+
+#: railgun/runner/errors.py:64
+msgid "Your handin has run out of time."
+msgstr "你handin已经运行的时间。"
+
+#: railgun/runner/errors.py:73
+msgid "Not valid UTF-8 sequence produced."
+msgstr "不合法的UTF-8序列产生。"
+
+#: railgun/runner/tasks.py:72
+msgid "Exitcode %(exitcode)s != 0."
+msgstr "EXITCODE％（退出码）秒！= 0。"
+
+#: railgun/website/api.py:78
+msgid "Your handin is accepted."
+msgstr "你handin被接受。"
+
+#: railgun/website/api.py:82
+msgid "Your handin is rejected."
+msgstr "你handin被拒绝。"
+
+#: railgun/website/api.py:158
+msgid "Process exited before reporting score."
+msgstr "流程报告得分前退出。"
+
+#: railgun/website/codelang.py:59
+msgid "Could not commit to run queue."
+msgstr "无法提交到运行队列中。"
 
 #: runlib/python/pyhost/scorer.py:62
 msgid "UnitTest Scorer"
-msgstr ""
+msgstr "单元测试得分王"
 
 #: runlib/python/pyhost/scorer.py:80
-#, python-format
 msgid "%(success)d out of %(total)d tests passed"
-msgstr ""
+msgstr "％（成功）D出％（总）D测试通过"
 
 #: runlib/python/pyhost/scorer.py:101
 msgid "CodeStyle Scorer"
-msgstr ""
+msgstr "CodeStyle士哥"
 
 #: runlib/python/pyhost/scorer.py:120
-#, python-format
 msgid "%(trouble)d files out of %(total)d did not pass PEP8 code style check"
-msgstr ""
+msgstr "％（麻烦）D文件出％（总）D没有通过PEP8代码风格检查"
 
 #: runlib/python/pyhost/scorer.py:126
 msgid "All files passed PEP8 code style check"
-msgstr ""
+msgstr "所有文件通过PEP8代码风格检查"
 
 #: runlib/python/pyhost/scorer.py:148
-#, fuzzy
 msgid "Coverage Scorer"
-msgstr "没有评分"
+msgstr "报道士哥"
 
 #: runlib/python/pyhost/scorer.py:197
-#, python-format
-msgid ""
-"%(filename)s: %(miss)d lines not covered.\n"
+msgid "%(filename)s: %(miss)d lines not covered.\n"
 "%(sep)s\n"
 "%(source)s"
-msgstr ""
+msgstr "％（文件名）S：不包括％（小姐）D线。\n"
+"％（SEP）■\n"
+"％（源）■"
 
 #: runlib/python/pyhost/scorer.py:204
-#, python-format
 msgid "Coverage rate: %(cover_rate)2.1f%%"
-msgstr ""
+msgstr "覆盖率：％（cover_rate）2.1f％％"
 
 #: runlib/python/pyhost/scorer.py:237
 msgid "InputClass Scorer"
-msgstr ""
+msgstr "InputClass士哥"
 
 #: runlib/python/pyhost/scorer.py:276
-#, python-format
 msgid "Covered %(cover)s input classes out of %(total)s"
-msgstr ""
+msgstr "盖％（盖）的输入输出类的％（总）■"
 
 #: runlib/python/pyhost/scorer.py:283
-#, python-format
 msgid "COVERED: %(checker)s"
-msgstr ""
+msgstr "内容包括：％（检查）■"
 
 #: runlib/python/pyhost/scorer.py:288
-#, python-format
 msgid "NOT COVERED: %(checker)s"
-msgstr ""
+msgstr "未涵盖的：％（检查）■"
 
 #: runlib/python/pyhost/scorer.py:292 runlib/python/pyhost/scorer.py:297
 msgid "CSV data does not match schema."
-msgstr ""
+msgstr "CSV数据不匹配的模式。"
 
 #: runlib/python/pyhost/utility.py:39
-#, python-format
 msgid "PASSED: %(test)s."
-msgstr ""
+msgstr "决议：％（测试）秒。"
 
 #: runlib/python/pyhost/utility.py:47
-#, python-format
-msgid ""
-"ERROR: %(test)s.\n"
+msgid "ERROR: %(test)s.\n"
 "%(error)s"
-msgstr ""
+msgstr "错误：％（测试）秒。\n"
+"％（误差）■"
 
 #: runlib/python/pyhost/utility.py:55
-#, python-format
-msgid ""
-"FAIL: %(test)s.\n"
+msgid "FAIL: %(test)s.\n"
 "%(error)s"
-msgstr ""
+msgstr "失败：％（测试）秒。\n"
+"％（误差）■"
 
 #: runlib/python/pyhost/utility.py:62
-#, python-format
 msgid "SKIP: %(test)s: %(reason)s."
-msgstr ""
+msgstr "SKIP：％（测试）S：％（原因）秒。"
 
 #: runlib/python/pyhost/utility.py:71
-#, python-format
-msgid ""
-"EXPECTED FAIL: %(test)s.\n"
+msgid "EXPECTED FAIL: %(test)s.\n"
 "%(error)s"
-msgstr ""
+msgstr "预期失败：％（测试）秒。\n"
+"％（误差）■"
 
 #: runlib/python/pyhost/utility.py:78
-#, python-format
 msgid "UNEXPECTED SUCCESS: %(test)s."
-msgstr ""
+msgstr "意想不到的成功：％（测试）秒。"
 
