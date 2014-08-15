@@ -9,15 +9,15 @@ msgstr ""
 
 #: railgun/website/codelang.py:87
 msgid "Python"
-msgstr "蟒蛇"
+msgstr ""
 
 #: railgun/website/codelang.py:94
 msgid "Java"
-msgstr "Java的"
+msgstr ""
 
 #: railgun/website/credential.py:63
 msgid "Please log in to access this page."
-msgstr "请登录访问此页面。"
+msgstr "您需要登录才能访问这个页面。"
 
 #: railgun/website/forms.py:36 railgun/website/templates/profile_edit.html:10
 msgid "Username"
@@ -25,7 +25,7 @@ msgstr "用户名"
 
 #: railgun/website/forms.py:37
 msgid "Only letters, digits and '_' can appear in username."
-msgstr "只有字母，数字和'_'可以出现在用户名。"
+msgstr "用户名中只能包含字符、数字和下划线“_”。"
 
 #: railgun/website/forms.py:39
 msgid "Username can't be blank"
