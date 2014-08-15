@@ -14,7 +14,7 @@ import pep8
 import unittest
 import traceback
 
-from railgun.common.lazy_i18n import gettext_lazy
+from railgun.common.lazy_i18n import lazy_gettext
 
 
 class UnitTestScorerDetailResult(unittest.TestResult):
@@ -34,14 +34,14 @@ class UnitTestScorerDetailResult(unittest.TestResult):
 
     def addSuccess(self, test):
         super(UnitTestScorerDetailResult, self).addSuccess(test)
-        self.details.append(gettext_lazy(
+        self.details.append(lazy_gettext(
             'PASSED: %(test)s.',
             test=self.getDescription(test)
         ))
 
     def addError(self, test, err):
         super(UnitTestScorerDetailResult, self).addError(test, err)
-        self.details.append(gettext_lazy(
+        self.details.append(lazy_gettext(
             'ERROR: %(test)s.\n%(error)s',
             test=self.getDescription(test),
             error=self._exc_info_to_string(err, test)
@@ -49,7 +49,7 @@ class UnitTestScorerDetailResult(unittest.TestResult):
 
     def addFailure(self, test, err):
         super(UnitTestScorerDetailResult, self).addFailure(test, err)
-        self.details.append(gettext_lazy(
+        self.details.append(lazy_gettext(
             'FAIL: %(test)s.\n%(error)s',
             test=self.getDescription(test),
             error=self._exc_info_to_string(err, test)
@@ -57,7 +57,7 @@ class UnitTestScorerDetailResult(unittest.TestResult):
 
     def addSkip(self, test, reason):
         super(UnitTestScorerDetailResult, self).addSkip(test, reason)
-        self.details.append(gettext_lazy(
+        self.details.append(lazy_gettext(
             'SKIP: %(test)s: %(reason)s.',
             test=self.getDescription(test),
             reason=reason
@@ -65,7 +65,7 @@ class UnitTestScorerDetailResult(unittest.TestResult):
 
     def addExpectedFailure(self, test, err):
         super(UnitTestScorerDetailResult, self).addExpectedFailure(test, err)
-        self.details.append(gettext_lazy(
+        self.details.append(lazy_gettext(
             'EXPECTED FAIL: %(test)s.\n%(error)s',
             test=self.getDescription(test),
             error=self._exc_info_to_string(err, test)
@@ -73,7 +73,7 @@ class UnitTestScorerDetailResult(unittest.TestResult):
 
     def addUnexpectedSuccess(self, test):
         super(UnitTestScorerDetailResult, self).addUnexpectedSuccess(test)
-        self.details.append(gettext_lazy(
+        self.details.append(lazy_gettext(
             'UNEXPECTED SUCCESS: %(test)s.',
             test=self.getDescription(test)
         ))

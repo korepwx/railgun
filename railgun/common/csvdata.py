@@ -10,7 +10,7 @@
 
 import csv
 
-from railgun.common.lazy_i18n import gettext_lazy
+from railgun.common.lazy_i18n import lazy_gettext
 
 
 class CsvField(object):
@@ -34,7 +34,7 @@ class CsvField(object):
         try:
             return self._parseString(value)
         except Exception:
-            raise ValueError(gettext_lazy(
+            raise ValueError(lazy_gettext(
                 'Cannot convert "%(value)s" to %(type)s.',
                 value=value, type=self.__class__.__name__
             ))
@@ -90,7 +90,7 @@ class CsvSchema(object):
                     field_getter[k] = lambda row, val=v: val.default
                 else:
                     # not exist, no default, raise KeyError
-                    raise KeyError(gettext_lazy(
+                    raise KeyError(lazy_gettext(
                         'Field "%(field)s" not found in CSV data.',
                         field=field_name
                     ))

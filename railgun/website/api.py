@@ -17,7 +17,7 @@ from .context import app, db, csrf
 from .models import Handin, FinalScore
 from railgun.common.hw import HwScore
 from railgun.common.crypto import DecryptMessage
-from railgun.common.lazy_i18n import gettext_lazy
+from railgun.common.lazy_i18n import lazy_gettext
 
 
 def secret_api(method):
@@ -75,11 +75,11 @@ def api_handin_report(uuid):
     handin.state = 'Accepted' if score.accepted else 'Rejected'
     handin.score = score.get_score()
     if (score.accepted):
-        handin.result = gettext_lazy('Your handin is accepted.')
+        handin.result = lazy_gettext('Your handin is accepted.')
     elif (score.result):
         handin.result = score.result
     else:
-        handin.result = gettext_lazy('Your handin is rejected.')
+        handin.result = lazy_gettext('Your handin is rejected.')
     handin.partials = score.partials
 
     # update hwscore table and set the final score of this homework
@@ -155,7 +155,7 @@ def api_handin_proclog(uuid):
     # mark such handin as "Rejected"
     if (handin.state != 'Accepted' and handin.state != 'Rejected'):
         handin.state = 'Rejected'
-        handin.result = gettext_lazy('Process exited before reporting score.')
+        handin.result = lazy_gettext('Process exited before reporting score.')
         handin.partials = []
 
     try:

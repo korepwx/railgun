@@ -16,7 +16,7 @@ import unittest
 from time import time
 
 from railgun.common.fileutil import dirtree
-from railgun.common.lazy_i18n import gettext_lazy
+from railgun.common.lazy_i18n import lazy_gettext
 from railgun.common.csvdata import CsvSchema
 from .errors import ScorerFailure
 from .utility import UnitTestScorerDetailResult, Pep8DetailReport
@@ -59,7 +59,7 @@ class UnitTestScorer(Scorer):
     """scorer according to the result of unit test"""
 
     def __init__(self, suite):
-        super(UnitTestScorer, self).__init__(gettext_lazy('UnitTest Scorer'))
+        super(UnitTestScorer, self).__init__(lazy_gettext('UnitTest Scorer'))
         self.suite = suite
 
     def _run(self):
@@ -77,7 +77,7 @@ class UnitTestScorer(Scorer):
         success = total - (errors + failures)
         self.score = 100.0 * success / total
         # format the brief report
-        self.brief = gettext_lazy(
+        self.brief = lazy_gettext(
             '%(success)d out of %(total)d tests passed',
             total=total, time=self.time, success=success
         )
@@ -98,7 +98,7 @@ class CodeStyleScorer(Scorer):
         """Check the code style of `filelist`, skip if `skipfile(path)` is
         True."""
 
-        super(CodeStyleScorer, self).__init__(gettext_lazy('CodeStyle Scorer'))
+        super(CodeStyleScorer, self).__init__(lazy_gettext('CodeStyle Scorer'))
         skipfile = skipfile or (lambda path: False)
         is_pyfile = lambda p: (p[-3:].lower() == '.py')
         self.filelist = [p for p in filelist
@@ -117,13 +117,13 @@ class CodeStyleScorer(Scorer):
 
         # format the brief report
         if (trouble_file > 0):
-            self.brief = gettext_lazy(
+            self.brief = lazy_gettext(
                 '%(trouble)d files out of %(total)d did not pass PEP8 code '
                 'style check',
                 total=total_file, trouble=trouble_file
             )
         else:
-            self.brief = gettext_lazy('All files passed PEP8 code style check')
+            self.brief = lazy_gettext('All files passed PEP8 code style check')
 
         # format detailed reports
         self.detail = result.build_report()
@@ -145,7 +145,7 @@ class CoverageScorer(Scorer):
         Run all test cases in `suite` and then get the coverage of all files
         in `filelist`.
         '''
-        super(CoverageScorer, self).__init__(gettext_lazy('Coverage Scorer'))
+        super(CoverageScorer, self).__init__(lazy_gettext('Coverage Scorer'))
 
         self.suite = suite
         self.filelist = filelist
@@ -190,7 +190,7 @@ class CoverageScorer(Scorer):
                         srctext.append('  %s' % s.rstrip())
             # compose final detail
             srctext = '\n'.join(srctext)
-            self.detail.append(gettext_lazy(
+            self.detail.append(lazy_gettext(
                 '%(filename)s: %(miss)d lines not covered.\n'
                 '%(sep)s\n'
                 '%(source)s',
@@ -201,7 +201,7 @@ class CoverageScorer(Scorer):
         self.cover_rate = 100 - 100.0 * total_miss / total_exec
         self.score = self.cover_rate
 
-        self.brief = gettext_lazy(
+        self.brief = lazy_gettext(
             'Coverage rate: %(cover_rate)2.1f%%',
             time=self.time, cover_rate=self.cover_rate
         )
@@ -234,7 +234,7 @@ class InputClassScorer(Scorer):
         rules defined in `check_classes`."""
 
         super(InputClassScorer, self).__init__(
-            gettext_lazy('InputClass Scorer')
+            lazy_gettext('InputClass Scorer')
         )
 
         self.schema = schema
@@ -271,29 +271,29 @@ class InputClassScorer(Scorer):
                         covered.add(i)
             # total up score by len(covered) / total_classes
             self.score = 100.0 * len(covered) / len(self.check_classes)
-            self.brief = gettext_lazy(
+            self.brief = lazy_gettext(
                 'Covered %(cover)s input classes out of %(total)s',
                 cover=len(covered), total=len(self.check_classes)
             )
             # build more detailed report
             for i, c in enumerate(self.check_classes):
                 if i in covered:
-                    self.detail.append(gettext_lazy(
+                    self.detail.append(lazy_gettext(
                         'COVERED: %(checker)s',
                         checker=self.getDescription(c)
                     ))
                 else:
-                    self.detail.append(gettext_lazy(
+                    self.detail.append(lazy_gettext(
                         'NOT COVERED: %(checker)s',
                         checker=self.getDescription(c)
                     ))
         except KeyError, ex:
             raise ScorerFailure(
-                brief=gettext_lazy('CSV data does not match schema.'),
+                brief=lazy_gettext('CSV data does not match schema.'),
                 detail=[ex.args[0]]
             )
         except ValueError, ex:
             raise ScorerFailure(
-                brief=gettext_lazy('CSV data does not match schema.'),
+                brief=lazy_gettext('CSV data does not match schema.'),
                 detail=[ex.args[0]]
             )

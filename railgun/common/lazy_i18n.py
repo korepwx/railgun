@@ -38,7 +38,7 @@ class GetTextString(object):
         return str(self.render())
 
 
-gettext_lazy = GetTextString
+lazy_gettext = GetTextString
 
 
 def lazystr_to_plain(s):

@@ -14,7 +14,7 @@ from .context import app, logger
 from .handin import PythonHandin, NetApiHandin, InputClassHandin
 from .errors import RunnerError, InternalServerError, NonUTF8OutputError
 from railgun.common.hw import HwScore
-from railgun.common.lazy_i18n import gettext_lazy
+from railgun.common.lazy_i18n import lazy_gettext
 
 
 def report_error(handid, err):
@@ -69,7 +69,7 @@ def run_handin(handler, handid, hwid):
             # again.
             score = HwScore(
                 False,
-                gettext_lazy('Exitcode %(exitcode)s != 0.',
+                lazy_gettext('Exitcode %(exitcode)s != 0.',
                              exitcode=exitcode)
             )
             api.report(handid, score)

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2014-08-15 16:20+0800\n"
+"POT-Creation-Date: 2014-08-15 18:14+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -16,6 +16,63 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 1.3\n"
+
+#: railgun/common/csvdata.py:37
+#, python-format
+msgid "Cannot convert \"%(value)s\" to %(type)s."
+msgstr ""
+
+#: railgun/common/csvdata.py:93
+#, python-format
+msgid "Field \"%(field)s\" not found in CSV data."
+msgstr ""
+
+#: railgun/runner/errors.py:26
+msgid "Internal server error."
+msgstr ""
+
+#: railgun/runner/errors.py:35
+#, python-format
+msgid "Language \"%(lang)s\" is not provided."
+msgstr ""
+
+#: railgun/runner/errors.py:45
+msgid "Your handin is not a valid archive file."
+msgstr ""
+
+#: railgun/runner/errors.py:54
+#, python-format
+msgid "Archive contains denied file %(filename)s."
+msgstr ""
+
+#: railgun/runner/errors.py:64
+msgid "Your handin has run out of time."
+msgstr ""
+
+#: railgun/runner/errors.py:73
+msgid "Not valid UTF-8 sequence produced."
+msgstr ""
+
+#: railgun/runner/tasks.py:72
+#, python-format
+msgid "Exitcode %(exitcode)s != 0."
+msgstr ""
+
+#: railgun/website/api.py:78
+msgid "Your handin is accepted."
+msgstr ""
+
+#: railgun/website/api.py:82
+msgid "Your handin is rejected."
+msgstr ""
+
+#: railgun/website/api.py:158
+msgid "Process exited before reporting score."
+msgstr ""
+
+#: railgun/website/codelang.py:59
+msgid "Could not commit to run queue."
+msgstr ""
 
 #: railgun/website/codelang.py:87
 msgid "Python"
@@ -453,5 +510,103 @@ msgstr ""
 msgid ""
 "You may receive homework related emails. You may also sign in Railgun "
 "with your email address later"
+msgstr ""
+
+#: runlib/python/pyhost/scorer.py:62
+msgid "UnitTest Scorer"
+msgstr ""
+
+#: runlib/python/pyhost/scorer.py:80
+#, python-format
+msgid "%(success)d out of %(total)d tests passed"
+msgstr ""
+
+#: runlib/python/pyhost/scorer.py:101
+msgid "CodeStyle Scorer"
+msgstr ""
+
+#: runlib/python/pyhost/scorer.py:120
+#, python-format
+msgid "%(trouble)d files out of %(total)d did not pass PEP8 code style check"
+msgstr ""
+
+#: runlib/python/pyhost/scorer.py:126
+msgid "All files passed PEP8 code style check"
+msgstr ""
+
+#: runlib/python/pyhost/scorer.py:148
+msgid "Coverage Scorer"
+msgstr ""
+
+#: runlib/python/pyhost/scorer.py:197
+#, python-format
+msgid ""
+"%(filename)s: %(miss)d lines not covered.\n"
+"%(sep)s\n"
+"%(source)s"
+msgstr ""
+
+#: runlib/python/pyhost/scorer.py:204
+#, python-format
+msgid "Coverage rate: %(cover_rate)2.1f%%"
+msgstr ""
+
+#: runlib/python/pyhost/scorer.py:237
+msgid "InputClass Scorer"
+msgstr ""
+
+#: runlib/python/pyhost/scorer.py:276
+#, python-format
+msgid "Covered %(cover)s input classes out of %(total)s"
+msgstr ""
+
+#: runlib/python/pyhost/scorer.py:283
+#, python-format
+msgid "COVERED: %(checker)s"
+msgstr ""
+
+#: runlib/python/pyhost/scorer.py:288
+#, python-format
+msgid "NOT COVERED: %(checker)s"
+msgstr ""
+
+#: runlib/python/pyhost/scorer.py:292 runlib/python/pyhost/scorer.py:297
+msgid "CSV data does not match schema."
+msgstr ""
+
+#: runlib/python/pyhost/utility.py:39
+#, python-format
+msgid "PASSED: %(test)s."
+msgstr ""
+
+#: runlib/python/pyhost/utility.py:47
+#, python-format
+msgid ""
+"ERROR: %(test)s.\n"
+"%(error)s"
+msgstr ""
+
+#: runlib/python/pyhost/utility.py:55
+#, python-format
+msgid ""
+"FAIL: %(test)s.\n"
+"%(error)s"
+msgstr ""
+
+#: runlib/python/pyhost/utility.py:62
+#, python-format
+msgid "SKIP: %(test)s: %(reason)s."
+msgstr ""
+
+#: runlib/python/pyhost/utility.py:71
+#, python-format
+msgid ""
+"EXPECTED FAIL: %(test)s.\n"
+"%(error)s"
+msgstr ""
+
+#: runlib/python/pyhost/utility.py:78
+#, python-format
+msgid "UNEXPECTED SUCCESS: %(test)s."
 msgstr ""
 
