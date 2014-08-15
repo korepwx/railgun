@@ -132,8 +132,9 @@ class CsvFileAuthProvider(AuthProvider):
 
     def reload(self):
         """Reload user database from external csv file."""
-        with open(self.csvpath, 'rb') as f:
-            self.users = list(CsvSchema.LoadCSV(CsvFileUserObject, f))
+        if (os.path.isfile(self.csvpath)):
+            with open(self.csvpath, 'rb') as f:
+                self.users = list(CsvSchema.LoadCSV(CsvFileUserObject, f))
         self.__name_to_user = {u.name: u for u in self.users}
         self.__email_to_user = {u.email: u for u in self.users}
 
