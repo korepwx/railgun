@@ -16,6 +16,7 @@ from wtforms.fields import Field, HiddenField
 from railgun.common.csvdata import CsvSchema, CsvString, CsvBoolean
 from .models import User
 from .context import app, db
+from .ldapauth import LdapAuthProvider
 
 
 class AuthRequest(object):
@@ -281,3 +282,4 @@ auth_providers.add(
         os.path.join(app.config['RAILGUN_ROOT'], 'config/users.csv')
     )
 )
+auth_providers.add(LdapAuthProvider('LDAP'))

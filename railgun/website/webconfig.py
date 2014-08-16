@@ -45,6 +45,7 @@ LDAP_ADMIN_KEY = (
 
 LDAP_BASE_DN = 'ou=People,dc=secoder,dc=net'
 LDAP_ADMIN_DN = 'cn=admin,dc=secoder,dc=net'
+LDAP_RAILGUN_ADMIN_GROUP_DN = 'cn=railgun_admin,ou=group,dc=secoder,dc=net'
 LDAP_URL = 'ldap://localhost'
 
 # Load un-versioned general config values from config/general.py
