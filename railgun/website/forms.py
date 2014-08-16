@@ -10,7 +10,7 @@
 
 from flask_wtf import Form
 from flask_wtf.file import FileField, FileAllowed, FileRequired
-from wtforms import StringField, PasswordField
+from wtforms import StringField, PasswordField, SelectField
 from wtforms.widgets import TextArea
 from wtforms.validators import DataRequired, Length, Email, InputRequired, \
     EqualTo, Regexp, URL, ValidationError
@@ -85,6 +85,14 @@ class ProfileForm(Form):
         EqualTo('confirm', message=_("Passwords must match")),
     ])
     confirm = PasswordField(_('Confirm your password'))
+
+    # i18n fields
+    locale = SelectField(_('Speaking Language'), validators=[
+        DataRequired(message=_("Speaking language can't be blank")),
+    ])
+    timezone = SelectField(_('Timezone'), validators=[
+        DataRequired(message=_("Timezone can't be blank")),
+    ])
 
     # Special inline validators on email and password
     def validate_email(form, field):

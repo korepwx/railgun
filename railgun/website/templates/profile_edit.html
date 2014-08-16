@@ -21,6 +21,8 @@
   {{ mkfield(_('Email Address'), 'email', current_user.email) }}
   {{ mkfield(_('Password'), 'password', '', _('Use at least seven characters')) }}
   {{ mkfield(_('Confirm your password'), 'confirm', '') }}
+  {{ mkfield(_('Speaking Language'), 'locale', current_user.locale) }}
+  {{ mkfield(_('Timezone'), 'timezone', current_user.timezone) }}
 
   <button type="submit" class="btn btn-success">{{ _('Save profile') }}</button>
   {{ form.hidden_tag() }}

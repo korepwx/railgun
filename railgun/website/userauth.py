@@ -107,19 +107,12 @@ class AuthProvider(object):
 
         raise NotImplementedError()
 
-    def _strip_form_helper(self, form, allow_fields, lock_pwd=False):
-        """Common strip_form helper lock all fields other than `password` and
-        `allow_fields`. If `lock_pwd` is True, then `password` is also locked.
-        """
+    def _strip_form_helper(self, form, lock_fields):
+        """Common strip_form helper lock all fields in `lock_fields`."""
 
         for k, v in form.__dict__.items():
             if (isinstance(v, Field) and not isinstance(v, HiddenField)):
-                # Strip password field if lock_pwd
-                if (k == 'password' or k == 'confirm'):
-                    if (lock_pwd):
-                        del form[k]
-                # Strip other fields if not in allow_fields
-                elif (k not in allow_fields):
+                if (k in lock_fields):
                     del form[k]
 
     def strip_form(self, form):
@@ -220,7 +213,7 @@ class CsvFileAuthProvider(AuthProvider):
         self.flush()
 
     def strip_form(self, form):
-        self._strip_form_helper(form, self.__interested_fields)
+        self._strip_form_helper(form, ('name', 'email'))
 
 
 class AuthProviderSet(object):
