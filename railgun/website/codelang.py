@@ -18,7 +18,7 @@ from .context import app, db
 from .forms import UploadHandinForm, AddressHandinForm, CsvHandinForm
 from .models import Handin
 from railgun.runner.tasks import run_python, run_netapi, run_input
-from railgun.common.lazy_i18n import gettext_lazy
+from railgun.common.lazy_i18n import lazy_gettext
 
 
 class CodeLanguage(object):
@@ -56,7 +56,7 @@ class CodeLanguage(object):
         except Exception:
             # if we cannot post to run queue, modify the handin status to error
             handin.state = 'Rejected'
-            handin.result = gettext_lazy('Could not commit to run queue.')
+            handin.result = lazy_gettext('Could not commit to run queue.')
             handin.partials = []
             db.session.commit()
             # re-raise this exception

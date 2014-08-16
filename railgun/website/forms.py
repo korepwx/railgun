@@ -10,12 +10,15 @@
 
 from flask_wtf import Form
 from flask_wtf.file import FileField, FileAllowed, FileRequired
-from wtforms import StringField, PasswordField
+from wtforms import StringField, PasswordField, SelectField
 from wtforms.widgets import TextArea
 from wtforms.validators import DataRequired, Length, Email, InputRequired, \
-    EqualTo, Regexp, URL
-
+    EqualTo, Regexp, URL, ValidationError
 from flask.ext.babel import lazy_gettext as _
+from flask.ext.login import current_user
+
+from .models import User
+from .context import db
 
 
 class HandinTextArea(TextArea):
@@ -53,6 +56,14 @@ class SignupForm(Form):
     ])
     confirm = PasswordField(_('Confirm your password'))
 
+    def validate_name(form, field):
+        if (db.session.query(User).filter(User.name == field.data).count()):
+            raise ValidationError(_('Username already taken'))
+
+    def validate_email(form, field):
+        if (db.session.query(User).filter(User.email == field.data).count()):
+            raise ValidationError(_('Email already taken'))
+
 
 class SigninForm(Form):
     """Form for `signin` view."""
@@ -74,6 +85,30 @@ class ProfileForm(Form):
         EqualTo('confirm', message=_("Passwords must match")),
     ])
     confirm = PasswordField(_('Confirm your password'))
+
+    # i18n fields
+    locale = SelectField(_('Speaking Language'), validators=[
+        DataRequired(message=_("Speaking language can't be blank")),
+    ])
+    timezone = SelectField(_('Timezone'), validators=[
+        DataRequired(message=_("Timezone can't be blank")),
+    ])
+
+    # Special inline validators on email and password
+    def validate_email(form, field):
+        if (db.session.query(User).
+                filter(User.email == field.data).
+                filter(User.id != current_user.id).
+                count()):
+            raise ValidationError(_('Email already taken'))
+
+    def validate_password(form, field):
+        pwd_len = len(field.data)
+        if (field.data and (pwd_len < 7 or pwd_len > 32)):
+            raise ValidationError(
+                _("Password must be no shorter than 7 and no longer than "
+                  "32 characters")
+            )
 
 
 class UploadHandinForm(Form):

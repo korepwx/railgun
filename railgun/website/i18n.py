@@ -12,9 +12,13 @@ import os
 
 from flask import request
 from flask.ext.babel import Babel, get_locale
+from flask.ext.login import current_user
 
 from .context import app
 
+# We must import credential here, so that all hooks should be initialized by
+# flask.login before we start i18n hooks
+# from . import credential
 
 # Initialize the Babel translation system
 babel = Babel(app)
@@ -24,10 +28,10 @@ babel = Babel(app)
 # However the browser reports zh_CN.  So load the alias names to locales
 # here.
 def __load_aliases():
-    aliases_file = os.path.dirname(__file__)
     ret = {}
+    aliases_path = os.path.join(app.config['TRANSLATION_DIR'], 'aliases.txt')
     try:
-        f = open(os.path.join(aliases_file, 'translations/aliases.txt'), 'rb')
+        f = open(aliases_path, 'rb')
         for l in f:
             arr = l.split('=')
             if (len(arr) < 2):
@@ -61,7 +65,8 @@ best_matches = __make_best_match()
 @babel.localeselector
 def __select_request_locale():
     """Select the prefered language according to Accept-Language."""
-    # TODO: set the correct language according to user configuration.
+    if (current_user.is_authenticated()):
+        return current_user.locale
     best_match = request.accept_languages.best_match(best_matches)
     return locale_aliases.get(best_match, best_match)
 
@@ -70,6 +75,8 @@ def __select_request_locale():
 def __select_request_timezone():
     # TODO: set the correct time zone according to user configuration.
     #       if possible, also guess by client ip.
+    if (current_user.is_authenticated()):
+        return current_user.timezone
     return None
 
 

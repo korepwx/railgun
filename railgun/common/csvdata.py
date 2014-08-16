@@ -10,7 +10,7 @@
 
 import csv
 
-from railgun.common.lazy_i18n import gettext_lazy
+from railgun.common.lazy_i18n import lazy_gettext
 
 
 class CsvField(object):
@@ -34,7 +34,7 @@ class CsvField(object):
         try:
             return self._parseString(value)
         except Exception:
-            raise ValueError(gettext_lazy(
+            raise ValueError(lazy_gettext(
                 'Cannot convert "%(value)s" to %(type)s.',
                 value=value, type=self.__class__.__name__
             ))
@@ -60,6 +60,16 @@ class CsvString(CsvField):
 class CsvFloat(CsvField):
     def _parseString(self, value):
         return float(value)
+
+
+class CsvBoolean(CsvField):
+    def _parseString(self, value):
+        val = value.lower()
+        if (val in ('true', 'on', '1', 'yes')):
+            return True
+        if (val in ('false', 'off', '0', 'no')):
+            return False
+        raise ValueError('%s is not a boolean value.' % value)
 
 
 class CsvSchema(object):
@@ -90,7 +100,7 @@ class CsvSchema(object):
                     field_getter[k] = lambda row, val=v: val.default
                 else:
                     # not exist, no default, raise KeyError
-                    raise KeyError(gettext_lazy(
+                    raise KeyError(lazy_gettext(
                         'Field "%(field)s" not found in CSV data.',
                         field=field_name
                     ))
@@ -103,3 +113,23 @@ class CsvSchema(object):
             for f, g in field_getter.iteritems():
                 setattr(obj, f, g(row))
             yield obj
+
+    @staticmethod
+    def SaveCSV(cls, fileobj, items):
+        writer = csv.writer(fileobj)
+
+        # Given attrname, field, get the field name
+        def FieldName(attrname, field):
+            return field.name if field.name else attrname
+
+        # Collect meta data
+        attrs = [(k, v) for k, v in cls.__dict__.iteritems()
+                 if isinstance(v, CsvField)]
+
+        # Write the header
+        writer.writerow([FieldName(k, v) for k, v in attrs])
+
+        # Write value rows
+        for itm in items:
+            writer.writerow([v.toString(getattr(itm, k))
+                             for k, v in attrs])

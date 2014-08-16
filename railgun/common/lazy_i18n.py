@@ -37,8 +37,11 @@ class GetTextString(object):
     def __str__(self):
         return str(self.render())
 
+    def __repr__(self):
+        return '<GetText(%s)>' % self.render()
 
-gettext_lazy = GetTextString
+
+lazy_gettext = GetTextString
 
 
 def lazystr_to_plain(s):

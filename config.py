@@ -35,6 +35,10 @@ def LoadConfig(obj, fpath):
 # RAILGUN_ROOT stores the path of railgun project
 RAILGUN_ROOT = os.path.realpath(os.path.dirname(__file__))
 
+# ALLOW_SIGNUP determines whether the railgun website allows new user
+# sign up.
+ALLOW_SIGNUP = True
+
 # DEFAULT_LOCALE is selected to serve the client when prefered locale
 # is not available.
 DEFAULT_LOCALE = 'en'
@@ -72,6 +76,9 @@ UPLOAD_DIR = os.path.join(RAILGUN_ROOT, 'upload')
 
 # RUNLIB_DIR is the root directory of all host libraries
 RUNLIB_DIR = os.path.join(RAILGUN_ROOT, 'runlib')
+
+# TRANSLATION_DIR is the root directory of all translation resources
+TRANSLATION_DIR = os.path.join(RAILGUN_ROOT, 'railgun/website/translations')
 
 # RUNNER_DEFAULT_TIMEOUT controls the default timeout config for testing
 # module to run

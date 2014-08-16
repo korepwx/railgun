@@ -84,7 +84,9 @@
               </ul>
             </li>
           {%- else -%}
-            <a class="btn btn-success navbar-btn" href="{{ url_for('signup') }}">{{ _('Sign up') }}</a>
+            {% if allow_signup -%}
+              <a class="btn btn-success navbar-btn" href="{{ url_for('signup') }}">{{ _('Sign up') }}</a>
+            {%- endif %}
             <a class="btn btn-default navbar-btn" href="{{ url_for('signin') }}">{{ _('Sign in') }}</a>
           {%- endif %}
           </ul>

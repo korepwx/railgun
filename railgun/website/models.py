@@ -11,10 +11,10 @@
 from datetime import datetime
 
 from babel.dates import UTC
-from flask.ext.babel import gettext
+from flask.ext.babel import gettext, get_locale
 from werkzeug.security import generate_password_hash, check_password_hash
 
-from .context import db
+from .context import db, app
 
 # define the states of all handins
 _ = lambda s: s
@@ -24,11 +24,24 @@ HANDIN_STATES = (_('Pending'), _('Running'), _('Rejected'), _('Accepted'))
 class User(db.Model):
     __tablename__ = 'users'
 
-    # User passport
+    # Primary key of the table
     id = db.Column(db.Integer, db.Sequence('user_id_seq'), primary_key=True)
+
+    # Which authenticate provider does this user come from?
+    # If None or empty, this user does not come from external providers.
+    provider = db.Column(db.String(32), default='')
+
+    # User passport
     name = db.Column(db.String(50), unique=True)
     email = db.Column(db.String(80), unique=True)
     password = db.Column(db.String(50))
+
+    # Whether this user is admin?
+    is_admin = db.Column(db.Boolean, default=False)
+
+    # Language and timezone of this user
+    locale = db.Column(db.String(16), default=app.config['DEFAULT_LOCALE'])
+    timezone = db.Column(db.String(32), default=app.config['DEFAULT_TIMEZONE'])
 
     # Relationship between User and final score records
     scores = db.relationship('FinalScore')
@@ -48,6 +61,12 @@ class User(db.Model):
     def gather_scores(self):
         """Gather dict(hwid => score) of this user."""
         return {sc.hwid: sc.score for sc in self.scores}
+
+    # Initialize the locale and timezone from request
+    def fill_i18n_from_request(self):
+        """Initialize i18n from request when createing a new user."""
+        self.locale = str(get_locale())
+        # TODO: detect timezone from request
 
 
 class FinalScore(db.Model):

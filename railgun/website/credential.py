@@ -29,7 +29,7 @@ class UserContext(object):
         self.dbo = user_dbo
 
     def is_authenticated(self):
-        return self.dbo is not None
+        return True
 
     def is_active(self):
         return self.is_authenticated()
@@ -38,7 +38,7 @@ class UserContext(object):
         return not self.is_authenticated()
 
     def get_id(self):
-        return unicode(self.dbo.id) if self.dbo else None
+        return unicode(self.dbo.id)
 
     # Proxy the read-only properties to database object
     def __getattr__(self, key):
@@ -48,13 +48,18 @@ class UserContext(object):
 # Load the user object before processing request
 @login_manager.user_loader
 def __load_user_before_request(uid):
-    return UserContext(db.session.query(User).filter(User.id == uid).first())
+    ret = db.session.query(User).filter(User.id == uid).first()
+    if (ret):
+        return UserContext(ret)
 
 
 # Inject current user into template
 @app.context_processor
 def __inject_template_context():
-    return dict(current_user=current_user)
+    return dict(
+        current_user=current_user,
+        allow_signup=app.config['ALLOW_SIGNUP']
+    )
 
 
 # Response to unauthorized requests
