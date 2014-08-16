@@ -306,6 +306,7 @@ def authenticate(login, password):
                                            dbuser=dbuser)
 
 # Initialize the builtin auth providers
+from .ldapauth import LdapAuthProvider
 auth_providers = AuthProviderSet()
 auth_providers.add(
     CsvFileAuthProvider(
@@ -313,3 +314,4 @@ auth_providers.add(
         os.path.join(app.config['RAILGUN_ROOT'], 'config/users.csv')
     )
 )
+auth_providers.add(LdapAuthProvider('LDAP'))

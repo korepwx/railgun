@@ -37,28 +37,6 @@ def index():
     return render_template('index.html')
 
 
-@app.route('/test/', methods=['GET', 'POST'])
-def test_page():
-    form = SigninForm()
-    next_url = request.args.get('next')
-    if (form.validate_on_submit()):
-        # Check whether the user exists
-        user = db.session.query(User).filter(
-            or_(User.name == form.login.data, User.email == form.login.data)
-        ).first()
-        # Check whether password match
-        if (user):
-            if (user.check_password(form.password.data)):
-                # Now we can login this user and redirect to index!
-                login_user(UserContext(user))
-                print("Here!")
-                return redirect(next_url or url_for('index'))
-        # Report username or password error
-        print("Incorrect!")
-        flash(_('Incorrect username or password.'), 'danger')
-    return render_template('signin.html', form=form, next=next_url)
-
-
 @app.route('/signup/', methods=['GET', 'POST'])
 def signup():
     # If railgun does not allow new user signup, show 403 forbidden
