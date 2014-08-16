@@ -10,5 +10,5 @@
 # This file is released under BSD 2-clause license.
 
 from . import api, codelang, context, credential, forms, hw, i18n, \
-    models, navibar, scriptlibs, userauth, renders, utility, views, webconfig, \
-    ldapconfig
+    models, navibar, scriptlibs, userauth, renders, utility, views, \
+    webconfig, ldapauth

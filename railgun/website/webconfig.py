@@ -40,7 +40,7 @@ SQLALCHEMY_DATABASE_URI = (
 
 # LDAP Authentication related
 LDAP_ADMIN_KEY = (
-    open(os.path.join(RAILGLUN_ROOT, 'keys/ldapKey.txt'), 'rb').read().strip()
+    open(os.path.join(RAILGUN_ROOT, 'keys/ldapKey.txt'), 'rb').read().strip()
 )
 
 LDAP_BASE_DN = 'ou=People,dc=secoder,dc=net'

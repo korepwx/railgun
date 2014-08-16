@@ -17,6 +17,7 @@ from .webconfig import LDAP_ADMIN_DN, LDAP_URL, LDAP_ADMIN_KEY, LDAP_BASE_DN, \
 from .models import User
 from .context import db
 import ldap
+import ldap.filter
 
 
 class LdapAuthProvider(AuthProvider):
@@ -30,7 +31,6 @@ class LdapAuthProvider(AuthProvider):
 
     def __del__(self):
         del self.__adapter
-        self.__conn.unbind_s()
 
     def pull(self, auth_request, dbuser):
         admin_group = self.__adapter.query_admin_group()
@@ -39,7 +39,7 @@ class LdapAuthProvider(AuthProvider):
         else:
             ldap_user = self.__adapter.query_by_uid(auth_request.login)
 
-        if not ldap_user or self.__adapter.authenticate(ldap_user, auth_request.password):
+        if not (ldap_user and self.__adapter.authenticate(ldap_user, auth_request.password)):
             return None
 
         user = ldap_user.to_user(admin_group)
@@ -74,6 +74,11 @@ class LdapAuthProvider(AuthProvider):
         return dbuser
 
 
+# A class just for store attributes.
+class Bundle(object):
+    pass
+
+
 class LdapEntry(object):
 
     def __init__(self, attrs):
@@ -81,7 +86,7 @@ class LdapEntry(object):
             setattr(self, key, attrs[key])
 
     def to_user(self, ldap_group):
-        user = object()
+        user = Bundle()
         user.name = self.uid[0]
         user.email = self.mail[0]
         user.is_admin = (ldap_group is None) \

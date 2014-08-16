@@ -16,7 +16,6 @@ from wtforms.fields import Field, HiddenField
 from railgun.common.csvdata import CsvSchema, CsvString, CsvBoolean
 from .models import User
 from .context import app, db
-from .ldapauth import LdapAuthProvider
 
 
 class AuthRequest(object):
@@ -275,6 +274,7 @@ def authenticate(login, password):
 
 
 # Initialize the builtin auth providers
+from .ldapauth import LdapAuthProvider
 auth_providers = AuthProviderSet()
 auth_providers.add(
     CsvFileAuthProvider(
