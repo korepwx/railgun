@@ -16,13 +16,13 @@ from flask.ext.babel import lazy_gettext, gettext as _
 from flask.ext.login import login_user, logout_user, current_user, \
     login_required, fresh_login_required
 from werkzeug.exceptions import NotFound
-from sqlalchemy import or_, and_
+from sqlalchemy import or_
 
 from .context import app, db
 from .navibar import navigates, NaviItem, set_navibar_identity
 from .forms import SignupForm, SigninForm, ProfileForm
 from .credential import UserContext
-from .userauth import authenticate
+from .userauth import authenticate, auth_providers
 from .codelang import languages
 from .models import User, Handin
 from .hw import homeworks
@@ -71,24 +71,14 @@ def signup():
         user = User()
         form.populate_obj(user)
         user.set_password(form.password.data)
-        # Check whether username or password conflicts
-        has_error = False
-        if (db.session.query(User).filter(User.name == user.name).count()):
-            form.name.errors.append(_('Username already taken'))
-            has_error = True
-        if (db.session.query(User).filter(User.email == user.email).count()):
-            form.email.errors.append(_('Email already taken'))
-            has_error = True
-        # Add user if no error
-        if (not has_error):
-            try:
-                db.session.add(user)
-                db.session.commit()
-                return redirect(url_for('signin'))
-            except Exception:
-                app.logger.exception('Cannot create account %s' % user.name)
-            flash(_("I'm sorry but we may have met some trouble. "
-                    "Please try again."))
+        try:
+            db.session.add(user)
+            db.session.commit()
+            return redirect(url_for('signin'))
+        except Exception:
+            app.logger.exception('Cannot create account %s' % user.name)
+        flash(_("I'm sorry but we may have met some trouble. Please try "
+                "again."))
     return render_template('signup.html', form=form)
 
 
@@ -117,34 +107,45 @@ def signout():
 @app.route('/profile/edit/', methods=['GET', 'POST'])
 @fresh_login_required
 def profile_edit():
-    form = ProfileForm()
+    # Create the profile form.
+    # Note that some fields cannot be edited in certain auth providers,
+    # which should be stripped from from schema.
+    form = ProfileForm(obj=current_user.dbo)
+    if (current_user.provider):
+        auth_providers.strip_form(current_user.provider, form)
+
     if (form.validate_on_submit()):
-        # Check whether the email is taken.
-        is_taken = (db.session.query(User).filter(and_(
-            User.email == form.email.data, User.id != current_user.id)
-        ).count() > 0)
-        if (is_taken):
-            form.email.errors.append(_('Email already taken'))
-        # Check whether password is correct
-        pwd_ok = (not form.password.data or (len(form.password.data) >= 7 and
-                                             len(form.password.data) <= 32))
-        if (not pwd_ok):
-            form.password.errors.append(_("Password must be no shorter than 7 "
-                                          "and no longer than 32 characters"))
-        # Do update the user
-        if (not is_taken and pwd_ok):
-            current_user.dbo.email = form.email.data
-            if (form.password.data):
-                current_user.dbo.set_password(form.password.data)
+        # Set password if passwd field exists
+        if ('password' in form):
+            pwd = form.password.data
+            if (pwd):
+                current_user.set_password(pwd)
+            del form['password']
+            del form['confirm']
+        else:
+            pwd = None
+
+        # Copy values into current_user object
+        form.populate_obj(current_user.dbo)
+
+        # Commit to main database and auth provider
+        try:
+            if (current_user.provider):
+                auth_providers.push(current_user.dbo, pwd)
             db.session.commit()
             flash(_('Profile saved.'), 'info')
-            return redirect(url_for('profile_edit'))
-    # Initialize the form value if not POSTed
-    if (request.method != 'POST'):
-        form.email.data = current_user.email
-    return render_template(
-        'profile_edit.html', form=form, username=current_user.name
-    )
+        except Exception:
+            app.logger.exception('Cannot update account %s' % current_user.name)
+            flash(_("I'm sorry but we may have met some trouble. Please try "
+                    "again."), 'warning')
+        return redirect(url_for('profile_edit'))
+
+    # Clear password & confirm here is ok.
+    if ('password' in form):
+        form.password.data = None
+        form.confirm.data = None
+
+    return render_template('profile_edit.html', form=form)
 
 
 @app.route('/homework/<slug>/', methods=['GET', 'POST'])

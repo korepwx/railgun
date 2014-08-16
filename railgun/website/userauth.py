@@ -11,6 +11,7 @@
 import os
 
 from werkzeug.security import generate_password_hash, check_password_hash
+from wtforms.fields import Field, HiddenField
 
 from railgun.common.csvdata import CsvSchema, CsvString, CsvBoolean
 from .models import User
@@ -106,6 +107,26 @@ class AuthProvider(object):
 
         raise NotImplementedError()
 
+    def _strip_form_helper(self, form, allow_fields, lock_pwd=False):
+        """Common strip_form helper lock all fields other than `password` and
+        `allow_fields`. If `lock_pwd` is True, then `password` is also locked.
+        """
+
+        for k, v in form.__dict__.items():
+            if (isinstance(v, Field) and not isinstance(v, HiddenField)):
+                # Strip password field if lock_pwd
+                if (k == 'password' or k == 'confirm'):
+                    if (lock_pwd):
+                        del form[k]
+                # Strip other fields if not in allow_fields
+                elif (k not in allow_fields):
+                    del form[k]
+
+    def strip_form(self, form):
+        """Some providers may lock some fields of user data."""
+
+        raise NotImplementedError()
+
 
 class CsvFileUserObject(CsvSchema):
     """Schema of CSV file user database."""
@@ -198,6 +219,9 @@ class CsvFileAuthProvider(AuthProvider):
 
         self.flush()
 
+    def strip_form(self, form):
+        self._strip_form_helper(form, self.__interested_fields)
+
 
 class AuthProviderSet(object):
     """Manage all of the auth providers."""
@@ -226,7 +250,10 @@ class AuthProviderSet(object):
 
     def push(self, dbuser, password=None):
         """Push user to providers according to dbuser.provider."""
-        self.items[dbuser.provider].push(dbuser, password)
+        self.get(dbuser.provider).push(dbuser, password)
+
+    def strip_form(self, provider, form):
+        self.get(provider).strip_form(form)
 
 
 def authenticate(login, password):

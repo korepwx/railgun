@@ -127,7 +127,7 @@ class CsvSchema(object):
                  if isinstance(v, CsvField)]
 
         # Write the header
-        writer.writerow([FieldName(v) for k, v in attrs])
+        writer.writerow([FieldName(k, v) for k, v in attrs])
 
         # Write value rows
         for itm in items:
