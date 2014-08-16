@@ -18,6 +18,7 @@ from .models import User
 from .context import db
 import ldap
 import ldap.filter
+import ldap.modlist
 
 
 class LdapAuthProvider(AuthProvider):
@@ -73,9 +74,17 @@ class LdapAuthProvider(AuthProvider):
                 self._log_pull(user, create=False, exception=True)
         return dbuser
 
+    def push(self, dbuser, password=None):
+        if password:
+            encrypt = self.__adapter.make_password(password)
+            self.__adapter.modify(dbuser.name, mail=dbuser.email, userPassword=encrypt)
+        else:
+            self.__adapter.modify(dbuser.name, mail=dbuser.email)
 
-# A class just for store attributes.
+
 class Bundle(object):
+
+    '''A class just for store attributes.'''
     pass
 
 
@@ -142,3 +151,21 @@ class LdapEntryAdapter(object):
             return None
         else:
             return LdapEntry(results[0][1])
+
+    def modify(self, uid, **kwargs):
+        ldap_user = self.query_by_uid(uid)
+        if not ldap_user:
+            raise RuntimeWarning('LDAP modify failed: no such user(%s)!' % uid)
+            return
+
+        old = dict()
+        new = dict()
+        for key in kwargs:
+            old[key] = getattr(ldap_user, key)[0]
+            new[key] = kwargs[key]
+
+        ldif = ldap.modlist.modifyModlist(old, new)
+        self.conn.modify_s(ldap.filter.filter_format('uid=%s,' + LDAP_BASE_DN, (uid,)), ldif)
+
+    def make_password(self, password):
+        return ldap_salted_sha1.encrypt(password, salt_size=4)
