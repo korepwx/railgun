@@ -63,7 +63,8 @@ body {
 .content-index .hw-heading,
 .content-homework .hw-heading,
 .content-handins .handin-heading,
-.content-handin_detail .detail-heading {
+.content-handin_detail .detail-heading,
+.content-profile_edit .form-heading {
   padding-bottom: 20px;
 }
 

@@ -71,6 +71,7 @@ def signup():
         user = User()
         form.populate_obj(user)
         user.set_password(form.password.data)
+        user.fill_i18n_from_request()
         try:
             db.session.add(user)
             db.session.commit()

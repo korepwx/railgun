@@ -11,7 +11,7 @@
 import os
 
 from flask import request
-from flask.ext.babel import Babel, get_locale
+from flask.ext.babel import Babel, get_locale, Locale
 from flask.ext.login import current_user
 
 from .context import app
@@ -22,6 +22,12 @@ from .context import app
 
 # Initialize the Babel translation system
 babel = Babel(app)
+
+
+# Get the list of all locales in order of display name
+def list_locales():
+    ret = [Locale('en')] + babel.list_translations()
+    return sorted(ret, cmp=lambda a, b: cmp(a.display_name, b.display_name))
 
 
 # Flask-Babel only accepts zh_Hans_CN to construct locale object for zh_CN,

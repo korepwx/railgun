@@ -14,15 +14,37 @@
 {{ _('Edit Profile') }}
 {%- endblock %}
 {% block content -%}
-<form role="form" class="form-profile form-single" method="POST" action="{{ url_for('profile_edit') }}">
+<form role="form" class="form-profile" method="POST" action="{{ url_for('profile_edit') }}">
   <h2 class="form-heading">{{ _('Edit Profile') }}</h2>
 
-  {{ mkfield(_('Username'), 'name', current_user.name) }}
-  {{ mkfield(_('Email Address'), 'email', current_user.email) }}
-  {{ mkfield(_('Password'), 'password', '', _('Use at least seven characters')) }}
-  {{ mkfield(_('Confirm your password'), 'confirm', '') }}
-  {{ mkfield(_('Speaking Language'), 'locale', current_user.locale) }}
-  {{ mkfield(_('Timezone'), 'timezone', current_user.timezone) }}
+  <!-- Passport settings -->
+  <div class="panel panel-default">
+    <div class="panel-heading">{{ _('Passport') }}</div>
+    <div class="panel-body">
+      {{ mkfield(_('Username'), 'name', current_user.name) }}
+      {{ mkfield(_('Email Address'), 'email', current_user.email) }}
+      {{ mkfield(_('Password'), 'password', '', _('Use at least seven characters')) }}
+      {{ mkfield(_('Confirm your password'), 'confirm', '') }}
+    </div>
+  </div>
+
+  <!-- Personal settings -->
+  <div class="panel panel-default">
+    <div class="panel-heading">{{ _('Personal') }}</div>
+    <div class="panel-body">
+      {{ mkfield(_('Given Name'), 'given_name', current_user.given_name) }}
+      {{ mkfield(_('Family Name'), 'family_name', current_user.family_name) }}
+    </div>
+  </div>
+
+  <!-- Locale settings -->
+  <div class="panel panel-default">
+    <div class="panel-heading">{{ _('Locale') }}</div>
+    <div class="panel-body">
+      {{ mkfield(_('Speaking Language'), 'locale', current_user.locale) }}
+    {{ mkfield(_('Timezone'), 'timezone', current_user.timezone) }}
+    </div>
+  </div>
 
   <button type="submit" class="btn btn-success">{{ _('Save profile') }}</button>
   {{ form.hidden_tag() }}

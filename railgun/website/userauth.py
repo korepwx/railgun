@@ -18,24 +18,9 @@ from .models import User
 from .context import app, db
 
 
-class AuthRequest(object):
-    """Represent an authentication request.
-
-    User can request to authenticate with login name and password. Login
-    name can be either username or email.
-    """
-
-    def __init__(self, login, password):
-        self.login = login
-        self.password = password
-
-        # Users created by railgun signup page cannot contain '@'.
-        # I suppose that external `UserAuth` providers also assume this.
-        self.email_login = ('@' in login)
-
-    def __repr__(self):
-        auth_type = 'email' if self.email_login else 'username'
-        return '<AuthRequest(%s=%s)>' % (auth_type, self.login)
+def is_email(login):
+    """Whether `login` is email address?"""
+    return '@' in login
 
 
 class AuthProvider(object):
@@ -81,17 +66,19 @@ class AuthProvider(object):
                     (user.name, user.email, self)
                 )
 
-    def pull(self, auth_request, dbuser=None):
-        """Try to authenticate with `auth_request`.
+    def pull(self, name=None, email=None, dbuser=None):
+        """Try to get user from this provider with `name` or `email`.
 
-        Return None and do no update on database if `auth_request` cannot
-        pass.
+        Return None if given user does not exist.
 
-        When `auth_request` passed, if `dbuser` is None, construct a new db
-        user and save to database with external information.
+        When user exist, and if `dbuser` is None, construct a new db user
+        and save to database with external information.
 
-        If `auth_request` passed and `dbuser` is not None, any mismatch fields
-        in `dbuser` should be updated by external user data.
+        If `dbuser` is not None, any mismatch fields in `dbuser` should be
+        updated by external user data.
+
+        After dbuser is created or updated, return (user, dbuser) where
+        user is the user object stored in the provider.
         """
 
         raise NotImplementedError()
@@ -104,6 +91,16 @@ class AuthProvider(object):
         If `password` is not None, then the password of target user should also
         be updated.
         """
+
+        raise NotImplementedError()
+
+    def hash_password(self, plain):
+        """Generate the hashed version of `plain`."""
+
+        raise NotImplementedError()
+
+    def check_password(self, hashed, plain):
+        """Check whether `hashed` is the hashed version of `plain`."""
 
         raise NotImplementedError()
 
@@ -158,33 +155,46 @@ class CsvFileAuthProvider(AuthProvider):
             CsvSchema.SaveCSV(CsvFileUserObject, f, self.users)
         app.logger.debug('%s flushed.' % self)
 
-    def pull(self, auth_request, dbuser=None):
+    def hash_password(self, plain):
+        return generate_password_hash(plain)
+
+    def check_password(self, hashed, plain):
+        return check_password_hash(hashed, plain)
+
+    def pull(self, name=None, email=None, dbuser=None):
+
+        # should not provide both name and email, but must provide one of them
+        if (name and email) or (not name and not email):
+            raise ValueError(
+                "One and exact one of `name` and `email` must be provided.")
 
         # Get the interested user by `auth_request`
-        if (auth_request.email_login):
-            user = self.__email_to_user.get(auth_request.login, None)
+        if (email):
+            user = self.__email_to_user.get(email, None)
         else:
-            user = self.__name_to_user.get(auth_request.login, None)
+            user = self.__name_to_user.get(name, None)
 
         # Return none if user not found, or password not match
-        if (not user or
-                not check_password_hash(user.password, auth_request.password)):
+        if (not user):
             return None
 
-        # Auth passed, dbuser is None, create new one
+        # dbuser is None, create new one
         if (dbuser is None):
             try:
                 dbuser = User(name=user.name, email=user.email, password=None,
                               is_admin=user.is_admin, provider=self.name)
+                # Special hack: get locale & timezone from request
+                dbuser.fill_i18n_from_request()
+                # save to database
                 db.session.add(dbuser)
                 db.session.commit()
                 self._log_pull(user, create=True)
             except Exception:
                 dbuser = None
                 self._log_pull(user, create=True, exception=True)
-            return dbuser
+            return (user, dbuser)
 
-        # Auth passed, dbuser is not None, update existing one
+        # dbuser is not None, update existing one
         updated = False
         for k in self.__interested_fields:
             if (getattr(dbuser, k) != getattr(user, k)):
@@ -197,14 +207,14 @@ class CsvFileAuthProvider(AuthProvider):
             except Exception:
                 dbuser = None
                 self._log_pull(user, create=False, exception=True)
-        return dbuser
+        return (user, dbuser)
 
     def push(self, dbuser, password=None):
         user = self.__name_to_user[dbuser.name]
 
         # If password is not None, store and update the password hash
         if (password is not None):
-            user.password = generate_password_hash(password)
+            user.password = self.hash_password(password)
 
         # Set other cleartext fields
         for k in self.__interested_fields:
@@ -234,12 +244,32 @@ class AuthProviderSet(object):
         """Get provider with `name`."""
         return self.__name_to_item[name]
 
-    def pull(self, auth_request, dbuser=None):
+    def pull(self, name=None, email=None, dbuser=None):
         """Pull user from providers one by one."""
         for p in self.items:
-            ret = p.pull(auth_request, dbuser)
+            ret = p.pull(name=name, email=email, dbuser=dbuser)
             if (ret):
                 return ret
+
+    def authenticate(self, **kwargs):
+        """Authenticate through one of the providers.
+        Return db user object if passes authentication."""
+        name = kwargs.get('name', None)
+        email = kwargs.get('email', None)
+        password = kwargs['password']
+        dbuser = kwargs.get('dbuser', None)
+
+        # which provider should we use?
+        providers = self.items if not dbuser else [self.get(dbuser.provider)]
+
+        # Query about each provider
+        for p in providers:
+            ret = p.pull(name=name, email=email, dbuser=dbuser)
+            if (ret):
+                # Check whether user passes authentication
+                user, dbuser = ret[0], ret[1]
+                if (p.check_password(user.password, password)):
+                    return dbuser
 
     def push(self, dbuser, password=None):
         """Push user to providers according to dbuser.provider."""
@@ -254,24 +284,26 @@ def authenticate(login, password):
     Return the loaded dbuser object if auth passed.
     """
 
-    # Make the auth request
-    req = AuthRequest(login, password)
-
     # Load dbuser object from database if possible
-    if (req.email_login):
-        dbuser = db.session.query(User).filter(User.email == req.login).first()
+    email_login = is_email(login)
+    if (email_login):
+        dbuser = db.session.query(User).filter(User.email == login).first()
     else:
-        dbuser = db.session.query(User).filter(User.name == req.login).first()
+        dbuser = db.session.query(User).filter(User.name == login).first()
 
     # If dbuser exists and dbuser.provider is empty, just check its password
     if (dbuser is not None and not dbuser.provider):
-        if (check_password_hash(dbuser.password, req.password)):
+        if (check_password_hash(dbuser.password, password)):
             return dbuser
         return None
 
-    # Otherwise query the auth providers
-    return auth_providers.pull(req, dbuser=dbuser)
-
+    # Otherwise authenticate through auth providers.
+    if (email_login):
+        return auth_providers.authenticate(email=login, password=password,
+                                           dbuser=dbuser)
+    else:
+        return auth_providers.authenticate(name=login, password=password,
+                                           dbuser=dbuser)
 
 # Initialize the builtin auth providers
 auth_providers = AuthProviderSet()

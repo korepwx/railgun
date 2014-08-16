@@ -39,6 +39,10 @@ class User(db.Model):
     # Whether this user is admin?
     is_admin = db.Column(db.Boolean, default=False)
 
+    # User detail information
+    given_name = db.Column(db.String(64), default='')
+    family_name = db.Column(db.String(64), default='')
+
     # Language and timezone of this user
     locale = db.Column(db.String(16), default=app.config['DEFAULT_LOCALE'])
     timezone = db.Column(db.String(32), default=app.config['DEFAULT_TIMEZONE'])

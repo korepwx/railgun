@@ -19,6 +19,7 @@ from flask.ext.login import current_user
 
 from .models import User
 from .context import db
+from .i18n import list_locales
 
 
 class HandinTextArea(TextArea):
@@ -72,6 +73,11 @@ class SigninForm(Form):
     password = PasswordField(_('Password'), validators=[InputRequired()])
 
 
+def _MakeLocaleChoices():
+    """Make choices of available locales."""
+    return [(str(l), l.display_name) for l in list_locales()]
+
+
 class ProfileForm(Form):
     """Form for `profile_edit` view."""
 
@@ -86,11 +92,25 @@ class ProfileForm(Form):
     ])
     confirm = PasswordField(_('Confirm your password'))
 
-    # i18n fields
-    locale = SelectField(_('Speaking Language'), validators=[
-        DataRequired(message=_("Speaking language can't be blank")),
+    # User profile
+    given_name = StringField(_('Given Name'), validators=[
+        Length(max=64, message=_("Given name must be no longer than 64 "
+                                 "characters")),
     ])
-    timezone = SelectField(_('Timezone'), validators=[
+    family_name = StringField(_('Family Name'), validators=[
+        Length(max=64, message=_("Family name must be no longer than 64 "
+                                 "characters")),
+    ])
+
+    # i18n fields
+    locale = SelectField(
+        _('Speaking Language'),
+        choices=_MakeLocaleChoices(),
+        validators=[
+            DataRequired(message=_("Speaking language can't be blank")),
+        ]
+    )
+    timezone = StringField(_('Timezone'), validators=[
         DataRequired(message=_("Timezone can't be blank")),
     ])
 
