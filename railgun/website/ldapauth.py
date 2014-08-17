@@ -54,8 +54,6 @@ class LdapAuthProvider(AuthProvider):
         return mod.verify(plain, hashed)
 
     def pull(self, name=None, email=None, dbuser=None):
-        admin_group = self.__adapter.query_admin_group()
-
         # Fetch the user from LDAP server
         if (email):
             ldap_user = self.__adapter.query_by_mail(email)
@@ -65,7 +63,7 @@ class LdapAuthProvider(AuthProvider):
         # Return None if user not exist on LDAP server
         if (not ldap_user):
             return None
-        user = ldap_user.to_user(admin_group)
+        user = ldap_user.to_user()
 
         # Create new dbuser from LDAP user
         if (dbuser is None):
@@ -154,7 +152,7 @@ class LdapEntry(object):
         for key in kwargs:
             setattr(self, key, kwargs[key])
 
-    def to_user(self, admin_group):
+    def to_user(self):
         # Shortcut to fetch particular value from object and does not raise
         # exceptions if given key not found.
         getval = lambda k: getattr(self, k)[0] if hasattr(self, k) else None
