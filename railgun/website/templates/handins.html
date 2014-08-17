@@ -2,9 +2,9 @@
 {% block subtitle -%}
 {{ _('Submissions') }}
 {%- endblock %}
-{%- import "base.handins.html" as handins with context -%}
 {%- set showuser = False -%}
 {%- set pagetitle = _('Your Submissions') -%}
+{%- import "base.handins.html" as handins with context -%}
 {% block content -%}
   {{ handins.the_content() }}
 {%- endblock %}
