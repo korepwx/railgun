@@ -1,8 +1,9 @@
 {% extends "admin.html" %}
 {% block subtitle -%}
-{{ _('Submissions') }}
+{{ _('All Submissions') }}
 {%- endblock %}
 {%- set showuser = True -%}
+{%- set pagetitle = _('All Submissions') -%}
 {%- import "base.handins.html" as handins with context -%}
 {% block content -%}
   {{ handins.the_content() }}
