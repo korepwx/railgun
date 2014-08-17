@@ -12,11 +12,10 @@ import uuid
 
 from flask import render_template, url_for, redirect, flash, request, g, \
     send_from_directory
-from flask.ext.babel import lazy_gettext, gettext as _
+from flask.ext.babel import lazy_gettext, get_locale, gettext as _
 from flask.ext.login import login_user, logout_user, current_user, \
     login_required, fresh_login_required
 from werkzeug.exceptions import NotFound
-from sqlalchemy import or_
 
 from .context import app, db
 from .navibar import navigates, NaviItem, set_navibar_identity
@@ -86,6 +85,9 @@ def signout():
 @app.route('/profile/edit/', methods=['GET', 'POST'])
 @fresh_login_required
 def profile_edit():
+    # Profile edit should use typeahead.js
+    g.scripts.deps('typeahead.js')
+
     # Create the profile form.
     # Note that some fields cannot be edited in certain auth providers,
     # which should be stripped from from schema.
@@ -124,7 +126,8 @@ def profile_edit():
         form.password.data = None
         form.confirm.data = None
 
-    return render_template('profile_edit.html', form=form)
+    return render_template('profile_edit.html', locale_name=str(get_locale()),
+                           form=form)
 
 
 @app.route('/homework/<slug>/', methods=['GET', 'POST'])

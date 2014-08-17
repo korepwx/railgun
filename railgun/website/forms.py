@@ -14,7 +14,9 @@ from wtforms import StringField, PasswordField, SelectField
 from wtforms.widgets import TextArea
 from wtforms.validators import DataRequired, Length, Email, InputRequired, \
     EqualTo, Regexp, URL, ValidationError
-from flask.ext.babel import lazy_gettext as _
+from babel import UnknownLocaleError
+from pytz import timezone, UnknownTimeZoneError
+from flask.ext.babel import Locale, lazy_gettext as _
 from flask.ext.login import current_user
 
 from .models import User
@@ -129,6 +131,18 @@ class ProfileForm(Form):
                 _("Password must be no shorter than 7 and no longer than "
                   "32 characters")
             )
+
+    def validate_locale(form, field):
+        try:
+            Locale(field.data)
+        except UnknownLocaleError:
+            raise ValidationError(_("Please select a valid locale from above."))
+
+    def validate_timezone(form, field):
+        try:
+            timezone(field.data)
+        except UnknownTimeZoneError:
+            raise ValidationError(_("Please enter a valid timezone."))
 
 
 class UploadHandinForm(Form):

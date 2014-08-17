@@ -308,3 +308,26 @@ scripts.addScript(ScriptLib(
         lambda: url_for('static', filename='css/codehilite.css'),
     ]
 ))
+scripts.addScript(ScriptLib(
+    name='handlebars',
+    version='1.3.0',
+    tailScripts=[
+        lambda: url_for('static', filename='js/handlebars-v1.3.0.js'),
+    ]
+))
+scripts.addScript(ScriptLib(
+    name='typeahead.js',
+    version='0.10.5',
+    deps=[
+        'jquery >= 1.9.0',
+        'handlebars >= 1.3.0',
+        'bootstrap >= 3',
+    ],
+    headStyles=[
+        lambda: url_for('static', filename='css/typeaheadjs.css')
+    ],
+    tailScripts=[
+        lambda: url_for('static', filename='js/typeahead.jquery.min.js'),
+        lambda: url_for('static', filename='js/bloodhound.min.js'),
+    ]
+))

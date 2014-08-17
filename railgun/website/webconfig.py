@@ -39,6 +39,7 @@ SQLALCHEMY_DATABASE_URI = (
 )
 
 # LDAP Authentication related
+LDAP_AUTH_ENABLED = True
 LDAP_ADMIN_KEY = (
     open(os.path.join(RAILGUN_ROOT, 'keys/ldapKey.txt'), 'rb').read().strip()
 )

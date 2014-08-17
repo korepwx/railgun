@@ -10,15 +10,16 @@
 
 from passlib.hash import ldap_salted_sha1, ldap_salted_md5, ldap_md5, \
     ldap_sha1, ldap_plaintext
+import ldap
+import ldap.filter
+import ldap.modlist
 
 from .userauth import AuthProvider
 from .webconfig import LDAP_ADMIN_DN, LDAP_URL, LDAP_ADMIN_KEY, LDAP_BASE_DN, \
     LDAP_RAILGUN_ADMIN_GROUP_DN
 from .models import User
-from .context import db
-import ldap
-import ldap.filter
-import ldap.modlist
+from .context import db, app
+from .userauth import auth_providers
 
 
 class LdapAuthProvider(AuthProvider):
@@ -169,3 +170,6 @@ class LdapEntryAdapter(object):
 
     def make_password(self, password):
         return ldap_salted_sha1.encrypt(password, salt_size=4)
+
+if (app.config['LDAP_AUTH_ENABLED']):
+    auth_providers.add(LdapAuthProvider('LDAP'))

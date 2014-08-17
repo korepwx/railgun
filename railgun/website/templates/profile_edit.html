@@ -28,6 +28,30 @@
     </div>
   </div>
 
+  <!-- Locale settings -->
+  <div class="panel panel-default">
+    <div class="panel-heading">{{ _('Locale') }}</div>
+    <div class="panel-body">
+      {{ mkfield(_('Speaking Language'), 'locale', current_user.locale) }}
+      {% if 'timezone' in form -%}
+        {% set field = form.timezone -%}
+        <div class="form-group{% if field.errors %} has-error{% endif %}" id="timezone-wrapper">
+          {{ field.label(class_="control-label") }}
+          <div class="">
+            {{ field(class_='form-control') }}
+          </div>
+          {% if field.errors -%}
+          {% for e in field.errors %}<p class="help-block text-danger">{{ e }}</p>{% endfor %}
+          {%- elif helptext and not field.data -%}
+          <p class="help-block">{{ helptext }}</p>
+          {%- endif %}
+        </div>
+      {%- else -%}
+        {{ mkfield(_('Timezone'), 'timezone', current_user.timezone) }}
+      {%- endif %}
+    </div>
+  </div>
+
   <!-- Personal settings -->
   <div class="panel panel-default">
     <div class="panel-heading">{{ _('Personal') }}</div>
@@ -37,16 +61,15 @@
     </div>
   </div>
 
-  <!-- Locale settings -->
-  <div class="panel panel-default">
-    <div class="panel-heading">{{ _('Locale') }}</div>
-    <div class="panel-body">
-      {{ mkfield(_('Speaking Language'), 'locale', current_user.locale) }}
-    {{ mkfield(_('Timezone'), 'timezone', current_user.timezone) }}
-    </div>
-  </div>
-
   <button type="submit" class="btn btn-success">{{ _('Save profile') }}</button>
   {{ form.hidden_tag() }}
 </form>
+{%- endblock %}
+{% block tail -%}
+  <script type="text/javascript" src="{{ url_for('static', filename='js/profile_edit.js') }}"></script>
+  <script type="text/javascript">
+    $(document).ready(function() {
+      InitTimeZone("{{ url_for('static', filename='tz/%s.json' % locale_name) }}");
+    });
+  </script>
 {%- endblock %}

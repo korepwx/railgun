@@ -213,7 +213,7 @@ class CsvFileAuthProvider(AuthProvider):
         user = self.__name_to_user[dbuser.name]
 
         # If password is not None, store and update the password hash
-        if (password is not None):
+        if (password):
             user.password = self.hash_password(password)
 
         # Set other cleartext fields
@@ -306,7 +306,6 @@ def authenticate(login, password):
                                            dbuser=dbuser)
 
 # Initialize the builtin auth providers
-from .ldapauth import LdapAuthProvider
 auth_providers = AuthProviderSet()
 auth_providers.add(
     CsvFileAuthProvider(
@@ -314,4 +313,3 @@ auth_providers.add(
         os.path.join(app.config['RAILGUN_ROOT'], 'config/users.csv')
     )
 )
-auth_providers.add(LdapAuthProvider('LDAP'))

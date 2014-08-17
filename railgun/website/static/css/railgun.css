@@ -95,3 +95,13 @@ body {
   top: -3px;
   position: relative;
 }
+
+/* Tweak for profile edit page */
+#timezone-wrapper .twitter-typeahead {
+  display: block;
+  width: 100%;
+}
+
+#timezone-wrapper .tt-dropdown-menu {
+  width: 100%;
+}
