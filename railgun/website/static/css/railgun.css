@@ -64,12 +64,16 @@ body {
 .content-homework .hw-heading,
 .content-handins .handin-heading,
 .content-handin_detail .detail-heading,
-.content-profile_edit .form-heading {
+.content-profile_edit .form-heading,
+.content-admin_users .user-heading,
+.content-admin_user_edit .form-heading,
+.content-admin_handins .handin-heading,
+.content-admin_scores .hw-heading,
+.content .csv-heading {
   padding-bottom: 20px;
 }
 
-
-/* tweak for index page */
+/* tweak for homework list page */
 .content-index .hw-languages span {
   margin-right: 5px;
 }

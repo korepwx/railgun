@@ -9,6 +9,7 @@
 # This file is released under BSD 2-clause license.
 
 import os
+import re
 
 from flask import request
 from flask.ext.babel import Babel, get_locale, Locale
@@ -24,10 +25,47 @@ from .context import app
 babel = Babel(app)
 
 
-# Get the list of all locales in order of display name
 def list_locales():
+    """Get the list of all locales in order of display name."""
     ret = [Locale('en')] + babel.list_translations()
     return sorted(ret, cmp=lambda a, b: cmp(a.display_name, b.display_name))
+
+
+def get_best_locale_name(locale_names):
+    """Get the best match locale from `locale_names` to current request.
+    This method is used when flask-babel is setup, and get_locale() can
+    return a valid Babel locale object.
+    """
+
+    top_score = 0
+    top_name = None
+    req_locale = get_locale()
+
+    for name in locale_names:
+        l = Locale.parse(name.replace('-', '_'))
+        # If locale object is the same, return True at once
+        if (l == req_locale):
+            return name
+        # If language not match, give up this locale
+        if (l.language != req_locale.language):
+            continue
+        # Exam the matched score
+        score = 0
+        # script match, give 5
+        if (l.script == req_locale.script):
+            score += 5
+        # territory match, give 3
+        if (l.territory == req_locale.territory):
+            score += 3
+        # variant match, give 3
+        # TODO: check these score weights
+        if (l.variant == req_locale.variant):
+            score += 3
+        # Update top_name if > top_score
+        if (score > top_score):
+            top_name = name
+            top_score = score
+    return top_name
 
 
 # Flask-Babel only accepts zh_Hans_CN to construct locale object for zh_CN,

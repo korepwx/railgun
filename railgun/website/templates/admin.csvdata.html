@@ -1,0 +1,26 @@
+{% extends "admin.html" %}
+{% block subtitle %}{{ pagetitle }}{% endblock %}
+{% block content -%}
+  <h3 class="csv-heading">
+    {{ pagetitle }}
+    <span class="pull-right">
+      {%- set args = request.view_args.copy() -%}
+      <a href="{{ url_for(request.endpoint, csvfile='1', **args) }}" class="btn btn-success">{{ _('Download') }}</a>
+    </span>
+  </h3>
+  <div class="clear"></div>
+  <table class="table table-hover">
+    <tr>
+      {% for hdr in headers -%}
+        <th>{{ hdr }}</th>
+      {%- endfor %}
+    </tr>
+    {%- for itm in items %}
+    <tr>
+      {% for d in itm -%}
+        <td>{{ d or '' }}</td>
+      {%- endfor %}
+    </tr>
+    {%- endfor %}
+  </table>
+{%- endblock %}

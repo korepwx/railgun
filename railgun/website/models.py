@@ -139,6 +139,9 @@ class Handin(db.Model):
     # db.ForeignKey to the User
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
 
+    # Fast access to user
+    user = db.relationship('User')
+
     # Basic model object interface
     def __repr__(self):
         return '<Handin(%s)>' % self.uuid

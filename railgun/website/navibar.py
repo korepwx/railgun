@@ -16,12 +16,13 @@ from .context import app
 class NaviItem(object):
     """Basis of navibar item."""
 
-    def __init__(self, title, url, identity, subitems=None):
+    def __init__(self, title, url, identity, adminpage=None, subitems=None):
         """construct a new `NaviItem` instance.
 
         `title`: title of this navi item, may be lazy string or callable.
         `url`: url of this navi item, may be callable object.
         `identity`: identity of this navi item, may be callable object.
+        `adminpage`: whether this navi item links to an admin page?
 
         this object contains too many dynamic properties. so `NaviItemProxy`
         should be used to cache these properties once the request context is
@@ -31,6 +32,7 @@ class NaviItem(object):
         self.__title = title
         self.__url = url
         self.identity = identity
+        self.adminpage = adminpage
 
         # list of sub navi items
         self.__subitems = subitems
@@ -62,6 +64,12 @@ class NaviItem(object):
     def has_child(self):
         """test whether this navi item has children."""
         return not not self.subitems
+
+    @staticmethod
+    def make_view(title, endpoint, *args, **kwargs):
+        """make a new `NaviItem` for given view."""
+        return NaviItem(title, lambda: url_for(endpoint, *args, **kwargs),
+                        endpoint)
 
 
 class NaviItemProxy(object):

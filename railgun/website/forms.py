@@ -117,11 +117,20 @@ class ProfileForm(Form):
         DataRequired(message=_("Timezone can't be blank")),
     ])
 
+    # Get or set the user object assosicated with this form.
+    @property
+    def _the_user(self):
+        return getattr(self, '_m_the_user', current_user)
+
+    @_the_user.setter
+    def _the_user(self, value):
+        self._m_the_user = value
+
     # Special inline validators on email and password
     def validate_email(form, field):
         if (db.session.query(User).
                 filter(User.email == field.data).
-                filter(User.id != current_user.id).
+                filter(User.id != form._the_user.id).
                 count()):
             raise ValidationError(_('Email already taken'))
 
@@ -144,6 +153,12 @@ class ProfileForm(Form):
             timezone(field.data)
         except UnknownTimeZoneError:
             raise ValidationError(_("Please enter a valid timezone."))
+
+
+class AdminUserEditForm(ProfileForm):
+    """Form for `admin.user_edit` view."""
+
+    is_admin = BooleanField(_('Is administrator?'))
 
 
 class UploadHandinForm(Form):

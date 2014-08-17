@@ -1,0 +1,50 @@
+{% extends "admin.html" %}
+{% block subtitle -%}
+{{ _('Score Table') }}
+{%- endblock %}
+{% block content -%}
+  <h3 class="hw-heading">{{ _('Score Table of all Students') }}</h3>
+  <table class="table table-hover">
+    <tr>
+      <th>{{ _('Name') }}</th>
+      <th>{{ _('Type') }}</th>
+      <th>{{ _('Last Due') }}</th>
+      <th>{{ _('Report') }}</th>
+    </tr>
+    {%- for hw in g.homeworks %}
+      {%- set next_deadline = hw.get_last_deadline() -%}
+      {%- if hw.uuid in finalScores -%}
+        {%- set line_style = 'success' -%}
+      {%- elif not next_deadline -%}
+        {%- set line_style = 'danger' -%}
+      {%- else -%}
+        {%- set line_style = 'default' -%}
+      {%- endif -%}
+    <tr class="{{line_style}} text-{{line_style}}">
+      <td class="hw-name">
+        <a href="{{ url_for('homework', slug=hw.slug) }}">{{ hw.info.name }}</a>
+      </td>
+      <td class="hw-languages">
+        {% for c in hw.get_code_languages() -%}
+          <span class="label label-primary">{{ c | codelang }}</span>
+        {%- endfor %}
+      </td>
+      <td class="hw-deadline">
+        {% if next_deadline -%}
+          {%- set ddl_date = next_deadline[0] -%}
+          <span style="color: {{ ddl_date | duecolor }}">
+            {{ ddl_date | timedelta }}
+          <span>
+        {%- else -%}
+          {{ _('Out of date') }}
+        {%- endif %}
+      </td>
+      <td class="hw-action">
+        <a href="{{ url_for('admin.hwscores', hwid=hw.uuid) }}">
+          {{ _('View') }}
+        </a>
+      </td>
+    </tr>
+    {%- endfor %}
+  </table>
+{%- endblock %}

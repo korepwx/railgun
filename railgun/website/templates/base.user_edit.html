@@ -1,0 +1,79 @@
+{%- macro mkfield(label, name, defvalue, helptext=None) -%}
+  {% if name in form -%}
+    {{ utility.form_group(form[name], helptext) }}
+  {%- else -%}
+    <div class="form-group">
+      <label for="name">{{ label }}</label>
+      <input type="text" disabled="1" value="{{ defvalue }}" class="form-control" />
+    </div>
+  {%- endif %}
+{%- endmacro -%}
+{% import "utility.html" as utility %}
+{% macro the_content() -%}
+<form role="form" class="form-profile" method="POST" action="{{ submit_url }}">
+  <h2 class="form-heading">{{ pagetitle }}</h2>
+
+  <!-- Passport settings -->
+  <div class="panel panel-default">
+    <div class="panel-heading">{{ _('Passport') }}</div>
+    <div class="panel-body">
+      {{ mkfield(_('Username'), 'name', the_user.name) }}
+      {{ mkfield(_('Email Address'), 'email', the_user.email) }}
+      {{ mkfield(_('Password'), 'password', '', _('Use at least seven characters')) }}
+      {{ mkfield(_('Confirm the password'), 'confirm', '') }}
+      {% if 'is_admin' in form -%}
+        <div class="checkbox">
+          <label>
+            {{ form.is_admin }}
+            {{ form.is_admin.label.text }}
+          </label>
+        </div>
+      {%- endif %}
+    </div>
+  </div>
+
+  <!-- Locale settings -->
+  <div class="panel panel-default">
+    <div class="panel-heading">{{ _('Locale') }}</div>
+    <div class="panel-body">
+      {{ mkfield(_('Speaking Language'), 'locale', the_user.locale) }}
+      {% if 'timezone' in form -%}
+        {% set field = form.timezone -%}
+        <div class="form-group{% if field.errors %} has-error{% endif %}" id="timezone-wrapper">
+          {{ field.label(class_="control-label") }}
+          <div class="">
+            {{ field(class_='form-control') }}
+          </div>
+          {% if field.errors -%}
+          {% for e in field.errors %}<p class="help-block text-danger">{{ e }}</p>{% endfor %}
+          {%- elif helptext and not field.data -%}
+          <p class="help-block">{{ helptext }}</p>
+          {%- endif %}
+        </div>
+      {%- else -%}
+        {{ mkfield(_('Timezone'), 'timezone', the_user.timezone) }}
+      {%- endif %}
+    </div>
+  </div>
+
+  <!-- Personal settings -->
+  <div class="panel panel-default">
+    <div class="panel-heading">{{ _('Personal') }}</div>
+    <div class="panel-body">
+      {{ mkfield(_('Given Name'), 'given_name', the_user.given_name) }}
+      {{ mkfield(_('Family Name'), 'family_name', the_user.family_name) }}
+    </div>
+  </div>
+
+  <button type="submit" class="btn btn-success">{{ _('Save profile') }}</button>
+  {{ form.hidden_tag() }}
+</form>
+{%- endmacro %}
+{% macro the_tail() -%}
+  <script type="text/javascript" src="{{ url_for('static', filename='js/profile_edit.js') }}"></script>
+  <script type="text/javascript">
+    $(document).ready(function() {
+      InitTimeZone("{{ url_for('static', filename='tz/%s.json' % locale_name) }}");
+    });
+  </script>
+{%- endmacro %}

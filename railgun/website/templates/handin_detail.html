@@ -19,6 +19,10 @@
     <div class="panel-heading">{{ _('Summary') }}</div>
     <table class="table table-hover">
       <tr>
+        <th style="width: 20%">{{ _('Upload user') }}</th>
+        <td>{{ handin.user.name }}</td>
+      </tr>
+      <tr>
         <th style="width: 20%">{{ _('Upload time') }}</th>
         <td>{{ handin.ctime | datetimeformat }}</td>
       </tr>
@@ -70,7 +74,7 @@
   </div>
 
   <!-- Standard output and Error output of the process -->
-  {% if hw.reportAll and handin.stdout -%}
+  {% if (hw.reportAll or current_user.is_admin) and handin.stdout -%}
     <div class="panel panel-default detail-stdout">
       <div class="panel-heading">{{ _('Standard Output') }}</div>
       <div class="panel-body">
@@ -80,7 +84,7 @@
       </div>
     </div>
   {%- endif %}
-  {% if hw.reportAll and handin.stderr -%}
+  {% if (hw.reportAll or current_user.is_admin) and handin.stderr -%}
     <div class="panel panel-default detail-stderr">
       <div class="panel-heading">{{ _('Standard Error Output') }}</div>
       <div class="panel-body">
@@ -127,7 +131,7 @@
             {%- endif %}
           </td>
         </tr>
-        {% if hw.reportAll and p.detail -%}
+        {% if (hw.reportAll or current_user.is_admin) and p.detail -%}
           <tr>
             <th>{{ _('Details') }}</th>
             <td>

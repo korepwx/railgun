@@ -10,10 +10,11 @@
 
 import os
 
-from flask import request, g, url_for
+from flask import g, url_for
 
 from railgun.common.hw import HwSet, utc_now
 from .context import app
+from .i18n import get_best_locale_name
 
 
 class HwProxy(object):
@@ -24,7 +25,7 @@ class HwProxy(object):
         self.hw = hw
 
         # determine the best info to be selected
-        locale = request.accept_languages.best_match(hw.get_name_locales())
+        locale = get_best_locale_name(hw.get_name_locales())
         if (not locale):
             locale = app.config['BABEL_DEFAULT_LOCALE']
         self.info = [i for i in hw.info if i.lang == locale]

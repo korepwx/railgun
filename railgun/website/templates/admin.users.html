@@ -1,0 +1,44 @@
+{% extends "admin.html" %}
+{%- import "utility.html" as utility with context -%}
+{% block subtitle -%}
+{{ _('Users') }}
+{%- endblock %}
+{% block content -%}
+  <h3 class="user-heading">{{ _('All Users') }}</h3>
+  <table class="table table-hover">
+    <tr>
+      <th>{{ _('Name') }}</th>
+      <th>{{ _('Email') }}</th>
+      <th>{{ _('Group') }}</th>
+      <th style="width: 10%">{{ _('Action') }}</th>
+    </tr>
+    {% for user in the_page.items -%}
+    <tr>
+      <td class="user-name">
+        {{ user.name }}
+      </td>
+      <td class="user-email">
+        {{ user.email }}
+      </td>
+      <td class="user-group">
+        {% if user.is_admin -%}
+          {{ _('Admin') }}
+        {%- else -%}
+          {{ _('Ordinary') }}
+        {%- endif %}
+      </td>
+      <td class="user-action">
+        <a href="{{ url_for('admin.user_edit', name=user.name) }}">
+          {{ _("Edit") }}
+        </a>
+      </td>
+    </tr>
+    {%- endfor %}
+  </table>
+
+  {% if the_page.pages > 1 -%}
+  <div class="text-center">
+    {{ utility.render_pagination(the_page, request.endpoint, perpage=the_page.per_page) }}
+  </div>
+  {%- endif %}
+{%- endblock %}

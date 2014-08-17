@@ -44,22 +44,26 @@
           -->
           <ul class="nav navbar-nav">
             {%- macro show_navi_item(itm) -%}
-              {%- if not itm.has_child -%}
-              <li{% if itm.is_active %} class="active"{% endif %}>
-                <a href="{{ itm.url }}">{{ itm.title }}</a>
-              </li>
-              {%- else -%}
-              <li class="dropdown{% if itm.is_active %} active{% endif %}">
-                <a href="{{ itm.url }}" class="dropdown-toggle" data-toggle="dropdown">{{ itm.title }}</a>
-                <ul class="dropdown-menu" role="menu">
-                  {%- for citm in itm.subitems %}
-                  <li role="presentation"{% if citm.is_active %} class="active"{% endif %}>
-                    <a role="menuitem" tabindex="-1" href="{{ citm.url }}">{{ citm.title }}</a>
-                  </li>
-                  {%- endfor %}
-                </ul>
-              </li>
-              {%- endif -%}
+              {% if current_user.is_admin or not itm.adminpage -%}
+                {%- if not itm.has_child -%}
+                <li{% if itm.is_active %} class="active"{% endif %}>
+                  <a href="{{ itm.url }}">{{ itm.title }}</a>
+                </li>
+                {%- else -%}
+                <li class="dropdown{% if itm.is_active %} active{% endif %}">
+                  <a href="{{ itm.url }}" class="dropdown-toggle" data-toggle="dropdown">{{ itm.title }}</a>
+                  <ul class="dropdown-menu" role="menu">
+                    {%- for citm in itm.subitems %}
+                      {% if current_user.is_admin or not citm.adminpage -%}
+                        <li role="presentation"{% if citm.is_active %} class="active"{% endif %}>
+                          <a role="menuitem" tabindex="-1" href="{{ citm.url }}">{{ citm.title }}</a>
+                        </li>
+                      {%- endif %}
+                    {%- endfor %}
+                  </ul>
+                </li>
+                {%- endif -%}
+              {%- endif %}
             {%- endmacro -%}
             {%- for item in navibar %}
               {{ show_navi_item(item) }}
@@ -97,7 +101,7 @@
     <!-- General content area -->
     {% block wrapper -%}
     <div class="container" id="wrapper">
-      <div class="content content-{{ request.endpoint }}">
+      <div class="content content-{{ request.endpoint | cssclass }}">
         <!-- Flashed messages -->
         <div class="flash-messages">
           {% for c, m in get_flashed_messages(with_categories=True) -%}

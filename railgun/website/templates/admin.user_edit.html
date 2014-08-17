@@ -1,10 +1,9 @@
-{% extends "base.html" %}
+{% extends "admin.html" %}
 {% block subtitle -%}
-{{ _('Edit Profile') }}
+{{ _('Edit User "%(user)s"', user=the_user.name) }}
 {%- endblock %}
-{%- set the_user = current_user -%}
-{%- set submit_url = url_for('profile_edit') -%}
-{%- set pagetitle = _('Edit Profile') -%}
+{%- set submit_url = url_for('admin.user_edit', name=the_user.name) -%}
+{%- set pagetitle = _('Edit User "%(user)s"', user=the_user.name) -%}
 {% import "base.user_edit.html" as user_edit with context %}
 {% block content -%}
   {{ user_edit.the_content() }}

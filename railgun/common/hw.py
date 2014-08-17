@@ -345,6 +345,14 @@ class Homework(object):
             if (ddl[0] >= now):
                 return (ddl[0], ddl[1])
 
+    def get_last_deadline(self):
+        """get the last deadline of this homework. return (date, scale)."""
+
+        now = utc_now()
+        ddl = self.deadlines[-1]
+        if (ddl[0] >= now):
+            return (ddl[0], ddl[1])
+
 
 class HwSet(object):
     """Collection of all homeworks."""

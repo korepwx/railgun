@@ -231,7 +231,7 @@ def handins():
     if (app.config['IGNORE_HANDINS_OF_REMOVED_HW']):
         handins = handins.filter(Handin.hwid.in_(homeworks.get_uuid_list()))
     # Sort the handins
-    handins = handins.order_by('-id')
+    handins = handins.order_by(-Handin.id)
     # build pagination object
     return render_template(
         'handins.html', the_page=handins.paginate(page, perpage)
@@ -242,8 +242,10 @@ def handins():
 @login_required
 def handin_detail(uuid):
     # Query about the handin record
-    handin = Handin.query.filter(Handin.user_id == current_user.id,
-                                 Handin.uuid == uuid).one()
+    handin = Handin.query.filter(Handin.uuid == uuid)
+    if (not current_user.is_admin):
+        handin = handin.filter(Handin.user_id == current_user.id)
+    handin = handin.one()
 
     # Get the homework
     hw = g.homeworks.get_by_uuid(handin.hwid)

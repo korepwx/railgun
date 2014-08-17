@@ -120,3 +120,9 @@ def __inject_template_handinstyle(state):
 @app.template_filter(name='roundscore')
 def __inject_template_roundscore(score):
     return round(score * 10) * 0.1
+
+
+# Regular generated class name for css
+@app.template_filter(name='cssclass')
+def __inject_template_cssclass(s):
+    return s.replace('.', '_')

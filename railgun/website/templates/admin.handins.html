@@ -1,9 +1,9 @@
-{% extends "base.html" %}
+{% extends "admin.html" %}
 {% block subtitle -%}
 {{ _('Submissions') }}
 {%- endblock %}
+{%- set showuser = True -%}
 {%- import "base.handins.html" as handins with context -%}
-{%- set showuser = False -%}
 {% block content -%}
   {{ handins.the_content() }}
 {%- endblock %}
