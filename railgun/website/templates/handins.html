@@ -1,14 +1,14 @@
 {% extends "base.html" %}
 {%- import "utility.html" as utility with context -%}
 {% block subtitle -%}
-{{ _('Handins') }}
+{{ _('Submissions') }}
 {%- endblock %}
 {% block content -%}
-  <h3 class="handin-heading">{{ _('Your Handins') }}</h3>
+  <h3 class="handin-heading">{{ _('Your Submissions') }}</h3>
   <table class="table table-hover">
     <tr>
       <th>{{ _('Homework') }}</th>
-      <th>{{ _('Handin Date') }}</th>
+      <th>{{ _('Submit Date') }}</th>
       <th>{{ _('Status') }}</th>
       <th>{{ _('Score') }}</th>
       <th style="width: 40%">{{ _('Summary') }}</th>

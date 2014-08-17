@@ -170,7 +170,7 @@ def homework(slug):
         next_ddl = hw.get_next_deadline()
         if (not next_ddl):
             flash(_('This homework is out of date! '
-                    'You cannot submit your handin.'), 'danger')
+                    'You cannot upload your submission.'), 'danger')
             return redirect(url_for('homework', slug=slug))
         # we must record the current next_ddl. during the request processing,
         # such deadline may pass so that our program may fail later
@@ -184,10 +184,11 @@ def homework(slug):
                 languages[handin_lang].handle_upload(
                     handid, hw, handin_lang, forms[handin_lang]
                 )
-                flash(_('You handin is accepted, please wait for results.'),
+                flash(_('You submission is accepted, please wait for results.'),
                       'success')
             except Exception:
-                app.logger.exception('Error when add handin to run queue.')
+                app.logger.exception('Error when adding submission to run '
+                                     'queue.')
                 flash(_('Internal server error, please try again.'), 'danger')
             # homework page is too long, so redirect to handins page, to
             # let flashed message clearer
@@ -267,4 +268,4 @@ navigates.add(
         ]
     )
 )
-navigates.add_view(title=lazy_gettext('Handins'), endpoint='handins')
+navigates.add_view(title=lazy_gettext('Submission'), endpoint='handins')

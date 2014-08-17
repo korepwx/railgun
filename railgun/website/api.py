@@ -75,11 +75,11 @@ def api_handin_report(uuid):
     handin.state = 'Accepted' if score.accepted else 'Rejected'
     handin.score = score.get_score()
     if (score.accepted):
-        handin.result = lazy_gettext('Your handin is accepted.')
+        handin.result = lazy_gettext('Your submission is accepted.')
     elif (score.result):
         handin.result = score.result
     else:
-        handin.result = lazy_gettext('Your handin is rejected.')
+        handin.result = lazy_gettext('Your submission is rejected.')
     handin.partials = score.partials
 
     # update hwscore table and set the final score of this homework
@@ -97,7 +97,7 @@ def api_handin_report(uuid):
     try:
         db.session.commit()
     except Exception:
-        app.logger.exception('Cannot update result of handin(%s).' % uuid)
+        app.logger.exception('Cannot update result of submission(%s).' % uuid)
         return 'update database failed'
 
     return 'OK'
@@ -117,18 +117,18 @@ def api_handin_start(uuid):
     # load the handin object, and report error if not exist
     handin = Handin.query.filter(Handin.uuid == uuid).first()
     if (not handin):
-        return 'requested handin not found'
+        return 'requested submission not found'
 
     # we only update state from "Pending" to "Running"
     if (handin.state != 'Pending'):
-        return 'handin is not pending'
+        return 'submission is not pending'
 
     handin.state = 'Running'
 
     try:
         db.session.commit()
     except Exception:
-        app.logger.exception('Cannot update state of handin(%s).' % uuid)
+        app.logger.exception('Cannot update state of submission(%s).' % uuid)
         return 'update database failed'
 
     return 'OK'
@@ -148,7 +148,7 @@ def api_handin_proclog(uuid):
     # load the handin object, and report error if not exist
     handin = Handin.query.filter(Handin.uuid == uuid).first()
     if (not handin):
-        return 'requested handin not found'
+        return 'requested submission not found'
 
     # if handin.state != 'Accepted' and handin.state != 'Rejected',
     # the process must have exited without report the score.
@@ -164,7 +164,7 @@ def api_handin_proclog(uuid):
         handin.stderr = obj['stderr']
         db.session.commit()
     except Exception:
-        app.logger.exception('Cannot log proccess of handin(%s).' % uuid)
+        app.logger.exception('Cannot log proccess of submission(%s).' % uuid)
         return 'update database failed'
 
     return 'OK'

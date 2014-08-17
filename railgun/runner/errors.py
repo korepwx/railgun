@@ -43,7 +43,7 @@ class BadArchiveError(RunnerError):
 
     def __init__(self):
         super(RunnerError, self).__init__(lazy_gettext(
-            'Your handin is not a valid archive file.'
+            'Your submission is not a valid archive file.'
         ))
 
 
@@ -62,7 +62,7 @@ class RunnerTimeout(RunnerError):
 
     def __init__(self):
         super(RunnerError, self).__init__(lazy_gettext(
-            'Your handin has run out of time.'
+            'Your submission has run out of time.'
         ))
 
 

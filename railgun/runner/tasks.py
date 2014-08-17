@@ -55,7 +55,7 @@ def run_handin(handler, handid, hwid):
         # log the handin execution
         if (exitcode != 0):
             logger.warning(
-                'Handin[%(handid)s] of hw[%(hwid)s]: Error.\n'
+                'Submission[%(handid)s] of hw[%(hwid)s]: Error.\n'
                 '  stdout: %(stdout)s\n'
                 '  stderr: %(stderr)s' %
                 {'handid': handid, 'hwid': hwid, 'stdout': repr(stdout),
@@ -82,7 +82,7 @@ def run_handin(handler, handid, hwid):
         api.proclog(handid, exitcode, stdout, stderr)
         # Log that we've succesfully done this job.
         logger.info(
-            'Handin[%(handid)s] of hw[%(hwid)s]: OK.' %
+            'Submission[%(handid)s] of hw[%(hwid)s]: OK.' %
             {'handid': handid, 'hwid': hwid}
         )
 
@@ -90,13 +90,13 @@ def run_handin(handler, handid, hwid):
         # RunnerError is logically OK and sent to client only.
         # So we just log the message of this exception, not exception detail.
         logger.warning(
-            'Handin[%(handid)s] of hw[%(hwid)s]: %(message)s.' %
+            'Submission[%(handid)s] of hw[%(hwid)s]: %(message)s.' %
             {'handid': handid, 'hwid': hwid, 'message': ex.message}
         )
         report_error(handid, ex)
     except Exception:
         logger.exception(
-            'Error executing handin "%(handid)s" for homework "%(hwid)s".' %
+            'Error executing submission "%(handid)s" for homework "%(hwid)s".' %
             {'handid': handid, 'hwid': hwid}
         )
         report_error(handid, InternalServerError())

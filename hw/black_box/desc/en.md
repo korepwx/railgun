@@ -11,7 +11,7 @@ What's more, the method will raise exception under following situations:
 *   zero input (one or more numbers are 0).
 *   negative input (one or more numbers are negative).
 
-Please handin your test cases in given text box. The test cases should be represented in CSV, and should contain CSV header <code>a,b,c</code>, for example:
+Please hand in your test cases in given text box. The test cases should be represented in CSV, and should contain CSV header <code>a,b,c</code>, for example:
 
 ```csv
 a,b,c
@@ -19,7 +19,7 @@ a,b,c
 1,3,3
 ```
 
-Please upload your handin before deadline.
+Please upload your submission before deadline.
 
 # Correct answer
 

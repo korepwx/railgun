@@ -64,15 +64,12 @@ HOMEWORK_DIR = os.path.join(RAILGUN_ROOT, 'hw')
 # HOMEWORK_PACK_DIR stores the packed archives of all homeworks
 HOMEWORK_PACK_DIR = os.path.join(HOMEWORK_DIR, '.pack')
 
-# IGNORE_HANDINS_OF_REMOVED_HW determines whether to list handins for deleted
-# homeworks
+# IGNORE_HANDINS_OF_REMOVED_HW determines whether to list submissions for
+# deleted homeworks
 IGNORE_HANDINS_OF_REMOVED_HW = True
 
 # TEMPORARY_DIR stores the temporary directory for runner
 TEMPORARY_DIR = os.path.join(RAILGUN_ROOT, 'tmp')
-
-# UPLOAD_DIR stores all uploaded handins
-UPLOAD_DIR = os.path.join(RAILGUN_ROOT, 'upload')
 
 # RUNLIB_DIR is the root directory of all host libraries
 RUNLIB_DIR = os.path.join(RAILGUN_ROOT, 'runlib')

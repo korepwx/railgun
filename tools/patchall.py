@@ -9,24 +9,26 @@
 # This file is released under BSD 2-clause license.
 
 import os
+import re
 import sys
 sys.path.insert(0, os.path.split(os.path.dirname(__file__))[0])
 
 from railgun.common.fileutil import dirtree
 
 
-if (len(sys.argv) < 3):
-    print('patchall.py from-string to-string [--preview]')
+if (len(sys.argv) < 4):
+    print('patchall.py from-string to-string pattern [--commit]')
     sys.exit(0)
 
 fromstr = sys.argv[1]
 tostr = sys.argv[2]
-preview = (len(sys.argv) >= 4 and sys.argv[3] == '--preview')
+pattern = re.compile(sys.argv[3])
+preview = not (len(sys.argv) >= 5 and sys.argv[4] == '--commit')
 
 
 flist = dirtree('.')
 for f in flist:
-    if (not f.endswith('.py') or f.startswith('env')):
+    if (not pattern.match(f) or f.startswith('env')):
         continue
     with open(f, 'rb') as fobj:
         inlines = fobj.read().split('\n')

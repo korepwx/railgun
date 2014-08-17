@@ -1,15 +1,15 @@
 {% extends "base.html" %}
 {% block subtitle -%}
-{{ _('Handin Detail') }} - {% if hw %}{{ hw.info.name }}
-                           {%- else %}{{ _('Homework Deleted') }}{% endif %}
+{{ _('Submission Detail') }} - {% if hw %}{{ hw.info.name }}
+                               {%- else %}{{ _('Homework Deleted') }}{% endif %}
 {%- endblock %}
 {% block content -%}
   <h3 class="detail-heading">
     {% if hw -%}
-      {{ _('Handin for <a href="%(url)s">%(name)s</a>',
+      {{ _('Submission for <a href="%(url)s">%(name)s</a>',
            url=url_for('homework', slug=hw.slug), name=hw.info.name) }}
     {%- else -%}
-      {{ _('Handin for <span class="text-muted">(%(name)s)</a>', name=_('Deleted')) }}
+      {{ _('Submission   for <span class="text-muted">(%(name)s)</a>', name=_('Deleted')) }}
     {%- endif %}
     <span class="label label-{{ handin.state | handinstyle }}">{{ handin.get_state() }}</span>
   </h3>
@@ -23,7 +23,7 @@
         <td>{{ handin.ctime | datetimeformat }}</td>
       </tr>
       <tr>
-        <th>{{ _('Handin Type') }}</th>
+        <th>{{ _('Submission Type') }}</th>
         <td>{{ handin.lang | codelang }}</td>
       </tr>
       {% if handin.is_accepted() -%}

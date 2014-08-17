@@ -150,7 +150,7 @@ class UploadHandinForm(Form):
     """Form for `homework` view that uploads an archive."""
 
     handin = FileField(
-        _('Please choose an archive to handin:'),
+        _('Please choose an archive to submit:'),
         validators=[
             FileRequired(),
             FileAllowed(

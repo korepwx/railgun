@@ -102,7 +102,8 @@ class BaseHost(object):
             raise RunnerTimeout()
         except Exception:
             logger.exception(
-                'Error when executing handin %(handid)s of homework %(hwid)s.' %
+                'Error when executing submission %(handid)s of homework '
+                '%(hwid)s.' %
                 {'hwid': self.hw.uuid, 'handid': self.uuid}
             )
             raise InternalServerError()
@@ -122,7 +123,7 @@ class BaseHost(object):
         except Exception:
             logger.exception(
                 'Cannot copy code files into tempdir for homework %(hwid)s '
-                'when executing handin %(handid)s.' %
+                'when executing submission %(handid)s.' %
                 {'hwid': self.hw.uuid, 'handid': self.uuid}
             )
             raise InternalServerError()
@@ -165,7 +166,7 @@ class BaseHost(object):
         except Exception:
             logger.exception(
                 'Cannot extract archive into tempdir for homework %(hwid)s '
-                'when executing handin %(handid)s.' %
+                'when executing submission %(handid)s.' %
                 {'hwid': self.hw.uuid, 'handid': self.uuid}
             )
             raise InternalServerError()
