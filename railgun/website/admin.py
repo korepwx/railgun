@@ -194,6 +194,7 @@ def hwscores(hwid):
     q = (db.session.query(Handin.user_id,
                           User.name,
                           func.max(Handin.score * Handin.scale).label('score')).
+         filter(Handin.hwid == hwid).
          join(User).
          group_by(Handin.user_id).
          having(Handin.state == 'Accepted'))
