@@ -104,16 +104,16 @@ class AuthProvider(object):
 
         raise NotImplementedError()
 
-    def _strip_form_helper(self, form, lock_fields):
-        """Common strip_form helper lock all fields in `lock_fields`."""
+    def _init_form_helper(self, form, lock_fields):
+        """Common init_form helper lock all fields in `lock_fields`."""
 
         for k, v in form.__dict__.items():
             if (isinstance(v, Field) and not isinstance(v, HiddenField)):
                 if (k in lock_fields):
                     del form[k]
 
-    def strip_form(self, form):
-        """Some providers may lock some fields of user data."""
+    def init_form(self, form):
+        """Some providers may change some fields of user profile form."""
 
         raise NotImplementedError()
 
@@ -162,11 +162,6 @@ class CsvFileAuthProvider(AuthProvider):
         return check_password_hash(hashed, plain)
 
     def pull(self, name=None, email=None, dbuser=None):
-
-        # should not provide both name and email, but must provide one of them
-        if (name and email) or (not name and not email):
-            raise ValueError(
-                "One and exact one of `name` and `email` must be provided.")
 
         # Get the interested user by `auth_request`
         if (email):
@@ -222,8 +217,8 @@ class CsvFileAuthProvider(AuthProvider):
 
         self.flush()
 
-    def strip_form(self, form):
-        self._strip_form_helper(form, ('name', 'email'))
+    def init_form(self, form):
+        self._init_form_helper(form, ('name', 'email'))
 
 
 class AuthProviderSet(object):
@@ -275,8 +270,8 @@ class AuthProviderSet(object):
         """Push user to providers according to dbuser.provider."""
         self.get(dbuser.provider).push(dbuser, password)
 
-    def strip_form(self, provider, form):
-        self.get(provider).strip_form(form)
+    def init_form(self, provider, form):
+        self.get(provider).init_form(form)
 
 
 def authenticate(login, password):

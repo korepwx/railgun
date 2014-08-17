@@ -93,7 +93,7 @@ def profile_edit():
     # which should be stripped from from schema.
     form = ProfileForm(obj=current_user.dbo)
     if (current_user.provider):
-        auth_providers.strip_form(current_user.provider, form)
+        auth_providers.init_form(current_user.provider, form)
 
     if (form.validate_on_submit()):
         # Set password if passwd field exists

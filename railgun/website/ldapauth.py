@@ -30,57 +30,96 @@ class LdapAuthProvider(AuthProvider):
         '''Initialize LDAP using config in webconfig.'''
         AuthProvider.__init__(self, name)
         self.__adapter = LdapEntryAdapter()
+        self.__interested_fields = ('email', 'is_admin', 'given_name',
+                                    'family_name')
 
     def __del__(self):
         del self.__adapter
 
-    def pull(self, auth_request, dbuser):
-        admin_group = self.__adapter.query_admin_group()
-        if auth_request.email_login:
-            ldap_user = self.__adapter.query_by_mail(auth_request.login)
+    def hash_password(self, plain):
+        return ldap_salted_sha1.encrypt(plain, salt_size=4)
+
+    def check_password(self, hashed, plain):
+        pos = hashed.find('}')
+        method = hashed[1:pos]
+        method_module = {
+            'MD5': ldap_md5,
+            'SMD5': ldap_salted_md5,
+            'SHA': ldap_sha1,
+            'SSHA': ldap_salted_sha1
+        }
+        if pos == -1:
+            mod = ldap_plaintext
         else:
-            ldap_user = self.__adapter.query_by_uid(auth_request.login)
+            mod = method_module[method]
+        return mod.verify(plain, hashed)
 
-        if not (ldap_user and self.__adapter.authenticate(ldap_user, auth_request.password)):
+    def pull(self, name=None, email=None, dbuser=None):
+        admin_group = self.__adapter.query_admin_group()
+
+        # Fetch the user from LDAP server
+        if (email):
+            ldap_user = self.__adapter.query_by_mail(email)
+        else:
+            ldap_user = self.__adapter.query_by_uid(name)
+
+        # Return None if user not exist on LDAP server
+        if (not ldap_user):
             return None
-
         user = ldap_user.to_user(admin_group)
+
         # Create new dbuser from LDAP user
-        if dbuser is None:
+        if (dbuser is None):
             try:
                 dbuser = User(
                     name=user.name, email=user.email, password=None,
-                    is_admin=user.is_admin,
-                    provider=self.name
-                )
+                    is_admin=user.is_admin, given_name=user.given_name,
+                    family_name=user.family_name, provider=self.name)
+                db.session.add(dbuser)
+                db.session.commit()
+                self._log_pull(user, create=True)
             except Exception:
                 dbuser = None
                 self._log_pull(user, create=True, exception=True)
-            return dbuser
+            return (user, dbuser)
 
         # Update existing user.
-        # NOTE: uid is not modifiable
-        fields = ['email', 'is_admin']
+        # NOTE: uid is not modifiable, so we should assert it!
+        if (dbuser.name != user.name):
+            raise ValueError(
+                'Username "%s" cannot be changed to "%s" as a LDAP user.' %
+                (user.name, dbuser.name)
+            )
+
         updated = False
-        for key in fields:
+        for key in self.__interested_fields:
             if getattr(dbuser, key) != getattr(user, key):
                 updated = True
                 setattr(dbuser, key, getattr(user, key))
-        if updated:
+        if (updated):
             try:
                 db.session.commit()
                 self._log_pull(user, create=False)
             except Exception:
                 dbuser = None
                 self._log_pull(user, create=False, exception=True)
-        return dbuser
+        return (user, dbuser)
 
     def push(self, dbuser, password=None):
         if password:
-            encrypt = self.__adapter.make_password(password)
-            self.__adapter.modify(dbuser.name, mail=dbuser.email, userPassword=encrypt)
+            encrypt = self.hash_password(password)
+            self.__adapter.modify(
+                dbuser.name, mail=dbuser.email, givenName=dbuser.given_name,
+                sn=dbuser.family_name, userPassword=encrypt
+            )
         else:
-            self.__adapter.modify(dbuser.name, mail=dbuser.email)
+            self.__adapter.modify(
+                dbuser.name, mail=dbuser.email, givenName=dbuser.given_name,
+                sn=dbuser.family_name
+            )
+
+    def init_form(self, form):
+        self._init_form_helper(form, ('name', ))
 
 
 class Bundle(object):
@@ -89,18 +128,43 @@ class Bundle(object):
     pass
 
 
+def from_ldap_str(s):
+    """Strings are stored as UTF-8 in LDAP server."""
+    if (s is None):
+        return None
+    if (isinstance(s, unicode)):
+        return s
+    return unicode(s, 'utf-8')
+
+
+def to_ldap_str(u):
+    """Strings should be stored as UTF-8 in LDAP server."""
+    if (u is None):
+        return None
+    if (not isinstance(u, unicode)):
+        return str(u)
+    return u.encode('utf-8')
+
+
 class LdapEntry(object):
 
-    def __init__(self, attrs):
-        for key in attrs:
-            setattr(self, key, attrs[key])
+    def __init__(self, **kwargs):
+        for key in kwargs:
+            setattr(self, key, kwargs[key])
 
-    def to_user(self, ldap_group):
+    def to_user(self, admin_group):
+        # Shortcut to fetch particular value from object and does not raise
+        # exceptions if given key not found.
+        getval = lambda k: getattr(self, k)[0] if hasattr(self, k) else None
+        # Construct the user object
         user = Bundle()
-        user.name = self.uid[0]
-        user.email = self.mail[0]
-        user.is_admin = (ldap_group is None) \
-            or (self.uid[0] in ldap_group.memberUid)
+        user.name = from_ldap_str(self.uid[0])
+        user.email = from_ldap_str(self.mail[0])
+        user.password = from_ldap_str(self.userPassword[0])
+        user.given_name = from_ldap_str(getval('givenName'))
+        user.family_name = from_ldap_str(getval('sn'))
+        user.is_admin = (admin_group is not None) \
+            and (self.uid[0] in admin_group.memberUid)
         return user
 
 
@@ -127,49 +191,31 @@ class LdapEntryAdapter(object):
         )
         if len(results) == 0:
             return None
-        return LdapEntry(results[0][1])
-
-    def authenticate(self, entry, password):
-        pwd = entry.userPassword[0]
-        pos = pwd.find('}')
-        method = pwd[1:pos]
-        method_module = {
-            'MD5': ldap_md5,
-            'SMD5': ldap_salted_md5,
-            'SHA': ldap_sha1,
-            'SSHA': ldap_salted_sha1
-        }
-        if pos == -1:
-            mod = ldap_plaintext
-        else:
-            mod = method_module[method]
-
-        return mod.verify(password, pwd)
+        return LdapEntry(**results[0][1])
 
     def query(self, filt):
         results = self.conn.search_s(LDAP_BASE_DN, ldap.SCOPE_SUBTREE, filt)
         if len(results) == 0:
             return None
         else:
-            return LdapEntry(results[0][1])
+            return LdapEntry(**results[0][1])
 
     def modify(self, uid, **kwargs):
         ldap_user = self.query_by_uid(uid)
         if not ldap_user:
-            raise RuntimeWarning('LDAP modify failed: no such user(%s)!' % uid)
-            return
+            raise KeyError('LDAP modify failed: no such user(%s)!' % uid)
 
         old = dict()
         new = dict()
         for key in kwargs:
             old[key] = getattr(ldap_user, key)[0]
-            new[key] = kwargs[key]
+            new[key] = to_ldap_str(kwargs[key])
 
         ldif = ldap.modlist.modifyModlist(old, new)
-        self.conn.modify_s(ldap.filter.filter_format('uid=%s,' + LDAP_BASE_DN, (uid,)), ldif)
-
-    def make_password(self, password):
-        return ldap_salted_sha1.encrypt(password, salt_size=4)
+        self.conn.modify_s(
+            ldap.filter.filter_format('uid=%s,' + LDAP_BASE_DN, (uid,)),
+            ldif
+        )
 
 if (app.config['LDAP_AUTH_ENABLED']):
-    auth_providers.add(LdapAuthProvider('LDAP'))
+    auth_providers.add(LdapAuthProvider('ldap'))
