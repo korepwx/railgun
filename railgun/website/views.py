@@ -14,7 +14,7 @@ from flask import render_template, url_for, redirect, flash, request, g, \
     send_from_directory
 from flask.ext.babel import lazy_gettext, get_locale, gettext as _
 from flask.ext.login import login_user, logout_user, current_user, \
-    login_required, fresh_login_required
+    login_required, fresh_login_required, confirm_login
 from werkzeug.exceptions import NotFound
 
 from .context import app, db
@@ -87,8 +87,7 @@ def reauthenticate():
         # Check whether the user exists
         user = authenticate(form.login.data, form.password.data)
         if (user):
-            # Now we can login this user and redirect to index!
-            login_user(UserContext(user), remember=True)
+            confirm_login()
             return redirect(next_url or url_for('index'))
         # Report username or password error
         flash(_('Incorrect username or password.'), 'danger')
