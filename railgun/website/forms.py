@@ -10,7 +10,7 @@
 
 from flask_wtf import Form
 from flask_wtf.file import FileField, FileAllowed, FileRequired
-from wtforms import StringField, PasswordField, SelectField
+from wtforms import StringField, PasswordField, SelectField, BooleanField
 from wtforms.widgets import TextArea
 from wtforms.validators import DataRequired, Length, Email, InputRequired, \
     EqualTo, Regexp, URL, ValidationError
@@ -73,6 +73,7 @@ class SigninForm(Form):
 
     login = StringField(_('Username or Email'), validators=[InputRequired()])
     password = PasswordField(_('Password'), validators=[InputRequired()])
+    remember = BooleanField(_('Remember me?'))
 
 
 def _MakeLocaleChoices():

@@ -69,7 +69,26 @@ def signin():
         user = authenticate(form.login.data, form.password.data)
         if (user):
             # Now we can login this user and redirect to index!
-            login_user(UserContext(user))
+            login_user(UserContext(user), remember=form.remember.data)
+            return redirect(next_url or url_for('index'))
+        # Report username or password error
+        flash(_('Incorrect username or password.'), 'danger')
+    return render_template('signin.html', form=form, next=next_url)
+
+
+@app.route('/reauthenticate/', methods=['GET', 'POST'])
+def reauthenticate():
+    # Re-authenticate form is just like signin but do not contain "remember"
+    form = SigninForm()
+    del form['remember']
+    next_url = request.args.get('next')
+
+    if (form.validate_on_submit()):
+        # Check whether the user exists
+        user = authenticate(form.login.data, form.password.data)
+        if (user):
+            # Now we can login this user and redirect to index!
+            login_user(UserContext(user), remember=True)
             return redirect(next_url or url_for('index'))
         # Report username or password error
         flash(_('Incorrect username or password.'), 'danger')

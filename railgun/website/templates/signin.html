@@ -8,6 +8,13 @@
   <h2 class="form-heading">{{ _('Sign in') }}</h2>
   {{ utility.form_group(form.login) }}
   {{ utility.form_group(form.password) }}
+  {% if 'remember' in form -%}
+    <div class="checkbox">
+      <label>
+        {{ form.remember }} {{form.remember.label.text }}
+      </label>
+    </div>
+  {%- endif %}
   <button type="submit" class="btn btn-default">{{ _('Sign in') }}</button>
   {{ form.hidden_tag() }}
 </form>

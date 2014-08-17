@@ -64,9 +64,18 @@ def __inject_template_context():
 
 # Response to unauthorized requests
 @login_manager.unauthorized_handler
-def unauthorized():
+def unauthorized_handler():
     flash(_('Please log in to access this page.'), 'danger')
     return redirect(url_for('signin', next=request.script_root + request.path))
+
+
+# Response to need_refresh requests
+@login_manager.needs_refresh_handler
+def needs_refresh_handler():
+    flash(_('To protect your account, please reauthenticate to access this '
+            'page.'), 'info')
+    return redirect(url_for('reauthenticate',
+                            next=request.script_root + request.path))
 
 
 # Inject `get_avatar` as `gravatar` filter into Jinja2 template engine.
