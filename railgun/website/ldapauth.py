@@ -15,8 +15,7 @@ import ldap.filter
 import ldap.modlist
 
 from .userauth import AuthProvider
-from .webconfig import LDAP_ADMIN_DN, LDAP_URL, LDAP_ADMIN_KEY, LDAP_BASE_DN, \
-    LDAP_RAILGUN_ADMIN_GROUP_DN
+from .webconfig import LDAP_ADMIN_DN, LDAP_URL, LDAP_ADMIN_KEY, LDAP_BASE_DN
 from .models import User
 from .context import db, app
 from .userauth import auth_providers
@@ -30,7 +29,7 @@ class LdapAuthProvider(AuthProvider):
         '''Initialize LDAP using config in webconfig.'''
         AuthProvider.__init__(self, name)
         self.__adapter = LdapEntryAdapter()
-        self.__interested_fields = ('email', 'is_admin', 'given_name',
+        self.__interested_fields = ('email', 'given_name',
                                     'family_name')
 
     def __del__(self):
@@ -73,7 +72,7 @@ class LdapAuthProvider(AuthProvider):
             try:
                 dbuser = User(
                     name=user.name, email=user.email, password=None,
-                    is_admin=user.is_admin, given_name=user.given_name,
+                    given_name=user.given_name,
                     family_name=user.family_name, provider=self.name)
                 # Special hack: get locale & timezone from request
                 dbuser.fill_i18n_from_request()
@@ -166,8 +165,6 @@ class LdapEntry(object):
         user.password = from_ldap_str(self.userPassword[0])
         user.given_name = from_ldap_str(getval('givenName'))
         user.family_name = from_ldap_str(getval('sn'))
-        user.is_admin = (admin_group is not None) \
-            and (self.uid[0] in admin_group.memberUid)
         return user
 
 
@@ -187,14 +184,6 @@ class LdapEntryAdapter(object):
 
     def query_by_mail(self, mail):
         return self.query(ldap.filter.filter_format('mail=%s', (mail,)))
-
-    def query_admin_group(self):
-        results = self.conn.search_s(
-            LDAP_RAILGUN_ADMIN_GROUP_DN, ldap.SCOPE_SUBORDINATE
-        )
-        if len(results) == 0:
-            return None
-        return LdapEntry(**results[0][1])
 
     def query(self, filt):
         results = self.conn.search_s(LDAP_BASE_DN, ldap.SCOPE_SUBTREE, filt)
