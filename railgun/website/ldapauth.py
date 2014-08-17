@@ -75,6 +75,9 @@ class LdapAuthProvider(AuthProvider):
                     name=user.name, email=user.email, password=None,
                     is_admin=user.is_admin, given_name=user.given_name,
                     family_name=user.family_name, provider=self.name)
+                # Special hack: get locale & timezone from request
+                dbuser.fill_i18n_from_request()
+                # save to database
                 db.session.add(dbuser)
                 db.session.commit()
                 self._log_pull(user, create=True)
