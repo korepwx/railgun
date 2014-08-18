@@ -1,3 +1,7 @@
+![Python Logo 图片](hw://img/python-logo.png)
+
+（下载图片：[hw://img/python-logo.png](hw://img/python-logo.png)）
+
 完成附件 path.py 中的函数 <code>reform_path</code>，使之对输入 <code>path</code> 产生输出满足：
 
 *   所有输入中的 "\" 被当做 "/" 加以处理，且在输出中被转换为 "/"。

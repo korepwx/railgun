@@ -1,3 +1,7 @@
+![Image of Python Logo](hw://img/python-logo.png)
+
+(Download this image: [hw://img/python-logo.png](hw://img/python-logo.png))
+
 Finish <code>reform_path</code> in path.py, so that it will produce output for input <code>path</code> that satisfies given requirements.
 
 The homework has 6 test points. Furthermore, you must make sure that your programs follow the code styles. Please upload your submission before deadline.

@@ -212,6 +212,11 @@ def hwpack(slug, lang):
     return send_from_directory(app.config['HOMEWORK_PACK_DIR'], filename)
 
 
+@app.route('/hwstatic/<path:filename>')
+def hwstatic(filename):
+    return send_from_directory(app.config['HOMEWORK_STATIC_DIR'], filename)
+
+
 @app.route('/handin/')
 @login_required
 def handins():

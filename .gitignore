@@ -2,6 +2,7 @@
 /tmp
 /config
 /hw/.pack
+/hw/.static
 /db
 /logs
 /keys

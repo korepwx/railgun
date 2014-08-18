@@ -62,7 +62,10 @@ DEFAULT_HIDE_RULES = (
 HOMEWORK_DIR = os.path.join(RAILGUN_ROOT, 'hw')
 
 # HOMEWORK_PACK_DIR stores the packed archives of all homeworks
-HOMEWORK_PACK_DIR = os.path.join(HOMEWORK_DIR, '.pack')
+HOMEWORK_PACK_DIR = os.path.join(RAILGUN_ROOT, 'hw/.pack')
+
+# HOMEWORK_STATIC_DIR stores the copied description resources of all homeworks
+HOMEWORK_STATIC_DIR = os.path.join(RAILGUN_ROOT, 'hw/.static')
 
 # IGNORE_HANDINS_OF_REMOVED_HW determines whether to list submissions for
 # deleted homeworks
@@ -81,8 +84,8 @@ TRANSLATION_DIR = os.path.join(RAILGUN_ROOT, 'railgun/website/translations')
 # module to run
 RUNNER_DEFAULT_TIMEOUT = 10
 
-# WEBSITE_API_BASEURL tells runner what is the base url of api client
-WEBSITE_API_BASEURL = 'http://localhost:5000/api'
+# WEBSITE_BASEURL tells runner what is the base url of railgun
+WEBSITE_BASEURL = 'http://localhost:5000'
 
 # Load un-versioned general config values from config/general.py
 LoadConfig(
