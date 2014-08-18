@@ -25,6 +25,18 @@ COMM_KEY = (
     open(os.path.join(RAILGUN_ROOT, 'keys/commKey.txt'), 'rb').read().strip()
 )
 
+# SQLDB_KEY is the secret key to interact with external database server.
+# Maybe it can used by config/website.py, so load it here.
+#
+# You may add following config into config/website.py to use MYSQL server
+# SQLALCHEMY_DATABASE_URI = (
+#     'mysql+mysqldb://railgun:%s@localhost/railgun??charset=utf8&use_unicode=0'
+#     % SQLDB_KEY
+# )
+SQLDB_KEY = (
+    open(os.path.join(RAILGUN_ROOT, 'keys/sqlKey.txt'), 'rb').read().strip()
+)
+
 # BABEL_DEFAULT_LOCALE language is provided to the client when prefered
 # locale is not available.
 BABEL_DEFAULT_LOCALE = DEFAULT_LOCALE

@@ -15,7 +15,7 @@ import random
 
 # make a new randomized key
 def make_key(n):
-    alphabet = string.letters + string.digits + string.punctuation
+    alphabet = string.letters + string.digits
     return ''.join([
         random.choice(alphabet)
         for i in xrange(n)
@@ -34,3 +34,4 @@ def create_keyfile(keyfile, keysize=32):
 
 create_keyfile('keys/commKey.txt')
 create_keyfile('keys/webKey.txt')
+create_keyfile('keys/sqlKey.txt')

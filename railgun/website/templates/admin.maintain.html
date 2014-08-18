@@ -1,0 +1,17 @@
+{% extends "admin.html" %}
+{% block subtitle -%}
+{{ pagetitle }}
+{%- endblock %}
+{% block content -%}
+  <h3 class="maintain-heading">{{ pagetitle }}</h3>
+
+  <!-- Summary panel -->
+  <div class="panel panel-default maintain-log">
+    <div class="panel-heading">{{ _('Task Log') }}</div>
+    <div class="panel-body">
+      <pre>{{ task.logstream().getvalue() }}</pre>
+    </div>
+  </div>
+
+
+{%- endblock %}

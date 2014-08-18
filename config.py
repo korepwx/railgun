@@ -24,13 +24,29 @@ import sys
 # Utility to load config values from external file
 def LoadConfig(obj, fpath):
     """Load config values from `fpath` into `obj`."""
+    # The regex to match a config value
+    config_value_pattern = re.compile('^[A-Z][A-Z_]*$')
+
+    # extract config values from an object or a dictionary into an object
+    # or a dictionary
+    def extract_configs(obj, target):
+        kv_iter = (obj.iteritems() if isinstance(obj, dict)
+                   else obj.__dict__.iteritems())
+        if (isinstance(target, dict)):
+            setvalue = lambda k, v: target.update({k: v})
+        else:
+            setvalue = lambda k, v: setattr(target, k, v)
+        # enumerate all available values
+        for k, v in kv_iter:
+            if (config_value_pattern.match(k)):
+                setvalue(k, v)
+        return target
+
     if (os.path.isfile(fpath)):
         values = {}
-        execfile(fpath, {}, values)
-        p = re.compile('^[A-Z][A-Z_]*$')
-        for k, v in values.iteritems():
-            if (p.match(k)):
-                setattr(obj, k, v)
+        the_globals = extract_configs(obj, {})
+        execfile(fpath, the_globals, values)
+        extract_configs(values, obj)
 
 # RAILGUN_ROOT stores the path of railgun project
 RAILGUN_ROOT = os.path.realpath(os.path.dirname(__file__))

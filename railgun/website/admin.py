@@ -20,6 +20,7 @@ from sqlalchemy import func
 from sqlalchemy.orm import contains_eager
 from werkzeug.exceptions import NotFound
 
+from railgun.maintain.hwcache import HwCacheTask
 from .context import app, db
 from .models import User, Handin
 from .forms import AdminUserEditForm
@@ -192,6 +193,7 @@ def hwscores(hwid):
 
     # Get max score for each user
     q = (db.session.query(Handin.user_id,
+                          Handin.state,
                           User.name,
                           func.max(Handin.score * Handin.scale).label('score')).
          filter(Handin.hwid == hwid).
@@ -202,7 +204,7 @@ def hwscores(hwid):
     # Show the report
     raw_headers = ['name', 'score']
     display_headers = [lazy_gettext('Username'), lazy_gettext('Score')]
-    pagetitle = _('All Scores for "%(hw)s"', hw=hw.info.name)
+    pagetitle = _('Scores for "%(hw)s"', hw=hw.info.name)
     filename = hw.info.name
     if (isinstance(filename, unicode)):
         filename = filename.encode('utf-8')
@@ -214,6 +216,16 @@ def hwscores(hwid):
         pagetitle,
         filename
     )
+
+
+@bp.route('/hwcache/')
+def hwcache():
+    """Admin page to rebuild homework cache."""
+    task = HwCacheTask()
+    task.execute()
+    task.logflush()
+    return render_template('admin.maintain.html', task=task,
+                           pagetitle=_('Build Homework Cache'))
 
 # Register the blue print
 app.register_blueprint(bp, url_prefix='/admin')
@@ -234,8 +246,10 @@ navigates.add(
                                endpoint='admin.users'),
             NaviItem.make_view(title=lazy_gettext('Submissions'),
                                endpoint='admin.handins'),
-            NaviItem.make_view(title=lazy_gettext('All Scores'),
+            NaviItem.make_view(title=lazy_gettext('Scores'),
                                endpoint='admin.scores'),
+            NaviItem.make_view(title=lazy_gettext('Build Cache'),
+                               endpoint='admin.hwcache'),
         ]
     )
 )

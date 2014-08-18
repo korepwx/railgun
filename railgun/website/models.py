@@ -24,6 +24,10 @@ HANDIN_STATES = (_('Pending'), _('Running'), _('Rejected'), _('Accepted'))
 class User(db.Model):
     __tablename__ = 'users'
 
+    # Table arguments. Inrecognized arguments will be ignored by certain
+    # database engine.
+    __table_args__ = {'mysql_engine': 'InnoDB'}
+
     # Primary key of the table
     id = db.Column(db.Integer, db.Sequence('user_id_seq'), primary_key=True)
 
@@ -76,6 +80,10 @@ class User(db.Model):
 class FinalScore(db.Model):
     __tablename__ = 'finalscore'
 
+    # Table arguments. Inrecognized arguments will be ignored by certain
+    # database engine.
+    __table_args__ = {'mysql_engine': 'InnoDB'}
+
     id = db.Column(db.Integer, db.Sequence('finalscore_id_seq'),
                    primary_key=True)
 
@@ -96,6 +104,10 @@ class FinalScore(db.Model):
 
 class Handin(db.Model):
     __tablename__ = 'handins'
+
+    # Table arguments. Inrecognized arguments will be ignored by certain
+    # database engine.
+    __table_args__ = {'mysql_engine': 'InnoDB'}
 
     # We use uuid to seek particular Handin, but we maintain an integral id.
     # This is because some databases lack a full support for UUIDs.
