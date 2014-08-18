@@ -1,8 +1,5 @@
 // @file: runlib/python/pyhost/CSafeRunner/src/variant.h
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-// Contributors:
-//   public@korepwx.com   <public@korepwx.com>
-// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // This file is released under BSD 2-clause license.
 
 #ifndef RUNLIB_PYTHON_PYHOST_CSAFERUNNER_SRC_VARIANT_H_FB54E4571FA611E4BE9C84383555E6CC

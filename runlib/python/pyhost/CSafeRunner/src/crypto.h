@@ -1,8 +1,5 @@
 // @file: runlib/python/pyhost/CSafeRunner/src/crypto.h
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-// Contributors:
-//   public@korepwx.com   <public@korepwx.com>
-// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // This file is released under BSD 2-clause license.
 
 #ifndef RUNLIB_PYTHON_PYHOST_CSAFERUNNER_SRC_CRYPTO_H_921863B3204111E4B75D84383555E6CC

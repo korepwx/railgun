@@ -1,8 +1,5 @@
 // @file: runlib/python/pyhost/CSafeRunner/src/score.h
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-// Contributors:
-//   public@korepwx.com   <public@korepwx.com>
-// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // This file is released under BSD 2-clause license.
 
 #ifndef RUNLIB_PYTHON_PYHOST_CSAFERUNNER_SRC_SCORE_H_942C47EE1F9F11E4B2A084383555E6CC

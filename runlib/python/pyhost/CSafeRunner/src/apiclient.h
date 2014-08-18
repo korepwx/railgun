@@ -1,8 +1,5 @@
 // @file: runlib/python/pyhost/CSafeRunner/src/apiclient.h
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-// Contributors:
-//   public@korepwx.com   <public@korepwx.com>
-// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // This file is released under BSD 2-clause license.
 
 #ifndef RUNLIB_PYTHON_PYHOST_CSAFERUNNER_SRC_APICLIENT_H_4E9786231FBF11E4960284383555E6CC

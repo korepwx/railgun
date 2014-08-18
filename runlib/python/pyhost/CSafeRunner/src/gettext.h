@@ -1,8 +1,5 @@
 // @file: runlib/python/pyhost/CSafeRunner/src/gettext.h
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-// Contributors:
-//   public@korepwx.com   <public@korepwx.com>
-// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // This file is released under BSD 2-clause license.
 
 #ifndef RUNLIB_PYTHON_PYHOST_CSAFERUNNER_SRC_GETTEXT_H_07D9A7F81FA611E48B1A84383555E6CC
