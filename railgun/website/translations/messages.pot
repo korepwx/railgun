@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2014-08-17 22:51+0800\n"
+"POT-Creation-Date: 2014-08-18 17:41+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -58,50 +58,57 @@ msgstr ""
 msgid "Exitcode %(exitcode)s != 0."
 msgstr ""
 
-#: railgun/website/admin.py:107 railgun/website/views.py:136
+#: railgun/website/admin.py:108 railgun/website/views.py:135
 msgid "Profile saved."
 msgstr ""
 
-#: railgun/website/admin.py:110 railgun/website/views.py:58
-#: railgun/website/views.py:139
+#: railgun/website/admin.py:111 railgun/website/views.py:58
+#: railgun/website/views.py:138
 msgid "I'm sorry but we may have met some trouble. Please try again."
 msgstr ""
 
-#: railgun/website/admin.py:191
+#: railgun/website/admin.py:192
 msgid "Requested homework not found."
 msgstr ""
 
-#: railgun/website/admin.py:203 railgun/website/forms.py:42
+#: railgun/website/admin.py:206 railgun/website/forms.py:42
 #: railgun/website/templates/base.user_edit.html:20
 msgid "Username"
 msgstr ""
 
-#: railgun/website/admin.py:203 railgun/website/templates/base.handins.html:12
+#: railgun/website/admin.py:206 railgun/website/templates/base.handins.html:12
 #: railgun/website/templates/handin_detail.html:105
 #: railgun/website/templates/index.html:25
 msgid "Score"
 msgstr ""
 
-#: railgun/website/admin.py:204
+#: railgun/website/admin.py:207
 #, python-format
-msgid "All Scores for \"%(hw)s\""
+msgid "Scores for \"%(hw)s\""
 msgstr ""
 
-#: railgun/website/admin.py:227
+#: railgun/website/admin.py:228
+msgid "Build Homework Cache"
+msgstr ""
+
+#: railgun/website/admin.py:240
 msgid "Manage"
 msgstr ""
 
-#: railgun/website/admin.py:232 railgun/website/templates/admin.users.html:4
+#: railgun/website/admin.py:245 railgun/website/templates/admin.users.html:4
 msgid "Users"
 msgstr ""
 
-#: railgun/website/admin.py:234 railgun/website/templates/admin.handins.html:3
-#: railgun/website/templates/handins.html:3
+#: railgun/website/admin.py:247 railgun/website/templates/handins.html:3
 msgid "Submissions"
 msgstr ""
 
-#: railgun/website/admin.py:236
-msgid "All Scores"
+#: railgun/website/admin.py:249
+msgid "Scores"
+msgstr ""
+
+#: railgun/website/admin.py:251
+msgid "Build Cache"
 msgstr ""
 
 #: railgun/website/api.py:78
@@ -287,22 +294,22 @@ msgstr ""
 msgid "Accepted"
 msgstr ""
 
-#: railgun/website/utility.py:71
+#: railgun/website/utility.py:88
 #, python-format
 msgid "%(size).2fG"
 msgstr ""
 
-#: railgun/website/utility.py:73
+#: railgun/website/utility.py:90
 #, python-format
 msgid "%(size).2fM"
 msgstr ""
 
-#: railgun/website/utility.py:75
+#: railgun/website/utility.py:92
 #, python-format
 msgid "%(size).2fK"
 msgstr ""
 
-#: railgun/website/utility.py:76
+#: railgun/website/utility.py:93
 #, python-format
 msgid "%(size)dB"
 msgstr ""
@@ -311,32 +318,32 @@ msgstr ""
 msgid "Sign up is turned off."
 msgstr ""
 
-#: railgun/website/views.py:75 railgun/website/views.py:94
+#: railgun/website/views.py:75 railgun/website/views.py:93
 msgid "Incorrect username or password."
 msgstr ""
 
-#: railgun/website/views.py:172
+#: railgun/website/views.py:171
 msgid "This homework is out of date! You cannot upload your submission."
 msgstr ""
 
-#: railgun/website/views.py:187
+#: railgun/website/views.py:186
 msgid "You submission is accepted, please wait for results."
 msgstr ""
 
-#: railgun/website/views.py:192
+#: railgun/website/views.py:191
 msgid "Internal server error, please try again."
 msgstr ""
 
-#: railgun/website/views.py:258
+#: railgun/website/views.py:262
 msgid "Home"
 msgstr ""
 
-#: railgun/website/views.py:261 railgun/website/templates/base.handins.html:6
+#: railgun/website/views.py:265 railgun/website/templates/base.handins.html:6
 #: railgun/website/templates/homework.html:30
 msgid "Homework"
 msgstr ""
 
-#: railgun/website/views.py:273 railgun/website/templates/homework.html:100
+#: railgun/website/views.py:277 railgun/website/templates/homework.html:100
 msgid "Submission"
 msgstr ""
 
@@ -352,6 +359,11 @@ msgstr ""
 msgid "Download"
 msgstr ""
 
+#: railgun/website/templates/admin.handins.html:3
+#: railgun/website/templates/admin.handins.html:6
+msgid "All Submissions"
+msgstr ""
+
 #: railgun/website/templates/admin.html:2
 #: railgun/website/templates/admin.users.html:25
 msgid "Admin"
@@ -360,6 +372,10 @@ msgstr ""
 #: railgun/website/templates/admin.html:2 railgun/website/templates/base.html:7
 #: railgun/website/templates/base.html:38
 msgid "Railgun"
+msgstr ""
+
+#: railgun/website/templates/admin.maintain.html:10
+msgid "Task Log"
 msgstr ""
 
 #: railgun/website/templates/admin.scores.html:3
@@ -426,10 +442,6 @@ msgstr ""
 
 #: railgun/website/templates/admin.users.html:32
 msgid "Edit"
-msgstr ""
-
-#: railgun/website/templates/base.handins.html:3
-msgid "Your Submissions"
 msgstr ""
 
 #: railgun/website/templates/base.handins.html:8
@@ -593,6 +605,10 @@ msgstr ""
 
 #: railgun/website/templates/handin_detail.html:136
 msgid "Details"
+msgstr ""
+
+#: railgun/website/templates/handins.html:6
+msgid "Your Submissions"
 msgstr ""
 
 #: railgun/website/templates/homework.html:25

@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version:  railgun\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2014-08-17 22:51+0800\n"
+"POT-Creation-Date: 2014-08-18 17:41+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: zh_Hans_CN <LL@li.org>\n"
@@ -56,52 +56,59 @@ msgstr "不合法的UTF-8序列产生。"
 msgid "Exitcode %(exitcode)s != 0."
 msgstr "EXITCODE％（退出码）秒！= 0。"
 
-#: railgun/website/admin.py:107 railgun/website/views.py:136
+#: railgun/website/admin.py:108 railgun/website/views.py:135
 msgid "Profile saved."
 msgstr "资料保存。"
 
-#: railgun/website/admin.py:110 railgun/website/views.py:58
-#: railgun/website/views.py:139
+#: railgun/website/admin.py:111 railgun/website/views.py:58
+#: railgun/website/views.py:138
 msgid "I'm sorry but we may have met some trouble. Please try again."
 msgstr "对不起，但我们可能会遇到一些麻烦。请重试。"
 
-#: railgun/website/admin.py:191
+#: railgun/website/admin.py:192
 msgid "Requested homework not found."
 msgstr ""
 
-#: railgun/website/admin.py:203 railgun/website/forms.py:42
+#: railgun/website/admin.py:206 railgun/website/forms.py:42
 #: railgun/website/templates/base.user_edit.html:20
 msgid "Username"
 msgstr "用户名"
 
-#: railgun/website/admin.py:203 railgun/website/templates/base.handins.html:12
+#: railgun/website/admin.py:206 railgun/website/templates/base.handins.html:12
 #: railgun/website/templates/handin_detail.html:105
 #: railgun/website/templates/index.html:25
 msgid "Score"
 msgstr "得分"
 
-#: railgun/website/admin.py:204
+#: railgun/website/admin.py:207
 #, python-format
-msgid "All Scores for \"%(hw)s\""
+msgid "Scores for \"%(hw)s\""
 msgstr ""
 
-#: railgun/website/admin.py:227
+#: railgun/website/admin.py:228
+msgid "Build Homework Cache"
+msgstr ""
+
+#: railgun/website/admin.py:240
 msgid "Manage"
 msgstr ""
 
-#: railgun/website/admin.py:232 railgun/website/templates/admin.users.html:4
+#: railgun/website/admin.py:245 railgun/website/templates/admin.users.html:4
 msgid "Users"
 msgstr ""
 
-#: railgun/website/admin.py:234 railgun/website/templates/admin.handins.html:3
-#: railgun/website/templates/handins.html:3
+#: railgun/website/admin.py:247 railgun/website/templates/handins.html:3
 msgid "Submissions"
 msgstr ""
 
-#: railgun/website/admin.py:236
+#: railgun/website/admin.py:249
 #, fuzzy
-msgid "All Scores"
-msgstr "没有评分"
+msgid "Scores"
+msgstr "得分"
+
+#: railgun/website/admin.py:251
+msgid "Build Cache"
+msgstr ""
 
 #: railgun/website/api.py:78
 #, fuzzy
@@ -293,22 +300,22 @@ msgstr "拒绝"
 msgid "Accepted"
 msgstr "接受"
 
-#: railgun/website/utility.py:71
+#: railgun/website/utility.py:88
 #, python-format
 msgid "%(size).2fG"
 msgstr "％（体积）.2fG"
 
-#: railgun/website/utility.py:73
+#: railgun/website/utility.py:90
 #, python-format
 msgid "%(size).2fM"
 msgstr "％（体积）.2fM"
 
-#: railgun/website/utility.py:75
+#: railgun/website/utility.py:92
 #, python-format
 msgid "%(size).2fK"
 msgstr "％（体积）.2fK"
 
-#: railgun/website/utility.py:76
+#: railgun/website/utility.py:93
 #, python-format
 msgid "%(size)dB"
 msgstr "％（体积）分贝"
@@ -317,34 +324,34 @@ msgstr "％（体积）分贝"
 msgid "Sign up is turned off."
 msgstr ""
 
-#: railgun/website/views.py:75 railgun/website/views.py:94
+#: railgun/website/views.py:75 railgun/website/views.py:93
 msgid "Incorrect username or password."
 msgstr "不正确的用户名和密码。"
 
-#: railgun/website/views.py:172
+#: railgun/website/views.py:171
 #, fuzzy
 msgid "This homework is out of date! You cannot upload your submission."
 msgstr "这个功课是过时！您不能提交您的handin。"
 
-#: railgun/website/views.py:187
+#: railgun/website/views.py:186
 #, fuzzy
 msgid "You submission is accepted, please wait for results."
 msgstr "您handin被接受，请等待结果。"
 
-#: railgun/website/views.py:192
+#: railgun/website/views.py:191
 msgid "Internal server error, please try again."
 msgstr "内部服务器错误，请重试。"
 
-#: railgun/website/views.py:258
+#: railgun/website/views.py:262
 msgid "Home"
 msgstr "首页"
 
-#: railgun/website/views.py:261 railgun/website/templates/base.handins.html:6
+#: railgun/website/views.py:265 railgun/website/templates/base.handins.html:6
 #: railgun/website/templates/homework.html:30
 msgid "Homework"
 msgstr "家庭作业"
 
-#: railgun/website/views.py:273 railgun/website/templates/homework.html:100
+#: railgun/website/views.py:277 railgun/website/templates/homework.html:100
 msgid "Submission"
 msgstr ""
 
@@ -360,6 +367,11 @@ msgstr "返回首页"
 msgid "Download"
 msgstr ""
 
+#: railgun/website/templates/admin.handins.html:3
+#: railgun/website/templates/admin.handins.html:6
+msgid "All Submissions"
+msgstr ""
+
 #: railgun/website/templates/admin.html:2
 #: railgun/website/templates/admin.users.html:25
 #, fuzzy
@@ -370,6 +382,10 @@ msgstr "Handin"
 #: railgun/website/templates/base.html:38
 msgid "Railgun"
 msgstr "磁轨炮"
+
+#: railgun/website/templates/admin.maintain.html:10
+msgid "Task Log"
+msgstr ""
 
 #: railgun/website/templates/admin.scores.html:3
 #, fuzzy
@@ -439,10 +455,6 @@ msgstr ""
 #, fuzzy
 msgid "Edit"
 msgstr "重量"
-
-#: railgun/website/templates/base.handins.html:3
-msgid "Your Submissions"
-msgstr ""
 
 #: railgun/website/templates/base.handins.html:8
 msgid "User"
@@ -610,6 +622,10 @@ msgstr "未测"
 #: railgun/website/templates/handin_detail.html:136
 msgid "Details"
 msgstr "详细"
+
+#: railgun/website/templates/handins.html:6
+msgid "Your Submissions"
+msgstr ""
 
 #: railgun/website/templates/homework.html:25
 msgid "Submit"
@@ -823,4 +839,10 @@ msgstr "意想不到的成功：％（测试）秒。"
 
 #~ msgid "Handin Date"
 #~ msgstr "Handin日期"
+
+#~ msgid "All Scores for \"%(hw)s\""
+#~ msgstr ""
+
+#~ msgid "All Scores"
+#~ msgstr "没有评分"
 
