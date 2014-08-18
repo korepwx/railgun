@@ -35,6 +35,9 @@ def LoadConfig(obj, fpath):
 # RAILGUN_ROOT stores the path of railgun project
 RAILGUN_ROOT = os.path.realpath(os.path.dirname(__file__))
 
+# LOG_ROOT stores the log directory of railgun project
+LOG_ROOT = os.path.join(RAILGUN_ROOT, 'logs')
+
 # ALLOW_SIGNUP determines whether the railgun website allows new user
 # sign up.
 ALLOW_SIGNUP = True
