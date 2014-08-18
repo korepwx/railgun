@@ -21,6 +21,7 @@ from sqlalchemy.orm import contains_eager
 from werkzeug.exceptions import NotFound
 
 from railgun.maintain.hwcache import HwCacheTask
+from railgun.maintain.tzcache import TzCacheTask
 from .context import app, db
 from .models import User, Handin
 from .forms import AdminUserEditForm
@@ -218,14 +219,23 @@ def hwscores(hwid):
     )
 
 
-@bp.route('/hwcache/')
-def hwcache():
-    """Admin page to rebuild homework cache."""
-    task = HwCacheTask()
+@bp.route('/buildcache/')
+def buildcache():
+    """Admin page to rebuild railgun cache."""
+    io = StringIO()
+    # HwCache
+    task = HwCacheTask(logstream=io)
     task.execute()
     task.logflush()
+    # TzCache
+    io.write('-' * 70)
+    io.write('\n')
+    task = TzCacheTask(logstream=io)
+    task.execute()
+    task.logflush()
+
     return render_template('admin.maintain.html', task=task,
-                           pagetitle=_('Build Homework Cache'))
+                           pagetitle=_('Build Cache'))
 
 # Register the blue print
 app.register_blueprint(bp, url_prefix='/admin')
@@ -249,7 +259,7 @@ navigates.add(
             NaviItem.make_view(title=lazy_gettext('Scores'),
                                endpoint='admin.scores'),
             NaviItem.make_view(title=lazy_gettext('Build Cache'),
-                               endpoint='admin.hwcache'),
+                               endpoint='admin.buildcache'),
         ]
     )
 )
