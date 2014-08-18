@@ -53,7 +53,7 @@ def signup():
         except Exception:
             app.logger.exception('Cannot create account %s' % user.name)
         flash(_("I'm sorry but we may have met some trouble. Please try "
-                "again."))
+                "again."), 'warning')
     return render_template('signup.html', form=form)
 
 

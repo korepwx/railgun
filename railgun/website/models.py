@@ -35,7 +35,7 @@ class User(db.Model):
     # User passport
     name = db.Column(db.String(50), unique=True)
     email = db.Column(db.String(80), unique=True)
-    password = db.Column(db.String(50))
+    password = db.Column(db.String(255))
 
     # Whether this user is admin?
     is_admin = db.Column(db.Boolean, default=False)
