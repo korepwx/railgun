@@ -6,11 +6,14 @@
 # This file is released under BSD 2-clause license.
 
 import os
+import re
+import socket
+import urllib
 
 from . import runconfig
 from .context import logger
 from .errors import RunnerError, InternalServerError, FileDenyError, \
-    RunnerTimeout
+    RunnerTimeout, NetApiAddressRejected
 from railgun.common.hw import FileRules
 from railgun.common.fileutil import dirtree, remove_firstdir
 from railgun.common.osutil import ProcessTimeout, execute
@@ -48,7 +51,7 @@ class HostConfig(object):
         ret['RAILGUN_ROOT'] = runconfig.RAILGUN_ROOT
         # setup implicit values
         for k, v in self.__dict__.iteritems():
-            if (not k.startswith('_') and not callable(v)):
+            if (v is not None and not k.startswith('_') and not callable(v)):
                 ret['RAILGUN_%s' % str(k).upper()] = str(v)
         # setup explicit values
         for k, v in self._values.iteritems():
@@ -206,6 +209,33 @@ class NetApiHost(PythonHost):
     def __init__(self, remote_addr, uuid, hw):
         super(NetApiHost, self).__init__(uuid, hw, 'netapi')
         self.config.remote_addr = remote_addr
+        # Rule of url and ip in regex expression
+        self.config.urlrule = self.compiler_params.get('url') or None
+        self.config.iprule = self.compiler_params.get('ip') or None
+
+    def compile(self):
+        """Validate the provided address by urlrule and iprule."""
+        if (self.config.urlrule):
+            p = re.compile(self.config.urlrule)
+            if (not p.match(self.config.remote_addr)):
+                raise NetApiAddressRejected()
+        if (self.config.iprule):
+            domain = urllib.splitport(
+                urllib.splithost(
+                    urllib.splittype(self.config.remote_addr)[1]
+                )[0]
+            )[0]
+            # get ip from domain
+            try:
+                ipaddr = socket.gethostbyname(domain)
+            except Exception:
+                logger.exception(
+                    'Could not get ip address for domain "%s".' % domain)
+                ipaddr = '<invalid>'
+            # ip not match, skip
+            p = re.compile(self.config.iprule)
+            if (not p.match(ipaddr)):
+                raise NetApiAddressRejected()
 
 
 class InputClassHost(PythonHost):

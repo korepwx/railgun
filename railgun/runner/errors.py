@@ -70,3 +70,12 @@ class NonUTF8OutputError(RunnerError):
         super(RunnerError, self).__init__(lazy_gettext(
             'Not valid UTF-8 sequence produced.'
         ))
+
+
+class NetApiAddressRejected(RunnerError):
+    """Error indicating that the URL address in a NetAPI handin is invalid."""
+
+    def __init__(self):
+        super(RunnerError, self).__init__(lazy_gettext(
+            'Given address is rejected.'
+        ))

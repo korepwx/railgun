@@ -445,14 +445,14 @@ class HwPartialScore(object):
 class HwScore(object):
     """A serializable final score object, set of `HwPartialScore`."""
 
-    def __init__(self, accepted, result=None):
+    def __init__(self, accepted, result=None, partials=None):
         # `accepted` indicate whether final state of this handin is Accepted
         # or Rejected.
         self.accepted = accepted
         # brief result message string
         self.result = result
         # all partial scores to be sumed up
-        self.partials = []
+        self.partials = partials or []
 
     def get_score(self):
         """Sum the final score."""

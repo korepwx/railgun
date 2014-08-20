@@ -100,6 +100,7 @@ class NetApiHandin(BaseHandin):
 
         with NetApiHost(self.remote_addr, self.handid, self.hw) as host:
             host.prepare_hwcode()
+            host.compile()
             return host.run()
 
 

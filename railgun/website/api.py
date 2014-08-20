@@ -68,12 +68,21 @@ def api_handin_report(uuid):
     if (handin.state != 'Running' and handin.state != 'Pending'):
         return 'score already reported'
 
+    # Special hack: unittest will catch all exceptions.
+    #
+    # Such submissions may result 0.0 base score but marked as 'Accepted'.
+    # I decide to treat these submissions 'Rejected', because no one
+    # would accept a totally bad submission.
+    handin.score = score.get_score()
+    if (handin.score < 1e-5 and score.accepted):
+        score.accepted = False
+        score.result = lazy_gettext('No test passed, submission rejected.')
+
     # update result of handin
     handin.state = 'Accepted' if score.accepted else 'Rejected'
-    handin.score = score.get_score()
     if (score.accepted):
         handin.result = lazy_gettext('Your submission is accepted.')
-    elif (score.result):
+    elif (unicode(score.result)):
         handin.result = score.result
     else:
         handin.result = lazy_gettext('Your submission is rejected.')

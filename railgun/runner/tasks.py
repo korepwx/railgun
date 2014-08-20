@@ -82,7 +82,6 @@ def run_handin(handler, handid, hwid):
             'Submission[%(handid)s] of hw[%(hwid)s]: OK.' %
             {'handid': handid, 'hwid': hwid}
         )
-
     except RunnerError, ex:
         # RunnerError is logically OK and sent to client only.
         # So we just log the message of this exception, not exception detail.
