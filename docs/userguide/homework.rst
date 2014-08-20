@@ -91,7 +91,7 @@ Here's a basic example of ``hw.xml`` provided by `Railgun Source Code`_:
     <homework>
       <uuid>b388ad5b25ee44bbac9be46c43851768</uuid>
       <names>
-        <name lang="zh-cn">格式化路径</name>
+        <name lang="zh-cn">(Some Chinese name)</name>
         <name lang="en">Format Path</name>
       </names>
       <deadlines>
