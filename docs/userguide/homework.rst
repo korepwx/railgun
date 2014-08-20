@@ -118,6 +118,8 @@ All nodes in ``hw.xml`` showed above are essential.  Both the website of
 Railgun and the background runner will refuse to start up if it lacks
 anything.  The functionality of the nodes are described in following table:
 
+.. tabularcolumns:: |p{4cm}|p{11cm}|
+
 =============== ============================================================
 Node Name       Description
 =============== ============================================================
@@ -181,6 +183,8 @@ for different languages are placed under ``code`` directory.  The name of
 the directory determines what programming language it is.  Currently only
 three programming languages are valid:
 
+.. tabularcolumns:: |p{4cm}|p{11cm}|
+
 =============== ==========================================================
 Language        Description
 =============== ==========================================================
@@ -219,6 +223,8 @@ by `Railgun Source Code`_ is:
 Like ``hw.xml``, all nodes in ``code.xml`` are essential.  The system
 will refuse to start up if it lacks anything. The functionality of the
 nodes are described in following table:
+
+.. tabularcolumns:: |p{4cm}|p{11cm}|
 
 =============== =======================================================
 Node Name       Description
