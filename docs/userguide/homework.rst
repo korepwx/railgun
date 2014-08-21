@@ -116,7 +116,8 @@ Here's a basic example of ``hw.xml`` provided by `Railgun Source Code`_:
 
 All nodes in ``hw.xml`` showed above are essential.  Both the website of
 Railgun and the background runner will refuse to start up if it lacks
-anything.  The functionality of the nodes are described in following table:
+anything.  The functionality of the nodes are described in the following
+table:
 
 .. tabularcolumns:: |p{4cm}|p{11cm}|
 
@@ -222,7 +223,7 @@ by `Railgun Source Code`_ is:
 
 Like ``hw.xml``, all nodes in ``code.xml`` are essential.  The system
 will refuse to start up if it lacks anything. The functionality of the
-nodes are described in following table:
+nodes are described in the following table:
 
 .. tabularcolumns:: |p{4cm}|p{11cm}|
 
@@ -247,28 +248,189 @@ files           Archive packing rules for the files in this language
 Writing Description
 -------------------
 
+The syntax of `Markdown`_ can be easily retrieved on internet. The
+extensions to original Markdown syntax is very similar to
+`GitHub Flavoured Markdown`_.  There's only one important addition
+to these two standards, which exposes static resources under ``desc``
+directory to client browsers.
+
+Suppose we have the following ``desc`` directory::
+
+    desc
+    ├── 1.jpg
+    ├── en.md
+    └── img
+        └── 2.jpg
+
+``en.md`` is the description for English locale.  We want to display
+``1.jpg`` and ``2.jpg`` on homework page, thus we write::
+
+    ![The first image](hw://1.jpg)
+    ![The second image](hw://img/2.jpg)
+
+Railgun will change all the urls beginning with ``hw://`` into
+absolute http urls.  The url patterns are replaced full text, with
+no analysis on Markdown syntax.  Any string matching the following
+regular expression will be treated as ``hw://`` urls::
+
+    hw://[A-Za-z0-9-_.~!\*';:@&=+$,/?#]*
+
+There are two more things before the images can display correctly.
+You should set the correct value for ``WEBSITE_BASEURL`` in
+``config.py`` (or in ``config/general.py``, which is more recommended).
+You should then execute ``Manage - Build Cache`` in the navigation
+bar after you have logged into the website as an administrator.
+This will gather all static resources in ``desc`` directories
+into a single place, so as to be ready for browser requests.
+
 .. _hwpack:
 
 Archive Packing
 ---------------
 
+On the homework page, students are given links to download the archive
+file of their chosen programming language.  These archive files are
+packed by Railgun according to homework definitions.  Different
+programming languages will generate different archive files.
+
+Suppose we have the following homework definition::
+
+    example
+    ├── code
+    │   ├── java
+    │   │   ├── code.xml
+    │   │   ├── main.java
+    │   │   └── utility.java
+    │   └── python
+    │       ├── code.xml
+    │       ├── func.py
+    │       └── run.py
+    ├── desc
+    │   ├── en.md
+    │   └── zh-cn.md
+    ├── hw.xml
+    └── readme.pdf
+
+Railgun will then generate two archive files for this piece of
+homework: ``java.zip`` and ``python.zip``.  If properly configured,
+``java.zip`` may contain ``readme.pdf``, ``main.java`` and
+``utility.java``, while ``python.zip`` may contain ``readme.pdf``,
+``func.py`` and ``run.py``.
+
+The basic rule for Railgun to generate the archive is that,
+the archive file for a certain programming language only contains
+the files from that language directory, and from the root directory
+of the homework.  What's more, there're some files and directories
+that will not be packed into the archive, such as ``hw.xml``,
+``code.xml``, ``desc`` and ``code``.
+
+However, these rules are far from enough.  You may intend to
+have a more detailed control on which files to be packed and
+which not.  For example, you may intend to hide ``run.py``
+and provide only ``func.py`` to the students.
+
+On the other hand, as is mentioned above at :ref:`hwoutline`,
+after the students have uploaded their submissions, Railgun
+will extract them somewhere and execute the programs.
+However, you may not want the students to overwrite some of
+your original code, such as the code in ``run.py``, in that
+it will give the scores to the submissions.
+
+Both these two goals can be achieved by the file packing rules
+defined in ``hw.xml`` and in ``code.xml``.  For example, if
+we have the following set of rules in ``code.xml``:
+
+.. code-block:: xml
+
+    <files>
+      <accept>^func\.py$</accept>
+      <lock>^run\.py$</lock>
+      <hide>^secret\.py$</hide>
+      <deny>^virus\.py$</deny>
+    </files>
+
+Railgun will pack ``func.py`` and ``run.py`` into the archive file, but
+will only extract ``func.py`` from the submissions from students and
+copy ``run.py`` from the original homework definition instead of
+student provided version.  This protects the judging code from being
+overwritten.
+
+What's more, if there exists ``secret.py`` in code directory, it will
+not be packed into the archive file, but will indeed be copied to
+submission runtime directory.  At last, if ``virus.py`` appears in
+student submissions, then these submissions will be rejected
+immediately.
+
+File packing rules control the behaviour of packing downloadable
+homework archive file, and extracting code files from user uploaded
+submissions.  All the rules should be carried in a single ``<files>``
+node, in both ``hw.xml`` and ``code.xml``.  There are totally
+4 types of actions taken by rules, as is mentioned above:
+
+.. tabularcolumns:: |p{4cm}|p{11cm}|
+
+=========== ==============================================================
+Action      Description
+=========== ==============================================================
+accept      *   files will be packed into archive file.
+            *   files can be overwritten by student submissions.
+lock        *   files will be packed into archive file.
+            *   files **CANNOT** be overwritten by student submissions.
+hide        *   files **WILL NOT** be packed into archive file.
+            *   files **CANNOT** be overwritten by student submissions.
+deny        *   files **WILL NOT** be packed into archive file.
+            *   the submissions carrying files matching this type
+                of rules will be rejected.
+=========== ==============================================================
+
+The matching pattern of file rules are regular expressions.  Be careful
+about the syntax!  You must add ``^`` at the beginning of the expression,
+and ``$`` at the end of the expression, if you want to match the whole
+file path.  However, you may not following this restriction as your need.
+
+Rules are distributed in two individual files: ``hw.xml`` and
+``code.xml``.  Futhermore, there may be multiple rules in the same file.
+All the rules in the same file are matched in definition order, and
+the actions are taken immediately after any one rule is matched,
+regardless of later rules.
+
+When packing archive files, files from the root directory will be packed
+first, according to the file rules in ``hw.xml``.  Then the files from
+certain programming language will be packed later, according to
+``code.xml``.  The behaviour is not specified if two files from different
+directory conflicts, so please avoid such situations.
+
+After the students have uploaded their submissions, files from the
+root directory and the directory of certain programming language
+will be copied to runtime directory first.  File rules are not tested
+during this progress, and the Railgun system copies anything it can
+find.  Later, files from the students will be extracted, and tested
+by rules in the two files.  *Rules in* ``code.xml`` *will be tested
+first, and if not matched,* ``hw.xml``.  Files not matching
+any rules will be treated as if they have matched the ``lock`` rules.
+
+Because of the nature order of extraction progress, student submitted
+files will overwrite original files if the rules are not specified
+correctly.  *So you must take care when contructing the file matching
+rules.*
+
 .. _hwjudge:
 
-Online Judging
---------------
+Judge Runner
+------------
 
 .. _hwpython:
 
-Python Judgement
-----------------
+Python Judging
+--------------
 
 .. _hwnetapi:
 
-NetAPI Judgement
-----------------
+NetAPI Judging
+--------------
 
 .. _hwinput:
 
-Input Data Judgement
---------------------
+Input Data Judging
+------------------
 
