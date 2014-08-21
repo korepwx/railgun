@@ -67,7 +67,7 @@ You may head over to :ref:`hwjudge` to learn more.
 The rest of this page reveals everything you will need to know when you'd
 like to write judgement code for particular programming language.
 This includes all technical details about :ref:`hwpython`, :ref:`hwnetapi`
-and :ref:`hwinput`.
+and :ref:`hwinput`, as well as some :ref:`hwnotes`.
 
 .. _hwstruct:
 
@@ -492,8 +492,8 @@ RAILGUN_HWID            The uuid of the homework this submission belongs to.
 
 .. _hwpython:
 
-Python Judge Code
------------------
+Python Judging
+--------------
 
 This section provides all the information about how to construct the
 judging code for Python programming language.  Bear in mind that the
@@ -575,8 +575,8 @@ UnitTestScorer
 ~~~~~~~~~~~~~~
 
 The basic functionality of ``UnitTestScorer`` is to run a set of
-unit test cases, and then give the score according to the count of
-passes cases.
+unit test cases, and then give the score according to the percentage
+of passed cases.
 
 You may use this scorer under such situations: you have written
 a set of test cases, and you'd like the students to write code that
@@ -588,8 +588,8 @@ this situation.
 
 To construct a ``UnitTestScorer``, you may use
 ``UnitTestScorer.FromTestCase(testcase)``.  The basic example to
-use ``UnitTestScorer`` can be found in ``reform_path`` example
-from `Railgun Source Code`_::
+use ``UnitTestScorer`` can be found in ``reform_path`` from
+`Railgun Source Code`_::
 
     import unittest
     from pyhost.scorer import UnitTestScorer, CodeStyleScorer
@@ -618,14 +618,299 @@ from `Railgun Source Code`_::
         ]
         SafeRunner.run(scorers)
 
+Since the test cases are written by you, it's safe to load the test case
+classes in the scope of ``run.py``.  You may import test case class,
+or just define the test cases in ``run.py``, and pass it to
+``UnitTestScorer.FromTestCase(testcase)`` to construct a ``UnitTestScorer``.
+For advanced constructors, you can check the :ref:`api` reference.
+
+**Here's another notice that, you shouldn't import any user submitted
+module out of the methods in a test case.**  If you carefully import
+all the user module only in test case methods, the Python interpreter
+will guarantee that all the user code is executed until ``SafeRunner``
+has been started.
+
+CoverageScorer
+~~~~~~~~~~~~~~
+
+``CoverageScorer`` is designed to evaluate white-box testing homework.
+It runs the test cases submitted by the students, and give the score
+according to the coverage rate on existing code.  Suppose you have
+such method ``myfunc`` defined in ``myfunc.py``::
+
+    def myfunc(a, b, c):
+        if a > b:
+            if b > c:
+                return c
+            else:
+                return b
+        elif a > c:
+            if c > b:
+                return b
+            else:
+                return c
+        else:
+            return a
+
+This file should be protected by ``lock`` rule mentioned in :ref:`hwpack`,
+so that it can be packed into the archive file, but not overwritten by
+the submissions.
+
+The mission of the students is to write unit test cases to cover as many
+statements of ``myfunc`` as possible.  The judging code may be::
+
+    from pyhost.scorer import CodeStyleScorer, CoverageScorer
+    from pyhost import SafeRunner
+
+    if (__name__ == '__main__'):
+        scorers = [
+            (CodeStyleScorer.FromHandinDir(['run.py']), 0.1),
+            (CoverageScorer.FromHandinDir(['myfunc.py']), 0.9),
+        ]
+        SafeRunner.run(scorers)
+
+Suppose the test cases are placed in ``test_*.py``.  This is required
+by ``CoverageScorer``, which you should tell to the students in homework
+description.  The above example will run all test cases in ``test_*.py``,
+and check the coverage on ``myfunc.py``.
 
 .. _hwnetapi:
 
-NetAPI Judge Code
------------------
+NetAPI Judging
+--------------
+
+You may assign such homework to the students: they are told to deploy
+a web application on a public accessible server, submit the url to
+you, and then you would check the functionality of that web application
+by unit tests.  ``netapi`` programming language is just what you need.
+
+The main structure of ``netapi`` programming language is just like
+that of ``python``, except a few changes to ``code.xml``:
+
+.. code-block:: xml
+
+    <?xml version="1.0"?>
+    <code>
+      <attachment>true</attachment>
+      <compiler version="2.7" url="^http://localhost.*" ip="127\.0\.0\.1" />
+      <runner entry="run.py" timeout="10" />
+      <files>
+        <hide>^run\.py$</hide>
+      </files>
+    </code>
+
+There are two more attributes to the ``compiler`` node: ``url``
+and ``ip``.  They should be both regular expressions, where ``url``
+validates the whole address of web application submitted by the
+students, and ``ip`` validates the ip address of the domain.
+
+Three environmental variables are provided in additional to the
+ones described in :ref:`hwjudge`:
+
+.. tabularcolumns:: |p{6cm}|p{9cm}|
+
+======================= ====================================================
+Variable Name           Description
+======================= ====================================================
+RAILGUN_REMOTE_ADDR     The web application address submitted by student.
+RAILGUN_URLRULE         The url pattern defined in ``code.xml``.
+RAILGUN_IPRULE          The ip pattern defined in ``code.xml``.
+======================= ====================================================
+
+The judging code of ``netapi`` programming language is just like
+``python``, in that you may compose a unit test and run it with
+``UnitTestScorer``.  To send requests and receive responses from
+the remote web application, you may use the builtin library
+``urllib``, or you may also use `requests`_ library, which is
+one of requirements of Railgun.
+
+.. _requests: http://www.python-requests.org
+
+The complete example of NetAPI provided by `Railgun Source Code`_ is::
+
+    import os
+    import json
+    import requests
+    import unittest
+
+    from pyhost.scorer import UnitTestScorer
+    from pyhost import SafeRunner
+
+
+    class ArithApiUnitTest(unittest.TestCase):
+
+        def __init__(self, *args, **kwargs):
+            super(ArithApiUnitTest, self).__init__(*args, **kwargs)
+            self.base_url = os.environ['RAILGUN_REMOTE_ADDR'].rstrip('/')
+
+        def _post(self, action, payload):
+            """Do post and get remote api result."""
+
+            payload = json.dumps(payload)
+            # Get remote response
+            try:
+                ret = requests.post(self.base_url + action, data=payload,
+                                    headers={'Content-Type': 'application/json'})
+            except Exception:
+                raise RuntimeError("Cannot get response from remote API.")
+
+            # Check response status
+            if (ret.status_code != 200):
+                raise RuntimeError("HTTP status %d != 200." % ret.status_code)
+            ret = ret.text
+
+            # Convert response to object
+            try:
+                return json.loads(ret)
+            except Exception:
+                raise ValueError(
+                    "Response '%(msg)s' is not json." % {'msg': ret})
+
+        def _get_result(self, action, payload):
+            """Ensure the remote api does not return error, and get 'value' from
+            remote api result."""
+
+            ret = self._post(action, payload)
+            if (ret['error'] != 0):
+                raise RuntimeError("Remote API error: %s." % ret['message'])
+            return ret['result']
+
+        def test_add(self):
+            self.assertEqual(self._get_result('/add/', {'a': 1, 'b': 2}), 3)
+
+        def test_pow(self):
+            self.assertEqual(self._get_result('/pow/', {'a': 2, 'b': 100}), 2**100)
+
+        def test_gcd(self):
+            self.assertEqual(self._get_result('/gcd/', {'a': 2, 'b': 4}), 2)
+
+    if (__name__ == '__main__'):
+        scorers = [
+            (UnitTestScorer.FromTestCase(ArithApiUnitTest), 1.0),
+        ]
+        SafeRunner.run(scorers)
+
+You may edit the three test cases ``test_add``, ``test_pow`` and ``test_gcd``
+to fit your needs.
 
 .. _hwinput:
 
-Input Data Judge Code
----------------------
+Input Judging
+-------------
+
+The ``input`` programming language is designed for black-box testing
+homework.  The students are required to generate a serial of data
+to test a certain *unknown* program.  The functionality of such
+program should be written in the description, so that the students
+can create as many classes of input data as possible to cover the
+described program.
+
+The structure of ``input`` programming language is just like
+that of ``python``.  However, since the judger of ``input`` language
+will put the CSV data submitted by the students into ``data.csv``,
+you must add the following file rule into ``code.xml``:
+
+.. code-block:: xml
+
+    <lock>^data\.csv$</lock>
+
+A full example of ``code.xml`` is:
+
+.. code-block:: xml
+
+    <?xml version="1.0"?>
+    <code>
+      <attachment>false</attachment>
+      <compiler version="2.7" />
+      <runner entry="run.py" timeout="3" />
+      <files>
+        <hide>^run\.py$</hide>
+        <lock>^data\.csv$</lock>
+      </files>
+    </code>
+
+You may notice that ``input`` programming language may not
+provide the archive file, so we can set ``attachment`` option to
+``false``.
+
+The judging code for ``input`` language is a bit more complex
+than the above languages.  First, you should create a ``CsvSchema``,
+to parse user submitted csv data::
+
+    from railgun.common.csvdata import CsvSchema, CsvFloat
+
+    class ExampleSchema(CsvSchema):
+        a = CsvFloat()
+        b = CsvFloat()
+        c = CsvFloat()
+
+This schema will accept csv data in the following format::
+
+    a,b,c
+    1,2,3
+    1,3,3
+
+The header line is essential in the submitted csv data, which you
+should tell to the students in homework descriptions.  The order
+of the columns is not restricted, but each column in the schema
+must also appear in the data.
+
+Besides ``CsvFloat``, there are 3 more types in ``csvdata.py``:
+
+.. tabularcolumns:: |p{5cm}|p{10cm}|
+
+======================= ====================================================
+Data Type               Description
+======================= ====================================================
+CsvFloat                Expect an integral or floating number.
+CsvInteger              Expect an integral number.
+CsvBoolean              Expect ``true`` or ``false``.
+CsvString               Expect a csv quoted string.
+======================= ====================================================
+
+After you have created the data schema, you should call
+``InputClassScorer(schema, fileobj)`` to construct the scorer as
+following::
+
+    from pyhost.scorer import InputClassScorer
+
+    scorer = InputClassScorer(ExampleSchema, open('data.csv', 'rb'))
+
+Next, you should define the input classes.  The syntax to define
+the classes is handy, and you may even provide descriptions
+for each input class::
+
+    @scorer.rule('all zeros input')
+    def all_zeros(obj):
+        return (obj.a == 0 and obj.b == 0 and obj.c == 0)
+
+Above example creates the "all-zeros" input class in the ``scorer``,
+whose test condition is ``a == 0 and b == 0 and c == 0``.  You may
+notice that all fields from ``data.csv`` are stored as attributes
+of ``obj``.  The description of such input class is provided
+by ``@scorer.rule(description)`` decoration.
+
+After you have defined all input classes, you can then run the
+scorer by following code::
+
+    from pyhost import SafeRunner
+
+    SafeRunner.run([
+        (scorer, 1.0)
+    ])
+
+
+.. _hwnotes:
+
+Additional Notes
+----------------
+
+*   Whatever programming language, you must use UTF-8 to write your code.
+    Tell the students to follow this rule as well!  All the output of the
+    program must be also valid UTF-8 sequence!
+
+    To ensure the Python interpreter to use UTF-8 encoding, add the
+    following line at the beginning of Python source files::
+
+        # -*- coding: utf-8 -*-
 

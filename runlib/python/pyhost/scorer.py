@@ -86,6 +86,12 @@ class UnitTestScorer(Scorer):
         return UnitTestScorer(
             lambda: unittest.TestLoader().loadTestsFromTestCase(testcase))
 
+    @staticmethod
+    def FromNames(names):
+        """Make a `UnitTestScorer` instance from test case `names`."""
+        suite = lambda: unittest.TestLoader().loadTestsFromNames(names)
+        return UnitTestScorer(suite)
+
 
 class CodeStyleScorer(Scorer):
     """scorer according to the code style."""
