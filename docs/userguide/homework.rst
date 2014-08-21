@@ -544,7 +544,6 @@ Such C Python module is named as ``SafeRunner``.  Suppose our user
 uploaded code is stored in ``func.py``, then a simple example
 of the main script ``run.py`` should be like::
 
-    import unittest
     from pyhost.scorer import CodeStyleScorer, XXXScorer
     from pyhost import SafeRunner
 
@@ -571,6 +570,54 @@ The most convenient way to construct a ``CodeStyleScorer`` is
 ``CodeStyleScorer.FromHandinDir(ignore_files)``.  It will scan all
 Python source files in runtime directory except the ones in
 ``ignore_files``.
+
+UnitTestScorer
+~~~~~~~~~~~~~~
+
+The basic functionality of ``UnitTestScorer`` is to run a set of
+unit test cases, and then give the score according to the count of
+passes cases.
+
+You may use this scorer under such situations: you have written
+a set of test cases, and you'd like the students to write code that
+passes your cases.  This could also judge the ``NetAPI`` homework,
+which requires the students to deploy a web application, in that
+you may write the unit tests to check whether the web application
+runs properly.  Head over to :ref:`hwnetapi` to learn more about
+this situation.
+
+To construct a ``UnitTestScorer``, you may use
+``UnitTestScorer.FromTestCase(testcase)``.  The basic example to
+use ``UnitTestScorer`` can be found in ``reform_path`` example
+from `Railgun Source Code`_::
+
+    import unittest
+    from pyhost.scorer import UnitTestScorer, CodeStyleScorer
+    from pyhost import SafeRunner
+
+
+    class ReformPathTestCase(unittest.TestCase):
+
+        def _reform_path(self, s):
+            # NOTE: any modules upload by student should only be loaded until the
+            #       test is actually called. This is because the test runner will
+            #       guarded by C module instead of Python, so that the result
+            #       reporter will be prevent from injection.
+            from path import reform_path
+            return reform_path(s)
+
+        def test_translateWinPathSep(self):
+            self.assertEqual(self._reform_path('1\\2'), '1/2')
+            self.assertEqual(self._reform_path('\\1\\2'), '/1/2')
+            self.assertEqual(self._reform_path('\\\\1\\\\2'), '/1/2')
+
+    if (__name__ == '__main__'):
+        scorers = [
+            (CodeStyleScorer.FromHandinDir(ignore_files=['run.py']), 0.1),
+            (UnitTestScorer.FromTestCase(ReformPathTestCase), 0.9),
+        ]
+        SafeRunner.run(scorers)
+
 
 .. _hwnetapi:
 
