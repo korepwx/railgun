@@ -1,148 +1,28 @@
-
 msgid ""
 msgstr ""
-"Project-Id-Version:  railgun\n"
-"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2014-08-18 17:41+0800\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: zh_Hans_CN <LL@li.org>\n"
-"Plural-Forms: nplurals=2; plural=(n != 1)\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=utf-8\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 1.3\n"
-
-#: railgun/common/csvdata.py:37
-#, python-format
-msgid "Cannot convert \"%(value)s\" to %(type)s."
-msgstr "无法将“％（价值）的”为％（类型）秒。"
-
-#: railgun/common/csvdata.py:103
-#, python-format
-msgid "Field \"%(field)s\" not found in CSV data."
-msgstr "场“％（场）的”以CSV数据未找到。"
-
-#: railgun/runner/errors.py:26
-msgid "Internal server error."
-msgstr "内部服务器错误。"
-
-#: railgun/runner/errors.py:35
-#, python-format
-msgid "Language \"%(lang)s\" is not provided."
-msgstr "“（郎咸平）S％”不提供语言。"
-
-#: railgun/runner/errors.py:45
-#, fuzzy
-msgid "Your submission is not a valid archive file."
-msgstr "你handin不是一个有效的归档文件。"
-
-#: railgun/runner/errors.py:54
-#, python-format
-msgid "Archive contains denied file %(filename)s."
-msgstr "存档包含否认文件％（文件名）秒。"
-
-#: railgun/runner/errors.py:64
-#, fuzzy
-msgid "Your submission has run out of time."
-msgstr "你handin已经运行的时间。"
-
-#: railgun/runner/errors.py:73
-msgid "Not valid UTF-8 sequence produced."
-msgstr "不合法的UTF-8序列产生。"
-
-#: railgun/runner/tasks.py:72
-#, python-format
-msgid "Exitcode %(exitcode)s != 0."
-msgstr "EXITCODE％（退出码）秒！= 0。"
-
-#: railgun/website/admin.py:108 railgun/website/views.py:135
-msgid "Profile saved."
-msgstr "资料保存。"
-
-#: railgun/website/admin.py:111 railgun/website/views.py:58
-#: railgun/website/views.py:138
-msgid "I'm sorry but we may have met some trouble. Please try again."
-msgstr "对不起，但我们可能会遇到一些麻烦。请重试。"
-
-#: railgun/website/admin.py:192
-msgid "Requested homework not found."
-msgstr ""
-
-#: railgun/website/admin.py:206 railgun/website/forms.py:42
-#: railgun/website/templates/base.user_edit.html:20
-msgid "Username"
-msgstr "用户名"
-
-#: railgun/website/admin.py:206 railgun/website/templates/base.handins.html:12
-#: railgun/website/templates/handin_detail.html:105
-#: railgun/website/templates/index.html:25
-msgid "Score"
-msgstr "得分"
-
-#: railgun/website/admin.py:207
-#, python-format
-msgid "Scores for \"%(hw)s\""
-msgstr ""
-
-#: railgun/website/admin.py:228
-msgid "Build Homework Cache"
-msgstr ""
-
-#: railgun/website/admin.py:240
-msgid "Manage"
-msgstr ""
-
-#: railgun/website/admin.py:245 railgun/website/templates/admin.users.html:4
-msgid "Users"
-msgstr ""
-
-#: railgun/website/admin.py:247 railgun/website/templates/handins.html:3
-msgid "Submissions"
-msgstr ""
-
-#: railgun/website/admin.py:249
-#, fuzzy
-msgid "Scores"
-msgstr "得分"
-
-#: railgun/website/admin.py:251
-msgid "Build Cache"
-msgstr ""
-
-#: railgun/website/api.py:78
-#, fuzzy
-msgid "Your submission is accepted."
-msgstr "你handin被接受。"
-
-#: railgun/website/api.py:82
-#, fuzzy
-msgid "Your submission is rejected."
-msgstr "你handin被拒绝。"
-
-#: railgun/website/api.py:158
-msgid "Process exited before reporting score."
-msgstr "流程报告得分前退出。"
-
-#: railgun/website/codelang.py:59
-msgid "Could not commit to run queue."
-msgstr "无法提交到运行队列中。"
+"X-Generator: POEditor.com\n"
+"Project-Id-Version: railgun\n"
+"Language: zh-CN\n"
 
 #: railgun/website/codelang.py:87
 msgid "Python"
-msgstr ""
+msgstr "Python"
 
 #: railgun/website/codelang.py:94
 msgid "Java"
-msgstr ""
+msgstr "Java"
 
 #: railgun/website/credential.py:68
 msgid "Please log in to access this page."
 msgstr "您需要登录才能访问这个页面。"
 
-#: railgun/website/credential.py:75
-msgid "To protect your account, please reauthenticate to access this page."
-msgstr ""
+#: railgun/website/admin.py:206 railgun/website/forms.py:42
+#: railgun/website/templates/base.user_edit.html:20
+msgid "Username"
+msgstr "用户名"
 
 #: railgun/website/forms.py:43
 msgid "Only letters, digits and '_' can appear in username."
@@ -154,7 +34,7 @@ msgstr "用户名不能为空"
 
 #: railgun/website/forms.py:46
 msgid "Username must be no shorter than 3 and no longer than 32 characters"
-msgstr "用户名不能超过3短，最长不超过32个字符"
+msgstr "用户名最短不少于3个字符，最长不超过32个字符"
 
 #: railgun/website/forms.py:49 railgun/website/forms.py:88
 #: railgun/website/templates/base.user_edit.html:21
@@ -163,15 +43,15 @@ msgstr "电子邮件地址"
 
 #: railgun/website/forms.py:50 railgun/website/forms.py:89
 msgid "Email can't be blank"
-msgstr "电子邮件不能为空"
+msgstr "电子邮件地址不能为空"
 
 #: railgun/website/forms.py:51 railgun/website/forms.py:90
 msgid "Email is invalid"
-msgstr "电子邮件无效"
+msgstr "电子邮件地址无效"
 
 #: railgun/website/forms.py:52 railgun/website/forms.py:91
 msgid "Email must be no longer than 80 characters"
-msgstr "电子邮件必须是不超过80个字符"
+msgstr "电子邮件地址最长不超过80个字符"
 
 #: railgun/website/forms.py:54 railgun/website/forms.py:75
 #: railgun/website/forms.py:93 railgun/website/templates/base.user_edit.html:22
@@ -184,93 +64,27 @@ msgstr "密码不能为空"
 
 #: railgun/website/forms.py:56 railgun/website/forms.py:94
 msgid "Passwords must match"
-msgstr "密码必须匹配"
+msgstr "两次输入的密码必须匹配"
 
 #: railgun/website/forms.py:57 railgun/website/forms.py:141
 msgid "Password must be no shorter than 7 and no longer than 32 characters"
-msgstr "密码不得超过7短，最长不超过32个字符"
+msgstr "密码最短不少于7个字符，最长不超过32个字符"
 
 #: railgun/website/forms.py:60 railgun/website/forms.py:96
 msgid "Confirm your password"
-msgstr "确认您的密码"
-
-#: railgun/website/forms.py:64
-msgid "Username already taken"
-msgstr "用户名已取"
-
-#: railgun/website/forms.py:68 railgun/website/forms.py:135
-msgid "Email already taken"
-msgstr "电子邮件已经采取"
+msgstr "再次确认你的密码"
 
 #: railgun/website/forms.py:74
 msgid "Username or Email"
 msgstr "用户名或邮箱"
 
-#: railgun/website/forms.py:76
-msgid "Remember me?"
-msgstr ""
-
-#: railgun/website/forms.py:99 railgun/website/templates/base.user_edit.html:63
-msgid "Given Name"
-msgstr ""
-
-#: railgun/website/forms.py:100
-#, fuzzy
-msgid "Given name must be no longer than 64 characters"
-msgstr "电子邮件必须是不超过80个字符"
-
-#: railgun/website/forms.py:103
-#: railgun/website/templates/base.user_edit.html:64
-msgid "Family Name"
-msgstr ""
-
-#: railgun/website/forms.py:104
-#, fuzzy
-msgid "Family name must be no longer than 64 characters"
-msgstr "电子邮件必须是不超过80个字符"
-
-#: railgun/website/forms.py:110
-#: railgun/website/templates/base.user_edit.html:39
-msgid "Speaking Language"
-msgstr ""
-
-#: railgun/website/forms.py:113
-#, fuzzy
-msgid "Speaking language can't be blank"
-msgstr "用户名不能为空"
-
-#: railgun/website/forms.py:116
-#: railgun/website/templates/base.user_edit.html:54
-msgid "Timezone"
-msgstr ""
-
-#: railgun/website/forms.py:117
-#, fuzzy
-msgid "Timezone can't be blank"
-msgstr "用户名不能为空"
-
-#: railgun/website/forms.py:149
-msgid "Please select a valid locale from above."
-msgstr ""
-
-#: railgun/website/forms.py:155
-msgid "Please enter a valid timezone."
-msgstr ""
-
-#: railgun/website/forms.py:161
-msgid "Is administrator?"
-msgstr ""
-
-#: railgun/website/forms.py:168
-#, fuzzy
-msgid "Please choose an archive to submit:"
-msgstr "请选择一个存档用于切换："
+#: railgun/website/forms.py:83
+msgid "Please choose an archive to handin:"
+msgstr "请提交一个压缩包："
 
 #: railgun/website/forms.py:173
-msgid ""
-"Only these file formats are accepted: rar, zip, tar, tar.gz, tgz, "
-"tar.bz2, tbz"
-msgstr "只有这些文件格式被接受：RAR，ZIP，焦油，tar.gz的，TGZ，TAR.BZ2，TBZ"
+msgid "Only these file formats are accepted: rar, zip, tar, tar.gz, tgz, tar.bz2, tbz"
+msgstr "只接受下列文件格式：rar，zip，tar，tar.gz，tgz，tar.bz2，tbz"
 
 #: railgun/website/forms.py:183
 msgid "Please enter your API address:"
@@ -286,57 +100,64 @@ msgstr "CSV数据："
 
 #: railgun/website/models.py:21
 msgid "Pending"
-msgstr "待定"
+msgstr "等待中"
 
 #: railgun/website/models.py:21
 msgid "Running"
-msgstr "运行"
+msgstr "运行中"
 
 #: railgun/website/models.py:21
 msgid "Rejected"
-msgstr "拒绝"
+msgstr "不合格"
 
 #: railgun/website/models.py:21
 msgid "Accepted"
-msgstr "接受"
+msgstr "合格"
 
 #: railgun/website/utility.py:88
-#, python-format
 msgid "%(size).2fG"
-msgstr "％（体积）.2fG"
+msgstr "%(size).2fG"
 
 #: railgun/website/utility.py:90
-#, python-format
 msgid "%(size).2fM"
-msgstr "％（体积）.2fM"
+msgstr "%(size).2fM"
 
 #: railgun/website/utility.py:92
-#, python-format
 msgid "%(size).2fK"
-msgstr "％（体积）.2fK"
+msgstr "%(size).2fK"
 
 #: railgun/website/utility.py:93
-#, python-format
 msgid "%(size)dB"
-msgstr "％（体积）分贝"
-
-#: railgun/website/views.py:44
-msgid "Sign up is turned off."
-msgstr ""
+msgstr "%(size)dB"
 
 #: railgun/website/views.py:75 railgun/website/views.py:93
 msgid "Incorrect username or password."
-msgstr "不正确的用户名和密码。"
+msgstr "错误的用户名或密码。"
 
-#: railgun/website/views.py:171
-#, fuzzy
-msgid "This homework is out of date! You cannot upload your submission."
-msgstr "这个功课是过时！您不能提交您的handin。"
+#: railgun/website/forms.py:64
+msgid "Username already taken"
+msgstr "此用户名已被注册"
 
-#: railgun/website/views.py:186
-#, fuzzy
-msgid "You submission is accepted, please wait for results."
-msgstr "您handin被接受，请等待结果。"
+#: railgun/website/forms.py:68 railgun/website/forms.py:135
+msgid "Email already taken"
+msgstr "此电子邮件地址已被注册"
+
+#: railgun/website/admin.py:111 railgun/website/views.py:58
+#: railgun/website/views.py:138
+msgid "I'm sorry but we may have met some trouble. Please try again."
+msgstr "对不起，程序出错，请再试一次。"
+
+#: railgun/website/admin.py:108 railgun/website/views.py:135
+msgid "Profile saved."
+msgstr "资料已保存。"
+
+#: railgun/website/views.py:169
+msgid "This homework is out of date! You cannot submit your handin."
+msgstr "截止日期已过，你不能再提交作业。"
+
+#: railgun/website/views.py:184
+msgid "You handin is accepted, please wait for results."
+msgstr "提交已接受，请等待结果。"
 
 #: railgun/website/views.py:191
 msgid "Internal server error, please try again."
@@ -349,11 +170,11 @@ msgstr "首页"
 #: railgun/website/views.py:265 railgun/website/templates/base.handins.html:6
 #: railgun/website/templates/homework.html:30
 msgid "Homework"
-msgstr "家庭作业"
+msgstr "作业"
 
-#: railgun/website/views.py:277 railgun/website/templates/homework.html:100
-msgid "Submission"
-msgstr ""
+#: railgun/website/views.py:267 railgun/website/templates/handins.html:4
+msgid "Handins"
+msgstr "提交"
 
 #: railgun/website/templates/404.html:30
 msgid "You got lost."
@@ -362,6 +183,522 @@ msgstr "你迷路了。"
 #: railgun/website/templates/404.html:34
 msgid "Back home"
 msgstr "返回首页"
+
+#: railgun/website/templates/admin.html:2 railgun/website/templates/base.html:7
+#: railgun/website/templates/base.html:38
+msgid "Railgun"
+msgstr "Railgun"
+
+#: railgun/website/templates/base.html:33
+msgid "Toggle navigation"
+msgstr "切换导航条"
+
+#: railgun/website/templates/base.html:83
+msgid "Edit profile"
+msgstr "编辑用户配置"
+
+#: railgun/website/templates/base.html:86
+msgid "Sign out"
+msgstr "登出"
+
+#: railgun/website/templates/base.html:92
+msgid "Sign up"
+msgstr "注册"
+
+#: railgun/website/templates/base.html:94
+#: railgun/website/templates/signin.html:4
+#: railgun/website/templates/signin.html:8
+#: railgun/website/templates/signin.html:18
+msgid "Sign in"
+msgstr "登陆"
+
+#: railgun/website/templates/handin_detail.html:3
+msgid "Handin Detail"
+msgstr "提交详情"
+
+#: railgun/website/templates/handin_detail.html:4
+msgid "Homework Deleted"
+msgstr "作业已被删除"
+
+#: railgun/website/templates/handin_detail.html:9
+msgid "Handin for <a href=\"%(url)s\">%(name)s</a>"
+msgstr "<a href=\"%(url)s\">%(name)s</a>的提交"
+
+#: railgun/website/templates/handin_detail.html:12
+msgid "Handin for <span class=\"text-muted\">(%(name)s)</a>"
+msgstr "<span class=\"text-muted\">(%(name)s)</a>的提交"
+
+#: railgun/website/templates/handin_detail.html:12
+msgid "Deleted"
+msgstr "已删除"
+
+#: railgun/website/templates/base.handins.html:13
+#: railgun/website/templates/handin_detail.html:19
+#: railgun/website/templates/handin_detail.html:64
+#: railgun/website/templates/handin_detail.html:125
+msgid "Summary"
+msgstr "摘要"
+
+#: railgun/website/templates/handin_detail.html:26
+msgid "Upload time"
+msgstr "上传时间"
+
+#: railgun/website/templates/handin_detail.html:26
+msgid "Handin Type"
+msgstr "提交类型"
+
+#: railgun/website/templates/handin_detail.html:35
+msgid "Base Score"
+msgstr "基本分数"
+
+#: railgun/website/templates/handin_detail.html:41
+msgid "Score Scale"
+msgstr "得分比例"
+
+#: railgun/website/templates/handin_detail.html:45
+msgid "Final Score"
+msgstr "最终得分"
+
+#: railgun/website/templates/handin_detail.html:51
+msgid "Exit Code"
+msgstr "进程返回值"
+
+#: railgun/website/templates/handin_detail.html:54
+msgid "Not started"
+msgstr "等待中"
+
+#: railgun/website/templates/base.handins.html:50
+#: railgun/website/templates/handin_detail.html:69
+#: railgun/website/templates/handin_detail.html:130
+msgid "No summary"
+msgstr "没有摘要"
+
+#: railgun/website/templates/handin_detail.html:79
+msgid "Standard Output"
+msgstr "标准输出"
+
+#: railgun/website/templates/handin_detail.html:89
+msgid "Standard Error Output"
+msgstr "标准错误输出"
+
+#: railgun/website/admin.py:206 railgun/website/templates/base.handins.html:12
+#: railgun/website/templates/handin_detail.html:105
+#: railgun/website/templates/index.html:25
+msgid "Score"
+msgstr "得分"
+
+#: railgun/website/templates/handin_detail.html:111
+msgid "Weight"
+msgstr "重量"
+
+#: railgun/website/templates/handin_detail.html:115
+msgid "Run time"
+msgstr "运行时间"
+
+#: railgun/website/templates/handin_detail.html:120
+msgid "Not measured"
+msgstr "尚未计时"
+
+#: railgun/website/templates/handin_detail.html:136
+msgid "Details"
+msgstr "详情"
+
+#: railgun/website/templates/handins.html:7
+msgid "Your Handins"
+msgstr "你的提交"
+
+#: railgun/website/templates/handins.html:11
+msgid "Handin Date"
+msgstr "提交的日期"
+
+#: railgun/website/templates/base.handins.html:11
+msgid "Status"
+msgstr "状态"
+
+#: railgun/website/templates/base.handins.html:22
+msgid "(Deleted)"
+msgstr "（删除）"
+
+#: railgun/website/templates/base.handins.html:40
+msgid "No score"
+msgstr "没有得分"
+
+#: railgun/website/templates/base.handins.html:47
+msgid "More &raquo;"
+msgstr "更多 &raquo;"
+
+#: railgun/website/templates/homework.html:25
+msgid "Submit"
+msgstr "提交"
+
+#: railgun/website/templates/homework.html:37
+msgid "Description"
+msgstr "描述"
+
+#: railgun/website/templates/homework.html:44
+msgid "Attachments"
+msgstr "附件"
+
+#: railgun/website/templates/homework.html:62
+msgid "Deadlines"
+msgstr "截止日期"
+
+#: railgun/website/templates/homework.html:65
+msgid "This homework is already out of date."
+msgstr "这个作业已经过时了。"
+
+#: railgun/website/templates/homework.html:67
+msgid "This homework will reach next deadline in <span style=\"color: %(duecolor)s\">%(due)s</span>, and the score will be scaled by <span style=\"color: %(scalecolor)s\">%(scale)s</span>."
+msgstr "这个作业将于<span style=\"color: %(duecolor)s\">%(due)s</span>之内截止，且最终得分将被乘以<span style=\"color: %(scalecolor)s\">%(scale)s</span>。"
+
+#: railgun/website/templates/homework.html:78
+msgid "Due date"
+msgstr "截止日期"
+
+#: railgun/website/templates/homework.html:79
+msgid "Score scale "
+msgstr "得分比例"
+
+#: railgun/website/templates/homework.html:100
+msgid "Handin"
+msgstr "提交"
+
+#: railgun/website/templates/index.html:3
+msgid "Homepage"
+msgstr "首页"
+
+#: railgun/website/templates/index.html:8
+msgid "Welcome to Railgun"
+msgstr "欢迎来到Railgun"
+
+#: railgun/website/templates/index.html:9
+msgid "Railgun is an online Software Enginnering homework judger."
+msgstr "Railgun是一个软件工程功课在线评分系统。"
+
+#: railgun/website/templates/index.html:10
+msgid "To take the course, you should join Railgun first."
+msgstr "要选修这本功课，你首先应该注册Railgun。"
+
+#: railgun/website/templates/index.html:13
+#: railgun/website/templates/signup.html:13
+msgid "Create your account"
+msgstr "建立帐户"
+
+#: railgun/website/templates/index.html:19
+msgid "Your Homework"
+msgstr "你的作业"
+
+#: railgun/website/templates/admin.scores.html:9
+#: railgun/website/templates/admin.users.html:10
+#: railgun/website/templates/index.html:22
+msgid "Name"
+msgstr "名称"
+
+#: railgun/website/templates/admin.scores.html:10
+#: railgun/website/templates/index.html:23
+msgid "Type"
+msgstr "类型"
+
+#: railgun/website/templates/index.html:24
+msgid "Due / Scale"
+msgstr "截止时间/得分比例"
+
+#: railgun/website/templates/admin.scores.html:39
+#: railgun/website/templates/index.html:55
+msgid "Out of date"
+msgstr "过时了"
+
+#: railgun/website/templates/index.html:64
+msgid "Not accepted"
+msgstr "被拒绝"
+
+#: railgun/website/templates/profile_edit.html:3
+#: railgun/website/templates/profile_edit.html:7
+msgid "Edit Profile"
+msgstr "编辑个人资料"
+
+#: railgun/website/templates/base.user_edit.html:22
+#: railgun/website/templates/signup.html:11
+msgid "Use at least seven characters"
+msgstr "不少于7个字符"
+
+#: railgun/website/templates/base.user_edit.html:68
+msgid "Save profile"
+msgstr "保存文件"
+
+#: railgun/website/templates/signup.html:4
+#: railgun/website/templates/signup.html:8
+msgid "Join Railgun"
+msgstr "加入Railgun"
+
+#: railgun/website/templates/signup.html:9
+msgid "You may use your username to sign in Railgun later"
+msgstr "你以后可以用你的用户名登陆Railgun"
+
+#: railgun/website/templates/signup.html:10
+msgid "You may receive homework related emails. You may also sign in Railgun with your email address later"
+msgstr "你可能会收到与作业有关的电子邮件。以后你也可以用此电子邮件登陆Railgun。"
+
+#: railgun/common/csvdata.py:37
+msgid "Cannot convert \"%(value)s\" to %(type)s."
+msgstr "“%(value)s”不能转换为%(type)s。"
+
+#: railgun/common/csvdata.py:103
+msgid "Field \"%(field)s\" not found in CSV data."
+msgstr "字段“%(field)s”在CSV数据中不存在。"
+
+#: railgun/runner/errors.py:26
+msgid "Internal server error."
+msgstr "内部服务器错误。"
+
+#: railgun/runner/errors.py:35
+msgid "Language \"%(lang)s\" is not provided."
+msgstr "不支持\"%(lang)s\"语言。"
+
+#: railgun/runner/errors.py:45
+msgid "Your handin is not a valid archive file."
+msgstr "你提交的压缩包格式无效。"
+
+#: railgun/runner/errors.py:54
+msgid "Archive contains denied file %(filename)s."
+msgstr "压缩包含有不合法文件%(filename)s。"
+
+#: railgun/runner/errors.py:64
+msgid "Your handin has run out of time."
+msgstr "你的提交已过截止日期。"
+
+#: railgun/runner/errors.py:73
+msgid "Not valid UTF-8 sequence produced."
+msgstr "出现了不合法的UTF-8序列。"
+
+#: railgun/runner/tasks.py:72
+msgid "Exitcode %(exitcode)s != 0."
+msgstr "程序返回值 %(exitcode)s != 0。"
+
+#: railgun/website/api.py:78
+msgid "Your handin is accepted."
+msgstr "你的提交已通过。"
+
+#: railgun/website/api.py:82
+msgid "Your handin is rejected."
+msgstr "你的提交不通过。"
+
+#: railgun/website/api.py:158
+msgid "Process exited before reporting score."
+msgstr "进程在给出得分前退出。"
+
+#: railgun/website/codelang.py:59
+msgid "Could not commit to run queue."
+msgstr "无法提交到运行队列中。"
+
+#: runlib/python/pyhost/scorer.py:62
+msgid "UnitTest Scorer"
+msgstr "单元测试得分"
+
+#: runlib/python/pyhost/scorer.py:80
+msgid "%(success)d out of %(total)d tests passed"
+msgstr "在%(total)d 中有 %(success)d 个测试通过"
+
+#: runlib/python/pyhost/scorer.py:101
+msgid "CodeStyle Scorer"
+msgstr "代码风格得分"
+
+#: runlib/python/pyhost/scorer.py:120
+msgid "%(trouble)d files out of %(total)d did not pass PEP8 code style check"
+msgstr "在%(total)d 中有 %(trouble)d 个文件没有通过 PEP8 代码风格检查"
+
+#: runlib/python/pyhost/scorer.py:126
+msgid "All files passed PEP8 code style check"
+msgstr "所有文件通过了 PEP8 代码风格检查"
+
+#: runlib/python/pyhost/scorer.py:148
+msgid "Coverage Scorer"
+msgstr "覆盖率得分"
+
+#: runlib/python/pyhost/scorer.py:197
+msgid "%(filename)s: %(miss)d lines not covered.\n"
+"%(sep)s\n"
+"%(source)s"
+msgstr "%(filename)s:：%(miss)d 行没被覆盖。\n"
+"%(sep)s\n"
+"%（source)s"
+
+#: runlib/python/pyhost/scorer.py:204
+msgid "Coverage rate: %(cover_rate)2.1f%%"
+msgstr "覆盖率：%(cover_rate)2.1f%%"
+
+#: runlib/python/pyhost/scorer.py:237
+msgid "InputClass Scorer"
+msgstr "输入等价类得分"
+
+#: runlib/python/pyhost/scorer.py:276
+msgid "Covered %(cover)s input classes out of %(total)s"
+msgstr "输入数据覆盖了%(total)s 种等价类中的 %(cover)s 种"
+
+#: runlib/python/pyhost/scorer.py:283
+msgid "COVERED: %(checker)s"
+msgstr "已覆盖：%(checker)s"
+
+#: runlib/python/pyhost/scorer.py:288
+msgid "NOT COVERED: %(checker)s"
+msgstr "未覆盖：%(checker)s"
+
+#: runlib/python/pyhost/scorer.py:292 runlib/python/pyhost/scorer.py:297
+msgid "CSV data does not match schema."
+msgstr "CSV数据不匹配的模式。"
+
+#: runlib/python/pyhost/utility.py:39
+msgid "PASSED: %(test)s."
+msgstr "已通过：%(test)s。"
+
+#: runlib/python/pyhost/utility.py:47
+msgid "ERROR: %(test)s.\n"
+"%(error)s"
+msgstr "错误：%(test)s。\n"
+"%(error)s。"
+
+#: runlib/python/pyhost/utility.py:55
+msgid "FAIL: %(test)s.\n"
+"%(error)s"
+msgstr "失败：%(test)s。\n"
+"%(error)s。"
+
+#: runlib/python/pyhost/utility.py:62
+msgid "SKIP: %(test)s: %(reason)s."
+msgstr "跳过：%(test)s: %(reason)s。"
+
+#: runlib/python/pyhost/utility.py:71
+msgid "EXPECTED FAIL: %(test)s.\n"
+"%(error)s"
+msgstr "预料中失败：%(test)s。\n"
+"%(error)s"
+
+#: runlib/python/pyhost/utility.py:78
+msgid "UNEXPECTED SUCCESS: %(test)s."
+msgstr "预料外的成功：％（测试）秒。"
+
+#: railgun/runner/errors.py:45
+msgid "Your submission is not a valid archive file."
+msgstr "你提交的是个无效压缩包。"
+
+#: railgun/runner/errors.py:64
+msgid "Your submission has run out of time."
+msgstr "你的提交已过截止日期。"
+
+#: railgun/website/admin.py:192
+msgid "Requested homework not found."
+msgstr "所请求的作业不存在。"
+
+#: railgun/website/admin.py:207
+msgid "Scores for \"%(hw)s\""
+msgstr "得分 \"%(hw)s\""
+
+#: railgun/website/admin.py:228
+msgid "Build Homework Cache"
+msgstr "建立作业缓存"
+
+#: railgun/website/admin.py:240
+msgid "Manage"
+msgstr "管理"
+
+#: railgun/website/admin.py:245 railgun/website/templates/admin.users.html:4
+msgid "Users"
+msgstr "用户"
+
+#: railgun/website/admin.py:247 railgun/website/templates/handins.html:3
+msgid "Submissions"
+msgstr "提交"
+
+#: railgun/website/admin.py:249
+msgid "Scores"
+msgstr "得分"
+
+#: railgun/website/admin.py:251
+msgid "Build Cache"
+msgstr "创建缓存"
+
+#: railgun/website/api.py:78
+msgid "Your submission is accepted."
+msgstr "你的提交已被接受。"
+
+#: railgun/website/api.py:82
+msgid "Your submission is rejected."
+msgstr "你的提交已被拒绝"
+
+#: railgun/website/credential.py:75
+msgid "To protect your account, please reauthenticate to access this page."
+msgstr "为了你的账户安全，请重新登录。"
+
+#: railgun/website/forms.py:76
+msgid "Remember me?"
+msgstr "记住？"
+
+#: railgun/website/forms.py:99 railgun/website/templates/base.user_edit.html:63
+msgid "Given Name"
+msgstr "名称"
+
+#: railgun/website/forms.py:100
+msgid "Given name must be no longer than 64 characters"
+msgstr "名称不超过64个字符"
+
+#: railgun/website/forms.py:103
+#: railgun/website/templates/base.user_edit.html:64
+msgid "Family Name"
+msgstr "姓氏"
+
+#: railgun/website/forms.py:104
+msgid "Family name must be no longer than 64 characters"
+msgstr "姓氏不超过64个字符"
+
+#: railgun/website/forms.py:110
+#: railgun/website/templates/base.user_edit.html:39
+msgid "Speaking Language"
+msgstr "语言"
+
+#: railgun/website/forms.py:113
+msgid "Speaking language can't be blank"
+msgstr "语言不能为空"
+
+#: railgun/website/forms.py:116
+#: railgun/website/templates/base.user_edit.html:54
+msgid "Timezone"
+msgstr "时区"
+
+#: railgun/website/forms.py:117
+msgid "Timezone can't be blank"
+msgstr "时区不能为空"
+
+#: railgun/website/forms.py:149
+msgid "Please select a valid locale from above."
+msgstr "请在下拉框中选择一种合适的语言"
+
+#: railgun/website/forms.py:155
+msgid "Please enter a valid timezone."
+msgstr "请输入有效的时区。"
+
+#: railgun/website/forms.py:161
+msgid "Is administrator?"
+msgstr "是否是管理员？"
+
+#: railgun/website/forms.py:168
+msgid "Please choose an archive to submit:"
+msgstr "请提交你的压缩包："
+
+#: railgun/website/views.py:44
+msgid "Sign up is turned off."
+msgstr ""
+
+#: railgun/website/views.py:171
+msgid "This homework is out of date! You cannot upload your submission."
+msgstr ""
+
+#: railgun/website/views.py:186
+msgid "You submission is accepted, please wait for results."
+msgstr ""
+
+#: railgun/website/views.py:277 railgun/website/templates/homework.html:100
+msgid "Submission"
+msgstr ""
 
 #: railgun/website/templates/admin.csvdata.html:8
 msgid "Download"
@@ -374,38 +711,20 @@ msgstr ""
 
 #: railgun/website/templates/admin.html:2
 #: railgun/website/templates/admin.users.html:25
-#, fuzzy
 msgid "Admin"
-msgstr "Handin"
-
-#: railgun/website/templates/admin.html:2 railgun/website/templates/base.html:7
-#: railgun/website/templates/base.html:38
-msgid "Railgun"
-msgstr "磁轨炮"
+msgstr ""
 
 #: railgun/website/templates/admin.maintain.html:10
 msgid "Task Log"
 msgstr ""
 
 #: railgun/website/templates/admin.scores.html:3
-#, fuzzy
 msgid "Score Table"
-msgstr "评分量表"
+msgstr ""
 
 #: railgun/website/templates/admin.scores.html:6
 msgid "Score Table of all Students"
 msgstr ""
-
-#: railgun/website/templates/admin.scores.html:9
-#: railgun/website/templates/admin.users.html:10
-#: railgun/website/templates/index.html:22
-msgid "Name"
-msgstr "产品名称"
-
-#: railgun/website/templates/admin.scores.html:10
-#: railgun/website/templates/index.html:23
-msgid "Type"
-msgstr "类型"
 
 #: railgun/website/templates/admin.scores.html:11
 msgid "Last Due"
@@ -415,18 +734,12 @@ msgstr ""
 msgid "Report"
 msgstr ""
 
-#: railgun/website/templates/admin.scores.html:39
-#: railgun/website/templates/index.html:55
-msgid "Out of date"
-msgstr "过时了"
-
 #: railgun/website/templates/admin.scores.html:44
 msgid "View"
 msgstr ""
 
 #: railgun/website/templates/admin.user_edit.html:3
 #: railgun/website/templates/admin.user_edit.html:6
-#, python-format
 msgid "Edit User \"%(user)s\""
 msgstr ""
 
@@ -435,9 +748,8 @@ msgid "All Users"
 msgstr ""
 
 #: railgun/website/templates/admin.users.html:11
-#, fuzzy
 msgid "Email"
-msgstr "详细"
+msgstr ""
 
 #: railgun/website/templates/admin.users.html:12
 msgid "Group"
@@ -452,85 +764,24 @@ msgid "Ordinary"
 msgstr ""
 
 #: railgun/website/templates/admin.users.html:32
-#, fuzzy
 msgid "Edit"
-msgstr "重量"
+msgstr ""
 
 #: railgun/website/templates/base.handins.html:8
 msgid "User"
 msgstr ""
 
 #: railgun/website/templates/base.handins.html:10
-#, fuzzy
 msgid "Submit Date"
-msgstr "过时了"
-
-#: railgun/website/templates/base.handins.html:11
-msgid "Status"
-msgstr "状态"
-
-#: railgun/website/templates/base.handins.html:13
-#: railgun/website/templates/handin_detail.html:19
-#: railgun/website/templates/handin_detail.html:64
-#: railgun/website/templates/handin_detail.html:125
-msgid "Summary"
-msgstr "摘要"
-
-#: railgun/website/templates/base.handins.html:22
-msgid "(Deleted)"
-msgstr "（删除）"
-
-#: railgun/website/templates/base.handins.html:40
-msgid "No score"
-msgstr "没有评分"
-
-#: railgun/website/templates/base.handins.html:47
-msgid "More &raquo;"
-msgstr "详情＆raquo;"
-
-#: railgun/website/templates/base.handins.html:50
-#: railgun/website/templates/handin_detail.html:69
-#: railgun/website/templates/handin_detail.html:130
-msgid "No summary"
-msgstr "没有摘要"
-
-#: railgun/website/templates/base.html:33
-msgid "Toggle navigation"
-msgstr "切换导航"
-
-#: railgun/website/templates/base.html:83
-msgid "Edit profile"
-msgstr "编辑配置文件"
-
-#: railgun/website/templates/base.html:86
-msgid "Sign out"
-msgstr "登出"
-
-#: railgun/website/templates/base.html:92
-msgid "Sign up"
-msgstr "报名"
-
-#: railgun/website/templates/base.html:94
-#: railgun/website/templates/signin.html:4
-#: railgun/website/templates/signin.html:8
-#: railgun/website/templates/signin.html:18
-msgid "Sign in"
-msgstr "登入"
+msgstr ""
 
 #: railgun/website/templates/base.user_edit.html:18
-#, fuzzy
 msgid "Passport"
-msgstr "密码"
-
-#: railgun/website/templates/base.user_edit.html:22
-#: railgun/website/templates/signup.html:11
-msgid "Use at least seven characters"
-msgstr "使用至少7个字符"
+msgstr ""
 
 #: railgun/website/templates/base.user_edit.html:23
-#, fuzzy
 msgid "Confirm the password"
-msgstr "确认您的密码"
+msgstr ""
 
 #: railgun/website/templates/base.user_edit.html:37
 msgid "Locale"
@@ -540,309 +791,27 @@ msgstr ""
 msgid "Personal"
 msgstr ""
 
-#: railgun/website/templates/base.user_edit.html:68
-msgid "Save profile"
-msgstr "保存配置文件"
-
 #: railgun/website/templates/handin_detail.html:3
 msgid "Submission Detail"
 msgstr ""
 
-#: railgun/website/templates/handin_detail.html:4
-msgid "Homework Deleted"
-msgstr "作业删除"
-
 #: railgun/website/templates/handin_detail.html:9
-#, fuzzy, python-format
 msgid "Submission for <a href=\"%(url)s\">%(name)s</a>"
-msgstr "Handin的<a href=\"%(url)s\">％（名）■</A>"
+msgstr ""
 
 #: railgun/website/templates/handin_detail.html:12
-#, fuzzy, python-format
 msgid "Submission   for <span class=\"text-muted\">(%(name)s)</a>"
-msgstr "Handin的的<span class =“文本静音”>（％（姓名）S）</A>"
-
-#: railgun/website/templates/handin_detail.html:12
-msgid "Deleted"
-msgstr "删除"
+msgstr ""
 
 #: railgun/website/templates/handin_detail.html:22
-#, fuzzy
 msgid "Upload user"
-msgstr "上传时间"
-
-#: railgun/website/templates/handin_detail.html:26
-msgid "Upload time"
-msgstr "上传时间"
+msgstr ""
 
 #: railgun/website/templates/handin_detail.html:30
 msgid "Submission Type"
 msgstr ""
 
-#: railgun/website/templates/handin_detail.html:35
-msgid "Base Score"
-msgstr "基本分数"
-
-#: railgun/website/templates/handin_detail.html:41
-msgid "Score Scale"
-msgstr "评分量表"
-
-#: railgun/website/templates/handin_detail.html:45
-msgid "Final Score"
-msgstr "最后的比分"
-
-#: railgun/website/templates/handin_detail.html:51
-msgid "Exit Code"
-msgstr "退出代码"
-
-#: railgun/website/templates/handin_detail.html:54
-msgid "Not started"
-msgstr "未开始"
-
-#: railgun/website/templates/handin_detail.html:79
-msgid "Standard Output"
-msgstr "标准输出"
-
-#: railgun/website/templates/handin_detail.html:89
-msgid "Standard Error Output"
-msgstr "标准错误输出"
-
-#: railgun/website/templates/handin_detail.html:111
-msgid "Weight"
-msgstr "重量"
-
-#: railgun/website/templates/handin_detail.html:115
-msgid "Run time"
-msgstr "运行时间"
-
-#: railgun/website/templates/handin_detail.html:120
-msgid "Not measured"
-msgstr "未测"
-
-#: railgun/website/templates/handin_detail.html:136
-msgid "Details"
-msgstr "详细"
-
 #: railgun/website/templates/handins.html:6
 msgid "Your Submissions"
 msgstr ""
-
-#: railgun/website/templates/homework.html:25
-msgid "Submit"
-msgstr "提交"
-
-#: railgun/website/templates/homework.html:37
-msgid "Description"
-msgstr "说明"
-
-#: railgun/website/templates/homework.html:44
-msgid "Attachments"
-msgstr "附件"
-
-#: railgun/website/templates/homework.html:62
-msgid "Deadlines"
-msgstr "最后期限"
-
-#: railgun/website/templates/homework.html:65
-msgid "This homework is already out of date."
-msgstr "这个作业已经过时了。"
-
-#: railgun/website/templates/homework.html:67
-#, python-format
-msgid ""
-"This homework will reach next deadline in <span style=\"color: "
-"%(duecolor)s\">%(due)s</span>, and the score will be scaled by <span "
-"style=\"color: %(scalecolor)s\">%(scale)s</span>."
-msgstr ""
-"此作业将达到的<span style =“颜色：％（duecolor）的”>下一个截止日期％（由于）S </ SPAN>，并且将比分由的<span"
-" style =“颜色进行调整：％（scalecolor）■ “>％（规模）S </ SPAN>。"
-
-#: railgun/website/templates/homework.html:78
-msgid "Due date"
-msgstr "到期日"
-
-#: railgun/website/templates/homework.html:79
-msgid "Score scale "
-msgstr "评分量表"
-
-#: railgun/website/templates/index.html:3
-msgid "Homepage"
-msgstr "设为首页"
-
-#: railgun/website/templates/index.html:8
-msgid "Welcome to Railgun"
-msgstr "欢迎来到轨道炮"
-
-#: railgun/website/templates/index.html:9
-msgid "Railgun is an online Software Enginnering homework judger."
-msgstr "轨道炮是一个在线软件Enginnering功课判定机构。"
-
-#: railgun/website/templates/index.html:10
-msgid "To take the course, you should join Railgun first."
-msgstr "取的过程中，你应该先加入轨道炮。"
-
-#: railgun/website/templates/index.html:13
-#: railgun/website/templates/signup.html:13
-msgid "Create your account"
-msgstr "创建您的帐户"
-
-#: railgun/website/templates/index.html:19
-msgid "Your Homework"
-msgstr "你的家庭作业"
-
-#: railgun/website/templates/index.html:24
-msgid "Due / Scale"
-msgstr "由于/缩放"
-
-#: railgun/website/templates/index.html:64
-msgid "Not accepted"
-msgstr "不接受"
-
-#: railgun/website/templates/profile_edit.html:3
-#: railgun/website/templates/profile_edit.html:7
-msgid "Edit Profile"
-msgstr "编辑个人资料"
-
-#: railgun/website/templates/signup.html:4
-#: railgun/website/templates/signup.html:8
-msgid "Join Railgun"
-msgstr "加入轨道炮"
-
-#: railgun/website/templates/signup.html:9
-msgid "You may use your username to sign in Railgun later"
-msgstr "您可以使用您的用户名后面的轨道炮签署"
-
-#: railgun/website/templates/signup.html:10
-msgid ""
-"You may receive homework related emails. You may also sign in Railgun "
-"with your email address later"
-msgstr "您可能会收到作业相关的电子邮件。您也可以登入轨道炮与您的电子邮件地址后"
-
-#: runlib/python/pyhost/scorer.py:62
-msgid "UnitTest Scorer"
-msgstr "单元测试得分王"
-
-#: runlib/python/pyhost/scorer.py:80
-#, python-format
-msgid "%(success)d out of %(total)d tests passed"
-msgstr "％（成功）D出％（总）D测试通过"
-
-#: runlib/python/pyhost/scorer.py:101
-msgid "CodeStyle Scorer"
-msgstr "CodeStyle士哥"
-
-#: runlib/python/pyhost/scorer.py:120
-#, python-format
-msgid "%(trouble)d files out of %(total)d did not pass PEP8 code style check"
-msgstr "％（麻烦）D文件出％（总）D没有通过PEP8代码风格检查"
-
-#: runlib/python/pyhost/scorer.py:126
-msgid "All files passed PEP8 code style check"
-msgstr "所有文件通过PEP8代码风格检查"
-
-#: runlib/python/pyhost/scorer.py:148
-msgid "Coverage Scorer"
-msgstr "报道士哥"
-
-#: runlib/python/pyhost/scorer.py:197
-#, python-format
-msgid ""
-"%(filename)s: %(miss)d lines not covered.\n"
-"%(sep)s\n"
-"%(source)s"
-msgstr ""
-"％（文件名）S：不包括％（小姐）D线。\n"
-"％（SEP）■\n"
-"％（源）■"
-
-#: runlib/python/pyhost/scorer.py:204
-#, python-format
-msgid "Coverage rate: %(cover_rate)2.1f%%"
-msgstr "覆盖率：％（cover_rate）2.1f％％"
-
-#: runlib/python/pyhost/scorer.py:237
-msgid "InputClass Scorer"
-msgstr "InputClass士哥"
-
-#: runlib/python/pyhost/scorer.py:276
-#, python-format
-msgid "Covered %(cover)s input classes out of %(total)s"
-msgstr "盖％（盖）的输入输出类的％（总）■"
-
-#: runlib/python/pyhost/scorer.py:283
-#, python-format
-msgid "COVERED: %(checker)s"
-msgstr "内容包括：％（检查）■"
-
-#: runlib/python/pyhost/scorer.py:288
-#, python-format
-msgid "NOT COVERED: %(checker)s"
-msgstr "未涵盖的：％（检查）■"
-
-#: runlib/python/pyhost/scorer.py:292 runlib/python/pyhost/scorer.py:297
-msgid "CSV data does not match schema."
-msgstr "CSV数据不匹配的模式。"
-
-#: runlib/python/pyhost/utility.py:39
-#, python-format
-msgid "PASSED: %(test)s."
-msgstr "决议：％（测试）秒。"
-
-#: runlib/python/pyhost/utility.py:47
-#, python-format
-msgid ""
-"ERROR: %(test)s.\n"
-"%(error)s"
-msgstr ""
-"错误：％（测试）秒。\n"
-"％（误差）■"
-
-#: runlib/python/pyhost/utility.py:55
-#, python-format
-msgid ""
-"FAIL: %(test)s.\n"
-"%(error)s"
-msgstr ""
-"失败：％（测试）秒。\n"
-"％（误差）■"
-
-#: runlib/python/pyhost/utility.py:62
-#, python-format
-msgid "SKIP: %(test)s: %(reason)s."
-msgstr "SKIP：％（测试）S：％（原因）秒。"
-
-#: runlib/python/pyhost/utility.py:71
-#, python-format
-msgid ""
-"EXPECTED FAIL: %(test)s.\n"
-"%(error)s"
-msgstr ""
-"预期失败：％（测试）秒。\n"
-"％（误差）■"
-
-#: runlib/python/pyhost/utility.py:78
-#, python-format
-msgid "UNEXPECTED SUCCESS: %(test)s."
-msgstr "意想不到的成功：％（测试）秒。"
-
-#~ msgid "Handins"
-#~ msgstr "Handins"
-
-#~ msgid "Handin Detail"
-#~ msgstr "Handin详细"
-
-#~ msgid "Handin Type"
-#~ msgstr "Handin类型"
-
-#~ msgid "Your Handins"
-#~ msgstr "你Handins"
-
-#~ msgid "Handin Date"
-#~ msgstr "Handin日期"
-
-#~ msgid "All Scores for \"%(hw)s\""
-#~ msgstr ""
-
-#~ msgid "All Scores"
-#~ msgstr "没有评分"
 
