@@ -27,17 +27,17 @@ Each directory under ``HOMEWORK_DIR`` carrying ``hw.xml`` will be treated
 as a homework item.  The directory tree of a typical item may be like this::
 
     reform_path
-    ├── code
-    │   └── python
-    │       ├── code.xml
-    │       ├── path.py
-    │       └── run.py
-    ├── desc
-    │   ├── en.md
-    │   ├── img
-    │   │   └── python-logo.png
-    │   └── zh-cn.md
-    └── hw.xml
+    +── code
+    │   +── python
+    │       +── code.xml
+    │       +── path.py
+    │       +── run.py
+    +── desc
+    │   +── en.md
+    │   +── img
+    │   │   +── python-logo.png
+    │   +── zh-cn.md
+    +── hw.xml
 
 ``hw.xml`` is the definition file for the homework.  Guided by ``hw.xml``,
 ``desc`` directory carries the descriptions of homework in different locales.
@@ -257,10 +257,10 @@ directory to client browsers.
 Suppose we have the following ``desc`` directory::
 
     desc
-    ├── 1.jpg
-    ├── en.md
-    └── img
-        └── 2.jpg
+    +── 1.jpg
+    +── en.md
+    +── img
+        +── 2.jpg
 
 ``en.md`` is the description for English locale.  We want to display
 ``1.jpg`` and ``2.jpg`` on homework page, thus we write::
@@ -296,20 +296,20 @@ programming languages will generate different archive files.
 Suppose we have the following homework definition::
 
     example
-    ├── code
-    │   ├── java
-    │   │   ├── code.xml
-    │   │   ├── main.java
-    │   │   └── utility.java
-    │   └── python
-    │       ├── code.xml
-    │       ├── func.py
-    │       └── run.py
-    ├── desc
-    │   ├── en.md
-    │   └── zh-cn.md
-    ├── hw.xml
-    └── readme.pdf
+    +── code
+    │   +── java
+    │   │   +── code.xml
+    │   │   +── main.java
+    │   │   +── utility.java
+    │   +── python
+    │       +── code.xml
+    │       +── func.py
+    │       +── run.py
+    +── desc
+    │   +── en.md
+    │   +── zh-cn.md
+    +── hw.xml
+    +── readme.pdf
 
 Railgun will then generate two archive files for this piece of
 homework: ``java.zip`` and ``python.zip``.  If properly configured,
