@@ -71,7 +71,7 @@ class ReformPathTestCase(unittest.TestCase):
 
 if (__name__ == '__main__'):
     scorers = [
-        (CodeStyleScorer.FromHandinDir('run.py'), 0.1),
+        (CodeStyleScorer.FromHandinDir(ignore_files=['run.py']), 0.1),
         (UnitTestScorer.FromTestCase(ReformPathTestCase), 0.9),
     ]
     SafeRunner.run(scorers)

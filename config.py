@@ -72,6 +72,7 @@ DEFAULT_HIDE_RULES = (
     '\\.directory$',        # dolphin directory meta
     '\\.py[cdo]$',          # hide all python binary files
     '^(py|java)host.*',     # prevent runlib from overwritten
+    '^railgun.*',           # prevent railgun lib from overwritten
 )
 
 # HOMEWORK_DIR stores the definitions of homeworks
