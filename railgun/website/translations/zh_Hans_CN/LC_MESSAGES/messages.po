@@ -523,7 +523,7 @@ msgid "%(filename)s: %(miss)d lines not covered.\n"
 "%(source)s"
 msgstr "%(filename)s:：%(miss)d 行没被覆盖。\n"
 "%(sep)s\n"
-"%（source)s"
+"%(source)s"
 
 #: runlib/python/pyhost/scorer.py:208
 msgid "Coverage rate: %(cover_rate)2.1f%%"
