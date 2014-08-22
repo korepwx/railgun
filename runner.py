@@ -27,6 +27,6 @@ args = [
     'worker',
     '-Q',
     queue,
-    '--loglevel=info',
+    '--logfile=logs/celery.log',
 ]
 os.execvpe('celery', args, env)
