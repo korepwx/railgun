@@ -18,3 +18,5 @@ pep8 >= 1.5.7
 python-ldap >= 2.4.15
 passlib
 MySQL-python >= 1.2.5
+alabaster
+
