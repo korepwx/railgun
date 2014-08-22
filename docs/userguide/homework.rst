@@ -383,10 +383,14 @@ deny        *   files **WILL NOT** be packed into archive file.
                 of rules will be rejected.
 =========== ==============================================================
 
-The matching pattern of file rules are regular expressions.  Be careful
-about the syntax!  You must add ``^`` at the beginning of the expression,
-and ``$`` at the end of the expression, if you want to match the whole
-file path.  However, you may not following this restriction as your need.
+
+.. note::
+
+    The matching pattern of file rules are regular expressions.
+    Be careful about the syntax!  You must add ``^`` at the
+    beginning of the expression, and ``$`` at the end of the expression,
+    if you want to match the whole file path.
+    However, you may not following this restriction as your need.
 
 Rules are distributed in two individual files: ``hw.xml`` and
 ``code.xml``.  Futhermore, there may be multiple rules in the same file.
@@ -409,10 +413,14 @@ by rules in the two files.  *Rules in* ``code.xml`` *will be tested
 first, and if not matched,* ``hw.xml``.  Files not matching
 any rules will be treated as if they have matched the ``lock`` rules.
 
-Because of the nature order of extraction progress, student submitted
-files will overwrite original files if the rules are not specified
-correctly.  *So you must take care when contructing the file matching
-rules.*  In addition to user constructed file matching rules, there
+.. warning::
+
+    Because of the nature order of extraction progress,
+    student submitted files will overwrite original files unless the
+    rules are specified correctly. You must take care when contructing
+    the file matching rules.
+
+In addition to user constructed file matching rules, there
 are several ``hide`` rules pre-configured in ``config.py``, which
 are superior to all user rules::
 
@@ -624,11 +632,12 @@ or just define the test cases in ``run.py``, and pass it to
 ``UnitTestScorer.FromTestCase(testcase)`` to construct a ``UnitTestScorer``.
 For advanced constructors, you can check the :ref:`api`.
 
-**Here's another notice that, you shouldn't import any user submitted
-module out of the methods in a test case.**  If you carefully import
-all the user module only in test case methods, the Python interpreter
-will guarantee that all the user code is executed until ``SafeRunner``
-has been started.
+.. warning::
+
+    You shouldn't import any user submitted module out of the
+    methods in a test case.  If you carefully import all the user module only
+    in test case methods, the Python interpreter will guarantee that all the
+    user code is executed until ``SafeRunner`` has been started.
 
 CoverageScorer
 ~~~~~~~~~~~~~~
@@ -829,9 +838,10 @@ A full example of ``code.xml`` is:
       </files>
     </code>
 
-You may notice that ``input`` programming language may not
-provide the archive file, so we can set ``attachment`` option to
-``false``.
+.. note::
+
+    ``input`` programming language may not provide the archive file,
+    so we can set ``attachment`` option to `false`.
 
 The judging code for ``input`` language is a bit more complex
 than the above languages.  First, you should create a ``CsvSchema``,
