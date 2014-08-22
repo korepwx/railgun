@@ -271,8 +271,9 @@ import alabaster
 html_theme_path = [alabaster.get_path()]
 extensions += ['alabaster']
 html_theme = 'alabaster'
-html_sidebars = {
-    '**': [
-        #'about.html', 'navigation.html', 'searchbox.html', 'donate.html',
-    ]
-}
+# html_sidebars = {
+#     '**': [
+#         'navigation.html', 'searchbox.html',
+#         #'about.html', 'navigation.html', 'searchbox.html', 'donate.html',
+#     ]
+# }
