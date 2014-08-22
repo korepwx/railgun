@@ -86,7 +86,7 @@
   <!-- Compile message of the process -->
   {% if (reportCompile or current_user.is_admin) and handin.compile_error -%}
   <div class="panel panel-default detail-compile">
-    <div class="panel-heading">{{ _('Compilation Message') }}</div>
+    <div class="panel-heading">{{ _('Compilation Output') }}</div>
     <div class="panel-body">
       <pre>{{ handin.get_compile_error() }}</pre>
     </div>
