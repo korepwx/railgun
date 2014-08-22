@@ -12,6 +12,10 @@ from flask.ext.babel import gettext as _
 from railgun.common.gravatar import get_avatar
 from .models import User
 from .context import app, db
+from .userauth import auth_providers
+
+# Initialize all the external auth providers
+auth_providers.init_providers()
 
 # The global login manager for web application
 login_manager = LoginManager()

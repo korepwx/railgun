@@ -47,16 +47,49 @@ SQLALCHEMY_DATABASE_URI = (
     'sqlite:///%s' % os.path.join(RAILGUN_ROOT, 'db/main.db')
 )
 
-# LDAP Authentication related
-LDAP_AUTH_ENABLED = False
-LDAP_ADMIN_KEY = (
-    open(os.path.join(RAILGUN_ROOT, 'keys/ldapKey.txt'), 'rb').read().strip()
+# AUTH_PROVIDERS define all the external authenticate providers this
+# website should use
+AUTH_PROVIDERS = (
+    ('railgun.website.userauth.CsvFileAuthProvider', {
+        'name': 'csvfile',
+        'path': os.path.join(RAILGUN_ROOT, 'config/users.csv'),
+    }),
 )
 
-LDAP_BASE_DN = 'ou=People,dc=secoder,dc=net'
-LDAP_ADMIN_DN = 'cn=admin,dc=secoder,dc=net'
-LDAP_RAILGUN_ADMIN_GROUP_DN = 'cn=railgun_admin,ou=group,dc=secoder,dc=net'
-LDAP_URL = 'ldap://localhost'
+# WEBSITE_LOGGING configures the logging facility of Python for the website.
+WEBSITE_LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'verbose': {
+            'format': '%(asctime)s [%(levelname)s] %(name)s: %(message)s',
+        },
+    },
+    'handlers': {
+        'default': {
+            'level': 'INFO',
+            'class': 'logging.handlers.RotatingFileHandler',
+            'formatter': 'verbose',
+            'filename': os.path.join(RAILGUN_ROOT, 'logs/website.log'),
+            'maxBytes': 20480,
+            'backupCount': 3,
+        },
+    },
+    'loggers': {
+        '': {
+            'handlers': ['default'],
+            'level': 'WARNING',
+        },
+        'railgun.website.context': {
+            'handlers': ['default'],
+            'level': 'WARNING',
+        },
+        'sqlalchemy': {
+            'handlers': ['default'],
+            'level': 'WARNING',
+        },
+    }
+}
 
 # Load un-versioned general config values from config/general.py
 LoadConfig(

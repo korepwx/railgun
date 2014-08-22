@@ -6,4 +6,4 @@
 # This file is released under BSD 2-clause license.
 
 from . import crypto, csvdata, fileutil, gravatar, hw, lazy_i18n, osutil, \
-    tempdir, url
+    pyutil, tempdir, url

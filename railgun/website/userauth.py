@@ -11,6 +11,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from wtforms.fields import Field, HiddenField
 
 from railgun.common.csvdata import CsvSchema, CsvString, CsvBoolean
+from railgun.common.pyutil import find_object
 from .models import User
 from .context import app, db
 
@@ -270,6 +271,15 @@ class AuthProviderSet(object):
     def init_form(self, provider, form):
         self.get(provider).init_form(form)
 
+    def init_providers(self):
+        """Initialize the providers according to configuration."""
+
+        for objname, kwargs in app.config['AUTH_PROVIDERS']:
+            obj = find_object(objname)
+            provider = obj(**kwargs)
+            app.logger.info('Created AuthProvider "%s".' % provider.name)
+            self.add(provider)
+
 
 def authenticate(login, password):
     """Top routine to authenticate with (login, password).
@@ -299,9 +309,3 @@ def authenticate(login, password):
 
 # Initialize the builtin auth providers
 auth_providers = AuthProviderSet()
-auth_providers.add(
-    CsvFileAuthProvider(
-        'csvfile',
-        os.path.join(app.config['RAILGUN_ROOT'], 'config/users.csv')
-    )
-)
