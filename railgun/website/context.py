@@ -18,7 +18,10 @@ app = Flask(__name__)
 app.config.from_object(webconfig)
 
 # Initialize the logging according to webconfig
-logging.config.dictConfig(app.config['WEBSITE_LOGGING'])
+# NOTE: when DEBUG is on, I suppose that the user want to see logs directly
+#       from console, so skip the logging configuration.
+if (not app.config['DEBUG']):
+    logging.config.dictConfig(app.config['WEBSITE_LOGGING'])
 
 # Protect the website from CSRF attack
 csrf = CsrfProtect(app)

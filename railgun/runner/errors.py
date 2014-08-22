@@ -53,6 +53,15 @@ class ExtractFileFailure(RunnerError):
         ))
 
 
+class ArchiveContainTooManyFileError(RunnerError):
+    """Error indicating that the archive file contains too many entities."""
+
+    def __init__(self, **kwargs):
+        super(ArchiveContainTooManyFileError, self).__init__(lazy_gettext(
+            "Archive contains too many files."
+        ))
+
+
 class LanguageNotSupportError(RunnerError):
     """Error indicating that the handin requires a not supported language."""
 

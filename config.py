@@ -101,6 +101,14 @@ TRANSLATION_DIR = os.path.join(RAILGUN_ROOT, 'railgun/website/translations')
 # module to run
 RUNNER_DEFAULT_TIMEOUT = 10
 
+# MAX_SUBMISSION_SIZE controls the maximum data size allowed for a student
+# to submit (in bytes)
+MAX_SUBMISSION_SIZE = 256 * 1024
+
+# MAX_SUBMISSION_FILE_COUNT controls the maximum file count allowed for
+# a student to submit
+MAX_SUBMISSION_FILE_COUNT = 100
+
 # WEBSITE_BASEURL tells runner what is the base url of railgun
 WEBSITE_BASEURL = 'http://localhost:5000'
 

@@ -19,15 +19,44 @@ from railgun.common.url import UrlMatcher, reform_path
 
 
 def float_color(v):
-    """Get a color to describe the float `v` range in [0, 1]. When `v` is
-    close to 1.0 the color will close to green, and when `v` is close to 0.0
-    the color will close to red."""
+    """Get a color to describe the float `v`.
+
+    When `v` is close to 1.0 the color will be close to green,
+    and when `v` is close to 0.0 the color will be close to red.
+
+    Args:
+        v (float): The float number in range [0.0, 1.0].
+
+    Returns:
+        An HTML color string, for example "#ffffff".
+    """
 
     h = v / 3.0
     l = 0.3
     s = 1.0
     rgb = map((lambda i: int(i * 255)), colorsys.hls_to_rgb(h, l, s))
     return '#%02X%02X%02X' % tuple(rgb)
+
+
+def format_size(size):
+    """Format `size` into human readable string.
+
+    Args:
+        size (int): Integral file size in bytes.
+
+    Returns:
+        A human readable string to represent the `size`.
+    """
+
+    if (not size):
+        return None
+    if (size > 1e9):
+        return _('%(size).2fG', size=size / (1024.0 * 1024.0 * 1024.0))
+    if (size > 1e6):
+        return _('%(size).2fM', size=size / (1024.0 * 1024.0))
+    if (size > 1e3):
+        return _('%(size).2fK', size=size / 1024.0)
+    return _('%(size)dB', size=int(size))
 
 
 # hw.info.desc should be formatted by markdown parser
@@ -79,15 +108,7 @@ def __inject_template_timedelta(o):
 # format size into human readable string
 @app.template_filter(name='sizeformat')
 def __inject_template_sizeformat(size):
-    if (not size):
-        return None
-    if (size > 1e9):
-        return _('%(size).2fG', size=size / (1024.0 * 1024.0 * 1024.0))
-    if (size > 1e6):
-        return _('%(size).2fM', size=size / (1024.0 * 1024.0))
-    if (size > 1e3):
-        return _('%(size).2fK', size=size / 1024.0)
-    return _('%(size)dB', size=int(size))
+    return format_size(size)
 
 
 # get a suitable bootstrap class name according to time delta

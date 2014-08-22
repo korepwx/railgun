@@ -93,6 +93,24 @@ class Extractor(object):
         """Get iterable fname from the archive."""
         raise NotImplementedError()
 
+    def countfiles(self, maxcount=1048576):
+        """Count all files in the archive.
+
+        Args:
+            maxcount (int): Maximum files to count.  If exceeds this limit,
+                return ``maxcount + 1``.  Default is 1048576.
+
+        Returns:
+            The count of entities in this archive.
+        """
+
+        counter = 0
+        for fname in self.filelist():
+            counter += 1
+            if (counter > maxcount):
+                break
+        return counter
+
     def onedir(self):
         """Check whether this archive contains only one directory"""
         last_dname = None

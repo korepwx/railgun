@@ -17,8 +17,9 @@ from flask.ext.babel import Locale, lazy_gettext as _
 from flask.ext.login import current_user
 
 from .models import User
-from .context import db
+from .context import db, app
 from .i18n import list_locales
+from .utility import format_size
 
 
 class HandinTextArea(TextArea):
@@ -177,6 +178,20 @@ class UploadHandinForm(Form):
                           'rar, zip, tar, tar.gz, tgz, tar.bz2, tbz')
             )
         ])
+
+    def validate_handin(form, field):
+        """Validate `handin` file size."""
+        if (not field.data):
+            return
+        # try to get the file size of uploaded file
+        field.data.stream.seek(0, 2)
+        fsize = field.data.stream.tell()
+        field.data.stream.seek(0)
+        if (fsize > app.config['MAX_SUBMISSION_SIZE']):
+            raise ValidationError(_(
+                "Archive files larger than %(size)s is not allowed.",
+                size=format_size(app.config['MAX_SUBMISSION_SIZE'])
+            ))
 
 
 class AddressHandinForm(Form):

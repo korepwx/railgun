@@ -11,6 +11,12 @@ from config import *
 # When DEBUG is set to True, Flask debugging console will be enabled.
 DEBUG = False
 
+# MAX_CONTENT_LENGTH controls the maximum request size for flask to handle
+# NOTE: we want to display a message instead of HTTP error when the user
+#       uploads a large (but not too large) archive file, so we limit
+#       flask MAX_CONTENT_LENGTH to 10 * MAX_SUBMISSION_SIZE
+MAX_CONTENT_LENGTH = MAX_SUBMISSION_SIZE * 10
+
 # SECRET_KEY is the private key for session encryption.
 SECRET_KEY = (
     open(os.path.join(RAILGUN_ROOT, 'keys/webKey.txt'), 'rb').read().strip()
@@ -71,7 +77,7 @@ WEBSITE_LOGGING = {
             'class': 'logging.handlers.RotatingFileHandler',
             'formatter': 'verbose',
             'filename': os.path.join(RAILGUN_ROOT, 'logs/website.log'),
-            'maxBytes': 20480,
+            'maxBytes': 204800,
             'backupCount': 3,
         },
     },

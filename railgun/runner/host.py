@@ -14,7 +14,7 @@ from . import runconfig
 from .context import logger
 from .errors import RunnerError, FileDenyError, RunnerTimeout, \
     NetApiAddressRejected, ExtractFileFailure, RuntimeFileCopyFailure, \
-    SpawnProcessFailure
+    SpawnProcessFailure, ArchiveContainTooManyFileError
 from railgun.common.hw import FileRules
 from railgun.common.lazy_i18n import lazy_gettext
 from railgun.common.fileutil import dirtree, remove_firstdir
@@ -134,6 +134,11 @@ class BaseHost(object):
         """Extract handin archive files into tempdir."""
 
         try:
+            # first count the file, and reject the submission if exceeds
+            maxCount = runconfig.MAX_SUBMISSION_FILE_COUNT
+            if (archive.countfiles(maxCount) > maxCount):
+                raise ArchiveContainTooManyFileError()
+
             # if the archive contains only one dir, remove first dir from path
             onedir = archive.onedir()
             canonical_path = remove_firstdir if onedir else (lambda s: s)
