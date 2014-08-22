@@ -192,7 +192,7 @@ def homework(slug):
                 flash(_('Internal server error, please try again.'), 'danger')
             # homework page is too long, so redirect to handins page, to
             # let flashed message clearer
-            return redirect(url_for('handins'))
+            return redirect(url_for('hwhandins', slug=hw.slug))
 
     # if handin_lang not determine, choose the first lang
     if handin_lang is None:
@@ -218,9 +218,15 @@ def hwstatic(filename):
     return send_from_directory(app.config['HOMEWORK_STATIC_DIR'], filename)
 
 
-@app.route('/handin/')
+@app.route('/homework/<slug>/handin/')
 @login_required
-def handins():
+def hwhandins(slug):
+    # set the identity for navibar (so that current page will be activated)
+    set_navibar_identity('homework.%s.handin' % slug)
+    # load requested homework instance
+    hw = g.homeworks.get_by_slug(slug)
+    if (not hw):
+        raise NotFound()
     # get pagination argument
     try:
         page = int(request.args.get('page', 1))
@@ -231,15 +237,15 @@ def handins():
     except ValueError:
         perpage = 10
     # query about all handins
-    handins = Handin.query.filter(Handin.user_id == current_user.id)
-    # filter out the handins for deleted homeworks
-    if (app.config['IGNORE_HANDINS_OF_REMOVED_HW']):
-        handins = handins.filter(Handin.hwid.in_(homeworks.get_uuid_list()))
+    handins = (Handin.query.filter(Handin.user_id == current_user.id).
+               filter(Handin.hwid == hw.uuid))
     # Sort the handins
     handins = handins.order_by(-Handin.id)
     # build pagination object
     return render_template(
-        'handins.html', the_page=handins.paginate(page, perpage)
+        'homework.handins.html',
+        the_page=handins.paginate(page, perpage),
+        hw=hw
     )
 
 
@@ -275,4 +281,19 @@ navigates.add(
         ]
     )
 )
-navigates.add_view(title=lazy_gettext('Submission'), endpoint='handins')
+# navigates.add_view(title=lazy_gettext('Submission'), endpoint='handins')
+navigates.add(
+    NaviItem(
+        title=lazy_gettext('Submissions'),
+        url=None,
+        identity='hwhandin',
+        subitems=lambda: [
+            NaviItem(
+                title=hw.info.name,
+                url=url_for('hwhandins', slug=hw.slug),
+                identity='homework.%s.handin' % hw.slug
+            )
+            for hw in g.homeworks
+        ]
+    )
+)

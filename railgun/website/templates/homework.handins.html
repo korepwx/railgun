@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% block subtitle -%}
+{{ _('Submissions for "%(hw)s"', hw=hw.info.name) }}
+{%- endblock %}
+{%- set showuser = False -%}
+{%- set pagetitle = _('Submissions for "%(hw)s"', hw=hw.info.name) -%}
+{%- import "base.handins.html" as handins with context -%}
+{% block content -%}
+  {{ handins.the_content() }}
+{%- endblock %}

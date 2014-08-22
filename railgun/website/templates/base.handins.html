@@ -56,7 +56,7 @@
 
   {% if the_page.pages > 1 -%}
   <div class="text-center">
-    {{ utility.render_pagination(the_page, request.endpoint, perpage=the_page.per_page) }}
+    {{ utility.render_pagination(the_page, request.endpoint, perpage=the_page.per_page, **request.view_args) }}
   </div>
   {%- endif %}
 {%- endmacro %}

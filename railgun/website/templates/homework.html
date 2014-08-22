@@ -30,7 +30,12 @@
 {{ hw.info.name }} - {{ _('Homework') }}
 {%- endblock %}
 {% block content -%}
-  <h3 class="hw-heading">{{ hw.info.name }}</h3>
+  <h3 class="hw-heading">
+    {{ hw.info.name }}
+    <span class="pull-right">
+      <a href="{{ url_for('hwhandins', slug=hw.slug) }}" class="btn btn-primary">{{ _('View Submissions') }}</a>
+    </span>
+  </h3>
   
   <!-- Homework description here -->
   <div class="hw-desc panel panel-default">
