@@ -15,6 +15,7 @@ from .context import logger
 from .errors import RunnerError, InternalServerError, FileDenyError, \
     RunnerTimeout, NetApiAddressRejected
 from railgun.common.hw import FileRules
+from railgun.common.lazy_i18n import lazy_gettext
 from railgun.common.fileutil import dirtree, remove_firstdir
 from railgun.common.osutil import ProcessTimeout, execute
 from railgun.common.tempdir import TempDir
@@ -218,7 +219,10 @@ class NetApiHost(PythonHost):
         if (self.config.urlrule):
             p = re.compile(self.config.urlrule)
             if (not p.match(self.config.remote_addr)):
-                raise NetApiAddressRejected()
+                raise NetApiAddressRejected(compile_error=lazy_gettext(
+                    'Address "%(url)s" does not match pattern "%(rule)s"',
+                    url=self.config.remote_addr, rule=self.config.urlrule
+                ))
         if (self.config.iprule):
             domain = urllib.splitport(
                 urllib.splithost(
@@ -235,7 +239,10 @@ class NetApiHost(PythonHost):
             # ip not match, skip
             p = re.compile(self.config.iprule)
             if (not p.match(ipaddr)):
-                raise NetApiAddressRejected()
+                raise NetApiAddressRejected(compile_error=lazy_gettext(
+                    'IP address "%(ip)s" does not match pattern "%(rule)s"',
+                    ip=ipaddr, rule=self.config.iprule
+                ))
 
 
 class InputClassHost(PythonHost):

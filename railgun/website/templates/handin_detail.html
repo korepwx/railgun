@@ -9,10 +9,20 @@
       {{ _('Submission for <a href="%(url)s">%(name)s</a>',
            url=url_for('homework', slug=hw.slug), name=hw.info.name) }}
     {%- else -%}
-      {{ _('Submission   for <span class="text-muted">(%(name)s)</a>', name=_('Deleted')) }}
+      {{ _('Submission for <span class="text-muted">(%(name)s)</a>', name=_('Deleted')) }}
     {%- endif %}
     <span class="label label-{{ handin.state | handinstyle }}">{{ handin.get_state() }}</span>
   </h3>
+
+  {% if hw -%}
+    {%- set code = hw.get_code(handin.lang) -%}
+    {%- set reportCompile = code.reportCompile -%}
+    {%- set reportRuntime = code.reportRuntime -%}
+  {%- else -%}
+    {%- set code = None -%}
+    {%- set reportCompile = True -%}
+    {%- set reportRuntime = False -%}
+  {%- endif %}
 
   <!-- Summary panel -->
   <div class="panel panel-default detail-summary">
@@ -73,24 +83,30 @@
     </table>
   </div>
 
+  <!-- Compile message of the process -->
+  {% if (reportCompile or current_user.is_admin) and handin.compile_error -%}
+  <div class="panel panel-default detail-compile">
+    <div class="panel-heading">{{ _('Compilation Message') }}</div>
+    <div class="panel-body">
+      <pre>{{ handin.get_compile_error() }}</pre>
+    </div>
+  </div>
+  {%- endif %}
+
   <!-- Standard output and Error output of the process -->
-  {% if (hw.reportAll or current_user.is_admin) and handin.stdout -%}
+  {% if (reportRuntime or current_user.is_admin) and handin.stdout -%}
     <div class="panel panel-default detail-stdout">
       <div class="panel-heading">{{ _('Standard Output') }}</div>
       <div class="panel-body">
-        {% if handin.stdout -%}
-          <pre>{{ handin.get_stdout() }}</pre>
-        {%- endif %}
+        <pre>{{ handin.get_stdout() }}</pre>
       </div>
     </div>
   {%- endif %}
-  {% if (hw.reportAll or current_user.is_admin) and handin.stderr -%}
+  {% if (reportRuntime or current_user.is_admin) and handin.stderr -%}
     <div class="panel panel-default detail-stderr">
       <div class="panel-heading">{{ _('Standard Error Output') }}</div>
       <div class="panel-body">
-        {% if handin.stderr -%}
-          <pre>{{ handin.get_stderr() }}</pre>
-        {%- endif %}
+        <pre>{{ handin.get_stderr() }}</pre>
       </div>
     </div>
   {%- endif %}
@@ -131,7 +147,7 @@
             {%- endif %}
           </td>
         </tr>
-        {% if (hw.reportAll or current_user.is_admin) and p.detail -%}
+        {% if (reportRuntime or current_user.is_admin) and p.detail -%}
           <tr>
             <th>{{ _('Details') }}</th>
             <td>

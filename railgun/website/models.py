@@ -113,7 +113,7 @@ class Handin(db.Model):
 
     # We store datetime in UTC anyway. But we do not store the timestamp
     # in database.
-    ctime = db.Column(db.DateTime, default=datetime.utcnow())
+    ctime = db.Column(db.DateTime, default=lambda: datetime.utcnow())
 
     # A handin is associated with certain homework and programming language
     hwid = db.Column(db.String(32), index=True)
@@ -132,6 +132,9 @@ class Handin(db.Model):
 
     # handin result text
     result = db.Column(db.PickleType)
+
+    # field for compile errors
+    compile_error = db.Column(db.PickleType, default=None)
 
     # the exit code of the handin
     exitcode = db.Column(db.Integer)
@@ -176,11 +179,15 @@ class Handin(db.Model):
         return unicode(self.result) if self.result else u''
 
     def get_stdout(self):
-        """Get the standard output of this result."""
-        return self.stdout if self.stdout else u''
+        """Get the localized version of stdout."""
+        return unicode(self.stdout) if self.stdout else u''
 
     def get_stderr(self):
-        """Get the standard error output of this result."""
-        return self.stderr if self.stderr else u''
+        """Get the localized version of stderr."""
+        return unicode(self.stderr) if self.stderr else u''
+
+    def get_compile_error(self):
+        """Get the localized version of compile error."""
+        return unicode(self.compile_error) if self.compile_error else u''
 
 db.create_all()

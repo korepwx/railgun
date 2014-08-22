@@ -38,6 +38,7 @@ struct HwScore
 
   bool accepted;
   GetTextString result;
+  GetTextString compile_error;
   std::vector<HwPartialScore> partials;
 
   HwScore();

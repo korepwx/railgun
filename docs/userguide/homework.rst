@@ -110,7 +110,6 @@ Here's a basic example of ``hw.xml`` provided by `Railgun Source Code`_:
           <scale>0.0</scale>
         </due>
       </deadlines>
-      <reportAll>true</reportAll>
       <files />
     </homework>
 
@@ -121,49 +120,40 @@ table:
 
 .. tabularcolumns:: |p{4cm}|p{11cm}|
 
-=============== ============================================================
-Node Name       Description
-=============== ============================================================
-``uuid``        Unique id of this piece of homework.  Although the
-                website uses directory name in the url, it relies on
-                ``uuid`` to associate submissions with certain
-                homework.  If and only if ``uuid`` matches, two
-                pieces of homework will be treated as one.
-                You may change the ``uuid`` in ``hw.xml``, so as to
-                clear all submissions in the database.
+================== =========================================================
+Node Name          Description
+================== =========================================================
+uuid               Unique id of this piece of homework.  Although the
+                   website uses directory name in the url, it relies on
+                   ``uuid`` to associate submissions with certain
+                   homework.  If and only if ``uuid`` matches, two
+                   pieces of homework will be treated as one.
+                   You may change the ``uuid`` in ``hw.xml``, so as to
+                   clear all submissions in the database.
 
-                You may execute
-                ``python -c 'import uuid; print uuid.uuid4().get_hex()'``
-                to generate a new randomized ``uuid``.
-``name``        Define the name of this piece of homework in a
-                certain locale.  The website will try to choose
-                a best matching name according to the locale of user.
-                If no name can match the user, then the name for the
-                default locale (specified in ``config.py``) will be
-                selected.  If still no name can match, the last name
-                will be choosed.
-``due``         Define a deadline of this piece of homework.  There
-                may be two or three sub nodes in a ``due`` node:
+                   You may execute
+                   ``python -c 'import uuid; print uuid.uuid4().get_hex()'``
+                   to generate a new randomized ``uuid``.
+name               Define the name of this piece of homework in a
+                   certain locale.  The website will try to choose
+                   a best matching name according to the locale of user.
+                   If no name can match the user, then the name for the
+                   default locale (specified in ``config.py``) will be
+                   selected.  If still no name can match, the last name
+                   will be choosed.
+due                Define a deadline of this piece of homework.  There
+                   may be two or three sub nodes in a ``due`` node:
 
-                *   ``date``: The due date of this deadline.
-                *   ``scale``: The score scale of this deadline.
-                    The final score of submissions will be scaled
-                    by this factor before the deadline.
-                *   ``timezone``: Optional node to point out the
-                    timezone of ``date`` node.  If not given, the
-                    default timezone in ``config.py`` will be used.
-``reportAll``   Whether the website should display all details about
-                the submission?  When set to true, the process standard
-                output and error output, as well as detailed runtime
-                log will be sent to students.  Enable this may cause
-                the homework judging code to be revealed in some
-                programming languages.  You may head over to
-                :ref:`hwpython`, :ref:`hwnetapi` and :ref:`hwinput`
-                to see whether this parameter should be set to true
-                or false.
-``files``       Archive packing rules for the files in root directory.
-                Head over to :ref:`hwpack` for more details.
-=============== ============================================================
+                   *   ``date``: The due date of this deadline.
+                   *   ``scale``: The score scale of this deadline.
+                       The final score of submissions will be scaled
+                       by this factor before the deadline.
+                   *   ``timezone``: Optional node to point out the
+                       timezone of ``date`` node.  If not given, the
+                       default timezone in ``config.py`` will be used.
+files              Archive packing rules for the files in root directory.
+                   Head over to :ref:`hwpack` for more details.
+================== =========================================================
 
 Besides localized names, homework should provide localized descriptions
 as well.  The localized descriptions should be placed in ``[locale].md``
@@ -214,6 +204,8 @@ by `Railgun Source Code`_ is:
       <attachment>true</attachment>
       <compiler version="2.7" />
       <runner entry="run.py" timeout="3" />
+      <reportCompile>false</reportCompile>
+      <reportRuntime>false</reportRuntime>
       <files>
         <hide>^run\.py$</hide>
         <accept>^path\.py$</accept>
@@ -238,6 +230,22 @@ compiler        Parameters which will be passed to the compiler.
                 Different programming languages may have
                 different parameters.
 runner          Parameters which will be passed to the runner.
+reportCompile   Whether the website should display all compilation
+                messages?  Enable this option may cause the homework
+                judging code to be revealed in some programming
+                languages.  You may head over to
+                :ref:`hwpython`, :ref:`hwnetapi` and :ref:`hwinput`
+                to see whether this parameter should be set to true
+                or false.
+reportRuntime   Whether the website should display all runtime details?
+                When set to true, the process standard output,
+                error output, and runtime log will be displayed to
+                students.  Enable this option may cause
+                the homework judging code to be revealed in some
+                programming languages.  You may head over to
+                :ref:`hwpython`, :ref:`hwnetapi` and :ref:`hwinput`
+                to see whether this parameter should be set to true
+                or false.
 files           Archive packing rules for the files in this language
                 directory.
                 Head over to :ref:`hwpack` for more details.
@@ -509,6 +517,11 @@ basic skeleton of Railgun judger is to run an external program.  If
 you want to construct a piece of homework aimed for Python language,
 you should at least compose the main Python script.
 
+.. note::
+
+    ``reportCompile`` and ``reportRuntime`` is not recommended to
+    be enabled for Python programming language.
+
 code.xml
 ~~~~~~~~
 
@@ -703,6 +716,8 @@ that of ``python``, except a few changes to ``code.xml``:
       <attachment>true</attachment>
       <compiler version="2.7" url="^http://localhost.*" ip="127\.0\.0\.1" />
       <runner entry="run.py" timeout="10" />
+      <reportCompile>true</reportCompile>
+      <reportRuntime>true</reportRuntime>
       <files>
         <hide>^run\.py$</hide>
       </files>
@@ -801,6 +816,11 @@ The complete example of NetAPI provided by `Railgun Source Code`_ is::
 
 You may edit the three test cases ``test_add``, ``test_pow`` and ``test_gcd``
 to fit your needs.
+
+.. note::
+
+    ``reportCompile`` and ``reportRuntime`` is recommended to
+    be enabled for NetAPI programming language.
 
 .. _hwinput:
 
@@ -909,6 +929,10 @@ scorer by following code::
         (scorer, 1.0)
     ])
 
+.. note::
+
+    ``reportCompile`` and ``reportRuntime`` is recommended to
+    be enabled for Input programming language.
 
 .. _hwnotes:
 

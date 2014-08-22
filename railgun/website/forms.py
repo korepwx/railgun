@@ -73,6 +73,12 @@ class SigninForm(Form):
     remember = BooleanField(_('Remember me?'))
 
 
+class ReAuthenticateForm(Form):
+    """Form for `reauthenticate` view."""
+
+    password = PasswordField(_('Password'), validators=[InputRequired()])
+
+
 def _MakeLocaleChoices():
     """Make choices of available locales."""
     return [(str(l), l.display_name) for l in list_locales()]

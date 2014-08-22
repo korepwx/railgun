@@ -19,6 +19,17 @@
   -->
   <runner entry="run.py" timeout="3" />
 
+  <!-- 
+    whether this language should report details of compilation messages?
+  -->
+  <reportCompile>false</reportCompile>
+
+  <!--
+    whether this language should report details of mismatch results and
+    runtime errors?
+  -->
+  <reportRuntime>false</reportRuntime>
+
   <!--
     The file acceptable rules.
   -->

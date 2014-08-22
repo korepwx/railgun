@@ -142,6 +142,9 @@ class HwCode(object):
         self.runner_params = None
         # the file match rules of this code package
         self.file_rules = None
+        # settings for display the submission
+        self.reportCompile = True
+        self.reportRuntime = False
 
     def __repr__(self):
         return '<HwCode(%s)>' % self.path
@@ -163,6 +166,10 @@ class HwCode(object):
         # store compiler & runner param nodes
         ret.compiler_params = root.find('compiler')
         ret.runner_params = root.find('runner')
+
+        # get display settings
+        ret.reportCompile = parse_bool(root.find('reportCompile').text)
+        ret.reportRuntime = parse_bool(root.find('reportRuntime').text)
 
         # parse the file match rules
         ret.file_rules = FileRules.parse_xml(root.find('files'))
@@ -191,8 +198,6 @@ class Homework(object):
         self.info = []
         # list of (date, scale) to represent deadlines
         self.deadlines = []
-        # settings of scoring
-        self.reportAll = False
         # file match rules for root directory
         self.file_rules = None
         # list of `HwCode` instances
@@ -238,8 +243,6 @@ class Homework(object):
                     scale = float(due.find('scale').text.strip())
                     # add to deadline list
                     ret.deadlines.append((to_utc(duedate), scale))
-            elif (nd.tag == 'reportAll'):
-                ret.reportAll = parse_bool(nd.text)
             elif (nd.tag == 'files'):
                 ret.file_rules = FileRules.parse_xml(nd)
 
@@ -445,12 +448,15 @@ class HwPartialScore(object):
 class HwScore(object):
     """A serializable final score object, set of `HwPartialScore`."""
 
-    def __init__(self, accepted, result=None, partials=None):
+    def __init__(self, accepted, result=None, compile_error=None,
+                 partials=None):
         # `accepted` indicate whether final state of this handin is Accepted
         # or Rejected.
         self.accepted = accepted
         # brief result message string
         self.result = result
+        # detailed compile error message
+        self.compile_error = compile_error
         # all partial scores to be sumed up
         self.partials = partials or []
 
@@ -468,6 +474,7 @@ class HwScore(object):
         return {
             'accepted': self.accepted,
             'result': lazystr_to_plain(self.result),
+            'compile_error': lazystr_to_plain(self.compile_error),
             'partials': [p.to_plain() for p in self.partials],
         }
 
@@ -475,7 +482,8 @@ class HwScore(object):
     def from_plain(obj):
         """Convert plain object to final score object."""
 
-        ret = HwScore(obj['accepted'], plain_to_lazystr(obj['result']))
+        ret = HwScore(obj['accepted'], plain_to_lazystr(obj['result']),
+                      plain_to_lazystr(obj['compile_error']))
         for p in obj['partials']:
             ret.partials.append(HwPartialScore.from_plain(p))
         return ret

@@ -11,71 +11,72 @@ from railgun.common.lazy_i18n import lazy_gettext
 class RunnerError(Exception):
     """Errors that carries an error report."""
 
-    def __init__(self, message):
+    def __init__(self, message, compile_error=None):
         super(RunnerError, self).__init__(message)
         self.message = message
+        self.compile_error = compile_error
 
 
 class InternalServerError(RunnerError):
     """Error indicating that server meets some trouble."""
 
-    def __init__(self):
-        super(RunnerError, self).__init__(lazy_gettext(
+    def __init__(self, **kwargs):
+        super(InternalServerError, self).__init__(lazy_gettext(
             'Internal server error.'
-        ))
+        ), **kwargs)
 
 
 class LanguageNotSupportError(RunnerError):
     """Error indicating that the handin requires a not supported language."""
 
-    def __init__(self, lang):
-        super(RunnerError, self).__init__(lazy_gettext(
+    def __init__(self, lang, **kwargs):
+        super(LanguageNotSupportError, self).__init__(lazy_gettext(
             'Language "%(lang)s" is not provided.',
             lang=lang
-        ))
+        ), **kwargs)
 
 
 class BadArchiveError(RunnerError):
     """Error indicating that the handin of a student is bad archive."""
 
-    def __init__(self):
-        super(RunnerError, self).__init__(lazy_gettext(
+    def __init__(self, **kwargs):
+        super(BadArchiveError, self).__init__(lazy_gettext(
             'Your submission is not a valid archive file.'
-        ))
+        ), **kwargs)
 
 
 class FileDenyError(RunnerError):
     """Error indicating that the handin contains a denied file."""
 
-    def __init__(self, fname):
-        super(RunnerError, self).__init__(lazy_gettext(
+    def __init__(self, fname, **kwargs):
+        super(FileDenyError, self).__init__(lazy_gettext(
             'Archive contains denied file %(filename)s.',
             filename=fname
-        ))
+        ), **kwargs)
 
 
 class RunnerTimeout(RunnerError):
     """Error indicating that the handin has run out of time."""
 
-    def __init__(self):
-        super(RunnerError, self).__init__(lazy_gettext(
+    def __init__(self, **kwargs):
+        super(RunnerTimeout, self).__init__(lazy_gettext(
             'Your submission has run out of time.'
-        ))
+        ), **kwargs)
 
 
 class NonUTF8OutputError(RunnerError):
     """Error indicating that the handin produced non UTF-8 output."""
 
-    def __init__(self):
-        super(RunnerError, self).__init__(lazy_gettext(
+    def __init__(self, **kwargs):
+        super(NonUTF8OutputError, self).__init__(lazy_gettext(
             'Not valid UTF-8 sequence produced.'
-        ))
+        ), **kwargs)
 
 
 class NetApiAddressRejected(RunnerError):
     """Error indicating that the URL address in a NetAPI handin is invalid."""
 
-    def __init__(self):
-        super(RunnerError, self).__init__(lazy_gettext(
+    def __init__(self, **kwargs):
+        super(NetApiAddressRejected, self).__init__(lazy_gettext(
             'Given address is rejected.'
-        ))
+        ), **kwargs)

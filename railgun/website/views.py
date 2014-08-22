@@ -16,7 +16,7 @@ from werkzeug.exceptions import NotFound
 
 from .context import app, db
 from .navibar import navigates, NaviItem, set_navibar_identity
-from .forms import SignupForm, SigninForm, ProfileForm
+from .forms import SignupForm, SigninForm, ProfileForm, ReAuthenticateForm
 from .credential import UserContext
 from .userauth import authenticate, auth_providers
 from .codelang import languages
@@ -76,19 +76,18 @@ def signin():
 @app.route('/reauthenticate/', methods=['GET', 'POST'])
 def reauthenticate():
     # Re-authenticate form is just like signin but do not contain "remember"
-    form = SigninForm()
-    del form['remember']
+    form = ReAuthenticateForm()
     next_url = request.args.get('next')
 
     if (form.validate_on_submit()):
         # Check whether the user exists
-        user = authenticate(form.login.data, form.password.data)
+        user = authenticate(current_user.name, form.password.data)
         if (user):
             confirm_login()
             return redirect(next_url or url_for('index'))
-        # Report username or password error
-        flash(_('Incorrect username or password.'), 'danger')
-    return render_template('signin.html', form=form, next=next_url)
+        # Report password error
+        flash(_('Incorrect password.'), 'danger')
+    return render_template('reauthenticate.html', form=form, next=next_url)
 
 
 @app.route('/signout/')
@@ -135,6 +134,11 @@ def profile_edit():
             flash(_("I'm sorry but we may have met some trouble. Please try "
                     "again."), 'warning')
         return redirect(url_for('profile_edit'))
+
+    # If form has errors, flash message to notify the user
+    if (form.errors):
+        flash(_("You've got some errors in the form, please check your input."),
+              'warning')
 
     # Clear password & confirm here is ok.
     if ('password' in form):

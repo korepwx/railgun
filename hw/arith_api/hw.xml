@@ -52,12 +52,6 @@
   </deadlines>
 
   <!--
-    whether this homework should report details of mismatch results and
-    runtime errors?
-  -->
-  <reportAll>true</reportAll>
-
-  <!--
     rules of files in homework root directory.
 
     there are 4 types of rules: accept, lock and hide, deny.

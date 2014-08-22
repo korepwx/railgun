@@ -46,7 +46,9 @@ void HwScore::writeJson(std::ostream* os) const
   *os << "{\"uuid\": \"";
   WriteEscapeString(uuid, os);
   *os << "\", \"accepted\": " << (accepted ? "true" : "false")
-      << ", \"result\": ";
+      << ", \"compile_error\": ";
+  compile_error.writeJson(os);
+  *os << ", \"result\": ";
   result.writeJson(os);
   *os << ", \"partials\": [";
 

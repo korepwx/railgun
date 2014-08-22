@@ -18,7 +18,7 @@ def report_error(handid, err):
     """Report a `RunnerError` to remote api."""
 
     api = ApiClient(runconfig.WEBSITE_API_BASEURL)
-    score = HwScore(False, result=err.message)
+    score = HwScore(False, result=err.message, compile_error=err.compile_error)
     api.report(handid, score)
 
 

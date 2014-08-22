@@ -86,6 +86,7 @@ def api_handin_report(uuid):
         handin.result = score.result
     else:
         handin.result = lazy_gettext('Your submission is rejected.')
+    handin.compile_error = score.compile_error
     handin.partials = score.partials
 
     # update hwscore table and set the final score of this homework
