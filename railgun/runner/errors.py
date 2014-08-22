@@ -26,6 +26,33 @@ class InternalServerError(RunnerError):
         ), **kwargs)
 
 
+class SpawnProcessFailure(RunnerError):
+    """Error indicating that the external process cannot start."""
+
+    def __init__(self, **kwargs):
+        super(ExtractFileFailure, self).__init__(lazy_gettext(
+            "Couldn't start submission process."
+        ))
+
+
+class RuntimeFileCopyFailure(RunnerError):
+    """Error indicating that the runtime files could not be setup."""
+
+    def __init__(self, **kwargs):
+        super(ExtractFileFailure, self).__init__(lazy_gettext(
+            "Couldn't copy runtime files, please contact TA."
+        ))
+
+
+class ExtractFileFailure(RunnerError):
+    """Error indicating that the archive file could not be extracted."""
+
+    def __init__(self, **kwargs):
+        super(ExtractFileFailure, self).__init__(lazy_gettext(
+            "Couldn't extract your archive file."
+        ))
+
+
 class LanguageNotSupportError(RunnerError):
     """Error indicating that the handin requires a not supported language."""
 

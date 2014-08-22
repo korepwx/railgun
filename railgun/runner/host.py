@@ -12,8 +12,9 @@ import urllib
 
 from . import runconfig
 from .context import logger
-from .errors import RunnerError, InternalServerError, FileDenyError, \
-    RunnerTimeout, NetApiAddressRejected
+from .errors import RunnerError, FileDenyError, RunnerTimeout, \
+    NetApiAddressRejected, ExtractFileFailure, RuntimeFileCopyFailure, \
+    SpawnProcessFailure
 from railgun.common.hw import FileRules
 from railgun.common.lazy_i18n import lazy_gettext
 from railgun.common.fileutil import dirtree, remove_firstdir
@@ -107,7 +108,7 @@ class BaseHost(object):
                 '%(hwid)s.' %
                 {'hwid': self.hw.uuid, 'handid': self.uuid}
             )
-            raise InternalServerError()
+            raise SpawnProcessFailure()
 
     def compile(self):
         """Compile this testing module."""
@@ -127,7 +128,7 @@ class BaseHost(object):
                 'when executing submission %(handid)s.' %
                 {'hwid': self.hw.uuid, 'handid': self.uuid}
             )
-            raise InternalServerError()
+            raise RuntimeFileCopyFailure()
 
     def extract_handin(self, archive):
         """Extract handin archive files into tempdir."""
@@ -170,7 +171,7 @@ class BaseHost(object):
                 'when executing submission %(handid)s.' %
                 {'hwid': self.hw.uuid, 'handid': self.uuid}
             )
-            raise InternalServerError()
+            raise ExtractFileFailure()
 
 
 class PythonHost(BaseHost):
