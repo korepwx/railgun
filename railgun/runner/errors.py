@@ -31,7 +31,7 @@ class SpawnProcessFailure(RunnerError):
 
     def __init__(self, **kwargs):
         super(ExtractFileFailure, self).__init__(lazy_gettext(
-            "Couldn't start submission process."
+            "Couldn't start submitted program."
         ))
 
 

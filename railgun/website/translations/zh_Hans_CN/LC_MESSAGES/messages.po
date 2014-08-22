@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version:  railgun\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2014-08-23 01:23+0800\n"
+"POT-Creation-Date: 2014-08-23 01:28+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: zh_Hans_CN <LL@li.org>\n"
@@ -28,7 +28,7 @@ msgid "Internal server error."
 msgstr "内部服务器错误。"
 
 #: railgun/runner/errors.py:33
-msgid "Couldn't start submission process."
+msgid "Couldn't start submitted program."
 msgstr ""
 
 #: railgun/runner/errors.py:42
@@ -40,7 +40,7 @@ msgid "Couldn't extract your archive file."
 msgstr ""
 
 #: railgun/runner/errors.py:60
-#, fuzzy, python-format
+#, fuzzy
 msgid "Archive contains too many files."
 msgstr "压缩包含有不合法文件“%(filename)s”。"
 
@@ -927,4 +927,7 @@ msgstr "未预期的成功：％（测试）秒。"
 
 #~ msgid "Submission   for <span class=\"text-muted\">(%(name)s)</a>"
 #~ msgstr "<span class=\"text-muted\">(%(name)s)</a> 的提交"
+
+#~ msgid "Couldn't start submission process."
+#~ msgstr ""
 
