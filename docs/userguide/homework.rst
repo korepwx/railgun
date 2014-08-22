@@ -413,7 +413,7 @@ by rules in the two files.  *Rules in* ``code.xml`` *will be tested
 first, and if not matched,* ``hw.xml``.  Files not matching
 any rules will be treated as if they have matched the ``lock`` rules.
 
-.. warning::
+.. note::
 
     Because of the nature order of extraction progress,
     student submitted files will overwrite original files unless the
@@ -632,7 +632,7 @@ or just define the test cases in ``run.py``, and pass it to
 ``UnitTestScorer.FromTestCase(testcase)`` to construct a ``UnitTestScorer``.
 For advanced constructors, you can check the :ref:`api`.
 
-.. warning::
+.. note::
 
     You shouldn't import any user submitted module out of the
     methods in a test case.  If you carefully import all the user module only
