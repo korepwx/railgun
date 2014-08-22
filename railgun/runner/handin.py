@@ -10,7 +10,8 @@ import base64
 
 from . import runconfig
 from .hw import homeworks
-from .errors import InternalServerError, LanguageNotSupportError
+from .errors import InternalServerError, LanguageNotSupportError, \
+    ExtractFileFailure
 from .host import PythonHost, NetApiHost, InputClassHost
 from railgun.common.fileutil import Extractor
 
@@ -80,7 +81,10 @@ class PythonHandin(BaseHandin):
             archive_fext = os.path.splitext(self.options['filename'])[1]
             archive_file = '%s%s' % (self.handid, archive_fext)
             with TempDiskUploadFile(self.upload, archive_file) as f:
-                self.archive = Extractor.open(f.path)
+                try:
+                    self.archive = Extractor.open(f.path)
+                except Exception:
+                    raise ExtractFileFailure()
                 host.prepare_hwcode()
                 host.extract_handin(self.archive)
                 return host.run()
