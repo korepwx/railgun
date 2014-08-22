@@ -84,7 +84,7 @@
   </div>
 
   <!-- Compile message of the process -->
-  {% if (reportCompile or current_user.is_admin) and handin.compile_error -%}
+  {% if (reportCompile or current_user.is_admin) and handin.get_compile_error() -%}
   <div class="panel panel-default detail-compile">
     <div class="panel-heading">{{ _('Compilation Output') }}</div>
     <div class="panel-body">
@@ -94,7 +94,7 @@
   {%- endif %}
 
   <!-- Standard output and Error output of the process -->
-  {% if (reportRuntime or current_user.is_admin) and handin.stdout -%}
+  {% if (reportRuntime or current_user.is_admin) and handin.get_stdout() -%}
     <div class="panel panel-default detail-stdout">
       <div class="panel-heading">{{ _('Standard Output') }}</div>
       <div class="panel-body">
@@ -102,7 +102,7 @@
       </div>
     </div>
   {%- endif %}
-  {% if (reportRuntime or current_user.is_admin) and handin.stderr -%}
+  {% if (reportRuntime or current_user.is_admin) and handin.get_stderr() -%}
     <div class="panel panel-default detail-stderr">
       <div class="panel-heading">{{ _('Standard Error Output') }}</div>
       <div class="panel-body">
