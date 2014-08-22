@@ -52,11 +52,14 @@ body {
 }
 
 /* Site description at index page for anonymous users */
-.content #site-description {
+.content-index #site-description {
   margin-top: 20px;
 }
-.content #site-description p {
+.content-index #site-description p {
   padding-top: 10px;
+}
+.content-index #site-description a {
+  margin-right: 10px;
 }
 
 /* page headings */
