@@ -32,7 +32,7 @@ class SpawnProcessFailure(RunnerError):
     def __init__(self, **kwargs):
         super(ExtractFileFailure, self).__init__(lazy_gettext(
             "Couldn't start submitted program."
-        ))
+        ), **kwargs)
 
 
 class RuntimeFileCopyFailure(RunnerError):
@@ -41,7 +41,7 @@ class RuntimeFileCopyFailure(RunnerError):
     def __init__(self, **kwargs):
         super(ExtractFileFailure, self).__init__(lazy_gettext(
             "Couldn't copy runtime files, please contact TA."
-        ))
+        ), **kwargs)
 
 
 class ExtractFileFailure(RunnerError):
@@ -50,7 +50,7 @@ class ExtractFileFailure(RunnerError):
     def __init__(self, **kwargs):
         super(ExtractFileFailure, self).__init__(lazy_gettext(
             "Couldn't extract your archive file."
-        ))
+        ), **kwargs)
 
 
 class ArchiveContainTooManyFileError(RunnerError):
@@ -59,7 +59,7 @@ class ArchiveContainTooManyFileError(RunnerError):
     def __init__(self, **kwargs):
         super(ArchiveContainTooManyFileError, self).__init__(lazy_gettext(
             "Archive contains too many files."
-        ))
+        ), **kwargs)
 
 
 class LanguageNotSupportError(RunnerError):
