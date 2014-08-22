@@ -622,7 +622,7 @@ Since the test cases are written by you, it's safe to load the test case
 classes in the scope of ``run.py``.  You may import test case class,
 or just define the test cases in ``run.py``, and pass it to
 ``UnitTestScorer.FromTestCase(testcase)`` to construct a ``UnitTestScorer``.
-For advanced constructors, you can check the :ref:`api` reference.
+For advanced constructors, you can check the :ref:`api`.
 
 **Here's another notice that, you shouldn't import any user submitted
 module out of the methods in a test case.**  If you carefully import

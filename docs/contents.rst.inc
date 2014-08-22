@@ -23,6 +23,8 @@ this documentation on system design.
 
    framework
 
+.. _api:
+
 API Reference
 -------------
 
@@ -32,4 +34,7 @@ this part of the documentation is for you.
 .. toctree::
    :maxdepth: 2
 
-   api
+   api/common
+   api/website
+   api/runner
+   api/runlib
