@@ -59,6 +59,19 @@ def format_size(size):
     return _('%(size)dB', size=int(size))
 
 
+def round_score(score):
+    """Round `score` to closest float whose precision is 0.1.
+
+    Args:
+        score (float): Score of floating number.
+
+    Returns:
+        Rounded score number.
+    """
+
+    return round(score * 10) * 0.1
+
+
 # hw.info.desc should be formatted by markdown parser
 # so inject such filter into Jinja2 template
 @app.template_filter(name='markdown')
@@ -154,7 +167,7 @@ def __inject_template_handinstyle(state):
 # Round score number to 0.1 precision
 @app.template_filter(name='roundscore')
 def __inject_template_roundscore(score):
-    return round(score * 10) * 0.1
+    return round_score(score)
 
 
 # Regular generated class name for css

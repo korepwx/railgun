@@ -25,6 +25,7 @@ from .forms import AdminUserEditForm
 from .userauth import auth_providers
 from .credential import login_manager
 from .navibar import navigates, NaviItem
+from .utility import round_score
 
 # The admin application blueprint
 bp = Blueprint('admin', __name__)
@@ -153,7 +154,9 @@ def scores():
 
 def make_csv_report(q, display_headers, raw_headers, pagetitle, filename):
     def make_record(itm, hdr):
-        return tuple([getattr(itm, h) for h in hdr])
+        if (isinstance(itm, dict)):
+            return tuple(itm[h] for h in hdr)
+        return tuple(getattr(itm, h) for h in hdr)
 
     # If a direct csv file is request
     if (request.args.get('csvfile', None) == '1'):
@@ -207,8 +210,29 @@ def hwscores(hwid):
     if (isinstance(filename, unicode)):
         filename = filename.encode('utf-8')
 
+    # Pre-process the data
+    # We need to display all users, even he does not submit anything!
+    users = sorted(
+        (u.name, u.id) for u in db.session.query(User.id, User.name)
+    )
+    user_scores = {}
+
+    for rec in q:
+        user_scores.setdefault(rec.user_id, 0.0)
+        if (user_scores[rec.user_id] < rec.score):
+            user_scores[rec.user_id] = round_score(rec.score)
+
+    # Build data in user name ASC
+    csvdata = [
+        {
+            'name': u[0],
+            'score': user_scores.get(u[1], _('No submit'))
+        }
+        for u in users
+    ]
+
     return make_csv_report(
-        q,
+        csvdata,
         display_headers,
         raw_headers,
         pagetitle,
