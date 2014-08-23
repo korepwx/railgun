@@ -27,10 +27,13 @@ apt-get -y install cmake                \
 || exit -1
 
 # Compile the CSafeRunner
-cd runlib/python/pyhost/CSafeRunner
-(mkdir -p build && cd build && cmake .. && make) || exit -1
-cp SafeRunner.so ../../SafeRunner.so || exit -1
-cd ../../../..
+(cd runlib/python/pyhost/CSafeRunner    &&
+    mkdir -p build                      &&
+    cd build                            &&
+    cmake ..                            &&
+    make                                &&
+    cp SafeRunner.so ../../SafeRunner.so
+) || exit -1
 
 # Print current directory
 echo "`pwd`"
