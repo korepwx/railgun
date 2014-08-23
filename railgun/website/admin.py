@@ -197,7 +197,7 @@ def hwscores(hwid):
          filter(Handin.hwid == hwid).
          join(User).
          group_by(Handin.user_id).
-         where(Handin.state == 'Accepted'))
+         having(Handin.state == 'Accepted'))
 
     # Show the report
     raw_headers = ['name', 'score']
