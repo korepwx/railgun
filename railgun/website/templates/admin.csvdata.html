@@ -18,7 +18,7 @@
     {%- for itm in items %}
     <tr>
       {% for d in itm -%}
-        <td>{{ d or '' }}</td>
+        <td>{{ d if not (d is none) else '' }}</td>
       {%- endfor %}
     </tr>
     {%- endfor %}
