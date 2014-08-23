@@ -31,4 +31,5 @@ def create_keyfile(keyfile, keysize=32):
 
 create_keyfile('keys/commKey.txt')
 create_keyfile('keys/webKey.txt')
+create_keyfile('keys/redisKey.txt')
 create_keyfile('keys/sqlKey.txt')
