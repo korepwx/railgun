@@ -38,7 +38,7 @@ apt-get -y install cmake                \
     cd build                            &&
     cmake ..                            &&
     make                                &&
-    cp SafeRunner.so ../../SafeRunner.so
+    cp SafeRunner ../../../../../SafeRunner
 ) || exit -1
 
 # Make virtual environment, and install python requirements
