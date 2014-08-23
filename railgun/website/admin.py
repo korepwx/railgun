@@ -226,7 +226,7 @@ def hwscores(hwid):
     csvdata = [
         {
             'name': u[0],
-            'score': user_scores.get(u[1], _('No submit'))
+            'score': user_scores.get(u[1], '-')
         }
         for u in users
     ]
