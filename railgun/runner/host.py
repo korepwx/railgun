@@ -270,7 +270,7 @@ class NetApiHost(PythonHost):
     """NetAPI handin running host"""
 
     def __init__(self, remote_addr, uuid, hw):
-        super(NetApiHost, self).__init__(uuid, hw, 'netapi', online=True)
+        super(NetApiHost, self).__init__(uuid, hw, 'netapi', offline=False)
         self.config.remote_addr = remote_addr
         # Rule of url and ip in regex expression
         self.config.urlrule = self.compiler_params.get('url') or None
