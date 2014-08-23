@@ -23,7 +23,8 @@ apt-get -y install cmake                \
     libboost-python-dev                 \
     libcrypto++-dev                     \
     libcurl4-openssl-dev                \
-    unrar                               \
+    rar                                 \
+    unrar-free                          \
 || exit -1
 
 # Compile the CSafeRunner
