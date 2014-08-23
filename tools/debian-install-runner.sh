@@ -14,7 +14,9 @@ apt-get -y update || exit -1
 apt-get -y dist-upgrade || exit -1
 
 # Install system requirements for python
-apt-get -y install python-pip           \
+apt-get -y install cmake                \
+    build-essentials                    \
+    python-pip                          \
     python-virtualenv                   \
     redis-server                        \
     libjson0-dev                        \
@@ -23,11 +25,10 @@ apt-get -y install python-pip           \
 || exit -1
 
 # Compile the CSafeRunner
-pushd
 cd runlib/python/pyhost/CSafeRunner
 (mkdir -p build && cd build && cmake .. && make) || exit -1
 cp SafeRunner.so ../../SafeRunner.so || exit -1
-popd
+cd ../../../..
 
 # Print current directory
 echo "`pwd`"
