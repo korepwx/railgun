@@ -15,13 +15,15 @@ apt-get -y dist-upgrade || exit -1
 
 # Install system requirements for python
 apt-get -y install cmake                \
-    build-essentials                    \
+    build-essential                     \
     python-pip                          \
     python-virtualenv                   \
     redis-server                        \
     libjson0-dev                        \
     libboost-python-dev                 \
     libcrypto++-dev                     \
+    libcurl4-openssl-dev                \
+    unrar                               \
 || exit -1
 
 # Compile the CSafeRunner

@@ -4,3 +4,5 @@ redis-server
 json-c
 boost-python
 cryptopp
+libcurl
+unrar
