@@ -13,7 +13,7 @@ fi
 apt-get -y update || exit -1
 apt-get -y dist-upgrade || exit -1
 
-# Install system requirements for python
+# Install system requirements
 apt-get -y install cmake                \
     build-essential                     \
     python-pip                          \
@@ -35,5 +35,7 @@ apt-get -y install cmake                \
     cp SafeRunner.so ../../SafeRunner.so
 ) || exit -1
 
-# Print current directory
-echo "`pwd`"
+# Make virtual environment, and install python requirements
+virtualenv env
+. env/bin/activate
+pip install -r requirements.txt
