@@ -71,7 +71,10 @@ class UnitTestScorer(Scorer):
         errors, failures = map(len, (result.errors, result.failures))
         # give out a score according to the above statistics
         success = total - (errors + failures)
-        self.score = 100.0 * success / total
+        if (total > 0):
+            self.score = 100.0 * success / total
+        else:
+            self.score = 100.0
         # format the brief report
         self.brief = lazy_gettext(
             '%(success)d out of %(total)d tests passed',
@@ -115,7 +118,10 @@ class CodeStyleScorer(Scorer):
         # the final score should be count_trouble_files() / total_file
         total_file = len(self.filelist)
         trouble_file = result.count_trouble_files()
-        self.score = 100.0 * (total_file - trouble_file) / total_file
+        if (total_file > 0.0):
+            self.score = 100.0 * (total_file - trouble_file) / total_file
+        else:
+            self.score = 100.0
 
         # format the brief report
         if (trouble_file > 0):
@@ -202,7 +208,10 @@ class CoverageScorer(Scorer):
                 source=srctext
             ))
 
-        self.cover_rate = 100 - 100.0 * total_miss / total_exec
+        if (total_exec > 0):
+            self.cover_rate = 100 - 100.0 * total_miss / total_exec
+        else:
+            self.cover_rate = 100.0
         self.score = self.cover_rate
 
         self.brief = lazy_gettext(
