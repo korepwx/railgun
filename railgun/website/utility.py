@@ -8,14 +8,12 @@
 import colorsys
 from datetime import datetime
 
-from markdown import markdown
-from flask import g, url_for
+from flask import g
 from flask.ext.babel import get_locale
 from flask.ext.babel import gettext as _
 from babel.dates import format_timedelta
 
 from .context import app
-from railgun.common.url import UrlMatcher, reform_path
 
 
 def float_color(v):
@@ -70,41 +68,6 @@ def round_score(score):
     """
 
     return round(score * 10) * 0.1
-
-
-# hw.info.desc should be formatted by markdown parser
-# so inject such filter into Jinja2 template
-@app.template_filter(name='markdown')
-def __inject_markdown_filter(text, hwslug=None):
-    # To expose static resources in homework desc directory, we need to
-    # convert all "hw://<path>" urls to hwstatic view urls.
-    def translate_url(u):
-        # Get rid of 'hw://' and leading '/'
-        u = reform_path(u[5:])
-        if (u.startswith('/')):
-            u = u[1:]
-        # translate to hwstatic file
-        filename = u
-        if (hwslug):
-            filename = '%s/%s' % (hwslug, filename)
-        ret = url_for('hwstatic', filename=filename)
-        # we also need to prepend website base url
-        return app.config['WEBSITE_BASEURL'] + ret
-
-    text = UrlMatcher(['hw']).replace(text, translate_url)
-    return markdown(
-        text=text,
-        output_format='xhtml1',
-        extensions=[
-            'extra',
-            'tables',
-            'smart_strong',
-            'codehilite',
-            'nl2br',
-            'toc',
-            'fenced_code',
-        ]
-    )
 
 
 # format datetime object or timedelta object into timedelta string.

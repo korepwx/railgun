@@ -11,12 +11,14 @@ from datetime import datetime
 from xml.etree import ElementTree
 from itertools import ifilter, chain
 
+from markdown import markdown
 from babel.dates import timedelta, get_timezone, UTC
 
 import config
 from . import fileutil
 from .fileutil import file_get_contents
 from .lazy_i18n import lazystr_to_plain, plain_to_lazystr
+from .url import reform_path, UrlMatcher
 
 
 def parse_bool(s):
@@ -119,6 +121,40 @@ class HwInfo(object):
         self.name = name
         # the description of this homework
         self.desc = desc
+        # the formatted description of this homework, used for caching
+        # pre-calculated value
+        self.formatted_desc = None
+
+    def format_desc(self, hwslug):
+        """Format the markdown description in `lang` locale."""
+        # To expose static resources in homework desc directory, we need to
+        # convert all "hw://<path>" urls to hwstatic view urls.
+        def translate_url(u):
+            # Get rid of 'hw://' and leading '/'
+            u = reform_path(u[5:])
+            if (u.startswith('/')):
+                u = u[1:]
+            # translate to hwstatic file
+            filename = '%s/%s' % (hwslug, u)
+            # NOTE: here I hardcoded the url for hwstatic!
+            ret = '/hwstatic/%s' % filename
+            # we also need to prepend website base url
+            return config.WEBSITE_BASEURL + ret
+
+        text = UrlMatcher(['hw']).replace(self.desc, translate_url)
+        self.formatted_desc = markdown(
+            text=text,
+            output_format='xhtml1',
+            extensions=[
+                'extra',
+                'tables',
+                'smart_strong',
+                'codehilite',
+                'nl2br',
+                'toc',
+                'fenced_code',
+            ]
+        )
 
     def __repr__(self):
         __s = lambda s: s.encode('utf-8') if isinstance(s, unicode) else s
@@ -271,7 +307,19 @@ class Homework(object):
         for r in config.DEFAULT_HIDE_RULES:
             ret.file_rules.prepend_action('hide', r)
 
+        # Pre-build all descriptions
+        ret.cache_formatted_desc()
         return ret
+
+    def cache_formatted_desc(self):
+        """Format and cache the descriptions in all locales.
+
+        In the performance profiler, formatting the homework description
+        can take up to 100ms.  So I decide to pre-calculate and cache all
+        formatted descriptions.
+        """
+        for i in self.info:
+            i.format_desc(self.slug)
 
     def get_name_locales(self):
         """Get the name locales provided by this homework."""

@@ -40,7 +40,7 @@
   <!-- Homework description here -->
   <div class="hw-desc panel panel-default">
     <div class="panel-heading">{{ _('Description') }}</div>
-    <div class="panel-body">{{ hw.info.desc | markdown(hw.slug) | safe }}</div>
+    <div class="panel-body">{{ hw.info.formatted_desc | safe }}</div>
   </div>
 
   <!-- Homework attachments here -->
