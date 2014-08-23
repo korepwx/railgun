@@ -17,7 +17,17 @@ apt-get -y dist-upgrade || exit -1
 apt-get -y install python-pip           \
     python-virtualenv                   \
     redis-server                        \
-    json-c                              \
-    boost-python                        \
-    cryptopp                            \
+    libjson0-dev                        \
+    libboost-python-dev                 \
+    libcrypto++-dev                     \
 || exit -1
+
+# Compile the CSafeRunner
+pushd
+cd runlib/python/pyhost/CSafeRunner
+(mkdir -p build && cd build && cmake .. && make) || exit -1
+cp SafeRunner.so ../../SafeRunner.so || exit -1
+popd
+
+# Print current directory
+echo "`pwd`"
