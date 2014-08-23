@@ -7,6 +7,8 @@
 
 import os
 import re
+import pwd
+import grp
 import socket
 import urllib
 
@@ -82,7 +84,7 @@ class BaseHost(object):
 
     def __enter__(self):
         """Initialize the host directory"""
-        self.tempdir.open()
+        self.tempdir.open(mode=0777)
         return self
 
     def __exit__(self, ignore1, ignore2, ignore3):
@@ -110,6 +112,31 @@ class BaseHost(object):
             )
             raise SpawnProcessFailure()
 
+    def set_user(self, uid, gid=None):
+        """Set `user_id` and `group_id` in host config.
+
+        Args:
+            uid (int or str): System user id to run the submission.
+            gid (int or str): System group id to run the submission.
+                If `gid` is None, the group of the given user will be
+                selected.
+
+        Raises:
+            KeyError: If `uid` or `gid` is string and does not exist.
+        """
+
+        # NOTE: pwd.getpwnam and grp.getgrname does throw KeyError
+        #       if given name not exist.
+        if (not isinstance(uid, int)):
+            uid = pwd.getpwnam(uid).pw_uid
+        if (gid is None):
+            gid = pwd.getpwuid(uid).pw_gid
+        elif (not isinstance(gid, int)):
+            gid = grp.getgrnam(gid).gr_gid
+
+        self.config.user_id = uid
+        self.config.group_id = gid
+
     def compile(self):
         """Compile this testing module."""
         pass
@@ -121,7 +148,11 @@ class BaseHost(object):
         """Copy files from hw.code directory into tempdir."""
 
         try:
-            self.tempdir.copyfiles(self.hwcode.path, dirtree(self.hwcode.path))
+            self.tempdir.copyfiles(
+                self.hwcode.path,
+                dirtree(self.hwcode.path),
+                mode=0777
+            )
         except Exception:
             logger.exception(
                 'Cannot copy code files into tempdir for homework %(hwid)s '
@@ -167,7 +198,7 @@ class BaseHost(object):
                 return (action != FileRules.ACCEPT)
 
             # now extract the archive files
-            self.tempdir.extract(archive, should_skip)
+            self.tempdir.extract(archive, should_skip, mode=0777)
         except RunnerError:
             raise
         except Exception:
@@ -182,8 +213,24 @@ class BaseHost(object):
 class PythonHost(BaseHost):
     """Python handin running host"""
 
-    def __init__(self, uuid, hw, lang="python"):
+    def __init__(self, uuid, hw, lang="python", offline=True):
+        """Construct a new PythonHost object.
+
+        Args:
+            uuid (str): The uuid of submission.
+            hw (Homework): The `Homework` instance of this submission.
+            lang (str): Programming language.  Default is "python".
+            offline (bool): Whether this submission should run on offline
+                queue?  Default is True.
+        """
+
         super(PythonHost, self).__init__(uuid, hw, lang)
+
+        # Select the "SafeRunner" executable path
+        self.safe_runner = os.path.join(
+            runconfig.RAILGUN_ROOT,
+            'SafeRunner'
+        )
 
         # Update process running environment
         python_path = os.environ.get('PYTHONPATH', None)
@@ -202,19 +249,28 @@ class PythonHost(BaseHost):
                            runconfig.RUNNER_DEFAULT_TIMEOUT)
         self.entry_path = os.path.join(self.tempdir.path, self.entry)
 
+        # Set uid and gid
+        if (offline):
+            self.set_user(runconfig.OFFLINE_USER_ID, runconfig.OFFLINE_GROUP_ID)
+        else:
+            self.set_user(runconfig.ONLINE_USER_ID, runconfig.ONLINE_GROUP_ID)
+
     def compile(self):
         pass
 
     def run(self):
         """Run this Python testing module."""
-        return self._spawn('python "%s"' % self.entry_path, self.timeout)
+        return self._spawn(
+            '"%s" "%s"' % (self.safe_runner, self.entry_path),
+            self.timeout
+        )
 
 
 class NetApiHost(PythonHost):
     """NetAPI handin running host"""
 
     def __init__(self, remote_addr, uuid, hw):
-        super(NetApiHost, self).__init__(uuid, hw, 'netapi')
+        super(NetApiHost, self).__init__(uuid, hw, 'netapi', online=True)
         self.config.remote_addr = remote_addr
         # Rule of url and ip in regex expression
         self.config.urlrule = self.compiler_params.get('url') or None

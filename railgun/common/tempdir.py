@@ -33,7 +33,7 @@ class TempDir(object):
         """Get the fullpath for `subpath`"""
         return os.path.join(self.path, subpath)
 
-    def copyfiles(self, srcdir, filelist):
+    def copyfiles(self, srcdir, filelist, mode=0700):
         """Copy `filelist` in `srcdir` into this directory."""
 
         for f in filelist:
@@ -43,10 +43,10 @@ class TempDir(object):
             if (not os.path.isdir(srcpath)):
                 parent_path = os.path.dirname(dstpath)
                 if (not os.path.isdir(parent_path)):
-                    os.makedirs(parent_path, 0700)
+                    os.makedirs(parent_path, mode)
                 shutil.copyfile(srcpath, dstpath)
 
-    def extract(self, extractor, should_skip=None):
+    def extract(self, extractor, should_skip=None, mode=0700):
         """Extract all files in `extractor` into this directory.
 
         should_skip: None or callable `path` -> bool. If it returns True for
@@ -68,11 +68,11 @@ class TempDir(object):
             # create the parent directory if not exist
             parent_path = os.path.dirname(dstpath)
             if (not os.path.isdir(parent_path)):
-                os.makedirs(parent_path, 0700)
+                os.makedirs(parent_path, mode)
 
             with open(dstpath, 'wb') as f:
                 f.write(fobj.read())
-            os.chmod(dstpath, 0700)
+            os.chmod(dstpath, mode)
 
     def __enter__(self):
         self.open()

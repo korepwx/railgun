@@ -6,7 +6,7 @@
 # This file is released under BSD 2-clause license.
 
 from pyhost.scorer import CodeStyleScorer, CoverageScorer
-from pyhost import SafeRunner
+import SafeRunner
 
 
 if (__name__ == '__main__'):

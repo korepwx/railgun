@@ -7,7 +7,7 @@
 
 import unittest
 from pyhost.scorer import UnitTestScorer, CodeStyleScorer
-from pyhost import SafeRunner
+import SafeRunner
 
 
 class ReformPathTestCase(unittest.TestCase):
@@ -71,7 +71,9 @@ class ReformPathTestCase(unittest.TestCase):
 
 if (__name__ == '__main__'):
     scorers = [
-        (CodeStyleScorer.FromHandinDir(ignore_files=['run.py']), 0.1),
+        (CodeStyleScorer.FromHandinDir(
+            ignore_files=['run.py', 'path.py']),
+            0.1),
         (UnitTestScorer.FromTestCase(ReformPathTestCase), 0.9),
     ]
     SafeRunner.run(scorers)

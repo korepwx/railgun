@@ -10,6 +10,7 @@
 /.cctpl
 /build
 /runlib/python/pyhost/CSafeRunner/build
+/SafeRunner
 /website.sh
 /docs/_build
 ._*

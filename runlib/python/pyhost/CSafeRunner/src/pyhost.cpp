@@ -10,6 +10,7 @@ namespace bp = boost::python;
 
 // Include other C++ headers from here.
 #include <stdlib.h>
+#include <unistd.h>
 #include <string>
 #include <iostream>
 #include <curl/curl.h>
@@ -21,8 +22,21 @@ namespace bp = boost::python;
 
 namespace
 {
+  // Flag to indicate whether SafeRunner.run is called twice
   bool executed = false;
 
+  // Secret PyHost context variables
+  std::string PyHostCommKey;
+  int PyHostUserId = 0;
+  int PyHostGroupId = 0;
+
+  // General PyHost context variables
+  std::string PyHostApiBaseUrl;
+  std::string PyHostRailgunRoot;
+  std::string PyHostHandId;
+  std::string PyHostHwId;
+
+  // Common Utilities
   std::string LoadCommKey(std::string const& railgun_root)
   {
     std::string commkey_file = railgun_root + "/keys/commKey.txt";
@@ -120,24 +134,9 @@ namespace
       );
     }
 
-    // Initialize the CURL library
-    curl_global_init(CURL_GLOBAL_ALL);
-
-    // Save some environment variables
-    std::string api_baseurl = getenv("RAILGUN_API_BASEURL");
-    std::string railgun_root = getenv("RAILGUN_ROOT");
-    std::string handid = getenv("RAILGUN_HANDID");
-    std::string hwid = getenv("RAILGUN_HWID");
-
-    // Load comm key from keys/commKey.txt
-    std::string commKey = LoadCommKey(railgun_root);
-
-    // Downgrade user privilege
-    // TODO: downgrade user privilege.
-
     // The returned score object
     HwScore score;
-    UTF8toUnicode(handid, &score.uuid);
+    UTF8toUnicode(PyHostHandId, &score.uuid);
     score.accepted = false;
 
     try {
@@ -184,21 +183,74 @@ namespace
 
     } catch (UnicodeError) {
       score = HwScore();
-      UTF8toUnicode(handid, &score.uuid);
+      UTF8toUnicode(PyHostHandId, &score.uuid);
       score.accepted = false;
       score.result = GetTextString("Not valid UTF-8 sequence produced.");
     }
 
     // Post the score object to remote API
-    ApiClient client(api_baseurl, commKey);
+    ApiClient client(PyHostApiBaseUrl, PyHostCommKey);
     client.report(score);
+  }
 
-    // Do cleanups
-    curl_global_cleanup();
+  // Parse an environmental variable into int.
+  int env2int(const char* name, int default_value = 0)
+  {
+    const char* value = getenv(name);
+    if (!value)
+      return default_value;
+    return atoi(value);
   }
 }
 
 BOOST_PYTHON_MODULE(SafeRunner)
 {
   bp::def("run", &RunScorers);
+}
+
+// Initialize the PyHost context
+void PyHostInit()
+{
+  // Initialize the CURL library
+  curl_global_init(CURL_GLOBAL_ALL);
+
+  // Save some environment variables
+  PyHostApiBaseUrl = getenv("RAILGUN_API_BASEURL");
+  PyHostRailgunRoot = getenv("RAILGUN_ROOT");
+  PyHostHandId = getenv("RAILGUN_HANDID");
+  PyHostHwId = getenv("RAILGUN_HWID");
+
+  // Get user id and group id that this process should run at.
+  PyHostUserId = env2int("RAILGUN_USER_ID");
+  PyHostGroupId = env2int("RAILGUN_GROUP_ID");
+
+  // Load comm key from keys/commKey.txt
+  PyHostCommKey = LoadCommKey(PyHostRailgunRoot);
+
+  // Downgrade user privilege
+  if (PyHostGroupId != 0) {
+    if (setgid(PyHostGroupId) != 0) {
+      fprintf(stderr, "Could not set gid to %d.", PyHostGroupId);
+      exit(-1);
+    }
+  }
+  if (PyHostUserId != 0) {
+    if (setuid(PyHostUserId) != 0) {
+      fprintf(stderr, "Could not set uid to %d.", PyHostUserId);
+      exit(-1);
+    }
+  }
+
+  // Initialize the Python interpreter
+  Py_Initialize(); 
+
+  // Import `SafeRunner` module into Python interpreter
+  initSafeRunner();
+}
+
+// Destroy the pyhost context
+void PyHostDestroy()
+{
+  Py_Finalize();
+  curl_global_cleanup();
 }

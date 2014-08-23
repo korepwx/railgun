@@ -5,4 +5,4 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # This file is released under BSD 2-clause license.
 
-from . import SafeRunner, datatypes, errors, scorer, utility
+from . import datatypes, errors, scorer, utility

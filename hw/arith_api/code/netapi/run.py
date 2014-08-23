@@ -11,7 +11,7 @@ import requests
 import unittest
 
 from pyhost.scorer import UnitTestScorer
-from pyhost import SafeRunner
+import SafeRunner
 
 
 class ArithApiUnitTest(unittest.TestCase):

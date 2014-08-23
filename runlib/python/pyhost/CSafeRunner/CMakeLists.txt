@@ -37,7 +37,7 @@ include_directories(${CRYPTOPP_INCLUDE_DIR})
 aux_source_directory(src SafeRunner_files)
 
 # add build target
-add_library(SafeRunner SHARED ${SafeRunner_files})
+add_executable(SafeRunner ${SafeRunner_files})
 target_link_libraries(
   SafeRunner
   ${PYTHON_LIBRARY}
@@ -45,12 +45,3 @@ target_link_libraries(
   ${Boost_LIBRARIES}
   ${CRYPTOPP_LIBRARY}
 )
-
-set_target_properties(SafeRunner PROPERTIES PREFIX "")
-if(WIN32)
-  set_target_properties(SafeRunner PROPERTIES SUFFIX ".pyd")
-else(WIN32)
-  if(UNIX)
-    set_target_properties(SafeRunner PROPERTIES SUFFIX ".so")
-  endif(UNIX)
-endif(WIN32)

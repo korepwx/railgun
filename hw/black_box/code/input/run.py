@@ -7,7 +7,7 @@
 
 from railgun.common.csvdata import CsvSchema, CsvFloat
 from pyhost.scorer import InputClassScorer
-from pyhost import SafeRunner
+import SafeRunner
 
 
 # Initialize the scorer with CSV schema and data

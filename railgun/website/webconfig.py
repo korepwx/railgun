@@ -55,12 +55,12 @@ SQLALCHEMY_DATABASE_URI = (
 
 # AUTH_PROVIDERS define all the external authenticate providers this
 # website should use
-AUTH_PROVIDERS = (
+AUTH_PROVIDERS = [
     ('railgun.website.userauth.CsvFileAuthProvider', {
         'name': 'csvfile',
         'path': os.path.join(RAILGUN_ROOT, 'config/users.csv'),
     }),
-)
+]
 
 # WEBSITE_LOGGING configures the logging facility of Python for the website.
 WEBSITE_LOGGING = {
