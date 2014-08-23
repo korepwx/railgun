@@ -23,7 +23,6 @@ apt-get -y install cmake                \
     libboost-python-dev                 \
     libcrypto++-dev                     \
     libcurl4-openssl-dev                \
-    rar                                 \
     unrar-free                          \
 || exit -1
 
