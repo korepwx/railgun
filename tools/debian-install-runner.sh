@@ -22,12 +22,18 @@ apt-get -y install cmake                \
     libjson0-dev                        \
     libboost-python-dev                 \
     libcrypto++-dev                     \
+    libldap2-dev                        \
+    libsasl2-dev                        \
+    libxml2-dev                         \
+    libxslt1-dev                        \
+    libmysqlclient-dev                  \
     libcurl4-openssl-dev                \
     unrar-free                          \
 || exit -1
 
 # Compile the CSafeRunner
 (cd runlib/python/pyhost/CSafeRunner    &&
+    rm -rf build                        &&
     mkdir -p build                      &&
     cd build                            &&
     cmake ..                            &&
@@ -36,6 +42,12 @@ apt-get -y install cmake                \
 ) || exit -1
 
 # Make virtual environment, and install python requirements
-virtualenv env
-. env/bin/activate
-pip install -r requirements.txt
+(rm -rf env                             &&
+    virtualenv env                      &&
+    . env/bin/activate                  &&
+    pip install -r requirements.txt
+) || exit -1
+
+# The temporary and logs directory
+mkdir -p tmp
+mkdir -p logs
