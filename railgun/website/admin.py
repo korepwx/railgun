@@ -196,7 +196,7 @@ def hwscores(hwid):
                           func.max(Handin.score * Handin.scale).label('score')).
          filter(Handin.hwid == hwid).
          join(User).
-         group_by(Handin.user_id).
+         group_by(Handin.user_id, Handin.state).
          having(Handin.state == 'Accepted'))
 
     # Show the report
