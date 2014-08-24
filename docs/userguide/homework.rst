@@ -620,7 +620,7 @@ requirement of your homework.
 
 .. note::
 
-    You shouldn't import any user submitted module in the module scope!
+    You shouldn't import any user submitted code in the module scope!
     Otherwise the user may import SafeRunner and call SafeRunner.run
     before your judging code!  For example::
 
