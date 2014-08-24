@@ -182,3 +182,22 @@ ul.affix-bottom {
 .content #toc-navigate .sidenav.affix-bottom {
   visibility: visible;
 }
+
+/* Tweak manual styles */
+.manual section {
+  margin-bottom: 25px;
+}
+.manual h1 {
+  padding-bottom: 20px;
+}
+.manual h2 {
+  padding-bottom: 16px;
+}
+.manual h3 {
+  padding-bottom: 13px;
+}
+.manual p {
+  line-height: 150%;
+  padding-bottom: 5px;
+  font-size: 16px;
+}
