@@ -267,21 +267,36 @@ def handin_detail(uuid):
     return render_template('handin_detail.html', handin=handin, hw=hw)
 
 
-@app.route('/manual/userguide/')
-def userguide():
+def translated_page(name):
+    """Render the translated page `name` to client."""
     # List all user guide locales, and select the best one
-    userguide_dir = os.path.join(app.root_path, 'templates/userguide')
+    page_dir = os.path.join(app.root_path, 'templates/%s' % name)
     locales = []
-    if (os.path.isdir(userguide_dir)):
+    if (os.path.isdir(page_dir)):
         locales = [
             fname[:-5]
-            for fname in dirtree(userguide_dir)
+            for fname in dirtree(page_dir)
             if fname.endswith('.html')
         ]
     # Select the best matching locale according to user config
     best_locale = get_best_locale_name(locales)
-    # Render the userguide in certain locale
-    return render_template('userguide/%s.html' % best_locale)
+    # Render the page in certain locale
+    return render_template('%s/%s.html' % (name, best_locale))
+
+
+@app.route('/manual/userguide/')
+def userguide():
+    return translated_page('userguide')
+
+
+@app.route('/manual/faq/')
+def faq():
+    return translated_page('faq')
+
+
+@app.route('/manual/about/')
+def about():
+    return translated_page('about')
 
 # Register all pages into navibar
 navigates.add_view(title=lazy_gettext('Home'), endpoint='index')
@@ -322,6 +337,10 @@ navigates.add(
         subitems=[
             NaviItem.make_view(title=lazy_gettext('User Guide'),
                                endpoint='userguide'),
+            NaviItem.make_view(title=lazy_gettext('FAQ'),
+                               endpoint='faq'),
+            NaviItem.make_view(title=lazy_gettext('About'),
+                               endpoint='about'),
         ]
     )
 )
