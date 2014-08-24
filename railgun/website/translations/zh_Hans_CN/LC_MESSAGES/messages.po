@@ -909,5 +909,5 @@ msgstr "关于"
 
 #: railgun/website/templates/reauthenticate.html:9
 msgid "Confirm"
-msgstr ""
+msgstr "确认"
 
