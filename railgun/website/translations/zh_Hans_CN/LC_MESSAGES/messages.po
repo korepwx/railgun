@@ -196,7 +196,7 @@ msgstr "切换导航条"
 
 #: railgun/website/templates/base.html:83
 msgid "Edit profile"
-msgstr "编辑用户配置"
+msgstr "编辑用户资料"
 
 #: railgun/website/templates/base.html:86
 msgid "Sign out"
