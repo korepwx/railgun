@@ -1,6 +1,8 @@
 Best Practice
 =============
 
+.. _`practice-offline`:
+
 Offline Runqueue
 ----------------
 

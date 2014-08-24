@@ -27,17 +27,17 @@ Each directory under ``HOMEWORK_DIR`` carrying ``hw.xml`` will be treated
 as a homework item.  The directory tree of a typical item may be like this::
 
     reform_path
-    +── code
-    │   +── python
-    │       +── code.xml
-    │       +── path.py
-    │       +── run.py
-    +── desc
-    │   +── en.md
-    │   +── img
-    │   │   +── python-logo.png
-    │   +── zh-cn.md
-    +── hw.xml
+    +-- code
+    |   +-- python
+    |       +-- code.xml
+    |       +-- path.py
+    |       +-- run.py
+    +-- desc
+    |   +-- en.md
+    |   +-- img
+    |   |   +-- python-logo.png
+    |   +-- zh-cn.md
+    +-- hw.xml
 
 ``hw.xml`` is the definition file for the homework.  Guided by ``hw.xml``,
 ``desc`` directory carries the descriptions of homework in different locales.
@@ -251,6 +251,12 @@ files           Archive packing rules for the files in this language
                 Head over to :ref:`hwpack` for more details.
 =============== =======================================================
 
+.. note::
+
+    The Railgun website and the runner will load the homework definitions
+    at boot time.  So if you updated the homework, you should restart
+    the two applications.
+
 .. _hwdesc:
 
 Writing Description
@@ -265,10 +271,10 @@ directory to client browsers.
 Suppose we have the following ``desc`` directory::
 
     desc
-    +── 1.jpg
-    +── en.md
-    +── img
-        +── 2.jpg
+    +-- 1.jpg
+    +-- en.md
+    +-- img
+        +-- 2.jpg
 
 ``en.md`` is the description for English locale.  We want to display
 ``1.jpg`` and ``2.jpg`` on homework page, thus we write::
@@ -304,20 +310,20 @@ programming languages will generate different archive files.
 Suppose we have the following homework definition::
 
     example
-    +── code
-    │   +── java
-    │   │   +── code.xml
-    │   │   +── main.java
-    │   │   +── utility.java
-    │   +── python
-    │       +── code.xml
-    │       +── func.py
-    │       +── run.py
-    +── desc
-    │   +── en.md
-    │   +── zh-cn.md
-    +── hw.xml
-    +── readme.pdf
+    +-- code
+    |   +-- java
+    |   |   +-- code.xml
+    |   |   +-- main.java
+    |   |   +-- utility.java
+    |   +-- python
+    |       +-- code.xml
+    |       +-- func.py
+    |       +-- run.py
+    +-- desc
+    |   +-- en.md
+    |   +-- zh-cn.md
+    +-- hw.xml
+    +-- readme.pdf
 
 Railgun will then generate two archive files for this piece of
 homework: ``java.zip`` and ``python.zip``.  If properly configured,
@@ -473,15 +479,21 @@ The complication progress is not same for different programming
 languages.
 
 If the complication progress is successful, then the program is
-executed.  **Railgun will start the program with the highest
-possible user privilege, which is generally, the superuser
-privilege**.  The design purpose is to allow the external program
-to do some special bootstrap operations before executing the
-student submissions, such as downgrading to a low-privileged user.
+executed.  The user code is then executed.  The judging code must
+be designed carefully to prevent injections from the user code.
+Downgrading the privileges is always a good idea.
 
-The user code is then executed.  The runner must be designed carefully
-to prevent injections from the user code.  Downgrading the privileges
-is always a good idea.
+.. note::
+    Railgun will start the program with the highest
+    possible user privilege, which is generally, the superuser
+    privilege.  The design purpose is to allow the external program
+    to do some special bootstrap operations before executing the
+    student submissions, such as downgrading to a low-privileged user.
+
+.. note::
+    Some programming languages are designed to downgrade the user privilege
+    of external program once launched, such as the Python language.
+    You may head over to :ref:`hwpython` for more details.
 
 Once the user code is finished, the runner should give out the score.
 The score should be sent back to Railgun via website API.  The payload
@@ -497,14 +509,29 @@ regardless of the language:
 
 .. tabularcolumns:: |p{6cm}|p{9cm}|
 
-======================= ====================================================
+======================= =======================================================
 Variable Name           Description
-======================= ====================================================
+======================= =======================================================
+RAILGUN_USER_ID         The recommended user id for the program to downgrade
+                        privileges to.  May be ``0`` if not provided.
+                        
+                        If the program failed to `setuid` via syscall, the
+                        process should exit with failure at once.
+
+RAILGUN_GROUP_ID        The recommended group id for the program to downgrade
+                        privileges to.  May be ``0`` if not provided.
+                        
+                        If the program failed to `setgid` via syscall, the
+                        process should exit with failure at once.
+
+                        Remember to call `setgid` before `setuid`, otherwise
+                        you'll always fail on `setgid`.
+
 RAILGUN_ROOT            The root directory of Railgun source.
 RAILGUN_API_BASEURL     The API address of Railgun website.
 RAILGUN_HANDID          The uuid of this running submission.
 RAILGUN_HWID            The uuid of the homework this submission belongs to.
-======================= ====================================================
+======================= =======================================================
 
 .. _hwpython:
 
@@ -519,7 +546,7 @@ you should at least compose the main Python script.
 
 .. note::
 
-    ``reportCompile`` and ``reportRuntime`` is not recommended to
+    ``reportCompile`` and ``reportRuntime`` are **NOT** recommended to
     be enabled for Python programming language.
 
 code.xml
@@ -555,18 +582,28 @@ rather reliable.
 
 However, as a scripting language, almost anything in the interpreter
 could be accessed by the code it executes.  To ensure that the user
-code cannot inject the judger, I created an external C Python module.
-The main script should not load communication key from ``commKey.txt``,
-neither should it load the user code.  It is the C module's duty
-to load ``commKey.txt``, to downgrade the user privilege, to run the
-user submission, to give the score, and to send it back to Railgun.
+code cannot inject the judger, Railgun provides its own Python
+interpreter called `SafeRunner`.
 
-Such C Python module is named as ``SafeRunner``.  Suppose our user
-uploaded code is stored in ``func.py``, then a simple example
-of the main script ``run.py`` should be like::
+The source of SafeRunner is stored in ``runlib/python/pyhost/CSafeRunner``.
+You should build the SafeRunner, and place the executable file at the
+root directory of Railgun.
+
+The SafeRunner does two things: it load the communication key from
+``commKey.txt`` and downgrade the user privilege before initializing
+the Python interpreter, and it provides a module named `SafeRunner`
+for the juding code.  There's only one method in `SafeRunner`,
+``SafeRunner.run``, which could only be called once, so as to
+prevent the user code injection.
+
+The score will be sent back to Railgun in SafeRunner.  In such case,
+the comminucation key will never appear in the Python interpreter.
+The only thing you need to do is to create certain scorers, set the
+score weight of each scorer, and pass them to ``SafeRunner.run``,
+for example::
 
     from pyhost.scorer import CodeStyleScorer, XXXScorer
-    from pyhost import SafeRunner
+    import SafeRunner
 
     if (__name__ == '__main__'):
         scorers = [
@@ -575,14 +612,40 @@ of the main script ``run.py`` should be like::
         ]
         SafeRunner.run(scorers)
 
-To evaluate the submission, you should create a serial of scorers
-with different weights, stick them together in a list, and call
-``SafeRunner.run`` to execute these scorers.
 The above example includes the common ``CodeStyleScorer``, which
 evaluates the code style and gives its score.  Another scorer in
 the example is ``XXXScorer``, which may be ``UnitTestScorer``,
 ``CoverageScorer`` or ``InputClassScorer``, depending on the
 requirement of your homework.
+
+.. note::
+
+    You shouldn't import any user submitted module in the module scope!
+    Otherwise the user may import SafeRunner and call SafeRunner.run
+    before your judging code!  For example::
+
+        import sys
+        import SafeRunner
+
+
+        class Scorer(object):
+            def __init__(self):
+                self.name = 'Injected Scorer'
+                self.time = 0
+                self.score = 100
+                self.brief = 'This score is injected!'
+                self.detail = []
+
+            def run(self):
+                pass
+
+        SafeRunner.run([(Scorer(), 1.0)])
+        sys.exit(0)
+
+    Once this module is imported, the SafeRunner will report a full
+    score, and then exit the process gracefully.
+    There are some special tricks when importing user modules,
+    see :ref:`hwpython-unittest` for more details.
 
 CodeStyleScorer
 ~~~~~~~~~~~~~~~
@@ -591,6 +654,8 @@ The most convenient way to construct a ``CodeStyleScorer`` is
 ``CodeStyleScorer.FromHandinDir(ignore_files)``.  It will scan all
 Python source files in runtime directory except the ones in
 ``ignore_files``.
+
+.. _`hwpython-unittest`:
 
 UnitTestScorer
 ~~~~~~~~~~~~~~
@@ -614,7 +679,7 @@ use ``UnitTestScorer`` can be found in ``reform_path`` from
 
     import unittest
     from pyhost.scorer import UnitTestScorer, CodeStyleScorer
-    from pyhost import SafeRunner
+    import SafeRunner
 
 
     class ReformPathTestCase(unittest.TestCase):
@@ -682,7 +747,7 @@ The mission of the students is to write unit test cases to cover as many
 statements of ``myfunc`` as possible.  The judging code may be::
 
     from pyhost.scorer import CodeStyleScorer, CoverageScorer
-    from pyhost import SafeRunner
+    import SafeRunner
 
     if (__name__ == '__main__'):
         scorers = [
@@ -758,7 +823,7 @@ The complete example of NetAPI provided by `Railgun Source Code`_ is::
     import unittest
 
     from pyhost.scorer import UnitTestScorer
-    from pyhost import SafeRunner
+    import SafeRunner
 
 
     class ArithApiUnitTest(unittest.TestCase):
@@ -819,7 +884,7 @@ to fit your needs.
 
 .. note::
 
-    ``reportCompile`` and ``reportRuntime`` is recommended to
+    ``reportCompile`` and ``reportRuntime`` are recommended to
     be enabled for NetAPI programming language.
 
 .. _hwinput:
@@ -923,7 +988,7 @@ by ``@scorer.rule(description)`` decoration.
 After you have defined all input classes, you can then run the
 scorer by following code::
 
-    from pyhost import SafeRunner
+    import SafeRunner
 
     SafeRunner.run([
         (scorer, 1.0)
@@ -931,7 +996,7 @@ scorer by following code::
 
 .. note::
 
-    ``reportCompile`` and ``reportRuntime`` is recommended to
+    ``reportCompile`` and ``reportRuntime`` are recommended to
     be enabled for Input programming language.
 
 .. _hwnotes:
@@ -948,3 +1013,6 @@ Additional Notes
 
         # -*- coding: utf-8 -*-
 
+*   You may need some system configurations to restrict the user code
+    from accessing the internet (through which your judging code may
+    be revealed).  See :ref:`practice-offline` for more details.
