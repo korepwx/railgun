@@ -23,7 +23,7 @@ namespace bp = boost::python;
 namespace
 {
   // Flag to indicate whether SafeRunner.run is called twice
-  bool executed = false;
+  bool PyHostExecuted = false;
 
   // Secret PyHost context variables
   std::string PyHostCommKey;
@@ -128,12 +128,12 @@ namespace
   void RunScorers(bp::list const& scorers)
   {
     // Prevent user handin from calling this routine again.
-    if (executed) {
+    if (PyHostExecuted) {
       throw std::runtime_error(
         "You cannot call SafeRunner.run twice in a same process!"
       );
     }
-    accepted = true;
+    PyHostExecuted = true;
 
     // The returned score object
     HwScore score;
