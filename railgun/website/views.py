@@ -267,7 +267,7 @@ def handin_detail(uuid):
     return render_template('handin_detail.html', handin=handin, hw=hw)
 
 
-def translated_page(name):
+def translated_page(name, **kwargs):
     """Render the translated page `name` to client."""
     # List all user guide locales, and select the best one
     page_dir = os.path.join(app.root_path, 'templates/%s' % name)
@@ -281,7 +281,7 @@ def translated_page(name):
     # Select the best matching locale according to user config
     best_locale = get_best_locale_name(locales)
     # Render the page in certain locale
-    return render_template('%s/%s.html' % (name, best_locale))
+    return render_template('%s/%s.html' % (name, best_locale), **kwargs)
 
 
 @app.route('/manual/userguide/')
@@ -291,7 +291,7 @@ def userguide():
 
 @app.route('/manual/faq/')
 def faq():
-    return translated_page('faq')
+    return translated_page('faq', max_upload=app.config['MAX_SUBMISSION_SIZE'])
 
 
 @app.route('/manual/about/')
@@ -337,6 +337,11 @@ navigates.add(
         subitems=[
             NaviItem.make_view(title=lazy_gettext('User Guide'),
                                endpoint='userguide'),
+            NaviItem(
+                title=lazy_gettext('Documentation'),
+                url='http://secoder-railgun.readthedocs.org/',
+                identity='documentation',
+            ),
             NaviItem.make_view(title=lazy_gettext('FAQ'),
                                endpoint='faq'),
             NaviItem.make_view(title=lazy_gettext('About'),

@@ -304,7 +304,10 @@ scripts.addScript(ScriptLib(
     headStyles=[
         lambda: url_for('static', filename='css/railgun.css'),
         lambda: url_for('static', filename='css/codehilite.css'),
-    ]
+    ],
+    tailScripts=[
+        lambda: url_for('static', filename='js/railgun.js'),
+    ],
 ))
 scripts.addScript(ScriptLib(
     name='handlebars',

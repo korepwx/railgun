@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2014-08-24 22:55+0800\n"
+"POT-Creation-Date: 2014-08-25 02:45+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -396,11 +396,15 @@ msgstr ""
 msgid "User Guide"
 msgstr ""
 
-#: railgun/website/views.py:340
+#: railgun/website/views.py:341
+msgid "Documentation"
+msgstr ""
+
+#: railgun/website/views.py:345
 msgid "FAQ"
 msgstr ""
 
-#: railgun/website/views.py:342
+#: railgun/website/views.py:347
 msgid "About"
 msgstr ""
 

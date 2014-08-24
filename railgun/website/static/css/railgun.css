@@ -185,16 +185,16 @@ ul.affix-bottom {
 
 /* Tweak manual styles */
 .manual section {
-  margin-bottom: 25px;
+  margin-bottom: 20px;
 }
 .manual h1 {
-  padding-bottom: 20px;
-}
-.manual h2 {
   padding-bottom: 16px;
 }
+.manual h2 {
+  padding-bottom: 12px;
+}
 .manual h3 {
-  padding-bottom: 13px;
+  padding-bottom: 8px;
 }
 .manual p {
   line-height: 150%;
