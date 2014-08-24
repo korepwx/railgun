@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block subtitle %}{{ _('User Guide') }}{% endblock %}
+{% block content -%}
+<div class="row">
+  <div class="col-md-9 manual-body">
+    <h1 class="userguide-heading">用户手册</h1>
+
+    <section id="user-profile">
+      <h2>用户数据</h2>
+      <section id="signup">
+        <h3>注册</h3>
+        <p>注册</p>
+      </section>
+    </section>
+
+  <!-- TOC navigate bar here -->
+  <nav id="toc-navigate" class="sidebar col-md-3 hidden-sm hidden-xs">
+    <ul class="nav sidenav" data-spy="affix" data-offset-top="125">
+      <li class="active">
+        <a href="#user-profile">用户数据</a>
+        <ul class="nav">
+          <li><a href="#signup">注册</a></li>
+        </ul>
+      </li>
+    </ul>
+  </nav>
+</div>
+{%- endblock %}
+<!-- Enable TOC navigation by following attributes in body tag -->
+{% block bodyattrs %}
+  data-spy="scroll" data-target="#toc-navigate"
+{%- endblock %}

@@ -5,6 +5,7 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # This file is released under BSD 2-clause license.
 
+import os
 import uuid
 
 from flask import render_template, url_for, redirect, flash, request, g, \
@@ -21,7 +22,8 @@ from .credential import UserContext
 from .userauth import authenticate, auth_providers
 from .codelang import languages
 from .models import User, Handin
-from .hw import homeworks
+from .i18n import get_best_locale_name
+from railgun.common.fileutil import dirtree
 
 
 @app.route('/')
@@ -265,6 +267,22 @@ def handin_detail(uuid):
     return render_template('handin_detail.html', handin=handin, hw=hw)
 
 
+@app.route('/manual/userguide/')
+def userguide():
+    # List all user guide locales, and select the best one
+    userguide_dir = os.path.join(app.root_path, 'templates/userguide')
+    locales = []
+    if (os.path.isdir(userguide_dir)):
+        locales = [
+            fname[:-5]
+            for fname in dirtree(userguide_dir)
+            if fname.endswith('.html')
+        ]
+    # Select the best matching locale according to user config
+    best_locale = get_best_locale_name(locales)
+    # Render the userguide in certain locale
+    return render_template('userguide/%s.html' % best_locale)
+
 # Register all pages into navibar
 navigates.add_view(title=lazy_gettext('Home'), endpoint='index')
 navigates.add(
@@ -281,7 +299,6 @@ navigates.add(
         ]
     )
 )
-# navigates.add_view(title=lazy_gettext('Submission'), endpoint='handins')
 navigates.add(
     NaviItem(
         title=lazy_gettext('Submissions'),
@@ -294,6 +311,17 @@ navigates.add(
                 identity='homework.%s.handin' % hw.slug
             )
             for hw in g.homeworks
+        ]
+    )
+)
+navigates.add(
+    NaviItem(
+        title=lazy_gettext('Manual'),
+        url=None,
+        identity='manual',
+        subitems=[
+            NaviItem.make_view(title=lazy_gettext('User Guide'),
+                               endpoint='userguide'),
         ]
     )
 )

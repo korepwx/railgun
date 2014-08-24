@@ -6,7 +6,6 @@
 # This file is released under BSD 2-clause license.
 
 import os
-import re
 
 from flask import request
 from flask.ext.babel import Babel, get_locale, Locale
@@ -30,8 +29,18 @@ def list_locales():
 
 def get_best_locale_name(locale_names):
     """Get the best match locale from `locale_names` to current request.
-    This method is used when flask-babel is setup, and get_locale() can
-    return a valid Babel locale object.
+
+    Select the best matching locale according the language, script
+    and territory of `locale_names`.  If best not found, fallback to
+    app.config['DEFAULT_LOCALE'].  If not found either, fallback to
+    the last locale in `locale_names`.
+
+    Args:
+        locale_names (list): List of locale names, for example,
+            ['zh-cn', 'en']
+
+    Returns:
+        The best matching or fallback locale.
     """
 
     top_score = 0
@@ -62,6 +71,13 @@ def get_best_locale_name(locale_names):
         if (score > top_score):
             top_name = name
             top_score = score
+
+    # Fallback to default locale or last locale
+    if (top_name is None):
+        if (app.config['DEFAULT_LOCALE'] in locale_names):
+            top_name = app.config['DEFAULT_LOCALE']
+        else:
+            top_name = locale_names[-1]
     return top_name
 
 

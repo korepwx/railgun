@@ -289,10 +289,11 @@ scripts.addScript(ScriptLib(
     ],
     headStyles=[
         lambda: url_for('static', filename='css/bootstrap.min.css'),
+        lambda: url_for('static', filename='css/bootstrap-theme.min.css'),
     ],
     tailScripts=[
         lambda: url_for('static', filename='js/bootstrap.min.js'),
-    ]
+    ],
 ))
 scripts.addScript(ScriptLib(
     name='railgun',

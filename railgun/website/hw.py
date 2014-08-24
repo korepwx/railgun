@@ -23,13 +23,7 @@ class HwProxy(object):
 
         # determine the best info to be selected
         locale = get_best_locale_name(hw.get_name_locales())
-        if (not locale):
-            locale = app.config['BABEL_DEFAULT_LOCALE']
-        self.info = [i for i in hw.info if i.lang == locale]
-        if (not self.info):
-            self.info = hw.info[-1]
-        else:
-            self.info = self.info[0]
+        self.info = [i for i in hw.info if i.lang == locale][0]
 
     def __getattr__(self, key):
         return getattr(self.hw, key)
