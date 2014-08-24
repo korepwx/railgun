@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2014-08-24 21:53+0800\n"
+"POT-Creation-Date: 2014-08-24 22:55+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -393,7 +393,6 @@ msgid "Manual"
 msgstr ""
 
 #: railgun/website/views.py:338
-#: railgun/website/templates/userguide/zh-cn.html:2
 msgid "User Guide"
 msgstr ""
 
@@ -556,7 +555,6 @@ msgid "Sign up"
 msgstr ""
 
 #: railgun/website/templates/base.html:94
-#: railgun/website/templates/reauthenticate.html:9
 #: railgun/website/templates/signin.html:4
 #: railgun/website/templates/signin.html:8
 #: railgun/website/templates/signin.html:18
@@ -769,6 +767,10 @@ msgstr ""
 
 #: railgun/website/templates/reauthenticate.html:4
 msgid "Authenticate your account"
+msgstr ""
+
+#: railgun/website/templates/reauthenticate.html:9
+msgid "Confirm"
 msgstr ""
 
 #: railgun/website/templates/signup.html:4
