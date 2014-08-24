@@ -133,6 +133,7 @@ namespace
         "You cannot call SafeRunner.run twice in a same process!"
       );
     }
+    accepted = true;
 
     // The returned score object
     HwScore score;
