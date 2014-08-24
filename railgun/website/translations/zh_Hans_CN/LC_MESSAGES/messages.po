@@ -425,7 +425,7 @@ msgstr "不少于 7 个字符"
 
 #: railgun/website/templates/base.user_edit.html:68
 msgid "Save profile"
-msgstr "保存文件"
+msgstr "保存资料"
 
 #: railgun/website/templates/signup.html:4
 #: railgun/website/templates/signup.html:8
