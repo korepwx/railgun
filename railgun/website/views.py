@@ -291,7 +291,11 @@ def userguide():
 
 @app.route('/manual/faq/')
 def faq():
-    return translated_page('faq', max_upload=app.config['MAX_SUBMISSION_SIZE'])
+    return translated_page(
+        'faq',
+        max_upload=app.config['MAX_SUBMISSION_SIZE'],
+        max_archive_file=app.config['MAX_SUBMISSION_FILE_COUNT'],
+    )
 
 
 @app.route('/manual/about/')
