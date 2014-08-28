@@ -161,6 +161,24 @@ class HwInfo(object):
         return '<HwInfo(lang=%s,name=%s)>' % (self.lang, __s(self.name))
 
 
+class HwScorerSetting(object):
+    """Special settings for a given scorer."""
+
+    def __init__(self, detail=None):
+        # Whether or not to display the detail of this scorer?
+        # If None, using code.xml::reportRuntime.
+        self.detail = detail
+
+    @staticmethod
+    def parse_xml(xmlnode):
+        """Parse the settings defined in `xmlnode`."""
+
+        ret = HwScorerSetting()
+        if xmlnode.get('detail'):
+            ret.detail = parse_bool(xmlnode.get('detail'))
+        return ret
+
+
 class HwCode(object):
     """Represent code package of homework."""
 
@@ -182,8 +200,31 @@ class HwCode(object):
         self.reportCompile = True
         self.reportRuntime = False
 
+        # special rules for scorers
+        self.scorers = {}
+
     def __repr__(self):
         return '<HwCode(%s)>' % self.path
+
+    def get_scorer(self, typeName):
+        """Get scorer settings according to `typeName`.
+
+        Args:
+            typeName (str): Full or partial type name.
+                The full type name will be searched in scorer settings, and
+                if not matched, truncate it into partial type name.
+
+        Returns:
+            HwScorerSetting object if found, None if not.
+        """
+
+        if (typeName in self.scorers):
+            return self.scorers[typeName]
+        # Truncate full type name
+        rpos = typeName.rfind('.')
+        if (rpos >= 0):
+            typeName = typeName[rpos+1:]
+            return self.scorers.get(typeName, None)
 
     @staticmethod
     def load(path, lang):
@@ -214,6 +255,15 @@ class HwCode(object):
         ret.file_rules.prepend_action('hide', '^code\\.xml$')
         for r in config.DEFAULT_HIDE_RULES:
             ret.file_rules.prepend_action('hide', r)
+
+        # Iterate through scorer settings
+        scorer_node = root.find('scorers')
+        if (scorer_node is not None):
+            for scorer in scorer_node:
+                name = scorer.get('name')
+                if (not name):
+                    continue
+                ret.scorers[name] = HwScorerSetting.parse_xml(scorer)
 
         return ret
 

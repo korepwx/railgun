@@ -31,6 +31,13 @@
   <reportRuntime>false</reportRuntime>
 
   <!--
+    Special rules for the scorers.
+  -->
+  <scorers>
+    <scorer name="CodeStyleScorer" detail="true" />
+  </scorers>
+
+  <!--
     The file acceptable rules.
   -->
   <files>

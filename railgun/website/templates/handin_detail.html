@@ -114,6 +114,20 @@
   <!-- Report from each partial scorer -->
   {% if handin.partials -%}
   {% for p in handin.partials %}
+    {# determine whether or not to report details #}
+    {% if code -%}
+      {%- set scorer_cfg = code.get_scorer(p.typeName) -%}
+      {%- if scorer_cfg -%}
+        {%- set reportDetail = scorer_cfg.detail -%}
+      {%- else -%}
+        {%- set reportDetail = None -%}
+      {%- endif -%}
+    {%- else -%}
+      {%- set reportDetail = None -%}
+    {%- endif %}
+    {% if reportDetail is none -%}
+      {%- set reportDetail = reportRuntime -%}
+    {%- endif %}
     <div class="panel panel-default detail-partial">
       <div class="panel-heading">{{ p.name }}</div>
       <table class="table table-hover">
@@ -147,7 +161,7 @@
             {%- endif %}
           </td>
         </tr>
-        {% if (reportRuntime or current_user.is_admin) and p.detail -%}
+        {% if (reportDetail or current_user.is_admin) and p.detail -%}
           <tr>
             <th>{{ _('Details') }}</th>
             <td>

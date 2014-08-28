@@ -15,7 +15,6 @@ from .context import app, db
 from .forms import UploadHandinForm, AddressHandinForm, CsvHandinForm
 from .models import Handin
 from railgun.runner.tasks import run_python, run_netapi, run_input
-from railgun.common.lazy_i18n import lazy_gettext
 
 
 class CodeLanguage(object):

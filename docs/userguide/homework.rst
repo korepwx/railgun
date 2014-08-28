@@ -206,6 +206,9 @@ by `Railgun Source Code`_ is:
       <runner entry="run.py" timeout="3" />
       <reportCompile>false</reportCompile>
       <reportRuntime>false</reportRuntime>
+      <scorers>
+        <scorer name="CodeStyleScorer" detail="true" />
+      </scorers>
       <files>
         <hide>^run\.py$</hide>
         <accept>^path\.py$</accept>
@@ -246,9 +249,33 @@ reportRuntime   Whether the website should display all runtime details?
                 :ref:`hwpython`, :ref:`hwnetapi` and :ref:`hwinput`
                 to see whether this parameter should be set to true
                 or false.
+scorers         Scorer related settings.
 files           Archive packing rules for the files in this language
                 directory.
                 Head over to :ref:`hwpack` for more details.
+=============== =======================================================
+
+The ``scorer`` nodes in ``scorers`` define special behaviours of certain
+scorers.  The attributes are:
+
+.. tabularcolumns:: |p{4cm}|p{11cm}|
+
+=============== =======================================================
+Attribute Name  Description
+=============== =======================================================
+name            The name pattern of this scorer.  Currently available
+                names are:
+                *   CodeStyleScorer
+                *   UnitTestScorer
+                *   CoverageScorer
+                *   InputClassScorer
+detail          Whether the detail of this scorer should be reported?
+                If not defined, the value of `reportRuntime` will be
+                used.
+
+                This is an additional configuration to `reportRuntime`
+                in `code.xml`, in that it controls the behaviour of
+                each scorer.
 =============== =======================================================
 
 .. note::
@@ -655,6 +682,10 @@ The most convenient way to construct a ``CodeStyleScorer`` is
 Python source files in runtime directory except the ones in
 ``ignore_files``.
 
+.. note:: 
+    It is recommended to set ``<scorer detail="true">`` for
+    this type of scorer.
+
 .. _`hwpython-unittest`:
 
 UnitTestScorer
@@ -717,6 +748,11 @@ For advanced constructors, you can check the :ref:`api`.
     in test case methods, the Python interpreter will guarantee that all the
     user code is executed until ``SafeRunner`` has been started.
 
+
+.. note:: 
+    It is recommended to set ``<scorer detail="false">``, or to set
+    `reportRuntime` to `false`, for this type of scorer.
+
 CoverageScorer
 ~~~~~~~~~~~~~~
 
@@ -760,6 +796,10 @@ Suppose the test cases are placed in ``test_*.py``.  This is required
 by ``CoverageScorer``, which you should tell to the students in homework
 description.  The above example will run all test cases in ``test_*.py``,
 and check the coverage on ``myfunc.py``.
+
+.. note:: 
+    It is recommended to set ``<scorer detail="true">`` for
+    this type of scorer.
 
 .. _hwnetapi:
 
