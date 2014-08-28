@@ -37,10 +37,14 @@ as a homework item.  The directory tree of a typical item may be like this::
     |   +-- img
     |   |   +-- python-logo.png
     |   +-- zh-cn.md
+    +-- solve
+    |   +-- en.md
+    |   +-- zh-cn.md
     +-- hw.xml
 
 ``hw.xml`` is the definition file for the homework.  Guided by ``hw.xml``,
-``desc`` directory carries the descriptions of homework in different locales.
+``desc`` directory carries the descriptions of homework in different locales,
+and ``solve`` directory carries the solution to the homework.
 Since that Railgun is designed to allow the students to use different
 programming languages when solving a single question, ``code`` directory
 stores all the code files and resources for these languages, each in an
@@ -157,13 +161,17 @@ files              Archive packing rules for the files in root directory.
 
 Besides localized names, homework should provide localized descriptions
 as well.  The localized descriptions should be placed in ``[locale].md``
-under ``desc`` directory.  There must exist a localized description for
-each localized name.
+under ``desc`` directory, while the localized solutions should be placed
+in ``[locale].md`` under ``solve`` directory.  There must exist a localized
+description for each localized name, however, a localized solution is
+optional.
 
 To provide nice and clear descriptions for homework, you may need the
 knowledge of `Markdown`_ language.  Railgun uses an extended flavour
 which is very similar to `GitHub Flavoured Markdown`_.
 You may head over to :ref:`hwdesc` to learn more.
+
+You may write the solutions following the guide of :ref:`hwdesc`.
 
 .. _Markdown: http://en.wikipedia.org/wiki/Markdown
 .. _GitHub Flavoured Markdown: https://help.github.com/articles/github-flavored-markdown
@@ -324,6 +332,9 @@ bar after you have logged into the website as an administrator.
 This will gather all static resources in ``desc`` directories
 into a single place, so as to be ready for browser requests.
 
+.. note::
+    `hw://` schema does not support solutions.
+
 .. _hwpack:
 
 Archive Packing
@@ -349,6 +360,9 @@ Suppose we have the following homework definition::
     +-- desc
     |   +-- en.md
     |   +-- zh-cn.md
+    +-- solve
+    |   +-- en.md
+    |   +-- zh-cn.md
     +-- hw.xml
     +-- readme.pdf
 
@@ -363,7 +377,7 @@ the archive file for a certain programming language only contains
 the files from that language directory, and from the root directory
 of the homework.  What's more, there're some files and directories
 that will not be packed into the archive, such as ``hw.xml``,
-``code.xml``, ``desc`` and ``code``.
+``code.xml``, ``desc``, ``solve`` and ``code``.
 
 However, these rules are far from enough.  You may intend to
 have a more detailed control on which files to be packed and
