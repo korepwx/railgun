@@ -129,7 +129,7 @@ class CodeStyleScorer(Scorer):
             self.brief = lazy_gettext(
                 '%(rate).2f%% files (%(trouble)d out of %(total)d) did not '
                 'pass PEP8 code style check',
-                rate=self.score, total=total_file, trouble=trouble_file
+                rate=100.0 - self.score, total=total_file, trouble=trouble_file
             )
         else:
             self.brief = lazy_gettext('All files passed PEP8 code style check')
