@@ -43,6 +43,14 @@
     <div class="panel-body">{{ hw.info.formatted_desc | safe }}</div>
   </div>
 
+  {% if current_user.is_admin and hw.info.formatted_solve -%}
+    <!-- Homework solution here -->
+    <div class="hw-solve panel panel-default">
+      <div class="panel-heading">{{ _('Solution') }}</div>
+      <div class="panel-body">{{ hw.info.formatted_solve | safe }}</div>
+    </div>
+  {%- endif %}
+
   <!-- Homework attachments here -->
   {% if hw.count_attach() > 0 -%}
     <div class="hw-attach panel panel-default">
