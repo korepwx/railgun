@@ -945,13 +945,13 @@ msgstr "%(rate).2f%% 的测试（%(total)d 中的 %(success)d）已通过"
 
 #: runlib/python/pyhost/scorer.py:129
 msgid "%(rate).2f files (%(trouble)d out of %(total)d) did not pass PEP8 code style check"
-msgstr "%(rate).2f%% 个文件（%(total)d 中的 %(trouble)d 个）没通过 PEP8 代码风格检查"
+msgstr "%(rate).2f%% 的文件（%(total)d 中的 %(trouble)d 个）没通过 PEP8 代码风格检查"
 
 #: runlib/python/pyhost/scorer.py:240
 msgid "%(filename)s: %(miss)d statement(s) not covered.\n"
 "%(sep)s\n"
 "%(source)s"
-msgstr "%(filename)s: %(miss)d 语句没有被覆盖。\n"
+msgstr "%(filename)s: %(miss)d 条语句没有被覆盖。\n"
 "%(sep)s\n"
 "%(source)s"
 
@@ -959,23 +959,23 @@ msgstr "%(filename)s: %(miss)d 语句没有被覆盖。\n"
 msgid "%(filename)s: %(partial)d branch(es) partially taken and %(notaken)d branch(es) not taken.\n"
 "%(sep)s\n"
 "%(source)s"
-msgstr "%(filename)s：%(partial)d 分支被部分覆盖，%(notaken)d 分支没有被覆盖。\n"
+msgstr "%(filename)s：%(partial)d 个分支被部分覆盖，%(notaken)d 个分支没有被覆盖。\n"
 "%(sep)s\n"
 "%(source)s"
 
 #: runlib/python/pyhost/scorer.py:271
 msgid "%(stmt).2f%% statements covered, %(branch).2f%% branches taken and %(partial).2f%% partially taken."
-msgstr "%(stmt).2f%% 语句被覆盖，%(branch).2f%% 分支被覆而 %(partial).2f%% 分支被部分覆盖。"
+msgstr "%(stmt).2f%% 的语句被覆盖，%(branch).2f%% 的分支被覆而 %(partial).2f%% 的分支被部分覆盖。"
 
 #: runlib/python/pyhost/scorer.py:347
 msgid "%(rate).2f input classes (%(cover)s out of %(total)s) covered"
-msgstr "%(rate).2f%% 种输入等价类（%(total)s 中的 %(cover)s 种）被覆盖"
+msgstr "%(rate).2f%% 的输入等价类（%(total)s 中的 %(cover)s 种）被覆盖"
 
 #: runlib/python/pyhost/scorer.py:129
 msgid "%(rate).2f%% files (%(trouble)d out of %(total)d) did not pass PEP8 code style check"
-msgstr "%(rate).2f%% 个文件（%(total)d 中的 %(trouble)d 个）没通过 PEP8 代码风格检查"
+msgstr "%(rate).2f%% 的文件（%(total)d 中的 %(trouble)d 个）没通过 PEP8 代码风格检查"
 
 #: runlib/python/pyhost/scorer.py:348
 msgid "%(rate).2f%% input classes (%(cover)s out of %(total)s) covered"
-msgstr "%(rate).2f%% 种输入等价类（%(total)s 中的 %(cover)s 种）被覆盖"
+msgstr "%(rate).2f%% 的输入等价类（%(total)s 中的 %(cover)s 种）被覆盖"
 
