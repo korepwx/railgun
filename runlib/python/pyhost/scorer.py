@@ -127,7 +127,7 @@ class CodeStyleScorer(Scorer):
         # format the brief report
         if (trouble_file > 0):
             self.brief = lazy_gettext(
-                '%(rate).2f files (%(trouble)d out of %(total)d) did not '
+                '%(rate).2f%% files (%(trouble)d out of %(total)d) did not '
                 'pass PEP8 code style check',
                 rate=self.score, total=total_file, trouble=trouble_file
             )
@@ -343,7 +343,8 @@ class InputClassScorer(Scorer):
             # total up score by len(covered) / total_classes
             self.score = 100.0 * len(covered) / len(self.check_classes)
             self.brief = lazy_gettext(
-                '%(rate).2f input classes (%(cover)s out of %(total)s) covered',
+                '%(rate).2f%% input classes (%(cover)s out of %(total)s) '
+                'covered',
                 cover=len(covered), total=len(self.check_classes),
                 rate=self.score
             )
