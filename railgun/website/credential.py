@@ -84,6 +84,8 @@ def fresh_login_required(method):
     def inner(*args, **kwargs):
         if (not current_user.is_authenticated()):
             return login_manager.unauthorized()
+        if (not login_fresh()):
+            return login_manager.needs_refresh()
         if (should_update_email()):
             return redirect_update_email()
         return method(*args, **kwargs)
