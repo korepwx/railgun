@@ -945,7 +945,7 @@ msgstr "%(rate).2f%% 的测试（%(total)d 中的 %(success)d）已通过"
 
 #: runlib/python/pyhost/scorer.py:129
 msgid "%(rate).2f files (%(trouble)d out of %(total)d) did not pass PEP8 code style check"
-msgstr "%(rate).2f%% 个文件（%(total)d 中的 %(touble)d 个）没通过 PEP8 代码风格检查"
+msgstr "%(rate).2f%% 个文件（%(total)d 中的 %(trouble)d 个）没通过 PEP8 代码风格检查"
 
 #: runlib/python/pyhost/scorer.py:240
 msgid "%(filename)s: %(miss)d statement(s) not covered.\n"
@@ -973,7 +973,7 @@ msgstr "%(rate).2f%% 种输入等价类（%(total)s 中的 %(cover)s 种）被�
 
 #: runlib/python/pyhost/scorer.py:129
 msgid "%(rate).2f%% files (%(trouble)d out of %(total)d) did not pass PEP8 code style check"
-msgstr "%(rate).2f%% 个文件（%(total)d 中的 %(touble)d 个）没通过 PEP8 代码风格检查"
+msgstr "%(rate).2f%% 个文件（%(total)d 中的 %(trouble)d 个）没通过 PEP8 代码风格检查"
 
 #: runlib/python/pyhost/scorer.py:348
 msgid "%(rate).2f%% input classes (%(cover)s out of %(total)s) covered"
