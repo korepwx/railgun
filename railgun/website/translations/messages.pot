@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2014-08-28 21:15+0800\n"
+"POT-Creation-Date: 2014-08-28 21:24+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -828,7 +828,7 @@ msgstr ""
 #: runlib/python/pyhost/scorer.py:129
 #, python-format
 msgid ""
-"%(rate).2f files (%(trouble)d out of %(total)d) did not pass PEP8 code "
+"%(rate).2f%% files (%(trouble)d out of %(total)d) did not pass PEP8 code "
 "style check"
 msgstr ""
 
@@ -868,22 +868,22 @@ msgstr ""
 msgid "InputClass Scorer"
 msgstr ""
 
-#: runlib/python/pyhost/scorer.py:347
+#: runlib/python/pyhost/scorer.py:348
 #, python-format
-msgid "%(rate).2f input classes (%(cover)s out of %(total)s) covered"
+msgid "%(rate).2f%% input classes (%(cover)s out of %(total)s) covered"
 msgstr ""
 
-#: runlib/python/pyhost/scorer.py:355
+#: runlib/python/pyhost/scorer.py:356
 #, python-format
 msgid "COVERED: %(checker)s"
 msgstr ""
 
-#: runlib/python/pyhost/scorer.py:360
+#: runlib/python/pyhost/scorer.py:361
 #, python-format
 msgid "NOT COVERED: %(checker)s"
 msgstr ""
 
-#: runlib/python/pyhost/scorer.py:364 runlib/python/pyhost/scorer.py:369
+#: runlib/python/pyhost/scorer.py:365 runlib/python/pyhost/scorer.py:370
 msgid "CSV data does not match schema."
 msgstr ""
 

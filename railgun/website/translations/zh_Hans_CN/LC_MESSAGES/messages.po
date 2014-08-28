@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version:  railgun\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2014-08-28 21:15+0800\n"
+"POT-Creation-Date: 2014-08-28 21:24+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: zh_Hans_CN <LL@li.org>\n"
@@ -827,7 +827,7 @@ msgstr "代码风格得分"
 #: runlib/python/pyhost/scorer.py:129
 #, fuzzy, python-format
 msgid ""
-"%(rate).2f files (%(trouble)d out of %(total)d) did not pass PEP8 code "
+"%(rate).2f%% files (%(trouble)d out of %(total)d) did not pass PEP8 code "
 "style check"
 msgstr "在%(total)d 个文件中中有 %(trouble)d 个没有通过 PEP8 代码风格检查"
 
@@ -870,22 +870,22 @@ msgstr ""
 msgid "InputClass Scorer"
 msgstr "输入等价类得分"
 
-#: runlib/python/pyhost/scorer.py:347
+#: runlib/python/pyhost/scorer.py:348
 #, fuzzy, python-format
-msgid "%(rate).2f input classes (%(cover)s out of %(total)s) covered"
+msgid "%(rate).2f%% input classes (%(cover)s out of %(total)s) covered"
 msgstr "输入数据覆盖了%(total)s 种等价类中的 %(cover)s 种"
 
-#: runlib/python/pyhost/scorer.py:355
+#: runlib/python/pyhost/scorer.py:356
 #, python-format
 msgid "COVERED: %(checker)s"
 msgstr "已覆盖：%(checker)s"
 
-#: runlib/python/pyhost/scorer.py:360
+#: runlib/python/pyhost/scorer.py:361
 #, python-format
 msgid "NOT COVERED: %(checker)s"
 msgstr "未覆盖：%(checker)s"
 
-#: runlib/python/pyhost/scorer.py:364 runlib/python/pyhost/scorer.py:369
+#: runlib/python/pyhost/scorer.py:365 runlib/python/pyhost/scorer.py:370
 msgid "CSV data does not match schema."
 msgstr "CSV 数据不匹配的模式。"
 
