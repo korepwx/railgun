@@ -55,7 +55,8 @@ class UnitTestScorer(Scorer):
     """scorer according to the result of unit test"""
 
     def __init__(self, suite):
-        super(UnitTestScorer, self).__init__(lazy_gettext('UnitTest Scorer'))
+        super(UnitTestScorer, self).__init__(
+            lazy_gettext('Functionality Scorer'))
         self.suite = suite
 
     def _run(self):
@@ -77,8 +78,8 @@ class UnitTestScorer(Scorer):
             self.score = 100.0
         # format the brief report
         self.brief = lazy_gettext(
-            '%(success)d out of %(total)d tests passed',
-            total=total, time=self.time, success=success
+            '%(rate).2f%% tests (%(success)d out of %(total)d) passed',
+            rate=self.score, total=total, time=self.time, success=success
         )
         # format the detailed report
         self.detail = result.details
@@ -126,9 +127,9 @@ class CodeStyleScorer(Scorer):
         # format the brief report
         if (trouble_file > 0):
             self.brief = lazy_gettext(
-                '%(trouble)d files out of %(total)d did not pass PEP8 code '
-                'style check',
-                total=total_file, trouble=trouble_file
+                '%(rate).2f files (%(trouble)d out of %(total)d) did not '
+                'pass PEP8 code style check',
+                rate=self.score, total=total_file, trouble=trouble_file
             )
         else:
             self.brief = lazy_gettext('All files passed PEP8 code style check')
@@ -158,10 +159,11 @@ class CoverageScorer(Scorer):
         super(CoverageScorer, self).__init__(lazy_gettext('Coverage Scorer'))
 
         self.suite = suite
+        self.brief = []
         self.filelist = filelist
 
     def _run(self):
-        cov = coverage()
+        cov = coverage(branch=True)
         cov.start()
 
         # If self.suite is callable, generate test suite first
@@ -172,51 +174,107 @@ class CoverageScorer(Scorer):
         # the `result` is now ignored, but we can get use of it if necessary
         result = UnitTestScorerDetailResult()
         self.suite.run(result)
-
         cov.stop()
+        cov.xml_report(outfile='/tmp/hello.xml')
 
-        # count coverage rate
-        total_exec = 0
-        total_miss = 0
+        # statement coverage rate
+        total_exec = total_miss = 0
+        total_branch = total_taken = total_partial = total_notaken = 0
         self.detail = []
         for filename in self.filelist:
-            (name, exec_stmt, miss_stmt, formatted) = \
-                cov.analysis(filename)
+            # get the analysis on given filename
+            ana = cov._analyze(filename)
+            # gather statement coverage on this file
+            exec_stmt = set(ana.statements)
+            miss_stmt = set(ana.missing)
             total_exec += len(exec_stmt)
             total_miss += len(miss_stmt)
-            # convert exec_stmt and miss_stmt to set so that we can query
-            # about one line fastly
-            exec_stmt = set(exec_stmt)
-            miss_stmt = set(miss_stmt)
-            # gather all lines into detail report
-            srctext = []
+            # gather branch coverage on this file
+            # branch: {lineno: (total_exit, taken_exit)}
+            branch = ana.branch_stats()
+            file_branch = len(branch)
+            file_taken = len([b for b in branch.itervalues() if b[0] == b[1]])
+            file_notaken = len([b for b in branch.itervalues()
+                                if b[0] != b[1] and b[1] == 0])
+            file_partial = file_branch - file_taken - file_notaken
+            # apply file branch to global
+            total_branch += file_branch
+            total_taken += file_taken
+            total_partial += file_partial
+            total_notaken += file_notaken
+
+            # gather all source lines into detail report
+            stmt_text = []
+            branch_text = []
             with open(filename, 'rb') as fsrc:
                 for i, s in enumerate(fsrc, 1):
+                    # first, format statement cover report
                     if i in miss_stmt:
-                        srctext.append('- %s' % s.rstrip())
+                        stmt_text.append('- %s' % s.rstrip())
                     elif i in exec_stmt:
-                        srctext.append('+ %s' % s.rstrip())
+                        stmt_text.append('+ %s' % s.rstrip())
                     else:
-                        srctext.append('  %s' % s.rstrip())
+                        stmt_text.append('  %s' % s.rstrip())
+                    # next, format branch cover report
+                    branch_exec = branch.get(i, None)
+                    if (not branch_exec):
+                        branch_text.append('  %s' % s.rstrip())
+                    elif (branch_exec[1] == branch_exec[0]):
+                        # branch taken
+                        branch_text.append('+ %s' % s.rstrip())
+                    elif (branch_exec[1] == 0):
+                        # branch not taken
+                        branch_text.append('- %s' % s.rstrip())
+                    else:
+                        # branch partial taken
+                        branch_text.append('* %s' % s.rstrip())
             # compose final detail
-            srctext = '\n'.join(srctext)
+            stmt_text = '\n'.join(stmt_text)
+            branch_text = '\n'.join(branch_text)
+
+            # the statement coverage
             self.detail.append(lazy_gettext(
-                '%(filename)s: %(miss)d lines not covered.\n'
+                '%(filename)s: %(miss)d statement(s) not covered.\n'
                 '%(sep)s\n'
                 '%(source)s',
                 filename=filename, sep='-' * 70, miss=len(miss_stmt),
-                source=srctext
+                source=stmt_text
             ))
 
-        if (total_exec > 0):
-            self.cover_rate = 100 - 100.0 * total_miss / total_exec
-        else:
-            self.cover_rate = 100.0
-        self.score = self.cover_rate
+            # the branch coverage
+            self.detail.append(lazy_gettext(
+                '%(filename)s: '
+                '%(partial)d branch(es) partially taken and '
+                '%(notaken)d branch(es) not taken.\n'
+                '%(sep)s\n'
+                '%(source)s',
+                filename=filename, sep='-' * 70, miss=len(miss_stmt),
+                source=branch_text, taken=file_taken, notaken=file_notaken,
+                partial=file_partial
+            ))
 
+        def safe_divide(a, b):
+            if (b > 0):
+                return float(a) / float(b)
+            return 0.0
+
+        self.stmt_cover = 100.0 - 100.0 * safe_divide(total_miss, total_exec)
+        self.branch_cover = 100.0 * safe_divide(total_taken, total_branch)
+        self.branch_partial = 100.0 * safe_divide(total_partial, total_branch)
+
+        # final score
+        self.score = (
+            self.stmt_cover * 0.5 +
+            self.branch_cover * 0.5 +
+            self.branch_partial * 0.25
+        )
         self.brief = lazy_gettext(
-            'Coverage rate: %(cover_rate)2.1f%%',
-            time=self.time, cover_rate=self.cover_rate
+            '%(stmt).2f%% statements covered, '
+            '%(branch).2f%% branches taken and '
+            '%(partial).2f%% partially taken.',
+            stmt=self.stmt_cover,
+            branch=self.branch_cover,
+            partial=self.branch_partial,
         )
 
     @staticmethod
@@ -285,8 +343,9 @@ class InputClassScorer(Scorer):
             # total up score by len(covered) / total_classes
             self.score = 100.0 * len(covered) / len(self.check_classes)
             self.brief = lazy_gettext(
-                'Covered %(cover)s input classes out of %(total)s',
-                cover=len(covered), total=len(self.check_classes)
+                '%(rate).2f input classes (%(cover)s out of %(total)s) covered',
+                cover=len(covered), total=len(self.check_classes),
+                rate=self.score
             )
             # build more detailed report
             for i, c in enumerate(self.check_classes):

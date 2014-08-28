@@ -1,0 +1,8 @@
+{% for d in detail -%}
+  <strong>{{ d['file'] }}</strong>
+  <table class="coverage table table-hover">
+    {% for line in d['lines'] %}
+      <tr><td class="{{ line[0] }}"><pre>{{ line[1] | safe }}</pre></td></tr>
+    {% endfor %}
+  </table>
+{%- endfor %}

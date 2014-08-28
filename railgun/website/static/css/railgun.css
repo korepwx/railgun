@@ -115,6 +115,28 @@ body {
   width: 100%;
 }
 
+/* Tweak coverage report */
+.coverage pre {
+  background: none;
+  border: none;
+  padding: 0px;
+  margin: 0px;
+}
+table.coverage {
+  border: 1px solid #CCC;
+  margin: 10px 0 10px 0;
+}
+table.coverage tr,
+table.coverage tr td {
+  border: none;
+}
+table.coverage tr,
+table.coverage tr td {
+  margin: 0px;
+  padding-top: 0px;
+  padding-bottom: 0px;
+}
+
 /* Common styles for TOC */
 ul.affix,
 ul.affix-top,

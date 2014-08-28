@@ -21,6 +21,7 @@ class PartialScoreRender(object):
     def getRender(typeName):
         return {
             'default': DefaultPartialScoreRender,
+            'CoverageScorer': CoveragePartialScoreRender,
         }.get(typeName, DefaultPartialScoreRender)()
 
 
@@ -32,6 +33,38 @@ class DefaultPartialScoreRender(PartialScoreRender):
         return render_template(
             'renders/PartialScore.default.html', partial=partial
         )
+
+
+class CoveragePartialScoreRender(PartialScoreRender):
+    """HwPartialScorer renderer that renders coverage results."""
+
+    def line_class(self, line):
+        return {
+            '*': 'warning',
+            '-': 'danger',
+            '+': 'success',
+        }.get(line[:1], None)
+
+    def format_file(self, detail):
+        ret = {}
+        text = unicode(detail).split(u'\n')
+        # first line is the summary of file
+        ret['file'] = text[0]
+        # second line is the delimeter
+        ret['lines'] = [
+            (self.line_class(line), line[2:])
+            for line in text[2:]
+        ]
+        return ret
+
+    def render(self, partial):
+        # Format each file result
+        if (partial.detail):
+            detail = [self.format_file(d) for d in partial.detail]
+        else:
+            detail = None
+        return render_template('renders/PartialScore.coverage.html',
+                               detail=detail)
 
 
 def renderPartialScore(partial):
