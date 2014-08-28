@@ -261,7 +261,11 @@ def handin_detail(uuid):
     handin = Handin.query.filter(Handin.uuid == uuid)
     if (not current_user.is_admin):
         handin = handin.filter(Handin.user_id == current_user.id)
-    handin = handin.one()
+    handin = handin.first()
+
+    # If not found, result 404
+    if (not handin):
+        return _('Submission not found'), 404
 
     # Get the homework
     hw = g.homeworks.get_by_uuid(handin.hwid)

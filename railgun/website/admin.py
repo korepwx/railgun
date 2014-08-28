@@ -40,7 +40,8 @@ def admin_required(method):
         if (not login_fresh()):
             return login_manager.needs_refresh()
         if (not current_user.is_admin):
-            return 'You are not admin!', 403
+            flash(_("Only admin can view this page!"), 'danger')
+            return redirect(url_for('index'))
         return method(*args, **kwargs)
     return inner
 

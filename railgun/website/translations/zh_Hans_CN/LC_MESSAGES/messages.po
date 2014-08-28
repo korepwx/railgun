@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version:  railgun\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2014-08-28 21:10+0800\n"
+"POT-Creation-Date: 2014-08-28 21:15+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: zh_Hans_CN <LL@li.org>\n"
@@ -84,52 +84,56 @@ msgstr "IP 地址 ”%(ip)s\" 不符合正则表达式 \"%(rule)s\""
 msgid "Exitcode %(exitcode)s != 0."
 msgstr "程序返回值 %(exitcode)s != 0。"
 
-#: railgun/website/admin.py:107 railgun/website/views.py:136
+#: railgun/website/admin.py:43
+msgid "Only admin can view this page!"
+msgstr ""
+
+#: railgun/website/admin.py:108 railgun/website/views.py:136
 msgid "Profile saved."
 msgstr "资料已保存。"
 
-#: railgun/website/admin.py:110 railgun/website/views.py:59
+#: railgun/website/admin.py:111 railgun/website/views.py:59
 #: railgun/website/views.py:139
 msgid "I'm sorry but we may have met some trouble. Please try again."
 msgstr "对不起，程序出错，请再试一次。"
 
-#: railgun/website/admin.py:193
+#: railgun/website/admin.py:194
 msgid "Requested homework not found."
 msgstr "所请求的作业不存在。"
 
-#: railgun/website/admin.py:207 railgun/website/forms.py:40
+#: railgun/website/admin.py:208 railgun/website/forms.py:40
 #: railgun/website/templates/base.user_edit.html:20
 msgid "Username"
 msgstr "用户名"
 
-#: railgun/website/admin.py:207 railgun/website/templates/base.handins.html:12
+#: railgun/website/admin.py:208 railgun/website/templates/base.handins.html:12
 #: railgun/website/templates/handin_detail.html:135
 #: railgun/website/templates/index.html:30
 msgid "Score"
 msgstr "得分"
 
-#: railgun/website/admin.py:208
+#: railgun/website/admin.py:209
 #, python-format
 msgid "Scores for \"%(hw)s\""
 msgstr "\"%(hw)s\"的得分"
 
-#: railgun/website/admin.py:259 railgun/website/admin.py:282
+#: railgun/website/admin.py:260 railgun/website/admin.py:283
 msgid "Build Cache"
 msgstr "创建缓存"
 
-#: railgun/website/admin.py:271
+#: railgun/website/admin.py:272
 msgid "Manage"
 msgstr "管理"
 
-#: railgun/website/admin.py:276 railgun/website/templates/admin.users.html:4
+#: railgun/website/admin.py:277 railgun/website/templates/admin.users.html:4
 msgid "Users"
 msgstr "用户"
 
-#: railgun/website/admin.py:278 railgun/website/views.py:326
+#: railgun/website/admin.py:279 railgun/website/views.py:330
 msgid "Submissions"
 msgstr "提交"
 
-#: railgun/website/admin.py:280
+#: railgun/website/admin.py:281
 msgid "Scores"
 msgstr "得分"
 
@@ -383,32 +387,37 @@ msgstr "你的提交已被接受，请等待结果。"
 msgid "Internal server error, please try again."
 msgstr "内部服务器错误，请重试。"
 
-#: railgun/website/views.py:309
+#: railgun/website/views.py:268
+#, fuzzy
+msgid "Submission not found"
+msgstr "提交"
+
+#: railgun/website/views.py:313
 msgid "Home"
 msgstr "首页"
 
-#: railgun/website/views.py:312 railgun/website/templates/base.handins.html:6
+#: railgun/website/views.py:316 railgun/website/templates/base.handins.html:6
 #: railgun/website/templates/homework.html:30
 msgid "Homework"
 msgstr "作业"
 
-#: railgun/website/views.py:341
+#: railgun/website/views.py:345
 msgid "Manual"
 msgstr "帮助"
 
-#: railgun/website/views.py:345
+#: railgun/website/views.py:349
 msgid "User Guide"
 msgstr "用户手册"
 
-#: railgun/website/views.py:348
+#: railgun/website/views.py:352
 msgid "Documentation"
 msgstr "开发文档"
 
-#: railgun/website/views.py:352
+#: railgun/website/views.py:356
 msgid "FAQ"
 msgstr "常见问题"
 
-#: railgun/website/views.py:354
+#: railgun/website/views.py:358
 msgid "About"
 msgstr "关于"
 
