@@ -965,7 +965,7 @@ msgstr "%(filename)s：%(partial)d 分支被部分覆盖，%(notaken)d 分支没
 
 #: runlib/python/pyhost/scorer.py:271
 msgid "%(stmt).2f%% statements covered, %(branch).2f%% branches taken and %(partial).2f%% partially taken."
-msgstr "%(stmt).2ff%% 语句被覆盖，%(branch).2f%% 分支被覆而 %(partial).2f%% 分支被部分覆盖。"
+msgstr "%(stmt).2f%% 语句被覆盖，%(branch).2f%% 分支被覆而 %(partial).2f%% 分支被部分覆盖。"
 
 #: runlib/python/pyhost/scorer.py:347
 msgid "%(rate).2f input classes (%(cover)s out of %(total)s) covered"
