@@ -5,8 +5,10 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # This file is released under BSD 2-clause license.
 
+from functools import wraps
+
 from flask import redirect, flash, request, url_for
-from flask.ext.login import LoginManager, current_user
+from flask.ext.login import LoginManager, current_user, login_fresh
 from flask.ext.babel import gettext as _
 
 from railgun.common.gravatar import get_avatar
@@ -44,6 +46,48 @@ class UserContext(object):
     # Proxy the read-only properties to database object
     def __getattr__(self, key):
         return getattr(self.dbo, key)
+
+
+def should_update_email():
+    """Should the user be redirected to profile_edit and update his email?"""
+    if (current_user.email.endswith(app.config['EXAMPLE_USER_EMAIL_SUFFIX'])
+            and request.endpoint != 'profile_edit'):
+        return True
+
+
+def redirect_update_email():
+    """Make a redirect response that update user email."""
+    flash(_('You should update your email before start working!'),
+          'warning')
+    return redirect(url_for('profile_edit'))
+
+
+def login_required(method):
+    """Extend flask.ext.login.login_required, that the user must provide
+    a valid email before using the system.
+    """
+    @wraps(method)
+    def inner(*args, **kwargs):
+        if (not current_user.is_authenticated()):
+            return login_manager.unauthorized()
+        if (should_update_email()):
+            return redirect_update_email()
+        return method(*args, **kwargs)
+    return inner
+
+
+def fresh_login_required(method):
+    """Extend flask.ext.login.fresh_login_required, that the user must provide
+    a valid email before using the system.
+    """
+    @wraps(method)
+    def inner(*args, **kwargs):
+        if (not current_user.is_authenticated()):
+            return login_manager.unauthorized()
+        if (should_update_email()):
+            return redirect_update_email()
+        return method(*args, **kwargs)
+    return inner
 
 
 # Load the user object before processing request

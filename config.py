@@ -109,6 +109,10 @@ MAX_SUBMISSION_SIZE = 256 * 1024
 # a student to submit
 MAX_SUBMISSION_FILE_COUNT = 100
 
+# EXAMPLE_USER_EMAIL_SUFFIX is the email suffix for users came from the
+# auth providers which does not provide emails.
+EXAMPLE_USER_EMAIL_SUFFIX = '@not-a-email.secoder.net'
+
 # WEBSITE_BASEURL tells runner what is the base url of railgun
 WEBSITE_BASEURL = 'http://localhost:5000'
 

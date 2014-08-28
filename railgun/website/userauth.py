@@ -92,13 +92,17 @@ class AuthProvider(object):
 
         raise NotImplementedError()
 
-    def hash_password(self, plain):
-        """Generate the hashed version of `plain`."""
+    def authenticate(self, user, dbuser, password):
+        """Authenticate the given `user` object with `password`.
 
-        raise NotImplementedError()
+        Args:
+            user: User object returned by :method:`pull`.
+            dbuser: Database user object returned by :method:`pull`.
+            password: The password to authenticate.
 
-    def check_password(self, hashed, plain):
-        """Check whether `hashed` is the hashed version of `plain`."""
+        Returns:
+            `dbuser` if authenticate ok, None otherwise.
+        """
 
         raise NotImplementedError()
 
@@ -215,6 +219,10 @@ class CsvFileAuthProvider(AuthProvider):
 
         self.flush()
 
+    def authenticate(self, user, dbuser, password):
+        if (self.check_password(user.password, password)):
+            return dbuser
+
     def init_form(self, form):
         self._init_form_helper(form, ('name', 'email'))
 
@@ -261,7 +269,8 @@ class AuthProviderSet(object):
             if (ret):
                 # Check whether user passes authentication
                 user, dbuser = ret[0], ret[1]
-                if (p.check_password(user.password, password)):
+                dbuser = p.authenticate(user, dbuser, password)
+                if (dbuser):
                     return dbuser
 
     def push(self, dbuser, password=None):

@@ -137,6 +137,9 @@ class ProfileForm(Form):
                 filter(User.id != form._the_user.id).
                 count()):
             raise ValidationError(_('Email already taken'))
+        if (field.data and
+                field.data.endswith(app.config['EXAMPLE_USER_EMAIL_SUFFIX'])):
+            raise ValidationError(_('You should provide a valid email.'))
 
     def validate_password(form, field):
         pwd_len = len(field.data)
