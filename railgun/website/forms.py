@@ -47,7 +47,8 @@ class SignupForm(Form):
     email = StringField(_('Email Address'), validators=[
         DataRequired(message=_("Email can't be blank")),
         Email(message=_("Email is invalid")),
-        Length(max=80, message=_("Email must be no longer than 80 characters")),
+        Length(message=_("Email must be no longer than 80 characters"),
+               max=80),
     ])
     password = PasswordField(_('Password'), validators=[
         InputRequired(message=_("Password can't be blank")),
@@ -92,7 +93,8 @@ class ProfileForm(Form):
     email = StringField(_('Email Address'), validators=[
         DataRequired(message=_("Email can't be blank")),
         Email(message=_("Email is invalid")),
-        Length(max=80, message=_("Email must be no longer than 80 characters")),
+        Length(message=_("Email must be no longer than 80 characters"),
+               max=80),
     ])
     password = PasswordField(_('Password'), validators=[
         EqualTo('confirm', message=_("Passwords must match")),
@@ -153,7 +155,8 @@ class ProfileForm(Form):
         try:
             Locale(field.data)
         except UnknownLocaleError:
-            raise ValidationError(_("Please select a valid locale from above."))
+            raise ValidationError(
+                _("Please select a valid locale from above."))
 
     def validate_timezone(form, field):
         try:

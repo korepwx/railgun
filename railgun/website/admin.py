@@ -197,7 +197,7 @@ def hwscores(hwid):
     q = (db.session.query(Handin.user_id,
                           Handin.state,
                           User.name,
-                          func.max(Handin.score * Handin.scale).label('score')).
+                          func.max(Handin.score*Handin.scale).label('score')).
          filter(Handin.hwid == hwid).
          join(User).
          group_by(Handin.user_id, Handin.state).

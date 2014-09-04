@@ -92,8 +92,8 @@ def run_handin(handler, handid, hwid):
         report_error(handid, ex)
     except Exception:
         logger.exception(
-            'Error executing submission "%(handid)s" for homework "%(hwid)s".' %
-            {'handid': handid, 'hwid': hwid}
+            'Error executing submission "%(handid)s" for homework "%(hwid)s".'
+            % {'handid': handid, 'hwid': hwid}
         )
         report_error(handid, InternalServerError())
 

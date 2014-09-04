@@ -240,7 +240,8 @@ class PageScripts(object):
         visit_set = set()
         self._deporder = []
         for d in self.depends:
-            self._discover(self._depScript(d), visit_set, set(), self._deporder)
+            self._discover(
+                self._depScript(d), visit_set, set(), self._deporder)
 
     def _urllist(self, iterable):
         """Some urls may be generated until used."""

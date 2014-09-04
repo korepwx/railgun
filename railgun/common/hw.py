@@ -41,7 +41,8 @@ def utc_now():
 
 def get_comm_key():
     """Load encryption key from `keys/commKey.txt`."""
-    with open(os.path.join(config.RAILGUN_ROOT, 'keys/commKey.txt'), 'rb') as f:
+    path = os.path.join(config.RAILGUN_ROOT, 'keys/commKey.txt')
+    with open(path, 'rb') as f:
         return f.read().strip()
 
 
@@ -445,7 +446,8 @@ class Homework(object):
         code = self.get_code(lang)
 
         # get list of root files
-        root_hide = re.compile('^code$|^code/\\.*|^desc$|^desc/\\.*|^hw\\.xml$')
+        root_hide = \
+            re.compile('^code$|^code/\\.*|^desc$|^desc/\\.*|^hw\\.xml$')
         root_files = ifilter(
             lambda s: not root_hide.match(s),
             fileutil.dirtree(self.path)

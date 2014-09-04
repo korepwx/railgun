@@ -20,11 +20,11 @@ OFFLINE_GROUP_ID = None
 ONLINE_USER_ID = 'railgun-online'
 ONLINE_GROUP_ID = None
 
-## specify the broker of Celery
+# ---- specify the broker of Celery ----
 # NOTE: format of Redis server is redis://:password@hostname:port/db_number
 BROKER_URL = 'redis://localhost:6379/0'
 
-## celery run queues
+# ---- celery run queues ----
 CELERY_DEFAULT_QUEUE = 'default'
 CELERY_CREATE_MISSING_QUEUES = True
 
@@ -32,14 +32,14 @@ CELERY_ROUTES = {
     # 'railgun.runner.tasks.helloWorld': {'queue': 'example'}
 }
 
-## List of modules to import when celery starts.
+# ---- List of modules to import when celery starts ----
 CELERY_IMPORTS = ()
 
-## Date and time settings
+# ---- Date and time settings ----
 CELERY_TIMEZONE = DEFAULT_TIMEZONE
 CELERY_ENABLE_UTC = True
 
-## serialization settings
+# ---- serialization settings ----
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_SERIALIZER = 'json'
 CELERY_ACCEPT_CONTENT = ['json']

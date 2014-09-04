@@ -251,7 +251,8 @@ class PythonHost(BaseHost):
 
         # Set uid and gid
         if (offline):
-            self.set_user(runconfig.OFFLINE_USER_ID, runconfig.OFFLINE_GROUP_ID)
+            self.set_user(runconfig.OFFLINE_USER_ID,
+                          runconfig.OFFLINE_GROUP_ID)
         else:
             self.set_user(runconfig.ONLINE_USER_ID, runconfig.ONLINE_GROUP_ID)
 

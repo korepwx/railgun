@@ -135,15 +135,18 @@ def profile_edit():
             db.session.commit()
             flash(_('Profile saved.'), 'info')
         except Exception:
-            app.logger.exception('Cannot update account %s' % current_user.name)
+            app.logger.exception('Cannot update account %s' %
+                                 current_user.name)
             flash(_("I'm sorry but we may have met some trouble. Please try "
                     "again."), 'warning')
         return redirect(url_for('profile_edit'))
 
     # If form has errors, flash message to notify the user
     if (form.errors):
-        flash(_("You've got some errors in the form, please check your input."),
-              'warning')
+        flash(
+            _("You've got some errors in the form, please check your input."),
+            'warning'
+        )
 
     # Clear password & confirm here is ok.
     if ('password' in form):
@@ -189,8 +192,10 @@ def homework(slug):
                 languages[handin_lang].handle_upload(
                     handid, hw, handin_lang, forms[handin_lang]
                 )
-                flash(_('You submission is accepted, please wait for results.'),
-                      'success')
+                flash(
+                    _('You submission is accepted, please wait for results.'),
+                    'success'
+                )
             except Exception:
                 app.logger.exception('Error when adding submission to run '
                                      'queue.')
@@ -296,6 +301,11 @@ def userguide():
     return translated_page('userguide')
 
 
+@app.route('/manual/scores/')
+def scores():
+    return translated_page('scores')
+
+
 @app.route('/manual/faq/')
 def faq():
     return translated_page(
@@ -348,6 +358,8 @@ navigates.add(
         subitems=[
             NaviItem.make_view(title=lazy_gettext('User Guide'),
                                endpoint='userguide'),
+            NaviItem.make_view(title=lazy_gettext('Scoring Details'),
+                               endpoint='scores'),
             NaviItem(
                 title=lazy_gettext('Documentation'),
                 url='http://secoder-railgun.readthedocs.org/',

@@ -143,7 +143,8 @@ class CodeStyleScorer(Scorer):
         except `ignore_files`."""
 
         ignore_files = ignore_files or []
-        if (isinstance(ignore_files, str) or isinstance(ignore_files, unicode)):
+        if (isinstance(ignore_files, str) or
+                isinstance(ignore_files, unicode)):
             ignore_files = [ignore_files]
         return CodeStyleScorer(dirtree('.'), (lambda p: p in ignore_files))
 
