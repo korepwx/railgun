@@ -7,6 +7,7 @@
 
 from flask import render_template
 
+from railgun.common.lazy_i18n import GetTextString
 from .context import app
 
 
@@ -57,10 +58,28 @@ class CoveragePartialScoreRender(PartialScoreRender):
         ]
         return ret
 
+    def format_total(self, first):
+        return unicode(first)
+
     def render(self, partial):
         # Format each file result
         if (partial.detail):
-            detail = [self.format_file(d) for d in partial.detail]
+            # Whether there exists the total coverage report?
+            # this special check is for compatibility with older versions.
+            first = partial.detail[0]
+            first_title = str(first.text) if isinstance(first, GetTextString) \
+                else str(first)
+            if (first_title == 'Coverage Results:'):
+                raw_detail = partial.detail[1:]
+            else:
+                raw_detail = partial.detail
+                first = None
+            # Make the detail reports
+            if (first is not None):
+                detail = [self.format_total(first)]
+            else:
+                detail = []
+            detail += [self.format_file(d) for d in raw_detail]
         else:
             detail = None
         return render_template('renders/PartialScore.coverage.html',
