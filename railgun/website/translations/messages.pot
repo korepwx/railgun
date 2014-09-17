@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2014-09-04 13:37+0800\n"
+"POT-Creation-Date: 2014-09-18 01:21+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -73,12 +73,12 @@ msgstr ""
 msgid "Given address is rejected."
 msgstr ""
 
-#: railgun/runner/host.py:285
+#: railgun/runner/host.py:286
 #, python-format
 msgid "Address \"%(url)s\" does not match pattern \"%(rule)s\""
 msgstr ""
 
-#: railgun/runner/host.py:305
+#: railgun/runner/host.py:306
 #, python-format
 msgid "IP address \"%(ip)s\" does not match pattern \"%(rule)s\""
 msgstr ""
@@ -816,35 +816,47 @@ msgid ""
 "with your email address later"
 msgstr ""
 
-#: runlib/python/pyhost/scorer.py:59
+#: runlib/python/pyhost/objschema.py:145
+#, python-format
+msgid ""
+"%(schema)s is required but the object does not exist or could not be "
+"loaded."
+msgstr ""
+
+#: runlib/python/pyhost/objschema.py:151
+#, python-format
+msgid "%(schema)s is denied but the object exists or could not be loaded."
+msgstr ""
+
+#: runlib/python/pyhost/scorer.py:61
 msgid "Functionality Scorer"
 msgstr ""
 
-#: runlib/python/pyhost/scorer.py:80
+#: runlib/python/pyhost/scorer.py:82
 #, python-format
 msgid "%(rate).2f%% tests (%(success)d out of %(total)d) passed"
 msgstr ""
 
-#: runlib/python/pyhost/scorer.py:107
+#: runlib/python/pyhost/scorer.py:109
 msgid "CodeStyle Scorer"
 msgstr ""
 
-#: runlib/python/pyhost/scorer.py:129
+#: runlib/python/pyhost/scorer.py:131
 #, python-format
 msgid ""
 "%(rate).2f%% files (%(trouble)d out of %(total)d) did not pass PEP8 code "
 "style check"
 msgstr ""
 
-#: runlib/python/pyhost/scorer.py:135
+#: runlib/python/pyhost/scorer.py:137
 msgid "All files passed PEP8 code style check"
 msgstr ""
 
-#: runlib/python/pyhost/scorer.py:160
+#: runlib/python/pyhost/scorer.py:162
 msgid "Coverage Scorer"
 msgstr ""
 
-#: runlib/python/pyhost/scorer.py:241
+#: runlib/python/pyhost/scorer.py:268
 #, python-format
 msgid ""
 "%(filename)s: %(miss)d statement(s) not covered.\n"
@@ -852,7 +864,7 @@ msgid ""
 "%(source)s"
 msgstr ""
 
-#: runlib/python/pyhost/scorer.py:252
+#: runlib/python/pyhost/scorer.py:279
 #, python-format
 msgid ""
 "%(filename)s: %(partial)d branch(es) partially taken and %(notaken)d "
@@ -861,34 +873,62 @@ msgid ""
 "%(source)s"
 msgstr ""
 
-#: runlib/python/pyhost/scorer.py:272
+#: runlib/python/pyhost/scorer.py:302
+#, python-format
+msgid ""
+"Coverage Results:\n"
+"%(delim1)s\n"
+"file, stmts, taken, covered, branches, taken, partially taken, covered, "
+"partially covered\n"
+"%(delim2)s\n"
+"%(detail)s\n"
+"%(delim2)s\n"
+"total, %(stmt)d, %(stmt_taken)d, %(stmt_cov).2f%%, %(branch)d, "
+"%(branch_taken)d, %(branch_partial)d, %(branch_cov).2f%%, "
+"%(branch_partial_cov).2f%%"
+msgstr ""
+
+#: runlib/python/pyhost/scorer.py:319
 #, python-format
 msgid ""
 "%(stmt).2f%% statements covered, %(branch).2f%% branches taken and "
 "%(partial).2f%% partially taken."
 msgstr ""
 
-#: runlib/python/pyhost/scorer.py:309
+#: runlib/python/pyhost/scorer.py:356
 msgid "InputClass Scorer"
 msgstr ""
 
-#: runlib/python/pyhost/scorer.py:349
+#: runlib/python/pyhost/scorer.py:396
 #, python-format
 msgid "%(rate).2f%% input classes (%(cover)s out of %(total)s) covered"
 msgstr ""
 
-#: runlib/python/pyhost/scorer.py:357
+#: runlib/python/pyhost/scorer.py:404
 #, python-format
 msgid "COVERED: %(checker)s"
 msgstr ""
 
-#: runlib/python/pyhost/scorer.py:362
+#: runlib/python/pyhost/scorer.py:409
 #, python-format
 msgid "NOT COVERED: %(checker)s"
 msgstr ""
 
-#: runlib/python/pyhost/scorer.py:366 runlib/python/pyhost/scorer.py:371
+#: runlib/python/pyhost/scorer.py:413 runlib/python/pyhost/scorer.py:418
 msgid "CSV data does not match schema."
+msgstr ""
+
+#: runlib/python/pyhost/scorer.py:429
+msgid "Object Structure Scorer"
+msgstr ""
+
+#: runlib/python/pyhost/scorer.py:439
+#, python-format
+msgid "%(rate).2f%% check points (%(success)d out of %(total)d) passed"
+msgstr ""
+
+#: runlib/python/pyhost/scorer.py:450
+msgid "Object Structure Scorer exited with error."
 msgstr ""
 
 #: runlib/python/pyhost/utility.py:35
