@@ -7,16 +7,18 @@
 
 import re
 import os
+from time import time
+
 import pep8
 import unittest
-from time import time
+from coverage import coverage
 
 from railgun.common.fileutil import dirtree
 from railgun.common.lazy_i18n import lazy_gettext
 from railgun.common.csvdata import CsvSchema
 from .errors import ScorerFailure
 from .utility import UnitTestScorerDetailResult, Pep8DetailReport
-from coverage import coverage
+from .objschema import SchemaResultCollector
 
 
 class Scorer(object):
@@ -167,7 +169,7 @@ class CoverageScorer(Scorer):
         def safe_divide(a, b):
             if (b > 0):
                 return float(a) / float(b)
-            return 0.0
+            return 1.0
 
         cov = coverage(branch=True)
         cov.start()
@@ -415,4 +417,37 @@ class InputClassScorer(Scorer):
             raise ScorerFailure(
                 brief=lazy_gettext('CSV data does not match schema.'),
                 detail=[ex.args[0]]
+            )
+
+
+class ObjSchemaScorer(Scorer):
+    """Scorer of object structure."""
+
+    def __init__(self, schema):
+        """Construct a new `ObjSchemaScorer` for given `schema`."""
+        super(ObjSchemaScorer, self) .__init__(
+            lazy_gettext('Object Structure Scorer')
+        )
+        self.schema = schema
+
+    def _run(self):
+        try:
+            collector = SchemaResultCollector()
+            self.schema.check(collector)
+            self.score = 100.0 * (collector.total - collector.error) / float(
+                collector.total)
+            self.brief = lazy_gettext(
+                '%(rate).2f%% check points (%(success)d out of %(total)d) '
+                'passed',
+                rate=self.score,
+                total=collector.total,
+                success=collector.total - collector.error,
+            )
+            self.detail = collector.errors
+        except:
+            raise
+            raise ScorerFailure(
+                brief=lazy_gettext(
+                    'Object Structure Scorer exited with error.'),
+                detail=[]
             )

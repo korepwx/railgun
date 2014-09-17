@@ -99,7 +99,7 @@ TRANSLATION_DIR = os.path.join(RAILGUN_ROOT, 'railgun/website/translations')
 
 # RUNNER_DEFAULT_TIMEOUT controls the default timeout config for testing
 # module to run
-RUNNER_DEFAULT_TIMEOUT = 10
+RUNNER_DEFAULT_TIMEOUT = 2
 
 # MAX_SUBMISSION_SIZE controls the maximum data size allowed for a student
 # to submit (in bytes)

@@ -35,6 +35,7 @@
   -->
   <scorers>
     <scorer name="CodeStyleScorer" detail="true" />
+    <scorer name="ObjSchemaScorer" detail="true" />
     <scorer name="CoverageScorer" detail="true" />
   </scorers>
 

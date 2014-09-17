@@ -23,6 +23,7 @@ class PartialScoreRender(object):
         return {
             'default': DefaultPartialScoreRender,
             'CoverageScorer': CoveragePartialScoreRender,
+            'ObjSchemaScorer': ObjSchemaPartialScoreRender,
         }.get(typeName, DefaultPartialScoreRender)()
 
 
@@ -97,6 +98,15 @@ class CoveragePartialScoreRender(PartialScoreRender):
             total_report = None
         return render_template('renders/PartialScore.coverage.html',
                                detail=detail, total=total_report)
+
+
+class ObjSchemaPartialScoreRender(PartialScoreRender):
+    """HwPartialScorer renderer that renders objschema results."""
+
+    def render(self, partial):
+        return render_template(
+            'renders/PartialScore.objschema.html', partial=partial
+        )
 
 
 def renderPartialScore(partial):
