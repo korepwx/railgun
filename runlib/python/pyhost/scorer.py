@@ -166,10 +166,10 @@ class CoverageScorer(Scorer):
         self.filelist = filelist
 
     def _run(self):
-        def safe_divide(a, b):
+        def safe_divide(a, b, default=1.0):
             if (b > 0):
                 return float(a) / float(b)
-            return 1.0
+            return default
 
         cov = coverage(branch=True)
         cov.start()
@@ -222,7 +222,7 @@ class CoverageScorer(Scorer):
                     'branch_partial': file_partial,
                     'branch_cov': 100.0 * safe_divide(file_taken, file_branch),
                     'branch_partial_cov': 100.0 * safe_divide(
-                        file_partial, file_branch)
+                        file_partial, file_branch, default=0.0)
                 }
             )
             # apply file branch to global
@@ -283,7 +283,8 @@ class CoverageScorer(Scorer):
 
         self.stmt_cover = 100.0 - 100.0 * safe_divide(total_miss, total_exec)
         self.branch_cover = 100.0 * safe_divide(total_taken, total_branch)
-        self.branch_partial = 100.0 * safe_divide(total_partial, total_branch)
+        self.branch_partial = 100.0 * safe_divide(
+            total_partial, total_branch, default=0.0)
 
         # Add final total report
         self.detail[0] = lazy_gettext(
