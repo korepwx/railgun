@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2014-09-18 01:21+0800\n"
+"POT-Creation-Date: 2014-09-18 01:26+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -823,9 +823,9 @@ msgid ""
 "loaded."
 msgstr ""
 
-#: runlib/python/pyhost/objschema.py:151
+#: runlib/python/pyhost/objschema.py:150
 #, python-format
-msgid "%(schema)s is denied but the object exists or could not be loaded."
+msgid "%(schema)s is denied but the object exists."
 msgstr ""
 
 #: runlib/python/pyhost/scorer.py:61

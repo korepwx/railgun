@@ -146,8 +146,7 @@ class BaseSchema(object):
             ))
         elif (self.exist_rule == SchemaExistRule.DENY and self.exist):
             collector.addError(lazy_gettext(
-                '%(schema)s is denied but the object exists or '
-                'could not be loaded.',
+                '%(schema)s is denied but the object exists.',
                 schema=self.get_description()
             ))
         else:

@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version:  railgun\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2014-09-18 01:21+0800\n"
+"POT-Creation-Date: 2014-09-18 01:26+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: zh_Hans_CN <LL@li.org>\n"
@@ -821,9 +821,9 @@ msgid ""
 "loaded."
 msgstr ""
 
-#: runlib/python/pyhost/objschema.py:151
+#: runlib/python/pyhost/objschema.py:150
 #, python-format
-msgid "%(schema)s is denied but the object exists or could not be loaded."
+msgid "%(schema)s is denied but the object exists."
 msgstr ""
 
 #: runlib/python/pyhost/scorer.py:61
@@ -1032,13 +1032,7 @@ msgstr "未预期的成功：％（测试）秒。"
 #~ msgstr "在%(total)d 个文件中中有 %(trouble)d 个没有通过 PEP8 代码风格检查"
 
 #~ msgid ""
-#~ "%(filename)s: %(miss)d lines not covered.\n"
-#~ "%(sep)s\n"
-#~ "%(source)s"
-#~ msgstr ""
-#~ "%(filename)s：%(miss)d 行没被覆盖。\n"
-#~ "%(sep)s\n"
-#~ "%(source)s"
+#~ msgstr "%(rate).2f%% 的文件（%(total)d 中的 %(trouble)d 个）没通过 PEP8 代码风格检查"
 
 #~ msgid "Coverage rate: %(cover_rate)2.1f%%"
 #~ msgstr "覆盖率：%(cover_rate)2.1f%%"
@@ -1055,12 +1049,9 @@ msgstr "未预期的成功：％（测试）秒。"
 #~ msgid "Couldn't start submission process."
 #~ msgstr "无法启动你提交的程序。"
 
-#~ msgid ""
-#~ "%(rate).2f files (%(trouble)d out of "
-#~ "%(total)d) did not pass PEP8 code "
-#~ "style check"
-#~ msgstr "%(rate).2f%% 的文件（%(total)d 中的 %(trouble)d 个）没通过 PEP8 代码风格检查"
-
 #~ msgid "%(rate).2f input classes (%(cover)s out of %(total)s) covered"
 #~ msgstr "%(rate).2f%% 的输入等价类（%(total)s 中的 %(cover)s 种）被覆盖"
+
+#~ msgid "%(schema)s is denied but the object exists or could not be loaded."
+#~ msgstr ""
 
