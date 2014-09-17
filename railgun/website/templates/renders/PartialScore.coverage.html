@@ -1,3 +1,22 @@
+{% if total -%}
+  <table class="coverage-total table table-hover">
+    <tr>
+      {% for hdr in total['headers'] %}<th>{{ hdr }}</th>{% endfor %}
+    </tr>
+    {% for file in total['files'] -%}
+      <tr>
+        {% for u in file -%}
+          <td>{{ u }}</td>
+        {%- endfor %}
+      </tr>
+    {%- endfor %}
+    <tr>
+      {% for t in total['total'] -%}
+        <th>{{ t }}</th>
+      {%- endfor %}
+    </tr>
+  </table>
+{%- endif %}
 {% for d in detail -%}
   <strong>{{ d['file'] }}</strong>
   <table class="coverage table table-hover">

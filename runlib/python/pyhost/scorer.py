@@ -183,16 +183,8 @@ class CoverageScorer(Scorer):
         cov.stop()
 
         # the 1st part: total view of the coverage stats
-        self.detail = []
-        total_cov = [lazy_gettext(
-            'Coverage Results:'
-        )]
-        total_cov.append('=' * 70)
-        total_cov.append(lazy_gettext(
-            'file, stmts, taken, coverage, branches, taken, partially taken, '
-            'coverage'
-        ))
-        total_cov.append('-' * 70)
+        self.detail = ['']
+        total_cov = []
 
         # statement coverage rate
         total_exec = total_miss = 0
@@ -217,17 +209,18 @@ class CoverageScorer(Scorer):
             total_cov.append(
                 '%(file)s, %(stmt)d, %(stmt_taken)d, %(stmt_cov).2f%%, '
                 '%(branch)d, %(branch_taken)d, %(branch_partial)d, '
-                '%(branch_cov).2f%%' % {
+                '%(branch_cov).2f%%, %(branch_partial_cov).2f%%' % {
                     'file': filename,
-                    'stmt': exec_stmt,
-                    'stmt_taken': exec_stmt - miss_stmt,
+                    'stmt': len(exec_stmt),
+                    'stmt_taken': len(exec_stmt) - len(miss_stmt),
                     'stmt_cov': 100.0 * safe_divide(
-                        exec_stmt - miss_stmt, exec_stmt),
+                        len(exec_stmt) - len(miss_stmt), len(exec_stmt)),
                     'branch': file_branch,
                     'branch_taken': file_taken,
                     'branch_partial': file_partial,
-                    'branch_cov': 100.0 * safe_divide(
-                        file_taken + file_partial * 0.5, file_branch),
+                    'branch_cov': 100.0 * safe_divide(file_taken, file_branch),
+                    'branch_partial_cov': 100.0 * safe_divide(
+                        file_partial, file_branch)
                 }
             )
             # apply file branch to global
@@ -291,19 +284,29 @@ class CoverageScorer(Scorer):
         self.branch_partial = 100.0 * safe_divide(total_partial, total_branch)
 
         # Add final total report
-        total_cov.append('-' * 70)
-        total_cov.append(lazy_gettext(
-            'Total, %(stmt)d, %(stmt_taken)d, %(stmt_cov).2f%%, '
+        self.detail[0] = lazy_gettext(
+            'Coverage Results:\n'
+            '%(delim1)s\n'
+            'file, stmts, taken, covered, branches, taken, partially taken, '
+            'covered, partially covered\n'
+            '%(delim2)s\n'
+            '%(detail)s\n'
+            '%(delim2)s\n'
+            'total, %(stmt)d, %(stmt_taken)d, %(stmt_cov).2f%%, '
             '%(branch)d, %(branch_taken)d, %(branch_partial)d, '
-            '%(branch_cov).2f%%',
+            '%(branch_cov).2f%%, %(branch_partial_cov).2f%%',
+            delim1='=' * 70,
+            delim2='-' * 70,
+            detail='\n'.join(total_cov),
             stmt=total_exec,
             stmt_taken=total_exec - total_miss,
             stmt_cov=self.stmt_cover,
             branch=total_branch,
             branch_taken=total_taken,
             branch_partial=total_partial,
-            branch_cov=self.branch_cover + 0.5 * self.branch_partial,
-        ))
+            branch_cov=self.branch_cover,
+            branch_partial_cov=self.branch_partial,
+        )
 
         # final score
         self.score = (

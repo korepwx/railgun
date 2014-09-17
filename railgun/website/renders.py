@@ -58,8 +58,15 @@ class CoveragePartialScoreRender(PartialScoreRender):
         ]
         return ret
 
-    def format_total(self, first):
-        return unicode(first)
+    def extract_total(self, first):
+        if (not first):
+            return None
+        txt = unicode(first)
+        lines = txt.split('\n')
+        headers = [s.strip() for s in lines[2].split(u',')]
+        files = [[s.strip() for s in v.split(u',')] for v in lines[4:-2]]
+        total = [s.strip() for s in lines[-1].split(u',')]
+        return headers, files, total
 
     def render(self, partial):
         # Format each file result
@@ -69,21 +76,27 @@ class CoveragePartialScoreRender(PartialScoreRender):
             first = partial.detail[0]
             first_title = str(first.text) if isinstance(first, GetTextString) \
                 else str(first)
-            if (first_title == 'Coverage Results:'):
+            if (first_title.startswith('Coverage Results:')):
                 raw_detail = partial.detail[1:]
             else:
                 raw_detail = partial.detail
                 first = None
             # Make the detail reports
-            if (first is not None):
-                detail = [self.format_total(first)]
+            first_extract = self.extract_total(first)
+            if (first_extract):
+                total_report = {
+                    'headers': first_extract[0],
+                    'files': first_extract[1],
+                    'total': first_extract[2],
+                }
             else:
-                detail = []
-            detail += [self.format_file(d) for d in raw_detail]
+                total_report = None
+            detail = [self.format_file(d) for d in raw_detail]
         else:
             detail = None
+            total_report = None
         return render_template('renders/PartialScore.coverage.html',
-                               detail=detail)
+                               detail=detail, total=total_report)
 
 
 def renderPartialScore(partial):

@@ -116,6 +116,10 @@ body {
 }
 
 /* Tweak coverage report */
+table.coverage-total {
+  border: 1px solid #CCC;
+  margin: 10px 0 10px 0;
+}
 table.coverage pre {
   background: none !important;
   border: none !important;
