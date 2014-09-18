@@ -47,20 +47,17 @@ class ApiClient(object):
 
         obj = hwscore.to_plain()
         obj['uuid'] = handid
-        return self.post(
-            '/handin/report/%s/' % handid, payload=obj, **self._cert_kwargs())
+        return self.post('/handin/report/%s/' % handid, payload=obj)
 
     def start(self, handid):
         """Update state of `handid` to running."""
 
         obj = {'uuid': handid}
-        return self.post(
-            '/handin/start/%s/' % handid, payload=obj, **self._cert_kwargs())
+        return self.post('/handin/start/%s/' % handid, payload=obj)
 
     def proclog(self, handid, exitcode, stdout, stderr):
         """Log process (exitcode, stdout, stderr) of `handid`."""
 
         obj = {'uuid': handid, 'exitcode': exitcode, 'stdout': stdout,
                'stderr': stderr}
-        return self.post(
-            '/handin/proclog/%s/' % handid, payload=obj, **self._cert_kwargs())
+        return self.post('/handin/proclog/%s/' % handid, payload=obj)
