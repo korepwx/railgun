@@ -50,7 +50,6 @@ class HostConfig(object):
     def make_environ(self):
         """Make the new environ from current process and config values."""
         ret = os.environ.copy()
-        print(ret)
         # setup default values
         ret['RAILGUN_API_BASEURL'] = runconfig.WEBSITE_API_BASEURL
         ret['RAILGUN_ROOT'] = runconfig.RAILGUN_ROOT
