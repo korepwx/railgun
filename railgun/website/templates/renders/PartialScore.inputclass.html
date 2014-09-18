@@ -1,0 +1,5 @@
+<table class="table table-hover inputclass">
+  {% for d in detail %}
+    <tr><td class="{% if d[0] %}danger{% else %}success{% endif %}">{{ d[1] }}</td></tr>
+  {% endfor %}
+</table>
