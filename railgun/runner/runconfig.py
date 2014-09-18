@@ -10,10 +10,6 @@ from config import *
 # The base url of API for the runner to interact with
 WEBSITE_API_BASEURL = WEBSITE_BASEURL + '/api'
 
-# If WEBSITE_API_SSL_CERT is not None, the runner will use this cert
-# to verify the server identity.
-WEBSITE_API_SSL_CERT = None
-
 # The user id and group id for submissions on offline run queue
 # If group id is not defined, the group id of the user will be selected.
 OFFLINE_USER_ID = 'railgun-offline'

@@ -25,12 +25,6 @@ class ApiClient(object):
 
         return '%s%s' % (self.baseurl, action)
 
-    def _cert_kwargs(self):
-        """Construct the `certs` kwargs for web requests."""
-        if (runconfig.WEBSITE_API_SSL_CERT):
-            return {'cert': (runconfig.WEBSITE_API_SSL_CERT, )}
-        return {}
-
     def post(self, action, payload):
         """Post `payload` to `action` at remote api."""
 
@@ -39,7 +33,7 @@ class ApiClient(object):
             self._get_url(action),
             data=payload,
             headers={'Content-Type': 'application/octet-stream'},
-            **self._cert_kwargs()
+            verify=False
         )
 
     def report(self, handid, hwscore):
