@@ -117,7 +117,8 @@ body {
 
 /* Tweak coverage report */
 table.coverage-total,
-table.objschema {
+table.objschema,
+table.inputclass {
   border: 1px solid #CCC;
   margin: 10px 0 10px 0;
 }
