@@ -182,7 +182,7 @@ class ModuleSchema(BaseSchema):
         super(ModuleSchema, self).__init__(parent, pattern)
 
     def get_description(self):
-        return 'Module(%s)' % self._pattern_string()
+        return self._pattern_string()
 
     def check_self(self, collector):
         """Try to import the given module."""
@@ -211,7 +211,7 @@ class ClassSchema(BaseSchema):
         super(ClassSchema, self).__init__(parent, pattern)
 
     def get_description(self):
-        return '%s.Class(%s)' % (
+        return '%s.%s' % (
             self.parent.get_description(), self._pattern_string())
 
     def check_self(self, collector):
@@ -232,7 +232,7 @@ class MethodSchema(BaseSchema):
         super(MethodSchema, self).__init__(parent, pattern)
 
     def get_description(self):
-        return '%s.Method(%s)' % (
+        return '%s.%s' % (
             self.parent.get_description(), self._pattern_string())
 
     def check_self(self, collector):
