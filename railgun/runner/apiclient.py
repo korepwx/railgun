@@ -28,7 +28,7 @@ class ApiClient(object):
     def _cert_kwargs(self):
         """Construct the `certs` kwargs for web requests."""
         if (runconfig.WEBSITE_API_SSL_CERT):
-            return {'certs': (runconfig.WEBSITE_API_SSL_CERT, )}
+            return {'cert': (runconfig.WEBSITE_API_SSL_CERT, )}
         return {}
 
     def post(self, action, payload):
