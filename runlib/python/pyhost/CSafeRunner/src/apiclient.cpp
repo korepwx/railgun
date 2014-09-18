@@ -72,6 +72,9 @@ std::string ApiClient::doPOST(std::string const& action,
   curl_easy_setopt(curl_, CURLOPT_POSTFIELDS, payload.data());
   curl_easy_setopt(curl_, CURLOPT_POSTFIELDSIZE, long(payload.size()));
 
+  // Disable the cert verification of CURL
+  curl_easy_setopt(curl_, CURLOPT_SSL_VERIFYPEER, 0L);
+
   // Prepare HTTP headers list
   headers = curl_slist_append(
     headers, "Content-Type: application/octet-stream");
