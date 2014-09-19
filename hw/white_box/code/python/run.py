@@ -11,7 +11,13 @@ import SafeRunner
 
 if (__name__ == '__main__'):
     scorers = [
-        (CodeStyleScorer.FromHandinDir(['run.py']), 0.1),
-        (CoverageScorer.FromHandinDir(['myfunc.py']), 0.9),
+        (CodeStyleScorer.FromHandinDir(ignore_files=['run.py']), 0.1),
+        # Note that the CoverageScorer takes 1.0 as total weight, but
+        # uses stmt_weight=0.4, branch_weight=0.5 to control the score
+        (CoverageScorer.FromHandinDir(
+            files_to_cover=['myfunc.py'],
+            stmt_weight=0.4,
+            branch_weight=0.5,
+        ), 1.0),
     ]
     SafeRunner.run(scorers)

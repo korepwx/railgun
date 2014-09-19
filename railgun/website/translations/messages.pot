@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2014-09-18 01:26+0800\n"
+"POT-Creation-Date: 2014-09-19 10:57+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -73,12 +73,12 @@ msgstr ""
 msgid "Given address is rejected."
 msgstr ""
 
-#: railgun/runner/host.py:286
+#: railgun/runner/host.py:285
 #, python-format
 msgid "Address \"%(url)s\" does not match pattern \"%(rule)s\""
 msgstr ""
 
-#: railgun/runner/host.py:306
+#: railgun/runner/host.py:305
 #, python-format
 msgid "IP address \"%(ip)s\" does not match pattern \"%(rule)s\""
 msgstr ""
@@ -843,20 +843,18 @@ msgstr ""
 
 #: runlib/python/pyhost/scorer.py:131
 #, python-format
-msgid ""
-"%(rate).2f%% files (%(trouble)d out of %(total)d) did not pass PEP8 code "
-"style check"
+msgid "%(trouble)d problem(s) found in %(file)d file(s)"
 msgstr ""
 
-#: runlib/python/pyhost/scorer.py:137
+#: runlib/python/pyhost/scorer.py:136
 msgid "All files passed PEP8 code style check"
 msgstr ""
 
-#: runlib/python/pyhost/scorer.py:162
+#: runlib/python/pyhost/scorer.py:161
 msgid "Coverage Scorer"
 msgstr ""
 
-#: runlib/python/pyhost/scorer.py:268
+#: runlib/python/pyhost/scorer.py:269
 #, python-format
 msgid ""
 "%(filename)s: %(miss)d statement(s) not covered.\n"
@@ -864,7 +862,7 @@ msgid ""
 "%(source)s"
 msgstr ""
 
-#: runlib/python/pyhost/scorer.py:279
+#: runlib/python/pyhost/scorer.py:280
 #, python-format
 msgid ""
 "%(filename)s: %(partial)d branch(es) partially taken and %(notaken)d "
@@ -873,7 +871,7 @@ msgid ""
 "%(source)s"
 msgstr ""
 
-#: runlib/python/pyhost/scorer.py:302
+#: runlib/python/pyhost/scorer.py:304
 #, python-format
 msgid ""
 "Coverage Results:\n"
@@ -888,46 +886,51 @@ msgid ""
 "%(branch_partial_cov).2f%%"
 msgstr ""
 
-#: runlib/python/pyhost/scorer.py:319
+#: runlib/python/pyhost/scorer.py:321
 #, python-format
 msgid ""
-"%(stmt).2f%% statements covered, %(branch).2f%% branches taken and "
-"%(partial).2f%% partially taken."
-msgstr ""
-
-#: runlib/python/pyhost/scorer.py:356
-msgid "InputClass Scorer"
-msgstr ""
-
-#: runlib/python/pyhost/scorer.py:396
-#, python-format
-msgid "%(rate).2f%% input classes (%(cover)s out of %(total)s) covered"
-msgstr ""
-
-#: runlib/python/pyhost/scorer.py:404
-#, python-format
-msgid "COVERED: %(checker)s"
+"%(stmt).2f%% statements covered (%(stmt_score).2f pts), %(branch).2f%% "
+"branches fully covered (%(branch_score).2f pts) and %(partial).2f%% "
+"partially covered (%(partial_score).2f pts)."
 msgstr ""
 
 #: runlib/python/pyhost/scorer.py:409
 #, python-format
+msgid "%(rate).2f%% rules (%(cover)s out of %(total)s) covered"
+msgstr ""
+
+#: runlib/python/pyhost/scorer.py:417
+#, python-format
+msgid "COVERED: %(checker)s"
+msgstr ""
+
+#: runlib/python/pyhost/scorer.py:422
+#, python-format
 msgid "NOT COVERED: %(checker)s"
 msgstr ""
 
-#: runlib/python/pyhost/scorer.py:413 runlib/python/pyhost/scorer.py:418
+#: runlib/python/pyhost/scorer.py:426 runlib/python/pyhost/scorer.py:431
 msgid "CSV data does not match schema."
 msgstr ""
 
-#: runlib/python/pyhost/scorer.py:429
+#: runlib/python/pyhost/scorer.py:440
+msgid "InputClass Scorer"
+msgstr ""
+
+#: runlib/python/pyhost/scorer.py:451
+msgid "BoundaryValue Scorer"
+msgstr ""
+
+#: runlib/python/pyhost/scorer.py:496
 msgid "Object Structure Scorer"
 msgstr ""
 
-#: runlib/python/pyhost/scorer.py:439
+#: runlib/python/pyhost/scorer.py:506
 #, python-format
 msgid "%(rate).2f%% check points (%(success)d out of %(total)d) passed"
 msgstr ""
 
-#: runlib/python/pyhost/scorer.py:450
+#: runlib/python/pyhost/scorer.py:517
 msgid "Object Structure Scorer exited with error."
 msgstr ""
 

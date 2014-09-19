@@ -102,7 +102,7 @@ class UnitTestScorer(Scorer):
 class CodeStyleScorer(Scorer):
     """scorer according to the code style."""
 
-    def __init__(self, filelist, skipfile=None):
+    def __init__(self, filelist, skipfile=None, errcost=10.0):
         """Check the code style of `filelist`, skip if `skipfile(path)` is
         True."""
 
@@ -111,6 +111,7 @@ class CodeStyleScorer(Scorer):
         is_pyfile = lambda p: (p[-3:].lower() == '.py')
         self.filelist = [p for p in filelist
                          if not skipfile(p) and is_pyfile(p)]
+        self.errcost = errcost
 
     def _run(self):
         guide = pep8.StyleGuide()
@@ -118,20 +119,18 @@ class CodeStyleScorer(Scorer):
         guide.options.report = Pep8DetailReport(guide.options)
         result = guide.check_files(self.filelist)
 
-        # the final score should be count_trouble_files() / total_file
-        total_file = len(self.filelist)
-        trouble_file = result.count_trouble_files()
-        if (total_file > 0.0):
-            self.score = 100.0 * (total_file - trouble_file) / total_file
-        else:
-            self.score = 100.0
+        # Each error consumes 1 point.
+        errcount = result.count_errors()
+        self.score = 100.0 - errcount * self.errcost
+        if self.score < 0.0:
+            self.score = 0.0
 
         # format the brief report
-        if (trouble_file > 0):
+        total_file = len(self.filelist)
+        if errcount > 0:
             self.brief = lazy_gettext(
-                '%(rate).2f%% files (%(trouble)d out of %(total)d) did not '
-                'pass PEP8 code style check',
-                rate=100.0 - self.score, total=total_file, trouble=trouble_file
+                '%(trouble)d problem(s) found in %(file)d file(s)',
+                trouble=errcount, file=total_file
             )
         else:
             self.brief = lazy_gettext('All files passed PEP8 code style check')
@@ -154,7 +153,7 @@ class CodeStyleScorer(Scorer):
 class CoverageScorer(Scorer):
     """scorer according to the result of coverage."""
 
-    def __init__(self, suite, filelist):
+    def __init__(self, suite, filelist, stmt_weight=0.5, branch_weight=0.5):
         '''
         Run all test cases in `suite` and then get the coverage of all files
         in `filelist`.
@@ -164,6 +163,8 @@ class CoverageScorer(Scorer):
         self.suite = suite
         self.brief = []
         self.filelist = filelist
+        self.stmt_weight = stmt_weight
+        self.branch_weight = branch_weight
 
     def _run(self):
         def safe_divide(a, b, default=1.0):
@@ -312,22 +313,27 @@ class CoverageScorer(Scorer):
         )
 
         # final score
-        self.score = (
-            self.stmt_cover * 0.5 +
-            self.branch_cover * 0.5 +
-            self.branch_partial * 0.25
-        )
+        stmt_score = self.stmt_cover * self.stmt_weight
+        full_branch_score = self.branch_cover * self.branch_weight
+        partial_branch_score = self.branch_partial * self.branch_weight * 0.5
+
+        self.score = stmt_score + full_branch_score + partial_branch_score
         self.brief = lazy_gettext(
-            '%(stmt).2f%% statements covered, '
-            '%(branch).2f%% branches taken and '
-            '%(partial).2f%% partially taken.',
+            '%(stmt).2f%% statements covered (%(stmt_score).2f pts), '
+            '%(branch).2f%% branches fully covered (%(branch_score).2f pts) '
+            'and '
+            '%(partial).2f%% partially covered (%(partial_score).2f pts).',
             stmt=self.stmt_cover,
             branch=self.branch_cover,
             partial=self.branch_partial,
+            stmt_score=stmt_score,
+            branch_score=full_branch_score,
+            partial_score=partial_branch_score,
         )
 
     @staticmethod
-    def FromHandinDir(files_to_cover, test_pattern='test_.*\\.py$'):
+    def FromHandinDir(files_to_cover, test_pattern='test_.*\\.py$',
+                      stmt_weight=0.5, branch_weight=0.5):
         """Create a `CoverageScorer` to get score for all unit tests provided
         by students according to the coverage of files in `files_to_cover`.
 
@@ -343,23 +349,30 @@ class CoverageScorer(Scorer):
                 test_modules.append(fpath.replace('/', '.'))
 
         suite = lambda: unittest.TestLoader().loadTestsFromNames(test_modules)
-        return CoverageScorer(suite, files_to_cover)
+        return CoverageScorer(
+            suite=suite,
+            filelist=files_to_cover,
+            stmt_weight=stmt_weight,
+            branch_weight=branch_weight,
+        )
 
 
-class InputClassScorer(Scorer):
+class InputDataScorer(Scorer):
     """Scorer to the input data for BlackBox testing."""
 
-    def __init__(self, schema, csvdata, check_classes=None):
+    def __init__(self, name, schema, csvdata, check_classes=None):
         """Construct a new `InputClassScorer` on given `csvdata`, checked by
         rules defined in `check_classes`."""
 
-        super(InputClassScorer, self).__init__(
-            lazy_gettext('InputClass Scorer')
-        )
+        super(InputDataScorer, self).__init__(name)
 
         self.schema = schema
         self.csvdata = csvdata
         self.check_classes = check_classes or []
+
+    def empty(self):
+        """Whether this scorer does not contain rules?"""
+        return not self.check_classes
 
     def getDescription(self, check_class):
         """Get the description for given `check_class`."""
@@ -392,8 +405,7 @@ class InputClassScorer(Scorer):
             # total up score by len(covered) / total_classes
             self.score = 100.0 * len(covered) / len(self.check_classes)
             self.brief = lazy_gettext(
-                '%(rate).2f%% input classes (%(cover)s out of %(total)s) '
-                'covered',
+                '%(rate).2f%% rules (%(cover)s out of %(total)s) covered',
                 cover=len(covered), total=len(self.check_classes),
                 rate=self.score
             )
@@ -419,6 +431,60 @@ class InputClassScorer(Scorer):
                 brief=lazy_gettext('CSV data does not match schema.'),
                 detail=[ex.args[0]]
             )
+
+
+class InputClassScorer(InputDataScorer):
+
+    def __init__(self, schema, csvdata, check_classes=None):
+        super(InputClassScorer, self).__init__(
+            name=lazy_gettext('InputClass Scorer'),
+            schema=schema,
+            csvdata=csvdata,
+            check_classes=check_classes,
+        )
+
+
+class BoundaryValueScorer(InputDataScorer):
+
+    def __init__(self, schema, csvdata, check_classes=None):
+        super(BoundaryValueScorer, self).__init__(
+            name=lazy_gettext('BoundaryValue Scorer'),
+            schema=schema,
+            csvdata=csvdata,
+            check_classes=check_classes,
+        )
+
+
+class BlackBoxScorerMaker(object):
+
+    def __init__(self, schema, csvdata, input_class_weight=0.6,
+                 boundary_value_weight=0.4):
+        csvdata = list(csvdata)
+        self._input_class = InputClassScorer(schema, csvdata)
+        self._boundary_value = BoundaryValueScorer(schema, csvdata)
+        self.input_class_weight = input_class_weight
+        self.boundary_value_weight = boundary_value_weight
+
+    def class_(self, description):
+        """Define an input class rule."""
+        return self._input_class.rule(description)
+
+    def boundary(self, description):
+        """Define a boundary value rule."""
+        return self._boundary_value.rule(description)
+
+    def get_scorers(self, weight=1.0):
+        """Get the list of contained scorers."""
+        ret = []
+        if not self._input_class.empty():
+            ret.append(
+                (self._input_class, self.input_class_weight * weight)
+            )
+        if not self._boundary_value.empty():
+            ret.append(
+                (self._boundary_value, self.boundary_value_weight * weight)
+            )
+        return ret
 
 
 class ObjSchemaScorer(Scorer):

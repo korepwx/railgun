@@ -117,6 +117,9 @@ class Pep8DetailReport(pep8.BaseReport):
     def count_trouble_files(self):
         return len(self._trouble_files)
 
+    def count_errors(self):
+        return len(self._errors)
+
     def build_report(self):
         """Build human readable report text."""
 

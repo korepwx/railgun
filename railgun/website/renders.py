@@ -24,7 +24,8 @@ class PartialScoreRender(object):
             'default': DefaultPartialScoreRender,
             'CoverageScorer': CoveragePartialScoreRender,
             'ObjSchemaScorer': ObjSchemaPartialScoreRender,
-            'InputClassScorer': InputClassPartialScoreRender,
+            'InputClassScorer': InputDataPartialScoreRender,
+            'BoundaryValueScorer': InputDataPartialScoreRender,
         }.get(typeName, DefaultPartialScoreRender)()
 
 
@@ -110,8 +111,8 @@ class ObjSchemaPartialScoreRender(PartialScoreRender):
         )
 
 
-class InputClassPartialScoreRender(PartialScoreRender):
-    """HwPartialScorer renderer that renders input class results."""
+class InputDataPartialScoreRender(PartialScoreRender):
+    """HwPartialScorer renderer that renders input data results."""
 
     def _parse_detail(self, detail):
         ret = []
@@ -126,7 +127,7 @@ class InputClassPartialScoreRender(PartialScoreRender):
 
     def render(self, partial):
         return render_template(
-            'renders/PartialScore.inputclass.html',
+            'renders/PartialScore.inputdata.html',
             detail=self._parse_detail(partial.detail)
         )
 
