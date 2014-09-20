@@ -84,6 +84,9 @@ HOMEWORK_PACK_DIR = os.path.join(RAILGUN_ROOT, 'hw/.pack')
 # HOMEWORK_STATIC_DIR stores the copied description resources of all homeworks
 HOMEWORK_STATIC_DIR = os.path.join(RAILGUN_ROOT, 'hw/.static')
 
+# LOCKED_HOMEWORKS define the list of homeworks that cannot be submitted
+LOCKED_HOMEWORKS = ()
+
 # IGNORE_HANDINS_OF_REMOVED_HW determines whether to list submissions for
 # deleted homeworks
 IGNORE_HANDINS_OF_REMOVED_HW = True

@@ -69,12 +69,15 @@
   {%- endif %}
 
   <!-- Homework deadlines here -->
+  {% set is_locked = hw.is_locked() -%}
   {% set next_ddl = hw.get_next_deadline() -%}
-  {%- set ddl_text_class = 'default' if next_ddl else 'danger' -%}
+  {%- set ddl_text_class = 'default' if next_ddl and not is_locked else 'danger' -%}
   <div class="hw-deadlines panel panel-{{ ddl_text_class }} text-{{ ddl_text_class }}">
     <div class="panel-heading">{{ _('Deadlines') }}</div>
     <div class="panel-body">
-      {%- if not next_ddl -%}
+      {%- if is_locked -%}
+        {{ _('This homework is locked and cannot be submitted.') }}
+      {%- elif not next_ddl -%}
         {{ _('This homework is already out of date.') }}
       {%- else -%}
         {{ _('This homework will reach next deadline in '
@@ -108,7 +111,7 @@
   </div>
 
   <!-- Upload handins here -->
-  {% if next_ddl -%}
+  {% if next_ddl and not is_locked -%}
   <div class="hw-handins panel panel-default" id="handins">
     <div class="panel-heading">{{ _('Submission') }}</div>
     {% if (hwlangs | count) > 1 -%}

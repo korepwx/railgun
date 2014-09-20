@@ -29,6 +29,10 @@ class HwProxy(object):
         return getattr(self.hw, key)
 
     # the following methods are extensions to common.hw.Homework.
+    def is_locked(self):
+        """Whether this homework is locked?"""
+        return self.hw.uuid in app.config['LOCKED_HOMEWORKS']
+
     def attach_url(self, lang):
         """get the attachment url for given `lang`"""
         return url_for('hwpack', slug=self.slug, lang=lang)

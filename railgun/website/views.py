@@ -31,8 +31,8 @@ from railgun.common.fileutil import dirtree
 def index():
     g.scripts.headScripts()
     # check user email when authenticated
-    if (current_user.is_authenticated()):
-        if (should_update_email()):
+    if current_user.is_authenticated():
+        if should_update_email():
             return redirect_update_email()
     return render_template('index.html')
 
@@ -41,10 +41,10 @@ def index():
 def signup():
     # If railgun does not allow new user signup, show 403 forbidden
     # TODO: beautify this page.
-    if (not app.config['ALLOW_SIGNUP']):
+    if not app.config['ALLOW_SIGNUP']:
         return _('Sign up is turned off.'), 403
     form = SignupForm()
-    if (form.validate_on_submit()):
+    if form.validate_on_submit():
         # Construct user data object
         user = User()
         form.populate_obj(user)
@@ -65,10 +65,10 @@ def signup():
 def signin():
     form = SigninForm()
     next_url = request.args.get('next')
-    if (form.validate_on_submit()):
+    if form.validate_on_submit():
         # Check whether the user exists
         user = authenticate(form.login.data, form.password.data)
-        if (user):
+        if user:
             # Now we can login this user and redirect to index!
             login_user(UserContext(user), remember=form.remember.data)
             return redirect(next_url or url_for('index'))
@@ -84,10 +84,10 @@ def reauthenticate():
     form = ReAuthenticateForm()
     next_url = request.args.get('next')
 
-    if (form.validate_on_submit()):
+    if form.validate_on_submit():
         # Check whether the user exists
         user = authenticate(current_user.name, form.password.data)
-        if (user):
+        if user:
             confirm_login()
             return redirect(next_url or url_for('index'))
         # Report password error
@@ -111,10 +111,10 @@ def profile_edit():
     # Note that some fields cannot be edited in certain auth providers,
     # which should be stripped from from schema.
     form = ProfileForm(obj=current_user.dbo)
-    if (current_user.provider):
+    if current_user.provider:
         auth_providers.init_form(current_user.provider, form)
 
-    if (form.validate_on_submit()):
+    if form.validate_on_submit():
         # Set password if passwd field exists
         if ('password' in form):
             pwd = form.password.data
@@ -130,7 +130,7 @@ def profile_edit():
 
         # Commit to main database and auth provider
         try:
-            if (current_user.provider):
+            if current_user.provider:
                 auth_providers.push(current_user.dbo, pwd)
             db.session.commit()
             flash(_('Profile saved.'), 'info')
@@ -142,14 +142,14 @@ def profile_edit():
         return redirect(url_for('profile_edit'))
 
     # If form has errors, flash message to notify the user
-    if (form.errors):
+    if form.errors:
         flash(
             _("You've got some errors in the form, please check your input."),
             'warning'
         )
 
     # Clear password & confirm here is ok.
-    if ('password' in form):
+    if 'password' in form:
         form.password.data = None
         form.confirm.data = None
 
@@ -173,10 +173,15 @@ def homework(slug):
     }
     # detect which form is used
     handin_lang = None
-    if (request.method == 'POST' and 'handin_lang' in request.form):
+    if request.method == 'POST' and 'handin_lang' in request.form:
+        # check locked
+        if hw.is_locked():
+            flash(_('This homework is locked and cannot be submitted.'),
+                  'danger')
+            return redirect(url_for('homework', slug=slug))
         # check deadline
         next_ddl = hw.get_next_deadline()
-        if (not next_ddl):
+        if not next_ddl:
             flash(_('This homework is out of date! '
                     'You cannot upload your submission.'), 'danger')
             return redirect(url_for('homework', slug=slug))
@@ -186,7 +191,7 @@ def homework(slug):
         g.ddl_scale = next_ddl[1]
         handin_lang = request.form['handin_lang']
         # check the data integrity of uploaded data
-        if (forms[handin_lang].validate_on_submit()):
+        if forms[handin_lang].validate_on_submit():
             handid = uuid.uuid4().get_hex()
             try:
                 languages[handin_lang].handle_upload(
@@ -235,7 +240,7 @@ def hwhandins(slug):
     set_navibar_identity('homework.%s.handin' % slug)
     # load requested homework instance
     hw = g.homeworks.get_by_slug(slug)
-    if (not hw):
+    if not hw:
         raise NotFound()
     # get pagination argument
     try:
@@ -264,12 +269,12 @@ def hwhandins(slug):
 def handin_detail(uuid):
     # Query about the handin record
     handin = Handin.query.filter(Handin.uuid == uuid)
-    if (not current_user.is_admin):
+    if not current_user.is_admin:
         handin = handin.filter(Handin.user_id == current_user.id)
     handin = handin.first()
 
     # If not found, result 404
-    if (not handin):
+    if not handin:
         return _('Submission not found'), 404
 
     # Get the homework
@@ -284,7 +289,7 @@ def translated_page(name, **kwargs):
     # List all user guide locales, and select the best one
     page_dir = os.path.join(app.root_path, 'templates/%s' % name)
     locales = []
-    if (os.path.isdir(page_dir)):
+    if os.path.isdir(page_dir):
         locales = [
             fname[:-5]
             for fname in dirtree(page_dir)

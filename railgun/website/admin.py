@@ -7,7 +7,7 @@
 
 import csv
 from functools import wraps
-from cStringIO import StringIO
+import cStringIO as StringIO
 
 from flask import Blueprint, render_template, request, g, flash, redirect, \
     url_for, send_file
@@ -17,8 +17,6 @@ from sqlalchemy import func
 from sqlalchemy.orm import contains_eager
 from werkzeug.exceptions import NotFound
 
-from railgun.maintain.hwcache import HwCacheTask
-from railgun.maintain.tzcache import TzCacheTask
 from .context import app, db
 from .models import User, Handin
 from .forms import AdminUserEditForm
@@ -240,25 +238,6 @@ def hwscores(hwid):
         filename
     )
 
-
-@bp.route('/buildcache/')
-def buildcache():
-    """Admin page to rebuild railgun cache."""
-    io = StringIO()
-    # HwCache
-    task = HwCacheTask(logstream=io)
-    task.execute()
-    task.logflush()
-    # TzCache
-    io.write('-' * 70)
-    io.write('\n')
-    task = TzCacheTask(logstream=io)
-    task.execute()
-    task.logflush()
-
-    return render_template('admin.maintain.html', task=task,
-                           pagetitle=_('Build Cache'))
-
 # Register the blue print
 app.register_blueprint(bp, url_prefix='/admin')
 
@@ -280,8 +259,6 @@ navigates.add(
                                endpoint='admin.handins'),
             NaviItem.make_view(title=lazy_gettext('Scores'),
                                endpoint='admin.scores'),
-            NaviItem.make_view(title=lazy_gettext('Build Cache'),
-                               endpoint='admin.buildcache'),
         ]
     )
 )
