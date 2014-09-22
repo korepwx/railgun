@@ -124,8 +124,29 @@ namespace
       target->kwargs[key] = ExtractVariant(kwargs[keys[i]]);
     }
   }
+  
+  void ExtractScorerResults(bp::object const& scorer, HwPartialScore *partial)
+  {
+    FillLazyString(scorer.attr("name"), &partial->name);
+    UTF8toUnicode(TypeName(scorer), &(partial->typeName));
+    partial->score = bp::extract<double>(scorer.attr("score"));
+    FillLazyString(scorer.attr("brief"), &partial->brief);
 
-  void RunScorers(bp::list const& scorers)
+    // The details should be list instance
+    bp::object detail = scorer.attr("detail");
+    bp::ssize_t detail_n = bp::len(detail);
+    for (bp::ssize_t j=0; j<detail_n; ++j) {
+      GetTextString lazystr;
+      FillLazyString(detail[j], &lazystr);
+      partial->detail.push_back(lazystr);
+    }
+
+    // Set other properties
+    partial->time = ExtractVariant(scorer.attr("time"));
+  }
+
+  void RunScorers(bp::list const& scorers,
+                  bp::object const& checker = bp::object())
   {
     // Prevent user handin from calling this routine again.
     if (PyHostExecuted) {
@@ -141,47 +162,59 @@ namespace
     score.accepted = false;
 
     try {
-      // Run each scorer to evaluate the handin
-      bp::ssize_t n = bp::len(scorers);
+      bool check_fail = false;
 
-      if (!n) {
-        score.result = GetTextString("No scorer defined, please contact TA.");
-      }
-      for (bp::ssize_t i=0; i<n; ++i) {
-        bp::tuple scorer_weight = bp::extract<bp::tuple>(scorers[i]);
-        bp::object scorer = scorer_weight[0];
-        double weight = bp::extract<double>(scorer_weight[1]);
+      // If checker is not None, we need to run the checker before scorers
+      if (!checker.is_none())
+      {
+        checker.attr("run")();
 
-        // Run the scorer!
-        scorer.attr("run")();
-
-        // Extract scorer results
+        // Extract checker results
         HwPartialScore partial;
-        FillLazyString(scorer.attr("name"), &partial.name);
-        UTF8toUnicode(TypeName(scorer), &(partial.typeName));
-        partial.score = bp::extract<double>(scorer.attr("score"));
-        FillLazyString(scorer.attr("brief"), &partial.brief);
+        ExtractScorerResults(checker, &partial);
 
-        // The details should be list instance
-        bp::object detail = scorer.attr("detail");
-        bp::ssize_t detail_n = bp::len(detail);
-        for (bp::ssize_t j=0; j<detail_n; ++j) {
-          GetTextString lazystr;
-          FillLazyString(detail[j], &lazystr);
-          partial.detail.push_back(lazystr);
+        // Set the functionality checker
+        partial.name = GetTextString("Functionality Checker");
+
+        // We require the checker scorer to get full score
+        if (partial.score < 100.0 - 1e-5) {
+          partial.score = 0.0;
+          partial.weight = 1.0;
+          score.result = GetTextString(
+            "Your submission does not pass the functionality checker.");
+          score.partials.push_back(partial);
+          score.accepted = false;
+          check_fail = true;
+        }
+      }
+
+      if (!check_fail) {
+        // Run each scorer to evaluate the handin
+        bp::ssize_t n = bp::len(scorers);
+
+        if (!n) {
+          score.result = GetTextString("No scorer defined, please contact TA.");
+        }
+        for (bp::ssize_t i=0; i<n; ++i) {
+          bp::tuple scorer_weight = bp::extract<bp::tuple>(scorers[i]);
+          bp::object scorer = scorer_weight[0];
+          double weight = bp::extract<double>(scorer_weight[1]);
+
+          // Run the scorer!
+          scorer.attr("run")();
+
+          // Extract scorer results
+          HwPartialScore partial;
+          partial.weight = weight;
+          ExtractScorerResults(scorer, &partial);
+
+          // Add this partial score the total scorer
+          score.partials.push_back(partial);
         }
 
-        // Set other properties
-        partial.weight = weight;
-        partial.time = ExtractVariant(scorer.attr("time"));
-
-        // Add this partial score the total scorer
-        score.partials.push_back(partial);
+        // We've now run all scorers, accept this score
+        score.accepted = (n > 0);
       }
-
-      // We've now run all scorers, accept this score
-      score.accepted = (n > 0);
-
     } catch (UnicodeError) {
       score = HwScore();
       UTF8toUnicode(PyHostHandId, &score.uuid);
@@ -204,9 +237,11 @@ namespace
   }
 }
 
+BOOST_PYTHON_FUNCTION_OVERLOADS(RunScorers_overloads, RunScorers, 1, 2);
+
 BOOST_PYTHON_MODULE(SafeRunner)
 {
-  bp::def("run", &RunScorers);
+  bp::def("run", &RunScorers, RunScorers_overloads());
 }
 
 // Initialize the PyHost context
