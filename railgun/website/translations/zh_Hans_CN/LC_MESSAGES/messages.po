@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version:  railgun\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2014-09-22 17:49+0800\n"
+"POT-Creation-Date: 2014-09-22 17:55+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: zh_Hans_CN <LL@li.org>\n"
@@ -61,7 +61,7 @@ msgstr "压缩包含有不合法文件“%(filename)s”。"
 msgid "Your submission has run out of time."
 msgstr "你提交的程序运行超时。"
 
-#: railgun/runner/errors.py:107
+#: railgun/runner/errors.py:107 runlib/python/pyhost/cppmessages.py:16
 msgid "Not valid UTF-8 sequence produced."
 msgstr "出现了不合法的 UTF-8 序列。"
 
@@ -816,6 +816,21 @@ msgid ""
 "with your email address later"
 msgstr "你可能会收到与作业有关的电子邮件。以后你也可以用此电子邮件登陆超电磁炮。"
 
+#: runlib/python/pyhost/cppmessages.py:13
+#, fuzzy
+msgid "Functionality Checker"
+msgstr "功能性得分"
+
+#: runlib/python/pyhost/cppmessages.py:14
+#, fuzzy
+msgid "Your submission does not pass the functionality checker."
+msgstr "你提交的文件不是一个完整的压缩包。"
+
+#: runlib/python/pyhost/cppmessages.py:15
+#, fuzzy
+msgid "No scorer defined, please contact TA."
+msgstr "复制程序文件失败，请联系助教。"
+
 #: runlib/python/pyhost/objschema.py:145
 #, python-format
 msgid ""
@@ -1046,13 +1061,7 @@ msgstr "未预期的成功：％（测试）秒。"
 #~ msgstr "在%(total)d 个文件中中有 %(trouble)d 个没有通过 PEP8 代码风格检查"
 
 #~ msgid ""
-#~ "%(filename)s: %(miss)d lines not covered.\n"
-#~ "%(sep)s\n"
-#~ "%(source)s"
-#~ msgstr ""
-#~ "%(filename)s：%(miss)d 行没被覆盖。\n"
-#~ "%(sep)s\n"
-#~ "%(source)s"
+#~ msgstr "%(rate).2f%% 的文件（%(total)d 中的 %(trouble)d 个）没通过 PEP8 代码风格检查"
 
 #~ msgid "Coverage rate: %(cover_rate)2.1f%%"
 #~ msgstr "覆盖率：%(cover_rate)2.1f%%"
@@ -1072,26 +1081,8 @@ msgstr "未预期的成功：％（测试）秒。"
 #~ msgid "Couldn't start submission process."
 #~ msgstr "无法启动你提交的程序。"
 
-#~ msgid ""
-#~ "%(rate).2f files (%(trouble)d out of "
-#~ "%(total)d) did not pass PEP8 code "
-#~ "style check"
-#~ msgstr "%(rate).2f%% 的文件（%(total)d 中的 %(trouble)d 个）没通过 PEP8 代码风格检查"
-
-#~ msgid ""
-#~ "%(stmt).2f%% statements covered, %(branch).2f%% "
-#~ "branches taken and %(partial).2f%% partially"
-#~ " taken."
-#~ msgstr "%(stmt).2f%% 的语句被覆盖，%(branch).2f%% 的分支被覆盖而 %(partial).2f%% 的分支被部分覆盖。"
-
 #~ msgid "%(rate).2f input classes (%(cover)s out of %(total)s) covered"
 #~ msgstr "%(rate).2f%% 的输入等价类（%(total)s 中的 %(cover)s 种）被覆盖"
-
-#~ msgid ""
-#~ "%(rate).2f%% files (%(trouble)d out of "
-#~ "%(total)d) did not pass PEP8 code "
-#~ "style check"
-#~ msgstr "%(rate).2f%% 的文件（%(total)d 中的 %(trouble)d 个）没通过 PEP8 代码风格检查"
 
 #~ msgid "%(rate).2f%% input classes (%(cover)s out of %(total)s) covered"
 #~ msgstr "%(rate).2f%% 的输入等价类（%(total)s 中的 %(cover)s 种）被覆盖"

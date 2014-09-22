@@ -145,6 +145,8 @@ namespace
     partial->time = ExtractVariant(scorer.attr("time"));
   }
 
+  #define _(M) GetTextString((M))
+
   void RunScorers(bp::list const& scorers,
                   bp::object const& checker = bp::object())
   {
@@ -174,13 +176,13 @@ namespace
         ExtractScorerResults(checker, &partial);
 
         // Set the functionality checker
-        partial.name = GetTextString("Functionality Checker");
+        partial.name = _("Functionality Checker");
 
         // We require the checker scorer to get full score
         if (partial.score < 100.0 - 1e-5) {
           partial.score = 0.0;
           partial.weight = 1.0;
-          score.result = GetTextString(
+          score.result = _(
             "Your submission does not pass the functionality checker.");
           score.partials.push_back(partial);
           score.accepted = false;
@@ -193,7 +195,7 @@ namespace
         bp::ssize_t n = bp::len(scorers);
 
         if (!n) {
-          score.result = GetTextString("No scorer defined, please contact TA.");
+          score.result = _("No scorer defined, please contact TA.");
         }
         for (bp::ssize_t i=0; i<n; ++i) {
           bp::tuple scorer_weight = bp::extract<bp::tuple>(scorers[i]);
@@ -219,7 +221,7 @@ namespace
       score = HwScore();
       UTF8toUnicode(PyHostHandId, &score.uuid);
       score.accepted = false;
-      score.result = GetTextString("Not valid UTF-8 sequence produced.");
+      score.result = _("Not valid UTF-8 sequence produced.");
     }
 
     // Post the score object to remote API
