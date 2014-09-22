@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2014-09-19 10:57+0800\n"
+"POT-Creation-Date: 2014-09-22 17:49+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -88,56 +88,52 @@ msgstr ""
 msgid "Exitcode %(exitcode)s != 0."
 msgstr ""
 
-#: railgun/website/admin.py:43
+#: railgun/website/admin.py:41
 msgid "Only admin can view this page!"
 msgstr ""
 
-#: railgun/website/admin.py:108 railgun/website/views.py:136
+#: railgun/website/admin.py:106 railgun/website/views.py:136
 msgid "Profile saved."
 msgstr ""
 
-#: railgun/website/admin.py:111 railgun/website/views.py:59
+#: railgun/website/admin.py:109 railgun/website/views.py:59
 #: railgun/website/views.py:140
 msgid "I'm sorry but we may have met some trouble. Please try again."
 msgstr ""
 
-#: railgun/website/admin.py:194
+#: railgun/website/admin.py:192
 msgid "Requested homework not found."
 msgstr ""
 
-#: railgun/website/admin.py:208 railgun/website/forms.py:40
+#: railgun/website/admin.py:206 railgun/website/forms.py:40
 #: railgun/website/templates/base.user_edit.html:20
 msgid "Username"
 msgstr ""
 
-#: railgun/website/admin.py:208 railgun/website/templates/base.handins.html:12
+#: railgun/website/admin.py:206 railgun/website/templates/base.handins.html:12
 #: railgun/website/templates/handin_detail.html:135
 #: railgun/website/templates/index.html:30
 msgid "Score"
 msgstr ""
 
-#: railgun/website/admin.py:209
+#: railgun/website/admin.py:207
 #, python-format
 msgid "Scores for \"%(hw)s\""
 msgstr ""
 
-#: railgun/website/admin.py:260 railgun/website/admin.py:283
-msgid "Build Cache"
-msgstr ""
-
-#: railgun/website/admin.py:272
+#: railgun/website/admin.py:251
 msgid "Manage"
 msgstr ""
 
-#: railgun/website/admin.py:277 railgun/website/templates/admin.users.html:4
+#: railgun/website/admin.py:256 railgun/website/templates/admin.users.html:4
 msgid "Users"
 msgstr ""
 
-#: railgun/website/admin.py:279 railgun/website/views.py:340
+#: railgun/website/admin.py:258 railgun/website/views.py:345
 msgid "Submissions"
 msgstr ""
 
-#: railgun/website/admin.py:281
+#: railgun/website/admin.py:260
 msgid "Scores"
 msgstr ""
 
@@ -379,52 +375,56 @@ msgstr ""
 msgid "You've got some errors in the form, please check your input."
 msgstr ""
 
-#: railgun/website/views.py:180
+#: railgun/website/views.py:179 railgun/website/templates/homework.html:79
+msgid "This homework is locked and cannot be submitted."
+msgstr ""
+
+#: railgun/website/views.py:185
 msgid "This homework is out of date! You cannot upload your submission."
 msgstr ""
 
-#: railgun/website/views.py:196
+#: railgun/website/views.py:201
 msgid "You submission is accepted, please wait for results."
 msgstr ""
 
-#: railgun/website/views.py:202
+#: railgun/website/views.py:207
 msgid "Internal server error, please try again."
 msgstr ""
 
-#: railgun/website/views.py:273
+#: railgun/website/views.py:278
 msgid "Submission not found"
 msgstr ""
 
-#: railgun/website/views.py:323
+#: railgun/website/views.py:328
 msgid "Home"
 msgstr ""
 
-#: railgun/website/views.py:326 railgun/website/templates/base.handins.html:6
+#: railgun/website/views.py:331 railgun/website/templates/base.handins.html:6
 #: railgun/website/templates/homework.html:30
 msgid "Homework"
 msgstr ""
 
-#: railgun/website/views.py:355
+#: railgun/website/views.py:360
 msgid "Manual"
 msgstr ""
 
-#: railgun/website/views.py:359
+#: railgun/website/views.py:364
 msgid "User Guide"
 msgstr ""
 
-#: railgun/website/views.py:361
+#: railgun/website/views.py:366
 msgid "Scoring Details"
 msgstr ""
 
-#: railgun/website/views.py:364
+#: railgun/website/views.py:369
 msgid "Documentation"
 msgstr ""
 
-#: railgun/website/views.py:368
+#: railgun/website/views.py:373
 msgid "FAQ"
 msgstr ""
 
-#: railgun/website/views.py:370
+#: railgun/website/views.py:375
 msgid "About"
 msgstr ""
 
@@ -450,8 +450,9 @@ msgstr ""
 msgid "Admin"
 msgstr ""
 
-#: railgun/website/templates/admin.html:2 railgun/website/templates/base.html:7
-#: railgun/website/templates/base.html:38
+#: railgun/website/templates/admin.html:2
+#: railgun/website/templates/base.html:10
+#: railgun/website/templates/base.html:41
 msgid "Railgun"
 msgstr ""
 
@@ -562,23 +563,23 @@ msgstr ""
 msgid "No summary"
 msgstr ""
 
-#: railgun/website/templates/base.html:33
+#: railgun/website/templates/base.html:36
 msgid "Toggle navigation"
 msgstr ""
 
-#: railgun/website/templates/base.html:83
+#: railgun/website/templates/base.html:86
 msgid "Edit profile"
 msgstr ""
 
-#: railgun/website/templates/base.html:86
+#: railgun/website/templates/base.html:89
 msgid "Sign out"
 msgstr ""
 
-#: railgun/website/templates/base.html:92
+#: railgun/website/templates/base.html:95
 msgid "Sign up"
 msgstr ""
 
-#: railgun/website/templates/base.html:94
+#: railgun/website/templates/base.html:97
 #: railgun/website/templates/signin.html:4
 #: railgun/website/templates/signin.html:8
 #: railgun/website/templates/signin.html:18
@@ -723,15 +724,15 @@ msgstr ""
 msgid "Attachments"
 msgstr ""
 
-#: railgun/website/templates/homework.html:75
+#: railgun/website/templates/homework.html:76
 msgid "Deadlines"
 msgstr ""
 
-#: railgun/website/templates/homework.html:78
+#: railgun/website/templates/homework.html:81
 msgid "This homework is already out of date."
 msgstr ""
 
-#: railgun/website/templates/homework.html:80
+#: railgun/website/templates/homework.html:83
 #, python-format
 msgid ""
 "This homework will reach next deadline in <span style=\"color: "
@@ -739,15 +740,15 @@ msgid ""
 "style=\"color: %(scalecolor)s\">%(scale)s</span>."
 msgstr ""
 
-#: railgun/website/templates/homework.html:91
+#: railgun/website/templates/homework.html:94
 msgid "Due date"
 msgstr ""
 
-#: railgun/website/templates/homework.html:92
+#: railgun/website/templates/homework.html:95
 msgid "Score scale "
 msgstr ""
 
-#: railgun/website/templates/homework.html:113
+#: railgun/website/templates/homework.html:116
 msgid "Submission"
 msgstr ""
 
