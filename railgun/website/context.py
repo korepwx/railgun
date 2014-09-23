@@ -20,7 +20,7 @@ app.config.from_object(webconfig)
 # Initialize the logging according to webconfig
 # NOTE: when DEBUG is on, I suppose that the user want to see logs directly
 #       from console, so skip the logging configuration.
-if (not app.config['DEBUG']):
+if not app.config['DEBUG']:
     logging.config.dictConfig(app.config['WEBSITE_LOGGING'])
 
 # Protect the website from CSRF attack

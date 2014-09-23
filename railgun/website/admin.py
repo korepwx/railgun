@@ -17,6 +17,7 @@ from sqlalchemy import func
 from sqlalchemy.orm import contains_eager
 from werkzeug.exceptions import NotFound
 
+from railgun.runner.context import app as runner_app
 from .context import app, db
 from .models import User, Handin
 from .forms import AdminUserEditForm
@@ -33,11 +34,11 @@ def admin_required(method):
     """Decorator that protects a given view to only accessible to admins."""
     @wraps(method)
     def inner(*args, **kwargs):
-        if (not current_user.is_authenticated()):
+        if not current_user.is_authenticated():
             return login_manager.unauthorized()
-        if (not login_fresh()):
+        if not login_fresh():
             return login_manager.needs_refresh()
-        if (not current_user.is_admin):
+        if not current_user.is_admin:
             flash(_("Only admin can view this page!"), 'danger')
             return redirect(url_for('index'))
         return method(*args, **kwargs)
@@ -80,15 +81,15 @@ def user_edit(name):
     # Note that some fields cannot be edited in certain auth providers,
     # which should be stripped from from schema.
     form = AdminUserEditForm(obj=the_user)
-    if (the_user.provider):
+    if the_user.provider:
         auth_providers.init_form(the_user.provider, form)
     form._the_user = the_user
 
-    if (form.validate_on_submit()):
+    if form.validate_on_submit():
         # Set password if passwd field exists
-        if ('password' in form):
+        if 'password' in form:
             pwd = form.password.data
-            if (pwd):
+            if pwd:
                 the_user.set_password(pwd)
             del form['password']
             del form['confirm']
@@ -100,7 +101,7 @@ def user_edit(name):
 
         # Commit to main database and auth provider
         try:
-            if (the_user.provider):
+            if the_user.provider:
                 auth_providers.push(the_user, pwd)
             db.session.commit()
             flash(_('Profile saved.'), 'info')
@@ -111,7 +112,7 @@ def user_edit(name):
         return redirect(url_for('admin.users'))
 
     # Clear password & confirm here is ok.
-    if ('password' in form):
+    if 'password' in form:
         form.password.data = None
         form.confirm.data = None
 
@@ -145,6 +146,29 @@ def handins():
         'admin.handins.html', the_page=handins.paginate(page, perpage))
 
 
+@bp.route('/runqueue/clear/')
+@admin_required
+def runqueue_clear():
+    try:
+        runner_app.control.discard_all()
+        print db.session.query(Handin) \
+            .filter(Handin.state.in_(['Pending', 'Running'])).count()
+        db.session.query(Handin) \
+            .filter(Handin.state.in_(['Pending', 'Running'])) \
+            .update({
+                'state': 'Rejected',
+                'result': lazy_gettext('Submission discarded by admin.'),
+                'partials': [],
+                'score': 0.0,
+            }, synchronize_session=False)
+        db.session.commit()
+        flash(_('All pending submissions are cleared.'), 'success')
+    except Exception:
+        app.logger.exception('Could not discard the pending submissions.')
+        flash(_('Could not discard the pending submissions.'), 'danger')
+    return redirect(url_for('.handins'))
+
+
 @bp.route('/scores/')
 @admin_required
 def scores():
@@ -153,12 +177,12 @@ def scores():
 
 def make_csv_report(q, display_headers, raw_headers, pagetitle, filename):
     def make_record(itm, hdr):
-        if (isinstance(itm, dict)):
+        if isinstance(itm, dict):
             return tuple(itm[h] for h in hdr)
         return tuple(getattr(itm, h) for h in hdr)
 
     # If a direct csv file is request
-    if (request.args.get('csvfile', None) == '1'):
+    if request.args.get('csvfile', None) == '1':
         io = StringIO()
         writer = csv.writer(io)
         writer.writerow(raw_headers)
@@ -188,7 +212,7 @@ def hwscores(hwid):
 
     # Query about given homework
     hw = g.homeworks.get_by_uuid(hwid)
-    if (hw is None):
+    if hw is None:
         raise NotFound(lazy_gettext('Requested homework not found.'))
 
     # Get max score for each user
@@ -206,7 +230,7 @@ def hwscores(hwid):
     display_headers = [lazy_gettext('Username'), lazy_gettext('Score')]
     pagetitle = _('Scores for "%(hw)s"', hw=hw.info.name)
     filename = hw.info.name
-    if (isinstance(filename, unicode)):
+    if isinstance(filename, unicode):
         filename = filename.encode('utf-8')
 
     # Pre-process the data

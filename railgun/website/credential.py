@@ -68,9 +68,9 @@ def login_required(method):
     """
     @wraps(method)
     def inner(*args, **kwargs):
-        if (not current_user.is_authenticated()):
+        if not current_user.is_authenticated():
             return login_manager.unauthorized()
-        if (should_update_email()):
+        if should_update_email():
             return redirect_update_email()
         return method(*args, **kwargs)
     return inner
@@ -82,11 +82,11 @@ def fresh_login_required(method):
     """
     @wraps(method)
     def inner(*args, **kwargs):
-        if (not current_user.is_authenticated()):
+        if not current_user.is_authenticated():
             return login_manager.unauthorized()
-        if (not login_fresh()):
+        if not login_fresh():
             return login_manager.needs_refresh()
-        if (should_update_email()):
+        if should_update_email():
             return redirect_update_email()
         return method(*args, **kwargs)
     return inner
@@ -96,7 +96,7 @@ def fresh_login_required(method):
 @login_manager.user_loader
 def __load_user_before_request(uid):
     ret = db.session.query(User).filter(User.id == uid).first()
-    if (ret):
+    if ret:
         return UserContext(ret)
 
 

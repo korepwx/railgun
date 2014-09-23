@@ -20,7 +20,7 @@ from railgun.common.lazy_i18n import lazy_gettext
 def secret_api(method):
     @wraps(method)
     def inner(*args, **kwargs):
-        if (request.headers['content-type'] != 'application/octet-stream'):
+        if request.headers['content-type'] != 'application/octet-stream':
             return make_response(('not application/octet-stream', 400))
 
         # try to decrypt the secret message
@@ -49,7 +49,7 @@ def api_handin_report(uuid):
     obj = request.payload
 
     # check uuid, so that we can prevent replay attack
-    if (obj['uuid'] != uuid):
+    if obj['uuid'] != uuid:
         return 'uuid mismatch, do not attack'
 
     # construct HwScore object from payload
@@ -60,12 +60,12 @@ def api_handin_report(uuid):
 
     # load the handin object, and report error if not exist
     handin = Handin.query.filter(Handin.uuid == uuid).first()
-    if (not handin):
+    if not handin:
         return 'requested handin not found'
 
     # if handin.state not in ['Running', 'Pending'], it must already have a
     # score. reject the API call.
-    if (handin.state != 'Running' and handin.state != 'Pending'):
+    if handin.state != 'Running' and handin.state != 'Pending':
         return 'score already reported'
 
     # Special hack: unittest will catch all exceptions.
@@ -74,15 +74,15 @@ def api_handin_report(uuid):
     # I decide to treat these submissions 'Rejected', because no one
     # would accept a totally bad submission.
     handin.score = score.get_score()
-    if (handin.score < 1e-5 and score.accepted):
+    if handin.score < 1e-5 and score.accepted:
         score.accepted = False
         score.result = lazy_gettext('No test passed, submission rejected.')
 
     # update result of handin
     handin.state = 'Accepted' if score.accepted else 'Rejected'
-    if (score.accepted):
+    if score.accepted:
         handin.result = lazy_gettext('Your submission is accepted.')
-    elif (unicode(score.result)):
+    elif unicode(score.result):
         handin.result = score.result
     else:
         handin.result = lazy_gettext('Your submission is rejected.')
@@ -90,15 +90,15 @@ def api_handin_report(uuid):
     handin.partials = score.partials
 
     # update hwscore table and set the final score of this homework
-    if (handin.is_accepted()):
+    if handin.is_accepted():
         final_score = handin.score * handin.scale
         hwscore = (FinalScore.query.filter(FinalScore.hwid == handin.hwid).
                    filter(FinalScore.user_id == handin.user_id)).first()
-        if (not hwscore):
+        if not hwscore:
             hwscore = FinalScore(user_id=handin.user_id, hwid=handin.hwid,
                                  score=final_score)
             db.session.add(hwscore)
-        elif (final_score > hwscore.score):
+        elif final_score > hwscore.score:
             hwscore.score = final_score
 
     try:
@@ -118,16 +118,16 @@ def api_handin_start(uuid):
     obj = request.payload
 
     # check uuid, so that we can prevent replay attack
-    if (obj['uuid'] != uuid):
+    if obj['uuid'] != uuid:
         return 'uuid mismatch, do not attack'
 
     # load the handin object, and report error if not exist
     handin = Handin.query.filter(Handin.uuid == uuid).first()
-    if (not handin):
+    if not handin:
         return 'requested submission not found'
 
     # we only update state from "Pending" to "Running"
-    if (handin.state != 'Pending'):
+    if handin.state != 'Pending':
         return 'submission is not pending'
 
     handin.state = 'Running'
@@ -149,18 +149,18 @@ def api_handin_proclog(uuid):
     obj = request.payload
 
     # check uuid, so that we can prevent replay attack
-    if (obj['uuid'] != uuid):
+    if obj['uuid'] != uuid:
         return 'uuid mismatch, do not attack'
 
     # load the handin object, and report error if not exist
     handin = Handin.query.filter(Handin.uuid == uuid).first()
-    if (not handin):
+    if not handin:
         return 'requested submission not found'
 
     # if handin.state != 'Accepted' and handin.state != 'Rejected',
     # the process must have exited without report the score.
     # mark such handin as "Rejected"
-    if (handin.state != 'Accepted' and handin.state != 'Rejected'):
+    if handin.state != 'Accepted' and handin.state != 'Rejected':
         handin.state = 'Rejected'
         handin.result = lazy_gettext('Process exited before reporting score.')
         handin.partials = []

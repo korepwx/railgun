@@ -38,16 +38,16 @@ class TsinghuaAuthProvider(AuthProvider):
     def pull(self, name=None, email=None, dbuser=None):
 
         # Tsinghua account could only be (\d+).
-        if (email):
+        if email:
             return None
-        if (not self.name_pattern.match(name)):
+        if not self.name_pattern.match(name):
             return None
 
         # We should put the new user into database until `authenticate`.
         return TsinghuaAccount(name), dbuser
 
     def push(self, dbuser, password=None):
-        if (password is not None):
+        if password is not None:
             raise ValueError('Could not set the password of Tsinghua account.')
 
     def authenticate(self, user, dbuser, password):
@@ -57,11 +57,11 @@ class TsinghuaAuthProvider(AuthProvider):
                                 'userName': user.name,
                                 'password': password,
                             }).text
-        if (not ret):
+        if not ret:
             return False
 
         # Create the db object if not exist
-        if (dbuser is None):
+        if dbuser is None:
             try:
                 dbuser = User(name=user.name, email=user.email, password=None,
                               is_admin=False, provider=self.name)

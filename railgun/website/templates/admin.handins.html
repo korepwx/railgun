@@ -5,6 +5,11 @@
 {%- set showuser = True -%}
 {%- set pagetitle = _('All Submissions') -%}
 {%- import "base.handins.html" as handins with context -%}
+{% macro title_buttons() %}
+  <span class="pull-right">
+    <a href="{{ url_for('.runqueue_clear') }}" class="btn btn-danger">{{ _('Clear Pending') }}</a>
+  </span>
+{% endmacro %}
 {% block content -%}
-  {{ handins.the_content() }}
+  {{ handins.the_content(title_buttons) }}
 {%- endblock %}

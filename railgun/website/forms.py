@@ -20,6 +20,7 @@ from .models import User
 from .context import db, app
 from .i18n import list_locales
 from .utility import format_size
+from .userauth import has_user
 
 
 class HandinTextArea(TextArea):
@@ -59,11 +60,11 @@ class SignupForm(Form):
     confirm = PasswordField(_('Confirm your password'))
 
     def validate_name(form, field):
-        if (db.session.query(User).filter(User.name == field.data).count()):
+        if has_user(field.data):
             raise ValidationError(_('Username already taken'))
 
     def validate_email(form, field):
-        if (db.session.query(User).filter(User.email == field.data).count()):
+        if has_user(field.data):
             raise ValidationError(_('Email already taken'))
 
 
@@ -145,7 +146,7 @@ class ProfileForm(Form):
 
     def validate_password(form, field):
         pwd_len = len(field.data)
-        if (field.data and (pwd_len < 7 or pwd_len > 32)):
+        if field.data and (pwd_len < 7 or pwd_len > 32):
             raise ValidationError(
                 _("Password must be no shorter than 7 and no longer than "
                   "32 characters")
@@ -187,13 +188,13 @@ class UploadHandinForm(Form):
 
     def validate_handin(form, field):
         """Validate `handin` file size."""
-        if (not field.data):
+        if not field.data:
             return
         # try to get the file size of uploaded file
         field.data.stream.seek(0, 2)
         fsize = field.data.stream.tell()
         field.data.stream.seek(0)
-        if (fsize > app.config['MAX_SUBMISSION_SIZE']):
+        if fsize > app.config['MAX_SUBMISSION_SIZE']:
             raise ValidationError(_(
                 "Archive files larger than %(size)s is not allowed.",
                 size=format_size(app.config['MAX_SUBMISSION_SIZE'])

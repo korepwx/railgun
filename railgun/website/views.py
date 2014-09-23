@@ -164,7 +164,7 @@ def homework(slug):
     set_navibar_identity('homework.%s' % slug)
     # load requested homework instance
     hw = g.homeworks.get_by_slug(slug)
-    if (not hw):
+    if not hw:
         raise NotFound()
     # generate multiple forms with different prefix
     hwlangs = hw.get_code_languages()
@@ -174,6 +174,18 @@ def homework(slug):
     # detect which form is used
     handin_lang = None
     if request.method == 'POST' and 'handin_lang' in request.form:
+        # check the pending submission count of requested user
+        user_pending = db.session.query(Handin)\
+            .filter(Handin.state.in_(['Pending', 'Running'])) \
+            .filter(Handin.hwid == hw.uuid) \
+            .filter(Handin.user_id == current_user.id) \
+            .count()
+        if user_pending >= app.config['MAX_USER_PENDING_PER_HW']:
+            flash(_('You can only have at most %(count)d pending or running '
+                    'submission(s) for this homework.',
+                    count=app.config['MAX_USER_PENDING_PER_HW']),
+                  'danger')
+            return redirect(url_for('homework', slug=slug))
         # check locked
         if hw.is_locked():
             flash(_('This homework is locked and cannot be submitted.'),
@@ -317,6 +329,7 @@ def faq():
         'faq',
         max_upload=app.config['MAX_SUBMISSION_SIZE'],
         max_archive_file=app.config['MAX_SUBMISSION_FILE_COUNT'],
+        max_pending=app.config['MAX_USER_PENDING_PER_HW'],
     )
 
 

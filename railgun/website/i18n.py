@@ -50,31 +50,31 @@ def get_best_locale_name(locale_names):
     for name in locale_names:
         l = Locale.parse(name.replace('-', '_'))
         # If locale object is the same, return True at once
-        if (l == req_locale):
+        if l == req_locale:
             return name
         # If language not match, give up this locale
-        if (l.language != req_locale.language):
+        if l.language != req_locale.language:
             continue
         # Exam the matched score
         score = 0
         # script match, give 5
-        if (l.script == req_locale.script):
+        if l.script == req_locale.script:
             score += 5
         # territory match, give 3
-        if (l.territory == req_locale.territory):
+        if l.territory == req_locale.territory:
             score += 3
         # variant match, give 3
         # TODO: check these score weights
-        if (l.variant == req_locale.variant):
+        if l.variant == req_locale.variant:
             score += 3
         # Update top_name if > top_score
-        if (score > top_score):
+        if score > top_score:
             top_name = name
             top_score = score
 
     # Fallback to default locale or last locale
-    if (top_name is None):
-        if (app.config['DEFAULT_LOCALE'] in locale_names):
+    if top_name is None:
+        if app.config['DEFAULT_LOCALE'] in locale_names:
             top_name = app.config['DEFAULT_LOCALE']
         else:
             top_name = locale_names[-1]
@@ -91,10 +91,10 @@ def __load_aliases():
         f = open(aliases_path, 'rb')
         for l in f:
             arr = l.split('=')
-            if (len(arr) < 2):
+            if len(arr) < 2:
                 continue
             k, v = arr[0].strip(), arr[1].strip()
-            if (k and v):
+            if k and v:
                 ret[k] = v
         f.close()
     except Exception:
@@ -122,7 +122,7 @@ best_matches = __make_best_match()
 @babel.localeselector
 def __select_request_locale():
     """Select the prefered language according to Accept-Language."""
-    if (current_user.is_authenticated()):
+    if current_user.is_authenticated():
         return current_user.locale
     best_match = request.accept_languages.best_match(best_matches)
     return locale_aliases.get(best_match, best_match)
@@ -132,7 +132,7 @@ def __select_request_locale():
 def __select_request_timezone():
     # TODO: set the correct time zone according to user configuration.
     #       if possible, also guess by client ip.
-    if (current_user.is_authenticated()):
+    if current_user.is_authenticated():
         return current_user.timezone
     return None
 
@@ -143,7 +143,7 @@ def __inject_template_context():
     compatible with HTML lang attribute."""
 
     pagelng = get_locale()
-    if (pagelng.territory):
+    if pagelng.territory:
         pagelng = '%s-%s' % (pagelng.language, pagelng.territory)
     else:
         pagelng = pagelng.language

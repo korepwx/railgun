@@ -130,7 +130,7 @@ languages = {
 @app.template_filter(name='codelang')
 def __inject_template_codelang(s):
     lang = languages.get(s, None)
-    if (lang):
+    if lang:
         return lang.name
 
 

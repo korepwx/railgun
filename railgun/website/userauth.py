@@ -45,15 +45,15 @@ class AuthProvider(object):
 
     def _log_pull(self, user, create=False, exception=False):
         """Log a pull request on given `user`."""
-        if (not exception):
-            if (create):
+        if not exception:
+            if create:
                 app.logger.debug('Pulled new user (%s, %s) from %s.' %
                                  (user.name, user.email, self))
             else:
                 app.logger.debug('Pulled existing user (%s, %s) from %s.' %
                                  (user.name, user.email, self))
         else:
-            if (create):
+            if create:
                 app.logger.exception(
                     'Could not pull new user (%s, %s) from %s.' %
                     (user.name, user.email, self)
@@ -110,8 +110,8 @@ class AuthProvider(object):
         """Common init_form helper lock all fields in `lock_fields`."""
 
         for k, v in form.__dict__.items():
-            if (isinstance(v, Field) and not isinstance(v, HiddenField)):
-                if (k in lock_fields):
+            if isinstance(v, Field) and not isinstance(v, HiddenField):
+                if k in lock_fields:
                     del form[k]
 
     def init_form(self, form):
@@ -145,7 +145,7 @@ class CsvFileAuthProvider(AuthProvider):
 
     def reload(self):
         """Reload user database from external csv file."""
-        if (os.path.isfile(self.csvpath)):
+        if os.path.isfile(self.csvpath):
             with open(self.csvpath, 'rb') as f:
                 self.users = list(CsvSchema.LoadCSV(CsvFileUserObject, f))
         self.__name_to_user = {u.name: u for u in self.users}
@@ -166,17 +166,17 @@ class CsvFileAuthProvider(AuthProvider):
     def pull(self, name=None, email=None, dbuser=None):
 
         # Get the interested user by `auth_request`
-        if (email):
+        if email:
             user = self.__email_to_user.get(email, None)
         else:
             user = self.__name_to_user.get(name, None)
 
         # Return none if user not found, or password not match
-        if (not user):
+        if not user:
             return None
 
         # dbuser is None, create new one
-        if (dbuser is None):
+        if dbuser is None:
             try:
                 dbuser = User(name=user.name, email=user.email, password=None,
                               is_admin=user.is_admin, provider=self.name)
@@ -197,7 +197,7 @@ class CsvFileAuthProvider(AuthProvider):
             if (getattr(dbuser, k) != getattr(user, k)):
                 updated = True
                 setattr(dbuser, k, getattr(user, k))
-        if (updated):
+        if updated:
             try:
                 db.session.commit()
                 self._log_pull(user, create=False)
@@ -210,7 +210,7 @@ class CsvFileAuthProvider(AuthProvider):
         user = self.__name_to_user[dbuser.name]
 
         # If password is not None, store and update the password hash
-        if (password):
+        if password:
             user.password = self.hash_password(password)
 
         # Set other cleartext fields
@@ -220,7 +220,7 @@ class CsvFileAuthProvider(AuthProvider):
         self.flush()
 
     def authenticate(self, user, dbuser, password):
-        if (self.check_password(user.password, password)):
+        if self.check_password(user.password, password):
             return dbuser
 
     def init_form(self, form):
@@ -266,7 +266,7 @@ class AuthProviderSet(object):
         # Query about each provider
         for p in providers:
             ret = p.pull(name=name, email=email, dbuser=dbuser)
-            if (ret):
+            if ret:
                 # Check whether user passes authentication
                 user, dbuser = ret[0], ret[1]
                 dbuser = p.authenticate(user, dbuser, password)
@@ -297,24 +297,53 @@ def authenticate(login, password):
 
     # Load dbuser object from database if possible
     email_login = is_email(login)
-    if (email_login):
+    if email_login:
         dbuser = db.session.query(User).filter(User.email == login).first()
     else:
         dbuser = db.session.query(User).filter(User.name == login).first()
 
     # If dbuser exists and dbuser.provider is empty, just check its password
-    if (dbuser is not None and not dbuser.provider):
-        if (check_password_hash(dbuser.password, password)):
+    if dbuser is not None and not dbuser.provider:
+        if check_password_hash(dbuser.password, password):
             return dbuser
         return None
 
     # Otherwise authenticate through auth providers.
-    if (email_login):
+    if email_login:
         return auth_providers.authenticate(email=login, password=password,
                                            dbuser=dbuser)
     else:
         return auth_providers.authenticate(name=login, password=password,
                                            dbuser=dbuser)
+
+
+def has_user(login):
+    """Check whether user with `login` exists in database or auth providers.
+
+    Args:
+        login: Username or email.
+
+    Returns:
+        True if given user exists, False otherwise.
+    """
+
+    # Load dbuser object from database if possible
+    email_login = is_email(login)
+    if email_login:
+        ucount = db.session.query(User).filter(User.email == login).count()
+    else:
+        ucount = db.session.query(User).filter(User.name == login).count()
+
+    # If dbuser exists, then just return True
+    if ucount > 0:
+        return True
+
+    # If not exist, try to pull user from auth providers
+    if email_login:
+        return auth_providers.pull(email=login) is not None
+    else:
+        return auth_providers.pull(name=login) is not None
+
 
 # Initialize the builtin auth providers
 auth_providers = AuthProviderSet()

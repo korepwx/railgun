@@ -112,6 +112,10 @@ MAX_SUBMISSION_SIZE = 256 * 1024
 # a student to submit
 MAX_SUBMISSION_FILE_COUNT = 100
 
+# MAX_USER_PENDING controls the maximum submissions of a single user that
+# is running or pending for a single homework.
+MAX_USER_PENDING_PER_HW = 1
+
 # EXAMPLE_USER_EMAIL_SUFFIX is the email suffix for users came from the
 # auth providers which does not provide emails.
 EXAMPLE_USER_EMAIL_SUFFIX = '@not-a-email.secoder.net'
