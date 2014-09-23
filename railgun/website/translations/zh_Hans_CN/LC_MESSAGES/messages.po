@@ -17,7 +17,7 @@ msgstr "Java"
 
 #: railgun/website/credential.py:115
 msgid "Please log in to access this page."
-msgstr "您需要登录才能访问这个页面。"
+msgstr "你需要登录才能访问这个页面。"
 
 #: railgun/website/admin.py:230 railgun/website/forms.py:41
 #: railgun/website/templates/base.user_edit.html:20
@@ -89,7 +89,7 @@ msgstr "只接受下列格式的压缩包：rar，zip，tar，tar.gz，tgz，tar
 
 #: railgun/website/forms.py:208
 msgid "Please enter your API address:"
-msgstr "请输入您的API地址："
+msgstr "请输入你的API地址："
 
 #: railgun/website/forms.py:211
 msgid "Please input a valid url address!"
@@ -1051,7 +1051,7 @@ msgstr "功能性检查"
 
 #: runlib/python/pyhost/cppmessages.py:14
 msgid "Your submission does not pass the functionality checker."
-msgstr "您的提交没有通过功能性检查。"
+msgstr "你的提交没有通过功能性检查。"
 
 #: runlib/python/pyhost/cppmessages.py:15
 msgid "No scorer defined, please contact TA."
