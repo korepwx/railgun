@@ -9,6 +9,7 @@ import os
 
 from werkzeug.security import generate_password_hash, check_password_hash
 from wtforms.fields import Field, HiddenField
+from flask.ext.babel import gettext as _
 
 from railgun.common.csvdata import CsvSchema, CsvString, CsvBoolean
 from railgun.common.pyutil import find_object
@@ -63,6 +64,10 @@ class AuthProvider(object):
                     'Could not pull existing user (%s, %s) from %s.' %
                     (user.name, user.email, self)
                 )
+
+    def display_name(self):
+        """Get a translated name of this auth provider."""
+        raise NotImplementedError()
 
     def pull(self, name=None, email=None, dbuser=None):
         """Try to get user from this provider with `name` or `email`.
@@ -142,6 +147,9 @@ class CsvFileAuthProvider(AuthProvider):
 
     def __repr__(self):
         return '<CsvFileAuthProvider(%s)>' % self.name
+
+    def display_name(self):
+        return _('Csv File')
 
     def reload(self):
         """Reload user database from external csv file."""
@@ -347,3 +355,12 @@ def has_user(login):
 
 # Initialize the builtin auth providers
 auth_providers = AuthProviderSet()
+
+
+# Inject the template method to get display name of given auth provider
+@app.template_filter(name='provider_name')
+def __inject_template_provider_name(name):
+    p = auth_providers.get(name)
+    if not p:
+        return None
+    return p.display_name()

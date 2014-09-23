@@ -8,6 +8,8 @@
 import re
 import requests
 
+from flask.ext.babel import gettext as _
+
 from .userauth import AuthProvider
 from .context import app, db
 from .models import User
@@ -34,6 +36,9 @@ class TsinghuaAuthProvider(AuthProvider):
 
     def __repr__(self):
         return '<TsinghuaAuthProvider(%s)>' % self.name
+
+    def display_name(self):
+        return _('Tsinghua')
 
     def pull(self, name=None, email=None, dbuser=None):
 

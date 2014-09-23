@@ -3,6 +3,7 @@
 /config
 /hw/.pack
 /hw/.static
+/upload
 /db
 /logs
 /keys

@@ -10,6 +10,7 @@
       <th>{{ _('Name') }}</th>
       <th>{{ _('Email') }}</th>
       <th>{{ _('Group') }}</th>
+      <th>{{ _('Source') }}</th>
       <th style="width: 10%">{{ _('Action') }}</th>
     </tr>
     {% for user in the_page.items -%}
@@ -25,6 +26,13 @@
           {{ _('Admin') }}
         {%- else -%}
           {{ _('Ordinary') }}
+        {%- endif %}
+      </td>
+      <td class="user-source">
+        {% if user.provider -%}
+          {{ user.provider | provider_name }}
+        {%- else -%}
+          <span class="text-muted">{{ _('Sign up') }}</span>
         {%- endif %}
       </td>
       <td class="user-action">

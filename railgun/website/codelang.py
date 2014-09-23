@@ -5,9 +5,12 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # This file is released under BSD 2-clause license.
 
+import os
 import base64
+import cPickle as pickle
+from cStringIO import StringIO
 
-from flask import g
+from flask import g, send_file, abort, make_response
 from flask.ext.babel import lazy_gettext
 from flask.ext.login import current_user
 
@@ -38,6 +41,23 @@ class CodeLanguage(object):
     def upload_form(self, hw):
         """make handin form for given `hw`."""
 
+    def _store_content(self, handid, content):
+        """store `content` into upload store directory"""
+        if not app.config['STORE_UPLOAD']:
+            return
+        if not os.path.isdir(app.config['UPLOAD_STORE_DIR']):
+            os.makedirs(app.config['UPLOAD_STORE_DIR'], 0700)
+        fpath = os.path.join(app.config['UPLOAD_STORE_DIR'], handid)
+        with open(fpath, 'wb') as f:
+            f.write(pickle.dumps(content))
+
+    def _load_content(self, handid):
+        """load `content` from upload store directory."""
+        fpath = os.path.join(app.config['UPLOAD_STORE_DIR'], handid)
+        if os.path.isfile(fpath):
+            with open(fpath, 'rb') as f:
+                return pickle.loads(f.read())
+
     def _handle_upload(self, handid, hw, lang, form):
         pass
 
@@ -58,6 +78,16 @@ class CodeLanguage(object):
             # re-raise this exception
             raise
 
+    def _handle_download(self, stored_content):
+        pass
+
+    def handle_download(self, handid):
+        """handle download request from student."""
+        payload = self._load_content(handid)
+        if not payload:
+            abort(404)
+        return self._handle_download(payload)
+
 
 class StandardLanguage(CodeLanguage):
     """standard code language that accepts a packed archive as handin"""
@@ -70,10 +100,18 @@ class StandardLanguage(CodeLanguage):
         return UploadHandinForm()
 
     def _handle_upload(self, handid, hw, lang, form):
+        filename = form.handin.data.filename
         fcnt = base64.b64encode(form.handin.data.stream.read())
-        run_python.delay(handid, hw.uuid, fcnt, {
-            'filename': form.handin.data.filename
-        })
+        # We store the user uploaded file in local storage!
+        self._store_content(handid, {'fname': filename, 'fcnt': fcnt})
+        # Push the submission to run queue
+        run_python.delay(handid, hw.uuid, fcnt, {'filename': filename})
+
+    def _handle_download(self, stored_content):
+        fcnt = base64.b64decode(stored_content['fcnt'])
+        fname = stored_content['fname']
+        return send_file(StringIO(fcnt), as_attachment=True,
+                         attachment_filename=fname)
 
 
 class PythonLanguage(StandardLanguage):
@@ -97,7 +135,15 @@ class NetApiLanguage(CodeLanguage):
         super(NetApiLanguage, self).__init__('netapi', 'NetAPI')
 
     def _handle_upload(self, handid, hw, lang, form):
+        # We store the user uploaded file in local storage!
+        self._store_content(handid, form.address.data)
+        # Push the submission to run queue
         run_netapi.delay(handid, hw.uuid, form.address.data, {})
+
+    def _handle_download(self, stored_content):
+        resp = make_response(stored_content)
+        resp.headers['Content-Type'] = 'text/plain'
+        return resp
 
     def upload_form(self, hw):
         """make a handin form that inputs an address"""
@@ -111,7 +157,15 @@ class InputLanguage(CodeLanguage):
         super(InputLanguage, self).__init__('input', 'CsvData')
 
     def _handle_upload(self, handid, hw, lang, form):
+        # We store the user uploaded file in local storage!
+        self._store_content(handid, form.csvdata.data)
+        # Push the submission to run queue
         run_input.delay(handid, hw.uuid, form.csvdata.data, {})
+
+    def _handle_download(self, stored_content):
+        resp = make_response(stored_content)
+        resp.headers['Content-Type'] = 'text/csv'
+        return resp
 
     def upload_form(self, hw):
         """make a handin form that inputs CSV data"""

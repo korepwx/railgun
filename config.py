@@ -84,6 +84,14 @@ HOMEWORK_PACK_DIR = os.path.join(RAILGUN_ROOT, 'hw/.pack')
 # HOMEWORK_STATIC_DIR stores the copied description resources of all homeworks
 HOMEWORK_STATIC_DIR = os.path.join(RAILGUN_ROOT, 'hw/.static')
 
+# STORE_UPLOAD controls whether or not to store the student uploaded
+# homework content
+STORE_UPLOAD = True
+
+# If STORE_HOMEWORK is True, then UPLOAD_STORE_DIR determines the directory
+# to store student uploaded files
+UPLOAD_STORE_DIR = os.path.join(RAILGUN_ROOT, 'upload')
+
 # LOCKED_HOMEWORKS define the list of homeworks that cannot be submitted
 LOCKED_HOMEWORKS = ()
 

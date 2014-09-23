@@ -292,8 +292,30 @@ def handin_detail(uuid):
     # Get the homework
     hw = g.homeworks.get_by_uuid(handin.hwid)
 
+    # check whether the original submission exists
+    submit_file = os.path.join(app.config['UPLOAD_STORE_DIR'], uuid)
+    original_submission_exist = os.path.isfile(submit_file)
+
     # render the handin
-    return render_template('handin_detail.html', handin=handin, hw=hw)
+    return render_template('handin_detail.html', handin=handin, hw=hw,
+                           original_submission_exist=original_submission_exist)
+
+
+@app.route('/handin/<uuid>/download/')
+@login_required
+def handin_download(uuid):
+    # Query about the handin record
+    handin = Handin.query.filter(Handin.uuid == uuid)
+    if not current_user.is_admin:
+        handin = handin.filter(Handin.user_id == current_user.id)
+    handin = handin.first()
+
+    # If not found, result 404
+    if not handin:
+        return _('Submission not found'), 404
+
+    # render the submitted payload
+    return languages[handin.lang].handle_download(handin.uuid)
 
 
 def translated_page(name, **kwargs):
