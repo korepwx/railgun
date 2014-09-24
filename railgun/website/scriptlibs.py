@@ -175,7 +175,7 @@ class ScriptRepo(object):
         """Add a script into repo."""
 
         old_script = self.scripts.get(script.name, None)
-        if not old_script) or (old_script.version < script.version:
+        if not old_script or old_script.version < script.version:
             self.scripts[script.name] = script
 
     def getScript(self, name):

@@ -37,7 +37,7 @@ def to_plain_date(dt):
     return dt.replace(tzinfo=None)
 
 
-def to_utc_date(dt, tz):
+def to_utc_date(dt):
     """Convert a localized datetime object to utc datetime object.
 
     Some timezone, such as Asia/Shanghai, is not on the exact boundary of
@@ -46,12 +46,11 @@ def to_utc_date(dt, tz):
 
     Args:
         dt: the localized datetime object.
-        tz: the timezone object.
 
     Returns:
         A UTC datetime object.
     """
-    return UTC.normalize(tz.astimezone(UTC))
+    return UTC.normalize(dt.astimezone(UTC))
 
 
 def from_utc_date(dt, tz):
@@ -68,4 +67,4 @@ def from_utc_date(dt, tz):
     Returns:
         A UTC datetime object.
     """
-    return tz.normalize(tz.astimezone(tz))
+    return tz.normalize(dt.astimezone(tz))
