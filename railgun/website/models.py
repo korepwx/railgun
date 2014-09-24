@@ -11,6 +11,7 @@ from babel.dates import UTC
 from flask.ext.babel import gettext, get_locale
 from werkzeug.security import generate_password_hash, check_password_hash
 
+from railgun.common.dateutil import from_plain_date, to_plain_date
 from .context import db, app
 
 # define the states of all handins
@@ -160,11 +161,11 @@ class Handin(db.Model):
 
     def get_ctime(self):
         """Get the ctime with UTC tzinfo"""
-        return self.ctime.replace(tzinfo=UTC)
+        return from_plain_date(self.ctime, UTC)
 
     def set_ctime(self, ctime):
         """Set UTC `ctime` with no tzinfo"""
-        self.ctime = ctime.replace(tzinfo=None)
+        self.ctime = to_plain_date(ctime)
 
     def get_state(self):
         """Get translated state name"""

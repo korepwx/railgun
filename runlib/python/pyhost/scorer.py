@@ -40,6 +40,14 @@ class Scorer(object):
     def _run(self):
         pass
 
+    def _load_suite(self):
+        """If `self.suite` is callable, and is not test case or test suite,
+        then this test suite must be a callback to load the test suite.
+        """
+        if callable(self.suite) and \
+                not isinstance(self.suite, unittest.suite.TestSuite):
+            self.suite = self.suite()
+
     def run(self):
         """Run the testing module and generate the score. If a `ScorerFailure`
         is generated, the score will be set to 0.0."""
@@ -62,10 +70,7 @@ class UnitTestScorer(Scorer):
         self.suite = suite
 
     def _run(self):
-        # if self.suite is callable, then load the suite now
-        # this is useful when dealing with student uploaded test case.
-        if callable(self.suite):
-            self.suite = self.suite()
+        self._load_suite()
         # get the result of unittest
         result = UnitTestScorerDetailResult()
         self.suite.run(result)
@@ -174,10 +179,7 @@ class CoverageScorer(Scorer):
 
         cov = coverage(branch=True)
         cov.start()
-
-        # If self.suite is callable, generate test suite first
-        if callable(self.suite):
-            self.suite = self.suite()
+        self._load_suite()
 
         # Run the test suite
         # the `result` is now ignored, but we can get use of it if necessary

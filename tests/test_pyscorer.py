@@ -5,8 +5,11 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # This file is released under BSD 2-clause license.
 
+import os
 import unittest
+
 from pyhost.scorer import UnitTestScorer, CoverageScorer
+from pyscorer_data.sample_test import SampleTestCase
 
 
 class UnitTestScorerTestCase(unittest.TestCase):
@@ -35,23 +38,20 @@ class UnitTestScorerTestCase(unittest.TestCase):
             self.assertEqual(1, 1)
 
     def test_scorer(self):
-        scorer = UnitTestScorer(
-            unittest.TestLoader().loadTestsFromTestCase(
-                UnitTestScorerTestCase.MyTest
-            )
-        )
+        scorer = UnitTestScorer.FromTestCase(UnitTestScorerTestCase.MyTest)
         scorer.run()
         # check the result patterns
         self.assertAlmostEqual(4*100.0/6, scorer.score)
 
     def test_coverage(self):
-        scorer = CoverageScorer.FromHandinDir(
-            ['sample.py'],
-            ['test_pyscorer.py']
+        sample_py = os.path.join(
+            os.path.dirname(__file__),
+            'pyscorer_data/sample.py'
+        )
+        suite = unittest.TestLoader().loadTestsFromTestCase(SampleTestCase)
+        scorer = CoverageScorer(
+            suite=suite,
+            filelist=[sample_py],
         )
         scorer.run()
-        self.assertLessEqual(0.0, scorer.cover_rate)
-        self.assertLessEqual(scorer.cover_rate, 100.0)
-        print(scorer.score)
-        print(scorer.detail)
-        print(scorer.brief)
+        self.assertAlmostEqual(scorer.score, 83.75)

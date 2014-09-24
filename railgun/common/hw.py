@@ -12,11 +12,12 @@ from xml.etree import ElementTree
 from itertools import ifilter, chain
 
 from markdown import markdown
-from babel.dates import timedelta, get_timezone, UTC
+from babel.dates import timedelta, get_timezone
 
 import config
 from . import fileutil
 from .fileutil import file_get_contents
+from .dateutil import utc_now, to_utc_date, from_plain_date
 from .lazy_i18n import lazystr_to_plain, plain_to_lazystr
 from .url import reform_path, UrlMatcher
 
@@ -27,16 +28,6 @@ def parse_bool(s):
         return False
     s = str(s).lower()
     return (s == 'true' or s == 'on' or s == '1' or s == 'yes')
-
-
-def to_utc(dt):
-    """Convert datetime instance `dt` to UTC datetime."""
-    return dt.astimezone(UTC)
-
-
-def utc_now():
-    """get now datetime whose timezone is UTC."""
-    return UTC.localize(datetime.utcnow())
 
 
 def get_comm_key():
@@ -341,14 +332,15 @@ class Homework(object):
                         timezone = config.DEFAULT_TIMEZONE
                     timezone = get_timezone(timezone.strip())
                     # parse the date string
-                    duedate = timezone.localize(
+                    duedate = from_plain_date(
                         datetime.strptime(due.find('date').text.strip(),
-                                          '%Y-%m-%d %H:%M:%S')
+                                          '%Y-%m-%d %H:%M:%S'),
+                        timezone
                     )
                     # parse the factor
                     scale = float(due.find('scale').text.strip())
                     # add to deadline list
-                    ret.deadlines.append((to_utc(duedate), scale))
+                    ret.deadlines.append((to_utc_date(duedate), scale))
             elif nd.tag == 'files':
                 ret.file_rules = FileRules.parse_xml(nd)
 
@@ -459,7 +451,11 @@ class Homework(object):
         return chain(root_files, code_files)
 
     def get_next_deadline(self):
-        """get the next deadline of this homework. return (date, scale)."""
+        """Get the next deadline of this homework.
+
+        Returns:
+            (date, scale) if the next deadline, or None if already expired.
+        """
 
         now = utc_now()
         for ddl in self.deadlines:
@@ -467,7 +463,11 @@ class Homework(object):
                 return (ddl[0], ddl[1])
 
     def get_last_deadline(self):
-        """get the last deadline of this homework. return (date, scale)."""
+        """Get the last deadline of this homework.
+
+        Returns:
+            (date, scale) if the last deadline, or None if already expired.
+        """
 
         now = utc_now()
         ddl = self.deadlines[-1]
