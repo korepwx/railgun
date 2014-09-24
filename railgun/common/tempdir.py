@@ -74,6 +74,40 @@ class TempDir(object):
                 f.write(fobj.read())
             os.chmod(dstpath, mode)
 
+    def chown(self, uid, gid=None, recursive=False):
+        """Change the owner of this temporary directory.
+
+        Args:
+            uid: the new uid of this directory.
+            gid: the new gid of this directory.  If not given, current gid
+                will be used.
+            recursive: should traverse the directory? default is False.
+        """
+        if gid is None:
+            gid = os.stat(self.path).st_gid
+        if recursive:
+            for dpath, _, fnames in os.walk(self.path):
+                os.chown(dpath, uid, gid)
+                for fn in fnames:
+                    os.chown(os.path.join(dpath, fn), uid, gid)
+        else:
+            os.chown(self.path, uid, gid)
+
+    def chmod(self, mode, recursive=False):
+        """Change the mode of this temporary directory.
+
+        Args:
+            mode: the new mode of this directory.
+            recursive: should traverse the directory? default is False.
+        """
+        if recursive:
+            for dpath, _, fnames in os.walk(self.path):
+                os.chmod(dpath, mode)
+                for fn in fnames:
+                    os.chmod(os.path.join(dpath, fn), mode)
+        else:
+            os.chmod(self.path, mode)
+
     def __enter__(self):
         self.open()
         return self

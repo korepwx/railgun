@@ -12,16 +12,18 @@ import grp
 import socket
 import urllib
 
-from . import runconfig
-from .context import logger
-from .errors import RunnerError, FileDenyError, RunnerTimeout, \
-    NetApiAddressRejected, ExtractFileFailure, RuntimeFileCopyFailure, \
-    SpawnProcessFailure, ArchiveContainTooManyFileError
 from railgun.common.hw import FileRules
 from railgun.common.lazy_i18n import lazy_gettext
 from railgun.common.fileutil import dirtree, remove_firstdir
 from railgun.common.osutil import ProcessTimeout, execute
 from railgun.common.tempdir import TempDir
+from . import runconfig
+from .context import logger
+from .credential import acquire_offline_user, release_offline_user, \
+    acquire_online_user, release_online_user
+from .errors import RunnerError, FileDenyError, RunnerTimeout, \
+    NetApiAddressRejected, ExtractFileFailure, RuntimeFileCopyFailure, \
+    SpawnProcessFailure, ArchiveContainTooManyFileError
 
 
 class HostConfig(object):
@@ -82,18 +84,28 @@ class BaseHost(object):
         # the host config object
         self.config = HostConfig(handid=uuid, hwid=self.hw.uuid)
 
+        # the acquired runner user
+        self.runner_user = None
+
     def __enter__(self):
         """Initialize the host directory"""
         self.tempdir.open(mode=0777)
         return self
 
     def __exit__(self, ignore1, ignore2, ignore3):
-        self.tempdir.close()
+        #self.tempdir.close()
+        pass
 
     def _spawn(self, cmdline, timeout=None):
         """Spawn external process."""
 
         try:
+            # before spawn the process, we've already known the process
+            # user. then we try to chown & chmod the tempdir.
+            if os.getuid() == 0:
+                self.tempdir.chown(
+                    self.config.user_id, self.config.group_id, True)
+                self.tempdir.chmod(0700, True)
             # execute the testing module
             return execute(
                 cmdline,
@@ -124,6 +136,9 @@ class BaseHost(object):
         Raises:
             KeyError: If `uid` or `gid` is string and does not exist.
         """
+
+        # record user name for later release
+        self.runner_user = uid
 
         # NOTE: pwd.getpwnam and grp.getgrname does throw KeyError
         #       if given name not exist.
@@ -244,27 +259,36 @@ class PythonHost(BaseHost):
         )
 
         # get interested parameters of this task
+        self.offline = offline
         self.entry = self.runner_params.get('entry')
         self.timeout = int(self.runner_params.get('timeout') or
                            runconfig.RUNNER_DEFAULT_TIMEOUT)
         self.entry_path = os.path.join(self.tempdir.path, self.entry)
-
-        # Set uid and gid
-        if offline:
-            self.set_user(runconfig.OFFLINE_USER_ID,
-                          runconfig.OFFLINE_GROUP_ID)
-        else:
-            self.set_user(runconfig.ONLINE_USER_ID, runconfig.ONLINE_GROUP_ID)
 
     def compile(self):
         pass
 
     def run(self):
         """Run this Python testing module."""
-        return self._spawn(
-            '"%s" "%s"' % (self.safe_runner, self.entry_path),
-            self.timeout
-        )
+        try:
+            # acquire a free system account
+            expires = self.timeout
+            if self.offline:
+                user_login = acquire_offline_user(expires)
+            else:
+                user_login = acquire_online_user(expires)
+            self.set_user(user_login)
+            # run the process
+            return self._spawn(
+                '"%s" "%s"' % (self.safe_runner, self.entry_path),
+                self.timeout
+            )
+        finally:
+            if self.runner_user:
+                if self.offline:
+                    release_offline_user(self.runner_user)
+                else:
+                    release_online_user(self.runner_user)
 
 
 class NetApiHost(PythonHost):

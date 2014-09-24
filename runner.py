@@ -9,6 +9,8 @@ import os
 import sys
 import copy
 
+import config
+
 # there are two run queues: `default` for standard handins, and `online` for
 # netapi handins.
 queue = sys.argv[1] if len(sys.argv) > 1 else 'default'
@@ -27,7 +29,7 @@ args = [
     'worker',
     '-Q',
     queue,
-    '--concurrency=1',
+    '--concurrency=%d' % config.RUNNER_CONCURRENTY,
     '--logfile=logs/celery.log',
 ]
 os.execvpe('celery', args, env)

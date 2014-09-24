@@ -15,10 +15,18 @@ WEBSITE_API_BASEURL = WEBSITE_BASEURL + '/api'
 OFFLINE_USER_ID = 'railgun-offline'
 OFFLINE_GROUP_ID = None
 
+# The offline user host, or None if host server is not used.
+# OFFLINE_USER_HOST = ('127.0.0.1', 9777)
+OFFLINE_USER_HOST = None
+
 # The user id and group id for submissions on online run queue
 # If group id is not defined, the group id of the user will be selected.
 ONLINE_USER_ID = 'railgun-online'
 ONLINE_GROUP_ID = None
+
+# The online user host, or None if host server is not used.
+# OFFLINE_USER_HOST = ('127.0.0.1', 9778)
+ONLINE_USER_HOST = None
 
 # ---- specify the broker of Celery ----
 # NOTE: format of Redis server is redis://:password@hostname:port/db_number
