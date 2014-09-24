@@ -21,12 +21,12 @@ class TempDir(object):
 
     def open(self, mode=0700):
         """Create target directory"""
-        if (not os.path.isdir(self.path)):
+        if not os.path.isdir(self.path):
             os.makedirs(self.path, mode)
 
     def close(self):
         """Delete target directory"""
-        if (os.path.isdir(self.path)):
+        if os.path.isdir(self.path):
             shutil.rmtree(self.path)
 
     def fullpath(self, subpath):
@@ -40,9 +40,9 @@ class TempDir(object):
             srcpath = os.path.join(srcdir, f)
             dstpath = os.path.join(self.path, f)
 
-            if (not os.path.isdir(srcpath)):
+            if not os.path.isdir(srcpath):
                 parent_path = os.path.dirname(dstpath)
-                if (not os.path.isdir(parent_path)):
+                if not os.path.isdir(parent_path):
                     os.makedirs(parent_path, mode)
                 shutil.copyfile(srcpath, dstpath)
 
@@ -62,12 +62,12 @@ class TempDir(object):
             dstpath = os.path.join(self.path, fpath)
 
             # check whether the file should skip
-            if (should_skip(fpath)):
+            if should_skip(fpath):
                 continue
 
             # create the parent directory if not exist
             parent_path = os.path.dirname(dstpath)
-            if (not os.path.isdir(parent_path)):
+            if not os.path.isdir(parent_path):
                 os.makedirs(parent_path, mode)
 
             with open(dstpath, 'wb') as f:

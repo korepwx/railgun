@@ -134,7 +134,7 @@ class Pep8DetailReport(pep8.BaseReport):
         for err in self._errors:
             mark = re.sub(r'\S', ' ', err['source'][: err['offset']]) + '^'
             tmp = [self.fmt % err]
-            if (self._show_source):
+            if self._show_source:
                 tmp.append(err['source'])
                 tmp.append(mark)
             ret.append('\n'.join(tmp))

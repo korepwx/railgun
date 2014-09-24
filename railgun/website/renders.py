@@ -62,7 +62,7 @@ class CoveragePartialScoreRender(PartialScoreRender):
         return ret
 
     def extract_total(self, first):
-        if (not first):
+        if not first:
             return None
         txt = unicode(first)
         lines = txt.split('\n')
@@ -73,20 +73,20 @@ class CoveragePartialScoreRender(PartialScoreRender):
 
     def render(self, partial):
         # Format each file result
-        if (partial.detail):
+        if partial.detail:
             # Whether there exists the total coverage report?
             # this special check is for compatibility with older versions.
             first = partial.detail[0]
             first_title = str(first.text) if isinstance(first, GetTextString) \
                 else str(first)
-            if (first_title.startswith('Coverage Results:')):
+            if first_title.startswith('Coverage Results:'):
                 raw_detail = partial.detail[1:]
             else:
                 raw_detail = partial.detail
                 first = None
             # Make the detail reports
             first_extract = self.extract_total(first)
-            if (first_extract):
+            if first_extract:
                 total_report = {
                     'headers': first_extract[0],
                     'files': first_extract[1],

@@ -46,13 +46,13 @@ def format_size(size):
         A human readable string to represent the `size`.
     """
 
-    if (not size):
+    if not size:
         return None
-    if (size > 1e9):
+    if size > 1e9:
         return _('%(size).2fG', size=size / (1024.0 * 1024.0 * 1024.0))
-    if (size > 1e6):
+    if size > 1e6:
         return _('%(size).2fM', size=size / (1024.0 * 1024.0))
-    if (size > 1e3):
+    if size > 1e3:
         return _('%(size).2fK', size=size / 1024.0)
     return _('%(size)dB', size=int(size))
 
@@ -74,9 +74,9 @@ def round_score(score):
 # if given paramter is datetime object, it will be compared to g.utcnow
 @app.template_filter(name='timedelta')
 def __inject_template_timedelta(o):
-    if (not o):
+    if not o:
         return None
-    if (isinstance(o, datetime)):
+    if isinstance(o, datetime):
         o = o - g.utcnow
     return format_timedelta(o, locale=get_locale())
 
@@ -90,15 +90,15 @@ def __inject_template_sizeformat(size):
 # get a suitable bootstrap class name according to time delta
 @app.template_filter(name='duecolor')
 def __inject_template_duecolor(delta_or_date):
-    if (not delta_or_date):
+    if not delta_or_date:
         return None
-    if (isinstance(delta_or_date, datetime)):
+    if isinstance(delta_or_date, datetime):
         delta_or_date = delta_or_date - g.utcnow
     # exam the time delta through absolute second count
     val = delta_or_date.total_seconds() / (3.0 * 86400)
-    if (val < 0.0):
+    if val < 0.0:
         val = 0.0
-    if (val > 1.0):
+    if val > 1.0:
         val = 1.0
     # get the color of this time delta
     return float_color(val)

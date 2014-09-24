@@ -64,7 +64,7 @@ class UnitTestScorer(Scorer):
     def _run(self):
         # if self.suite is callable, then load the suite now
         # this is useful when dealing with student uploaded test case.
-        if (callable(self.suite)):
+        if callable(self.suite):
             self.suite = self.suite()
         # get the result of unittest
         result = UnitTestScorerDetailResult()
@@ -74,7 +74,7 @@ class UnitTestScorer(Scorer):
         errors, failures = map(len, (result.errors, result.failures))
         # give out a score according to the above statistics
         success = total - (errors + failures)
-        if (total > 0):
+        if total > 0:
             self.score = 100.0 * success / total
         else:
             self.score = 100.0
@@ -168,7 +168,7 @@ class CoverageScorer(Scorer):
 
     def _run(self):
         def safe_divide(a, b, default=1.0):
-            if (b > 0):
+            if b > 0:
                 return float(a) / float(b)
             return default
 
@@ -176,7 +176,7 @@ class CoverageScorer(Scorer):
         cov.start()
 
         # If self.suite is callable, generate test suite first
-        if (callable(self.suite)):
+        if callable(self.suite):
             self.suite = self.suite()
 
         # Run the test suite
@@ -246,12 +246,12 @@ class CoverageScorer(Scorer):
                         stmt_text.append('  %s' % s.rstrip())
                     # next, format branch cover report
                     branch_exec = branch.get(i, None)
-                    if (not branch_exec):
+                    if not branch_exec:
                         branch_text.append('  %s' % s.rstrip())
-                    elif (branch_exec[1] == branch_exec[0]):
+                    elif branch_exec[1] == branch_exec[0]:
                         # branch taken
                         branch_text.append('+ %s' % s.rstrip())
-                    elif (branch_exec[1] == 0):
+                    elif branch_exec[1] == 0:
                         # branch not taken
                         branch_text.append('- %s' % s.rstrip())
                     else:
@@ -345,7 +345,7 @@ class CoverageScorer(Scorer):
         test_modules = []
         for f in dirtree('.'):
             fpath, fext = os.path.splitext(f)
-            if (fext.lower() == '.py' and p.match(f)):
+            if fext.lower() == '.py' and p.match(f):
                 test_modules.append(fpath.replace('/', '.'))
 
         suite = lambda: unittest.TestLoader().loadTestsFromNames(test_modules)
@@ -377,9 +377,9 @@ class InputDataScorer(Scorer):
     def getDescription(self, check_class):
         """Get the description for given `check_class`."""
 
-        if (hasattr(check_class, 'description')):
+        if hasattr(check_class, 'description'):
             return getattr(check_class, 'description')
-        if (hasattr(check_class, '__name__')):
+        if hasattr(check_class, '__name__'):
             return getattr(check_class, '__name__')
         return str(check_class)
 

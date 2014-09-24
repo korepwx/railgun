@@ -62,9 +62,9 @@ class CsvFloat(CsvField):
 class CsvBoolean(CsvField):
     def _parseString(self, value):
         val = value.lower()
-        if (val in ('true', 'on', '1', 'yes')):
+        if val in ('true', 'on', '1', 'yes'):
             return True
-        if (val in ('false', 'off', '0', 'no')):
+        if val in ('false', 'off', '0', 'no'):
             return False
         raise ValueError('%s is not a boolean value.' % value)
 
@@ -82,9 +82,9 @@ class CsvSchema(object):
         field_getter = {}
 
         for k, v in cls.__dict__.iteritems():
-            if (isinstance(v, CsvField)):
+            if isinstance(v, CsvField):
                 field_name = v.name if v.name else k
-                if (field_name in headers):
+                if field_name in headers:
                     # set the getter to fetch Nth column of a row
                     # where N = headers[k]
                     field_getter[k] = (
@@ -92,7 +92,7 @@ class CsvSchema(object):
                             col.parseString(row[headers[key]])
                         )
                     )
-                elif (v.has_default):
+                elif v.has_default:
                     # not exist in CSV, if has default, use default value
                     field_getter[k] = lambda row, val=v: val.default
                 else:
@@ -104,7 +104,7 @@ class CsvSchema(object):
 
         # Yield object from CSV one by one
         for row in rdr:
-            if (not row):
+            if not row:
                 continue
             obj = cls()
             for f, g in field_getter.iteritems():

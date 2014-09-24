@@ -18,7 +18,7 @@ class Task(object):
         self.logger.setLevel(logging.INFO)
 
         # Setup log stream
-        if (not logstream):
+        if not logstream:
             logstream = StringIO()
         self._stream = logstream
         self._handler = StreamHandler(logstream)
@@ -47,7 +47,7 @@ class TaskSet(object):
 
     def add(self, name, taskmaker):
         """Add a task constructor into set."""
-        if (name in self.tasks):
+        if name in self.tasks:
             raise KeyError('Task %(name)s already exists!' % name)
         self.tasks[name] = taskmaker
 

@@ -24,7 +24,7 @@ class GetTextString(object):
 
         # There's a very strange behaviour: gettext('') will return the version
         # string of babel. Get rid of it!
-        if (not self.text):
+        if not self.text:
             return ''
         return _babel_gettext(self.text, **self.kwargs)
 
@@ -43,15 +43,15 @@ lazy_gettext = GetTextString
 
 def lazystr_to_plain(s):
     """Convert string or unicode or GetTextString to plain object."""
-    if (s is None or isinstance(s, str) or isinstance(s, unicode)):
+    if s is None or isinstance(s, str) or isinstance(s, unicode):
         return s
-    if (isinstance(s, GetTextString)):
+    if isinstance(s, GetTextString):
         return {'text': s.text, 'kwargs': s.kwargs}
     raise TypeError('"%s" is not a string object.' % s)
 
 
 def plain_to_lazystr(s):
     """Convert plain object to unicode or GetTextString."""
-    if (s is None or isinstance(s, str) or isinstance(s, unicode)):
+    if s is None or isinstance(s, str) or isinstance(s, unicode):
         return s
     return GetTextString(s['text'], **s['kwargs'])

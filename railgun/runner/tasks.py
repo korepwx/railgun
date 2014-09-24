@@ -36,7 +36,7 @@ def run_handin(handler, handid, hwid):
     try:
         report_start(handid)
         # create and launch this handler
-        if (callable(handler)):
+        if callable(handler):
             handler = handler()
         exitcode, stdout, stderr = handler.execute()
         # try to convert stdout & stderr to unicode in UTF-8 encoding
@@ -50,7 +50,7 @@ def run_handin(handler, handid, hwid):
             api.proclog(handid, exitcode, None, None)
             raise NonUTF8OutputError()
         # log the handin execution
-        if (exitcode != 0):
+        if exitcode != 0:
             logger.warning(
                 'Submission[%(handid)s] of hw[%(hwid)s]: Error.\n'
                 '  stdout: %(stdout)s\n'
@@ -60,7 +60,7 @@ def run_handin(handler, handid, hwid):
             )
         # Report failure if exitcode != 0. In this case the host itself may
         # not have the chance to report handin scores
-        if (exitcode != 0):
+        if exitcode != 0:
             # We do not raise RunnerError here, because under this situation,
             # we must have logged such exception, and do not want to log
             # again.

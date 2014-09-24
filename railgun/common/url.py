@@ -35,11 +35,11 @@ def reform_path(path):
 
     for p in path.split('/'):
         # skip continous slashes, or single '.'
-        if (p == '.' or not p):
+        if p == '.' or not p:
             continue
         # remove parent dir if p is '..'
-        if (p == '..'):
-            if (not ret):
+        if p == '..':
+            if not ret:
                 raise ValueError('.. out of root')
             ret.pop()
         # otherwise add the simple part into ret
@@ -47,6 +47,6 @@ def reform_path(path):
             ret.append(p)
 
     ret = '/'.join(ret)
-    if (lead_slash):
+    if lead_slash:
         ret = '/' + ret
     return ret

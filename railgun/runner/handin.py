@@ -31,7 +31,7 @@ class TempDiskUploadFile(object):
 
     def __exit__(self, ignore1, ignore2, ignore3):
         try:
-            if (os.path.isfile(self.path)):
+            if os.path.isfile(self.path):
                 os.remove(self.path)
         except Exception:
             if not self.ignore_error:
@@ -43,14 +43,14 @@ class BaseHandin(object):
 
     def __init__(self, handid, hwid, lang, upload, options):
         # check whether options is dict
-        if (not isinstance(options, dict)):
+        if not isinstance(options, dict):
             raise TypeError("`options` should be dictionary.")
         # get homework instance from all loaded homeworks
         self.hw = homeworks.get_by_uuid(hwid)
-        if (not self.hw):
+        if not self.hw:
             raise InternalServerError()
         # check whether the desired language is supported by this homework.
-        if (lang not in self.hw.get_code_languages()):
+        if lang not in self.hw.get_code_languages():
             raise LanguageNotSupportError(lang)
         # store handid & lang
         self.handid = handid

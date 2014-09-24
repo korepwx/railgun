@@ -55,7 +55,7 @@ class HostConfig(object):
         ret['RAILGUN_ROOT'] = runconfig.RAILGUN_ROOT
         # setup implicit values
         for k, v in self.__dict__.iteritems():
-            if (v is not None and not k.startswith('_') and not callable(v)):
+            if v is not None and not k.startswith('_') and not callable(v):
                 ret['RAILGUN_%s' % str(k).upper()] = str(v)
         # setup explicit values
         for k, v in self._values.iteritems():
@@ -127,11 +127,11 @@ class BaseHost(object):
 
         # NOTE: pwd.getpwnam and grp.getgrname does throw KeyError
         #       if given name not exist.
-        if (not isinstance(uid, int)):
+        if not isinstance(uid, int):
             uid = pwd.getpwnam(uid).pw_uid
-        if (gid is None):
+        if gid is None:
             gid = pwd.getpwuid(uid).pw_gid
-        elif (not isinstance(gid, int)):
+        elif not isinstance(gid, int):
             gid = grp.getgrnam(gid).gr_gid
 
         self.config.user_id = uid
@@ -167,7 +167,7 @@ class BaseHost(object):
         try:
             # first count the file, and reject the submission if exceeds
             maxCount = runconfig.MAX_SUBMISSION_FILE_COUNT
-            if (archive.countfiles(maxCount) > maxCount):
+            if archive.countfiles(maxCount) > maxCount:
                 raise ArchiveContainTooManyFileError()
 
             # if the archive contains only one dir, remove first dir from path
@@ -181,11 +181,11 @@ class BaseHost(object):
                 action = self.hwcode.file_rules.get_action(
                     path, default_action=-1
                 )
-                if (action == FileRules.DENY):
+                if action == FileRules.DENY:
                     raise FileDenyError(path)
-                if (action == FileRules.ACCEPT):
+                if action == FileRules.ACCEPT:
                     return False
-                if (action != -1):
+                if action != -1:
                     # action is not None, and action != ACCEPT, this means
                     # that rules in `hwcode` rejects this file.
                     return True
@@ -193,7 +193,7 @@ class BaseHost(object):
                 action = self.hw.file_rules.get_action(
                     path, default_action=FileRules.LOCK
                 )
-                if (action == FileRules.DENY):
+                if action == FileRules.DENY:
                     raise FileDenyError(path)
                 return (action != FileRules.ACCEPT)
 
@@ -250,7 +250,7 @@ class PythonHost(BaseHost):
         self.entry_path = os.path.join(self.tempdir.path, self.entry)
 
         # Set uid and gid
-        if (offline):
+        if offline:
             self.set_user(runconfig.OFFLINE_USER_ID,
                           runconfig.OFFLINE_GROUP_ID)
         else:
@@ -279,14 +279,14 @@ class NetApiHost(PythonHost):
 
     def compile(self):
         """Validate the provided address by urlrule and iprule."""
-        if (self.config.urlrule):
+        if self.config.urlrule:
             p = re.compile(self.config.urlrule)
-            if (not p.match(self.config.remote_addr)):
+            if not p.match(self.config.remote_addr):
                 raise NetApiAddressRejected(compile_error=lazy_gettext(
                     'Address "%(url)s" does not match pattern "%(rule)s"',
                     url=self.config.remote_addr, rule=self.config.urlrule
                 ))
-        if (self.config.iprule):
+        if self.config.iprule:
             domain = urllib.splitport(
                 urllib.splithost(
                     urllib.splittype(self.config.remote_addr)[1]
@@ -301,7 +301,7 @@ class NetApiHost(PythonHost):
                 ipaddr = '<invalid>'
             # ip not match, skip
             p = re.compile(self.config.iprule)
-            if (not p.match(ipaddr)):
+            if not p.match(ipaddr):
                 raise NetApiAddressRejected(compile_error=lazy_gettext(
                     'IP address "%(ip)s" does not match pattern "%(rule)s"',
                     ip=ipaddr, rule=self.config.iprule

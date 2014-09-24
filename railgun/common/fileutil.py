@@ -26,7 +26,7 @@ def file_get_contents(path):
 def remove_firstdir(path):
     """Remove the first level directory from `path`"""
     slash_pos = path.find('/')
-    if (slash_pos >= 0):
+    if slash_pos >= 0:
         path = path[slash_pos+1:]
     return path
 
@@ -39,7 +39,7 @@ def dirtree(path):
             fpath = os.path.join(parent, f)
             p2 = p + f
             # if directory, scan recursively
-            if (os.path.isdir(fpath)):
+            if os.path.isdir(fpath):
                 for p3 in F(fpath, p2 + '/'):
                     yield p3
             yield p2
@@ -71,7 +71,7 @@ class Extractor(object):
         return self
 
     def __exit__(self, type, value, tb):
-        if (self.fobj):
+        if self.fobj:
             self.fobj.close()
             self.fobj = None
 
@@ -107,7 +107,7 @@ class Extractor(object):
         counter = 0
         for fname in self.filelist():
             counter += 1
-            if (counter > maxcount):
+            if counter > maxcount:
                 break
         return counter
 
@@ -117,20 +117,20 @@ class Extractor(object):
         for fname in self.filelist():
             # get the first directory name
             slash_pos = fname.find('/')
-            if (slash_pos >= 0):
+            if slash_pos >= 0:
                 dname = fname[: slash_pos]
             else:
                 dname = fname
             # ignore some meta data directories
-            if (dname == '__MACOSX'):
+            if dname == '__MACOSX':
                 # OS X will add a hidden directory named "__MACOSX" to archive
                 # even the user just wants to compress a single directory.
                 # So ignore this directory.
                 continue
             # check whether one dir.
-            if (last_dname is None):
+            if last_dname is None:
                 last_dname = dname
-            if (last_dname != dname):
+            if last_dname != dname:
                 return False
         return True
 
@@ -139,11 +139,11 @@ class Extractor(object):
         """Open an extractor for given `fpath`."""
 
         fext = os.path.splitext(fpath)[1].lower()
-        if (fext in ('.rar')):
+        if fext in ('.rar'):
             return RarExtractor(fpath)
-        if (fext in ('.zip')):
+        if fext in ('.zip'):
             return ZipExtractor(fpath)
-        if (fext in ('.tar', '.tgz', '.gz', '.bz2', '.tbz')):
+        if fext in ('.tar', '.tgz', '.gz', '.bz2', '.tbz'):
             return TarExtractor(fpath)
         raise ValueError('Archive file "%s" not recognized.')
 
@@ -156,14 +156,14 @@ class ZipExtractor(Extractor):
     def extract(self):
         for mi in self.fobj.infolist():
             # ignore directory entries
-            if (mi.filename[-1] == '/'):
+            if mi.filename[-1] == '/':
                 continue
             f = self.fobj.open(mi)
             yield self._canonical_path(mi.filename), f
 
     def filelist(self):
         for mi in self.fobj.infolist():
-            if (mi.filename[-1] == '/'):
+            if mi.filename[-1] == '/':
                 continue
             yield self._canonical_path(mi.filename)
 
@@ -175,14 +175,14 @@ class RarExtractor(Extractor):
 
     def extract(self):
         for mi in self.fobj.infolist():
-            if (mi.isdir()):
+            if mi.isdir():
                 continue
             f = self.fobj.open(mi)
             yield self._canonical_path(mi.filename), f
 
     def filelist(self):
         for mi in self.fobj.infolist():
-            if (mi.isdir()):
+            if mi.isdir():
                 continue
             yield self._canonical_path(mi.filename)
 
@@ -194,10 +194,10 @@ class TarExtractor(Extractor):
 
     def extract(self):
         for mi in self.fobj:
-            if (not mi.isdir()):
+            if not mi.isdir():
                 yield self._canonical_path(mi.name), self.fobj.extractfile(mi)
 
     def filelist(self):
         for mi in self.fobj:
-            if (not mi.isdir()):
+            if not mi.isdir():
                 yield self._canonical_path(mi.name)

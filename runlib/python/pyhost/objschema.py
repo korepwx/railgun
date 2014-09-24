@@ -74,23 +74,23 @@ class BaseSchema(object):
     def _match_attrs(self):
         """Select the objects from parent matching `pattern` by getattr."""
         # If parent not exist, no attrs could match
-        if (not self.parent.exist):
+        if not self.parent.exist:
             return
         # match the objects from each parent
         for po in self.parent.objects:
-            if (isinstance(self.pattern, basestring)):
-                if (hasattr(po, self.pattern)):
+            if isinstance(self.pattern, basestring):
+                if hasattr(po, self.pattern):
                     yield getattr(po, self.pattern)
             else:
                 for objn in dir(po):
-                    if (self.pattern.match(objn)):
+                    if self.pattern.match(objn):
                         yield getattr(po, objn)
 
     def _pattern_string(self):
         """Get the string of pattern."""
-        if (self.pattern is None):
+        if self.pattern is None:
             return
-        if (isinstance(self.pattern, basestring)):
+        if isinstance(self.pattern, basestring):
             return self.pattern
         # The pattern is not string, so it should be regex object.
         return self.pattern.pattern
@@ -138,13 +138,13 @@ class BaseSchema(object):
         """Check whether this schema is marked as REQUIRE but the object
         does not exist.  All the children schema will also be notified.
         """
-        if (self.exist_rule == SchemaExistRule.REQUIRE and not self.exist):
+        if self.exist_rule == SchemaExistRule.REQUIRE and not self.exist:
             collector.addError(lazy_gettext(
                 '%(schema)s is required but the object does not exist or '
                 'could not be loaded.',
                 schema=self.get_description()
             ))
-        elif (self.exist_rule == SchemaExistRule.DENY and self.exist):
+        elif self.exist_rule == SchemaExistRule.DENY and self.exist:
             collector.addError(lazy_gettext(
                 '%(schema)s is denied but the object exists.',
                 schema=self.get_description()

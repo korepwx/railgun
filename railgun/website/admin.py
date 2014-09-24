@@ -242,7 +242,7 @@ def hwscores(hwid):
 
     for rec in q:
         user_scores.setdefault(rec.user_id, 0.0)
-        if (user_scores[rec.user_id] < rec.score):
+        if user_scores[rec.user_id] < rec.score:
             user_scores[rec.user_id] = round_score(rec.score)
 
     # Build data in user name ASC

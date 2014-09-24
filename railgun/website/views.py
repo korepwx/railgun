@@ -116,9 +116,9 @@ def profile_edit():
 
     if form.validate_on_submit():
         # Set password if passwd field exists
-        if ('password' in form):
+        if 'password' in form:
             pwd = form.password.data
-            if (pwd):
+            if pwd:
                 current_user.set_password(pwd)
             del form['password']
             del form['confirm']

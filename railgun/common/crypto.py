@@ -51,7 +51,7 @@ class AESCipher(object):
         return s + (chr(padsize) * padsize)
 
     def _unpad(self, s):
-        if (not s or len(s) % self.BlockSize != 0):
+        if not s or len(s) % self.BlockSize != 0:
             raise ValueError("`s` is not a padded string.")
         return s[:-ord(s[-1])]
 

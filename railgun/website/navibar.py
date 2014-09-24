@@ -36,19 +36,19 @@ class NaviItem(object):
 
     @property
     def title(self):
-        if (callable(self.__title)):
+        if callable(self.__title):
             return self.__title()
         return unicode(self.__title)
 
     @property
     def url(self):
-        if (callable(self.__url)):
+        if callable(self.__url):
             return self.__url()
         return self.__url
 
     @property
     def subitems(self):
-        if (callable(self.__subitems)):
+        if callable(self.__subitems):
             return self.__subitems()
         return self.__subitems or []
 
@@ -79,15 +79,15 @@ class NaviItemProxy(object):
         self.navi = navi
         self.title = navi.title
         self.url = navi.url
-        if (not self.url):
+        if not self.url:
             self.url = '#'
         self.is_active = navi.is_active
         self.subitems = [NaviItemProxy(i) for i in self.navi.subitems]
 
         # build cache of recursive is_active
-        if (not self.is_active):
+        if not self.is_active:
             for i in navi.subitems:
-                if (i.is_active):
+                if i.is_active:
                     self.is_active = True
                     break
 
@@ -128,7 +128,7 @@ class NavibarProxy(object):
         self.items = None
 
     def __iter__(self):
-        if (self.items is None):
+        if self.items is None:
             self.items = self.__navibar.get_proxies()
         return iter(self.items)
 

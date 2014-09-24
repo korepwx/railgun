@@ -202,7 +202,7 @@ class CsvFileAuthProvider(AuthProvider):
         # dbuser is not None, update existing one
         updated = False
         for k in self.__interested_fields:
-            if (getattr(dbuser, k) != getattr(user, k)):
+            if getattr(dbuser, k) != getattr(user, k):
                 updated = True
                 setattr(dbuser, k, getattr(user, k))
         if updated:
@@ -257,7 +257,7 @@ class AuthProviderSet(object):
         """Pull user from providers one by one."""
         for p in self.items:
             ret = p.pull(name=name, email=email, dbuser=dbuser)
-            if (ret):
+            if ret:
                 return ret
 
     def authenticate(self, **kwargs):
@@ -278,7 +278,7 @@ class AuthProviderSet(object):
                 # Check whether user passes authentication
                 user, dbuser = ret[0], ret[1]
                 dbuser = p.authenticate(user, dbuser, password)
-                if (dbuser):
+                if dbuser:
                     return dbuser
 
     def push(self, dbuser, password=None):

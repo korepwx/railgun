@@ -43,7 +43,7 @@ class HwProxy(object):
             app.config['HOMEWORK_PACK_DIR'],
             '%s/%s.zip' % (self.slug, lang)
         )
-        if (os.path.isfile(fpath)):
+        if os.path.isfile(fpath):
             return os.path.getsize(fpath)
         return None
 

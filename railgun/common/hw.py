@@ -23,7 +23,7 @@ from .url import reform_path, UrlMatcher
 
 def parse_bool(s):
     """Convert a string into bool value."""
-    if (not s):
+    if not s:
         return False
     s = str(s).lower()
     return (s == 'true' or s == 'on' or s == '1' or s == 'yes')
@@ -63,7 +63,7 @@ class FileRules(object):
         """Get the action for given `filename`."""
 
         for a, p in self.data:
-            if (p.match(filename)):
+            if p.match(filename):
                 return a
 
         # if no rule matches, default takes lock action
@@ -73,9 +73,9 @@ class FileRules(object):
         """Check the type and value of (action, pattern)."""
 
         act = None
-        if (action.isalpha()):
+        if action.isalpha():
             act = getattr(FileRules, action.upper(), None)
-        if (act is None):
+        if act is None:
             raise ValueError('Unknown action "%s" in file rule.' % action)
         pat = re.compile(pattern)
         return (act, pat)
@@ -105,7 +105,7 @@ class FileRules(object):
         # there should be at least one rule in file_rules: code.xml is
         ret.append_action('hide', '^code\\.xml$')
 
-        if (xmlnode is not None):
+        if xmlnode is not None:
             for nd in xmlnode:
                 ret.append_action(nd.tag, nd.text.strip())
         return ret
@@ -138,7 +138,7 @@ class HwInfo(object):
         def translate_url(u):
             # Get rid of 'hw://' and leading '/'
             u = reform_path(u[5:])
-            if (u.startswith('/')):
+            if u.startswith('/'):
                 u = u[1:]
             # translate to hwstatic file
             filename = '%s/%s' % (hwslug, u)
@@ -167,7 +167,7 @@ class HwInfo(object):
         self.formatted_desc = format(desc)
 
         # the solution
-        if (self.solve):
+        if self.solve:
             solve = UrlMatcher(['hw']).replace(self.solve, translate_url)
             self.formatted_solve = format(solve)
 
@@ -233,11 +233,11 @@ class HwCode(object):
             HwScorerSetting object if found, None if not.
         """
 
-        if (typeName in self.scorers):
+        if typeName in self.scorers:
             return self.scorers[typeName]
         # Truncate full type name
         rpos = typeName.rfind('.')
-        if (rpos >= 0):
+        if rpos >= 0:
             typeName = typeName[rpos+1:]
             return self.scorers.get(typeName, None)
 
@@ -273,10 +273,10 @@ class HwCode(object):
 
         # Iterate through scorer settings
         scorer_node = root.find('scorers')
-        if (scorer_node is not None):
+        if scorer_node is not None:
             for scorer in scorer_node:
                 name = scorer.get('name')
-                if (not name):
+                if not name:
                     continue
                 ret.scorers[name] = HwScorerSetting.parse_xml(scorer)
 
@@ -315,9 +315,9 @@ class Homework(object):
         tree = ElementTree.parse(os.path.join(path, 'hw.xml'))
 
         for nd in tree.getroot():
-            if (nd.tag == 'uuid'):
+            if nd.tag == 'uuid':
                 ret.uuid = nd.text.strip()
-            elif (nd.tag == 'names'):
+            elif nd.tag == 'names':
                 for name in nd.iter('name'):
                     lang = name.get('lang')
                     name = name.text.strip()
@@ -329,15 +329,15 @@ class Homework(object):
                     # solution may be empty
                     solve_file = os.path.join(path, 'solve/%s.md' % lang)
                     solve = None
-                    if (os.path.isfile(solve_file)):
+                    if os.path.isfile(solve_file):
                         solve = file_get_contents(solve_file)
                     ret.info.append(HwInfo(lang, name, desc, solve))
-            elif (nd.tag == 'deadlines'):
+            elif nd.tag == 'deadlines':
                 for due in nd.iter('due'):
                     # get the timezone of due date
                     timezone = due.find('timezone')
                     timezone = timezone.text if timezone is not None else None
-                    if (not timezone):
+                    if not timezone:
                         timezone = config.DEFAULT_TIMEZONE
                     timezone = get_timezone(timezone.strip())
                     # parse the date string
@@ -349,7 +349,7 @@ class Homework(object):
                     scale = float(due.find('scale').text.strip())
                     # add to deadline list
                     ret.deadlines.append((to_utc(duedate), scale))
-            elif (nd.tag == 'files'):
+            elif nd.tag == 'files':
                 ret.file_rules = FileRules.parse_xml(nd)
 
         # Stage 2: discover all programming languages
@@ -359,13 +359,13 @@ class Homework(object):
             pl_meta = os.path.join(pl_path, 'code.xml')
             # only the directories with contains 'code.xml' may be programming
             # language definition
-            if (not os.path.isfile(pl_meta)):
+            if not os.path.isfile(pl_meta):
                 continue
             # load the programming language definition
             ret.codes.append(HwCode.load(pl_path, pl))
 
         # Stage 3: check integrity
-        if (not ret.info):
+        if not ret.info:
             raise ValueError('Homework name is missing.')
 
         # Stage 4: set default hidden rules
@@ -409,7 +409,7 @@ class Homework(object):
         """Count the number of HwCode packages having attachment."""
         ret = 0
         for c in self.codes:
-            if (c.has_attach):
+            if c.has_attach:
                 ret += 1
         return ret
 
@@ -463,7 +463,7 @@ class Homework(object):
 
         now = utc_now()
         for ddl in self.deadlines:
-            if (ddl[0] >= now):
+            if ddl[0] >= now:
                 return (ddl[0], ddl[1])
 
     def get_last_deadline(self):
@@ -471,7 +471,7 @@ class Homework(object):
 
         now = utc_now()
         ddl = self.deadlines[-1]
-        if (ddl[0] >= now):
+        if ddl[0] >= now:
             return (ddl[0], ddl[1])
 
 

@@ -29,17 +29,17 @@ class Version(object):
     def __cmp__(self, other):
         for a, b in izip_longest(self.data, other.data):
             c = cmp(a or 0, b or 0)
-            if (c != 0):
+            if c != 0:
                 return c
         return 0
 
     def set(self, value):
         """Set the version with given `value`."""
-        if (isinstance(value, str) or isinstance(value, unicode)):
+        if isinstance(value, str) or isinstance(value, unicode):
             self.data = tuple(int(v) for v in value.split('.'))
-        elif (isinstance(value, Version)):
+        elif isinstance(value, Version):
             self.data = value.data
-        elif (isinstance(value, tuple) or isinstance(value, list)):
+        elif isinstance(value, tuple) or isinstance(value, list):
             self.data = tuple(value)
         else:
             raise TypeError('`value` is not a valid version object.')
@@ -52,7 +52,7 @@ class Dependency(object):
         self.set(requirement)
 
     def __str__(self):
-        if (self.pkgver):
+        if self.pkgver:
             return '%s %s %s' % (self.pkgname, self.veropt, self.pkgver)
         else:
             return self.pkgname
@@ -62,7 +62,7 @@ class Dependency(object):
 
     def set(self, requirement):
         """Set the requirement value."""
-        if (isinstance(requirement, Dependency)):
+        if isinstance(requirement, Dependency):
             self.pkgname = requirement.pkgname
             self.pkgver = requirement.pkgver
             self.veropt = requirement.veropt
@@ -75,7 +75,7 @@ class Dependency(object):
             '((?P<opt>(>=|>|==|<|<=))\\s*(?P<ver>[0-9.]+)\\s*)?$'
         )
         m = p.match(requirement)
-        if (not m):
+        if not m:
             raise ValueError('ill-formed version requirement.')
         m = m.groupdict()
 
@@ -83,7 +83,7 @@ class Dependency(object):
         self.pkgname = m['name']
         self.pkgver = Version(m['ver']) if m['ver'] else None
         self.veropt = m['opt']
-        if (self.veropt):
+        if self.veropt:
             self._checker = {
                 '>=': operator.ge,
                 '>': operator.gt,
@@ -175,7 +175,7 @@ class ScriptRepo(object):
         """Add a script into repo."""
 
         old_script = self.scripts.get(script.name, None)
-        if ((not old_script) or (old_script.version < script.version)):
+        if not old_script) or (old_script.version < script.version:
             self.scripts[script.name] = script
 
     def getScript(self, name):
@@ -200,11 +200,11 @@ class PageScripts(object):
         """Get the script object from `dep` object."""
         dep = Dependency(dep)
         script = scripts.getScript(dep.pkgname)
-        if (not script):
+        if not script:
             raise ValueError(
                 'Dependency "%s" cannot satisfy: library not installed.' % dep
             )
-        if (not dep.check(script.version)):
+        if not dep.check(script.version):
             raise ValueError(
                 'Dependency "%s" cannot satisfy: installed version is %s.' %
                 (dep, script.version)
@@ -215,12 +215,12 @@ class PageScripts(object):
         """Recursively discover the dependency tree."""
 
         # detect cirular dependency
-        if (script.name in trace_set):
+        if script.name in trace_set:
             raise ValueError('Circular dependency "%s".' % script.name)
         trace_set.add(script.name)
 
         # return if already added to dep_order
-        if (script.name in visit_set):
+        if script.name in visit_set:
             return
         visit_set.add(script.name)
 
@@ -234,7 +234,7 @@ class PageScripts(object):
 
     def _deptree(self):
         """Build dependency tree and sort all dependencies in order of tree."""
-        if (self._deporder):
+        if self._deporder:
             return
 
         visit_set = set()

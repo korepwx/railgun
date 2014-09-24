@@ -27,7 +27,7 @@ def find_object(name):
     """
 
     # If name is empty, fail fast
-    if (not name):
+    if not name:
         raise ImportError('Object name should not be empty.')
 
     # Try to import the closest module according to `name`.
@@ -50,12 +50,12 @@ def find_object(name):
 
     # If we failed to import the container module, then we raise an
     # ImportError
-    if (obj is None):
+    if obj is None:
         raise ImportError("Couldn't find any module along `name`.")
 
     # Try to get the object along attribute path
     for name in parts:
-        if (not hasattr(obj, name)):
+        if not hasattr(obj, name):
             raise ImportError(
                 "Object '%s' does not have attribute '%s'." % (obj, name))
         obj = getattr(obj, name)
