@@ -7,6 +7,7 @@
 
 import os
 import time
+import math
 import signal
 import subprocess
 
@@ -14,6 +15,15 @@ import subprocess
 class ProcessTimeout(Exception):
     """Indicate that the execution of an external process is timeout."""
     pass
+
+
+def is_running(pid):
+    """Check whether `pid` is still running."""
+    try:
+        os.kill(pid, 0)
+        return True
+    except OSError:
+        return False
 
 
 def execute(cmd, timeout=None, **kwargs):
@@ -38,7 +48,7 @@ def execute(cmd, timeout=None, **kwargs):
     if not timeout:
         ph_ret = p.wait()
     else:
-        fin_time = time.time() + timeout
+        fin_time = math.ceil(time.time() + timeout)
         while p.poll() is None and fin_time > time.time():
             time.sleep(1)
 
@@ -47,8 +57,9 @@ def execute(cmd, timeout=None, **kwargs):
 
             # starting 2.6 subprocess has a kill() method which is preferable
             # p.kill()
-            os.kill(p.pid, signal.SIGKILL)
-            raise ProcessTimeout("Process timeout has been reached.")
+            if is_running(p.pid):
+                os.kill(p.pid, signal.SIGKILL)
+                raise ProcessTimeout("Process timeout has been reached.")
 
         ph_ret = p.returncode
 
