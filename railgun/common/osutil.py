@@ -7,6 +7,7 @@
 
 import os
 import time
+import math
 import signal
 import subprocess
 
@@ -47,7 +48,7 @@ def execute(cmd, timeout=None, **kwargs):
     if not timeout:
         ph_ret = p.wait()
     else:
-        fin_time = time.time() + timeout
+        fin_time = math.ceil(time.time() + timeout)
         while p.poll() is None and fin_time > time.time():
             time.sleep(1)
 
