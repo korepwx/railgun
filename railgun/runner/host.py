@@ -93,8 +93,7 @@ class BaseHost(object):
         return self
 
     def __exit__(self, ignore1, ignore2, ignore3):
-        #self.tempdir.close()
-        pass
+        self.tempdir.close()
 
     def _spawn(self, cmdline, timeout=None):
         """Spawn external process."""
