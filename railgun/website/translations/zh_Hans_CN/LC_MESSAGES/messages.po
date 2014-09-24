@@ -1044,7 +1044,7 @@ msgstr "输入边界值得分"
 #: railgun/website/views.py:191 railgun/website/templates/homework.html:79
 #, fuzzy
 msgid "This homework is locked and cannot be submitted."
-msgstr "作业被管理员锁定，你不能提交作业。"
+msgstr "作业被管理员锁定，你不能提交答案。"
 
 #: runlib/python/pyhost/cppmessages.py:13
 msgid "Functionality Checker"
