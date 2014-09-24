@@ -16,6 +16,15 @@ class ProcessTimeout(Exception):
     pass
 
 
+def is_running(pid):
+    """Check whether `pid` is still running."""
+    try:
+        os.kill(pid, 0)
+        return True
+    except OSError:
+        return False
+
+
 def execute(cmd, timeout=None, **kwargs):
     '''
     Will execute a command, read the output and return it back.
@@ -47,8 +56,9 @@ def execute(cmd, timeout=None, **kwargs):
 
             # starting 2.6 subprocess has a kill() method which is preferable
             # p.kill()
-            os.kill(p.pid, signal.SIGKILL)
-            raise ProcessTimeout("Process timeout has been reached.")
+            if is_running(p.pid):
+                os.kill(p.pid, signal.SIGKILL)
+                raise ProcessTimeout("Process timeout has been reached.")
 
         ph_ret = p.returncode
 
