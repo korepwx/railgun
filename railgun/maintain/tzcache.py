@@ -27,6 +27,12 @@ class TzCacheTask(Task):
         self.logger.info('start building tzcache ...')
 
         # Cache common timezone list
+        dpath = os.path.join(
+            config.RAILGUN_ROOT,
+            'railgun/website/static/tz'
+        )
+        if not os.path.isdir(dpath):
+            os.makedirs(dpath, 0755)
         tzlist = list(common_timezones)
 
         # Make each files
