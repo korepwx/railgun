@@ -30,7 +30,7 @@ class SpawnProcessFailure(RunnerError):
     """Error indicating that the external process cannot start."""
 
     def __init__(self, **kwargs):
-        super(ExtractFileFailure, self).__init__(lazy_gettext(
+        super(SpawnProcessFailure, self).__init__(lazy_gettext(
             "Couldn't start submitted program."
         ), **kwargs)
 
@@ -39,7 +39,7 @@ class RuntimeFileCopyFailure(RunnerError):
     """Error indicating that the runtime files could not be setup."""
 
     def __init__(self, **kwargs):
-        super(ExtractFileFailure, self).__init__(lazy_gettext(
+        super(RuntimeFileCopyFailure, self).__init__(lazy_gettext(
             "Couldn't copy runtime files, please contact TA."
         ), **kwargs)
 
