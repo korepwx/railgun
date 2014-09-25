@@ -235,8 +235,11 @@ def hwscores(hwid):
 
     # Pre-process the data
     # We need to display all users, even he does not submit anything!
+    user_query = db.session.query(User.id, User.name)
+    if not app.config['ADMIN_SCORE_IN_REPORT']:
+        user_query = user_query.filter(func.not_(User.is_admin))
     users = sorted(
-        (u.name, u.id) for u in db.session.query(User.id, User.name)
+        (u.name, u.id) for u in user_query
     )
     user_scores = {}
 

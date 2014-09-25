@@ -93,11 +93,16 @@ STORE_UPLOAD = True
 UPLOAD_STORE_DIR = os.path.join(RAILGUN_ROOT, 'upload')
 
 # LOCKED_HOMEWORKS define the list of homeworks that cannot be submitted
+# NOTE: if '*' is in LOCKED_HOMEWORKDS, then all the homeworks will be locked
 LOCKED_HOMEWORKS = ()
 
 # IGNORE_HANDINS_OF_REMOVED_HW determines whether to list submissions for
 # deleted homeworks
 IGNORE_HANDINS_OF_REMOVED_HW = True
+
+# ADMIN_SCORE_IN_REPORT controls whether the scores of admins should appear
+# in the score sheet.
+ADMIN_SCORE_IN_REPORT = False
 
 # TEMPORARY_DIR stores the temporary directory for runner
 TEMPORARY_DIR = os.path.join(RAILGUN_ROOT, 'tmp')

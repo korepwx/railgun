@@ -187,7 +187,7 @@ def homework(slug):
                   'danger')
             return redirect(url_for('homework', slug=slug))
         # check locked
-        if hw.is_locked():
+        if hw.is_locked() and not current_user.is_admin:
             flash(_('This homework is locked and cannot be submitted.'),
                   'danger')
             return redirect(url_for('homework', slug=slug))

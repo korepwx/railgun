@@ -69,7 +69,7 @@
   {%- endif %}
 
   <!-- Homework deadlines here -->
-  {% set is_locked = hw.is_locked() -%}
+  {% set is_locked = hw.is_locked() and not current_user.is_admin -%}
   {% set next_ddl = hw.get_next_deadline() -%}
   {%- set ddl_text_class = 'default' if next_ddl and not is_locked else 'danger' -%}
   <div class="hw-deadlines panel panel-{{ ddl_text_class }} text-{{ ddl_text_class }}">
