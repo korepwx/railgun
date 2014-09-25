@@ -175,3 +175,9 @@ def api_handin_proclog(uuid):
         return 'update database failed'
 
     return 'OK'
+
+
+@csrf.exempt
+@app.route('/api/myip/')
+def api_myip():
+    return request.remote_addr, 200, {'Content-Type': 'text/plain'}
