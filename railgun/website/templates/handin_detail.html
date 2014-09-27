@@ -14,7 +14,7 @@
     <span class="label label-{{ handin.state | handinstyle }}">{{ handin.get_state() }}</span>
     {% if original_submission_exist -%}
     <span class="pull-right">
-      <a href="{{ url_for('handin_download', uuid=handin.uuid) }}" class="btn btn-primary">{{ _('View Submission') }}</a>
+      <a href="{{ url_for('handin_download', uuid=handin.uuid) }}" class="btn btn-primary">{{ _('Original Submission') }}</a>
     </span>
     {%- endif %}
   </h3>

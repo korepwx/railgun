@@ -21,7 +21,11 @@
   <strong>{{ d['file'] }}</strong>
   <table class="coverage table table-hover">
     {% for line in d['lines'] %}
-      <tr><td class="{{ line[0] }}"><pre>{{ line[1] | safe }}</pre></td></tr>
+      {% if line[1] -%}
+      <tr><td{% if line[0] %} class="{{ line[0] }}"{% endif %}><pre>{{ line[1] }}</pre></td></tr>
+      {%- else -%}
+      <tr><td>&nbsp;</td></tr>
+      {%- endif %}
     {% endfor %}
   </table>
 {%- endfor %}
