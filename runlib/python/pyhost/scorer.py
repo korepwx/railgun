@@ -103,6 +103,23 @@ class UnitTestScorer(Scorer):
         suite = lambda: unittest.TestLoader().loadTestsFromNames(names)
         return UnitTestScorer(suite)
 
+    @staticmethod
+    def FromHandinDir(test_pattern='test_.*\\.py$'):
+        """Create a `UnitTestScorer` to get score for all unit tests provided
+        by students.  Only the files matching `test_pattern` will be regarded
+        as unit test files.
+        """
+
+        p = re.compile(test_pattern)
+        test_modules = []
+        for f in dirtree('.'):
+            fpath, fext = os.path.splitext(f)
+            if fext.lower() == '.py' and p.match(f):
+                test_modules.append(fpath.replace('/', '.'))
+
+        suite = lambda: unittest.TestLoader().loadTestsFromNames(test_modules)
+        return UnitTestScorer(suite=suite)
+
 
 class CodeStyleScorer(Scorer):
     """scorer according to the code style."""

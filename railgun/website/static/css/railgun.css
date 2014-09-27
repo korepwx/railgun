@@ -229,3 +229,10 @@ ul.affix-bottom {
   padding-bottom: 5px;
   font-size: 16px;
 }
+
+/* Tweak pre scrollable */
+.detail-partial pre {
+  overflow: auto;
+  word-wrap: normal;
+  white-space: pre;
+}
