@@ -3,38 +3,46 @@
   function init_toc() {
     if ($("#toc-navigate").size() > 0) {
       var toc_nav = $("#toc-navigate > ul");
-      var sections = $("section");
+      var sections = $('#manual > *[id^="_"]');
       var htmlSections = [];
+      var lastLevel = 2;
+      var firstTitle = true;
 
       sections.each(function(i, e) {
-        var subsections = $("subsection", e);
-        var h2 = $('h2', e);
+        var level = parseInt(e.tagName.substr(1));
+        if (level == 1)
+          return;
 
-        // Make the item head
-        if (i == 0) {
-          htmlSections.push('<li class="active">');
-        } else {
-          htmlSections.push('<li class="">');
-        }
-        htmlSections.push('<a href="#' + h2.prop('id') + '">' + $(h2).html() +
-                          '</a>');
-
-        // Build sub items.
-        if (subsections.size() > 0) {
-          var htmlSubSections = [];
-          subsections.each(function(i2, e2) {
-            var h3 = $('h3', e2);
-            htmlSubSections.push('<li><a href="#' + h3.prop('id') + '">' +
-                                 $(h3).html() + '</a></li>');
-          });
+        // If level steps in, add <ul>
+        if (level > lastLevel) {
           htmlSections.push('<ul class="nav">');
-          htmlSections.push(htmlSubSections.join(''));
+        }
+
+        // Otherwise if level steps out, add </ul>.
+        if (level < lastLevel) {
           htmlSections.push('</ul>');
         }
 
-        // Make item tail
+        // Steps out or keep the same level, we should add </li>
         htmlSections.push('</li>');
+
+        // First, add <li> to html.
+        if (firstTitle) {
+          htmlSections.push('<li class="active">');
+          firstTitle = false;
+        } else {
+          htmlSections.push('<li class="">');
+        }
+        htmlSections.push('<a href="#' + $(e).prop('id') + '">' + $(e).html() +
+                          '</a>');
+        
+
+        // Record current level
+        lastLevel = level;
       });
+
+      // Add the missing </li>
+      htmlSections.push('</li>');
 
       // Set toc-navigate
       console.log(htmlSections.join(''));

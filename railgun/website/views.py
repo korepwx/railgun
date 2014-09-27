@@ -23,8 +23,7 @@ from .credential import UserContext, login_required, fresh_login_required, \
 from .userauth import authenticate, auth_providers
 from .codelang import languages
 from .models import User, Handin
-from .i18n import get_best_locale_name
-from railgun.common.fileutil import dirtree
+from .manual import manual_pages
 
 
 @app.route('/')
@@ -318,21 +317,16 @@ def handin_download(uuid):
     return languages[handin.lang].handle_download(handin.uuid)
 
 
-def translated_page(name, **kwargs):
+def translated_page(name):
     """Render the translated page `name` to client."""
-    # List all user guide locales, and select the best one
-    page_dir = os.path.join(app.root_path, 'templates/%s' % name)
-    locales = []
-    if os.path.isdir(page_dir):
-        locales = [
-            fname[:-5]
-            for fname in dirtree(page_dir)
-            if fname.endswith('.html')
-        ]
-    # Select the best matching locale according to user config
-    best_locale = get_best_locale_name(locales)
-    # Render the page in certain locale
-    return render_template('%s/%s.html' % (name, best_locale), **kwargs)
+    title, content = manual_pages[name].get()
+    return render_template('manual.html', title=title, content=content)
+
+
+def translated_page_source(name):
+    """Render the markdown source of the translated page."""
+    return manual_pages[name].markdown(), 200, \
+        {'Content-Type': 'text/x-markdown; charset=utf-8'}
 
 
 @app.route('/manual/userguide/')
@@ -340,24 +334,40 @@ def userguide():
     return translated_page('userguide')
 
 
+@app.route('/manual/userguide/source/')
+def userguide_source():
+    return translated_page_source('userguide')
+
+
 @app.route('/manual/scores/')
 def scores():
     return translated_page('scores')
 
 
+@app.route('/manual/scores/source/')
+def scores_source():
+    return translated_page_source('scores')
+
+
 @app.route('/manual/faq/')
 def faq():
-    return translated_page(
-        'faq',
-        max_upload=app.config['MAX_SUBMISSION_SIZE'],
-        max_archive_file=app.config['MAX_SUBMISSION_FILE_COUNT'],
-        max_pending=app.config['MAX_USER_PENDING_PER_HW'],
-    )
+    return translated_page('faq')
+
+
+@app.route('/manual/faq/source/')
+def faq_source():
+    return translated_page_source('faq')
 
 
 @app.route('/manual/about/')
 def about():
     return translated_page('about')
+
+
+@app.route('/manual/about/source/')
+def about_source():
+    return translated_page_source('about')
+
 
 # Register all pages into navibar
 navigates.add_view(title=lazy_gettext('Home'), endpoint='index')
