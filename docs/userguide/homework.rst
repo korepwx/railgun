@@ -653,6 +653,11 @@ for example::
         ]
         SafeRunner.run(scorers)
 
+.. note::
+
+    We simply sum up ``score * weight`` without divide it with total
+    weight.
+
 The above example includes the common ``CodeStyleScorer``, which
 evaluates the code style and gives its score.  Another scorer in
 the example is ``XXXScorer``, which may be ``UnitTestScorer``,

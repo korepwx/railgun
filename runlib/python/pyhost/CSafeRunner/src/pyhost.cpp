@@ -164,9 +164,36 @@ namespace
     score.accepted = false;
 
     try {
-      bool check_fail = false;
+      // Run each scorer to evaluate the handin
+      bp::ssize_t n = bp::len(scorers);
+
+      if (!n) {
+        score.result = _("No scorer defined, please contact TA.");
+      }
+      for (bp::ssize_t i=0; i<n; ++i) {
+        bp::tuple scorer_weight = bp::extract<bp::tuple>(scorers[i]);
+        bp::object scorer = scorer_weight[0];
+        double weight = bp::extract<double>(scorer_weight[1]);
+
+        // Run the scorer!
+        scorer.attr("run")();
+
+        // Extract scorer results
+        HwPartialScore partial;
+        partial.weight = weight;
+        ExtractScorerResults(scorer, &partial);
+
+        // Add this partial score the total scorer
+        score.partials.push_back(partial);
+      }
+
+      // We've now run all scorers, and checker also passes, accept this score
+      score.accepted = (n > 0);
 
       // If checker is not None, we need to run the checker before scorers
+      // we run the checker after the scorers, because the checker is likely
+      // to be unittest scorer, while they may break coverage scorer if
+      // they import related modules before coverage test.
       if (!checker.is_none())
       {
         checker.attr("run")();
@@ -184,39 +211,12 @@ namespace
           partial.weight = 1.0;
           score.result = _(
             "Your submission does not pass the functionality checker.");
+          score.partials.clear();
           score.partials.push_back(partial);
           score.accepted = false;
-          check_fail = true;
         }
       }
 
-      if (!check_fail) {
-        // Run each scorer to evaluate the handin
-        bp::ssize_t n = bp::len(scorers);
-
-        if (!n) {
-          score.result = _("No scorer defined, please contact TA.");
-        }
-        for (bp::ssize_t i=0; i<n; ++i) {
-          bp::tuple scorer_weight = bp::extract<bp::tuple>(scorers[i]);
-          bp::object scorer = scorer_weight[0];
-          double weight = bp::extract<double>(scorer_weight[1]);
-
-          // Run the scorer!
-          scorer.attr("run")();
-
-          // Extract scorer results
-          HwPartialScore partial;
-          partial.weight = weight;
-          ExtractScorerResults(scorer, &partial);
-
-          // Add this partial score the total scorer
-          score.partials.push_back(partial);
-        }
-
-        // We've now run all scorers, accept this score
-        score.accepted = (n > 0);
-      }
     } catch (UnicodeError) {
       score = HwScore();
       UTF8toUnicode(PyHostHandId, &score.uuid);
