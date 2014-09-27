@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2014-09-27 18:51+0800\n"
+"POT-Creation-Date: 2014-09-27 23:09+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -32,44 +32,48 @@ msgid "Internal server error."
 msgstr ""
 
 #: railgun/runner/errors.py:33
-msgid "Couldn't start submitted program."
+msgid "File permissions of the runner is wrong."
 msgstr ""
 
 #: railgun/runner/errors.py:42
-msgid "Couldn't copy runtime files, please contact TA."
+msgid "Couldn't start submitted program."
 msgstr ""
 
 #: railgun/runner/errors.py:51
-msgid "Couldn't extract your archive file."
+msgid "Couldn't copy runtime files, please contact TA."
 msgstr ""
 
 #: railgun/runner/errors.py:60
-msgid "Archive contains too many files."
+msgid "Couldn't extract your archive file."
 msgstr ""
 
 #: railgun/runner/errors.py:69
+msgid "Archive contains too many files."
+msgstr ""
+
+#: railgun/runner/errors.py:78
 #, python-format
 msgid "Language \"%(lang)s\" is not provided."
 msgstr ""
 
-#: railgun/runner/errors.py:79
+#: railgun/runner/errors.py:88
 msgid "Your submission is not a valid archive file."
 msgstr ""
 
-#: railgun/runner/errors.py:88
+#: railgun/runner/errors.py:97
 #, python-format
 msgid "Archive contains denied file %(filename)s."
 msgstr ""
 
-#: railgun/runner/errors.py:98
+#: railgun/runner/errors.py:107
 msgid "Your submission has run out of time."
 msgstr ""
 
-#: railgun/runner/errors.py:107 runlib/python/pyhost/cppmessages.py:16
+#: railgun/runner/errors.py:116 runlib/python/pyhost/cppmessages.py:16
 msgid "Not valid UTF-8 sequence produced."
 msgstr ""
 
-#: railgun/runner/errors.py:116
+#: railgun/runner/errors.py:125
 msgid "Given address is rejected."
 msgstr ""
 
@@ -83,7 +87,7 @@ msgstr ""
 msgid "IP address \"%(ip)s\" does not match pattern \"%(rule)s\""
 msgstr ""
 
-#: railgun/runner/tasks.py:69
+#: railgun/runner/tasks.py:74
 #, python-format
 msgid "Exitcode %(exitcode)s != 0."
 msgstr ""
@@ -890,24 +894,24 @@ msgstr ""
 msgid "%(rate).2f%% tests (%(success)d out of %(total)d) passed"
 msgstr ""
 
-#: runlib/python/pyhost/scorer.py:114
+#: runlib/python/pyhost/scorer.py:131
 msgid "CodeStyle Scorer"
 msgstr ""
 
-#: runlib/python/pyhost/scorer.py:136
+#: runlib/python/pyhost/scorer.py:153
 #, python-format
 msgid "%(trouble)d problem(s) found in %(file)d file(s)"
 msgstr ""
 
-#: runlib/python/pyhost/scorer.py:141
+#: runlib/python/pyhost/scorer.py:158
 msgid "All files passed PEP8 code style check"
 msgstr ""
 
-#: runlib/python/pyhost/scorer.py:166
+#: runlib/python/pyhost/scorer.py:183
 msgid "Coverage Scorer"
 msgstr ""
 
-#: runlib/python/pyhost/scorer.py:271
+#: runlib/python/pyhost/scorer.py:288
 #, python-format
 msgid ""
 "%(filename)s: %(miss)d statement(s) not covered.\n"
@@ -915,7 +919,7 @@ msgid ""
 "%(source)s"
 msgstr ""
 
-#: runlib/python/pyhost/scorer.py:282
+#: runlib/python/pyhost/scorer.py:299
 #, python-format
 msgid ""
 "%(filename)s: %(partial)d branch(es) partially taken and %(notaken)d "
@@ -924,7 +928,7 @@ msgid ""
 "%(source)s"
 msgstr ""
 
-#: runlib/python/pyhost/scorer.py:306
+#: runlib/python/pyhost/scorer.py:323
 #, python-format
 msgid ""
 "Coverage Results:\n"
@@ -939,7 +943,7 @@ msgid ""
 "%(branch_partial_cov).2f%%"
 msgstr ""
 
-#: runlib/python/pyhost/scorer.py:323
+#: runlib/python/pyhost/scorer.py:340
 #, python-format
 msgid ""
 "%(stmt).2f%% statements covered (%(stmt_score).2f pts), %(branch).2f%% "
@@ -947,43 +951,43 @@ msgid ""
 "partially covered (%(partial_score).2f pts)."
 msgstr ""
 
-#: runlib/python/pyhost/scorer.py:411
+#: runlib/python/pyhost/scorer.py:428
 #, python-format
 msgid "%(rate).2f%% rules (%(cover)s out of %(total)s) covered"
 msgstr ""
 
-#: runlib/python/pyhost/scorer.py:419
+#: runlib/python/pyhost/scorer.py:436
 #, python-format
 msgid "COVERED: %(checker)s"
 msgstr ""
 
-#: runlib/python/pyhost/scorer.py:424
+#: runlib/python/pyhost/scorer.py:441
 #, python-format
 msgid "NOT COVERED: %(checker)s"
 msgstr ""
 
-#: runlib/python/pyhost/scorer.py:428 runlib/python/pyhost/scorer.py:433
+#: runlib/python/pyhost/scorer.py:445 runlib/python/pyhost/scorer.py:450
 msgid "CSV data does not match schema."
 msgstr ""
 
-#: runlib/python/pyhost/scorer.py:442
+#: runlib/python/pyhost/scorer.py:459
 msgid "InputClass Scorer"
 msgstr ""
 
-#: runlib/python/pyhost/scorer.py:453
+#: runlib/python/pyhost/scorer.py:470
 msgid "BoundaryValue Scorer"
 msgstr ""
 
-#: runlib/python/pyhost/scorer.py:498
+#: runlib/python/pyhost/scorer.py:515
 msgid "Object Structure Scorer"
 msgstr ""
 
-#: runlib/python/pyhost/scorer.py:508
+#: runlib/python/pyhost/scorer.py:525
 #, python-format
 msgid "%(rate).2f%% check points (%(success)d out of %(total)d) passed"
 msgstr ""
 
-#: runlib/python/pyhost/scorer.py:519
+#: runlib/python/pyhost/scorer.py:536
 msgid "Object Structure Scorer exited with error."
 msgstr ""
 

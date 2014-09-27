@@ -31,7 +31,7 @@ class RunnerPermissionError(RunnerError):
 
     def __init__(self, **kwargs):
         super(RunnerPermissionError, self).__init__(lazy_gettext(
-            'Runner file permissions wrong, contact TA.'
+            'File permissions of the runner is wrong.'
         ), **kwargs)
 
 
