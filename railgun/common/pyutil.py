@@ -35,7 +35,7 @@ def find_object(name):
 
     # Try to treat some prefix of the name as module
     obj = None
-    for i in xrange(len(parts), 1, -1):
+    for i in xrange(len(parts), 0, -1):
         modname = '.'.join(parts[:i])
         try:
             obj = __import__(modname)
@@ -51,7 +51,7 @@ def find_object(name):
     # If we failed to import the container module, then we raise an
     # ImportError
     if obj is None:
-        raise ImportError("Couldn't find any module along `name`.")
+        raise ImportError("Couldn't find any module along `%s`." % name)
 
     # Try to get the object along attribute path
     for name in parts:

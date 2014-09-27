@@ -22,7 +22,7 @@ import sys
 def LoadConfig(obj, fpath):
     """Load config values from `fpath` into `obj`."""
     # The regex to match a config value
-    config_value_pattern = re.compile('^[A-Z][A-Z_]*$')
+    config_value_pattern = re.compile('^[A-Z][A-Z0-9_]*$')
 
     # extract config values from an object or a dictionary into an object
     # or a dictionary
