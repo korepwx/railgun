@@ -72,7 +72,7 @@ class RunnerPermissionCheckTask(Task):
     def check_perm(self):
         # check configuration files
         for fname in ('runner.py', 'website.py', 'users.csv'):
-            fpath = os.path.join(config.RAILGUN_ROOT, fname)
+            fpath = os.path.join(config.RAILGUN_ROOT, 'config/%s' % fname)
             self._require_owner_mod(fpath, 'root', 0600)
 
         # check critical directories
@@ -81,7 +81,7 @@ class RunnerPermissionCheckTask(Task):
             self._require_owner_mod(dpath, 'root', 0700)
 
         # the temporary directory as submission working directory
-        self._require_owner_mod(config.TEMPORARY_DIR, 'root', 0700)
+        self._require_owner_mod(config.TEMPORARY_DIR, 'root', 0755)
 
         # if homework is not public repository, it should be 0700
         public_hw = os.path.join(config.RAILGUN_ROOT, 'hw')
