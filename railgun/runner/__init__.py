@@ -5,4 +5,5 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # This file is released under BSD 2-clause license.
 
-from . import apiclient, context, errors, handin, host, hw, runconfig, tasks
+from . import apiclient, context, errors, handin, host, hw, \
+    permcheck, runconfig, tasks

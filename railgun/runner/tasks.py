@@ -5,11 +5,12 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # This file is released under BSD 2-clause license.
 
-from . import runconfig
+from . import runconfig, permcheck
 from .apiclient import ApiClient
 from .context import app, logger
 from .handin import PythonHandin, NetApiHandin, InputClassHandin
-from .errors import RunnerError, InternalServerError, NonUTF8OutputError
+from .errors import RunnerError, InternalServerError, NonUTF8OutputError, \
+    RunnerPermissionError
 from railgun.common.hw import HwScore
 from railgun.common.lazy_i18n import lazy_gettext
 
@@ -33,6 +34,10 @@ def run_handin(handler, handid, hwid):
     """Run given handin with `handler_class`."""
     # Create the api client, we may use it once or twice
     api = ApiClient(runconfig.WEBSITE_API_BASEURL)
+    # Immediately report error if permcheck has error
+    if permcheck.checker.has_error():
+        report_error(handid, RunnerPermissionError())
+        return
     try:
         report_start(handid)
         # create and launch this handler

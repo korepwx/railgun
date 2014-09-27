@@ -26,6 +26,15 @@ class InternalServerError(RunnerError):
         ), **kwargs)
 
 
+class RunnerPermissionError(RunnerError):
+    """Error indicating that runner host is not configured properly."""
+
+    def __init__(self, **kwargs):
+        super(RunnerPermissionError, self).__init__(lazy_gettext(
+            'Runner file permissions wrong, contact TA.'
+        ), **kwargs)
+
+
 class SpawnProcessFailure(RunnerError):
     """Error indicating that the external process cannot start."""
 

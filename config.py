@@ -113,6 +113,11 @@ RUNLIB_DIR = os.path.join(RAILGUN_ROOT, 'runlib')
 # TRANSLATION_DIR is the root directory of all translation resources
 TRANSLATION_DIR = os.path.join(RAILGUN_ROOT, 'railgun/website/translations')
 
+# RUNNER_CHECK_PERM determines whether the system will check the file
+# permissions of runner host, and show warnings if the permissions not
+# match requirements
+RUNNER_CHECK_PERM = False
+
 # RUNNER_DEFAULT_TIMEOUT controls the default timeout config for testing
 # module to run
 RUNNER_DEFAULT_TIMEOUT = 3
