@@ -11,6 +11,7 @@ from cStringIO import StringIO
 
 from railgun.maintain.hwcache import HwCacheTask
 from railgun.maintain.tzcache import TzCacheTask
+from railgun.maintain.permissions import RunnerPermissionCheckTask
 
 
 class App(object):
@@ -58,6 +59,14 @@ class App(object):
         io.write('-' * 70)
         io.write('\n')
         task = TzCacheTask(logstream=io)
+        task.execute()
+        task.logflush()
+        sys.stdout.write(io.getvalue())
+
+    def runner_perm(self, argv):
+        """Check the permissions of runner host."""
+        io = StringIO()
+        task = RunnerPermissionCheckTask(logstream=io)
         task.execute()
         task.logflush()
         sys.stdout.write(io.getvalue())
