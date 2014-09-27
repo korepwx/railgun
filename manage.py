@@ -9,10 +9,6 @@
 import sys
 from cStringIO import StringIO
 
-from railgun.maintain.hwcache import HwCacheTask
-from railgun.maintain.tzcache import TzCacheTask
-from railgun.maintain.permissions import RunnerPermissionCheckTask
-
 
 class App(object):
 
@@ -50,6 +46,9 @@ class App(object):
 
     def build_cache(self, argv):
         """Build all cache of Railgun system."""
+        from railgun.maintain.hwcache import HwCacheTask
+        from railgun.maintain.tzcache import TzCacheTask
+
         io = StringIO()
         # HwCache
         task = HwCacheTask(logstream=io)
@@ -65,6 +64,8 @@ class App(object):
 
     def runner_perm(self, argv):
         """Check the permissions of runner host."""
+        from railgun.maintain.permissions import RunnerPermissionCheckTask
+
         io = StringIO()
         task = RunnerPermissionCheckTask(logstream=io)
         task.execute()
