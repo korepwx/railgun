@@ -14,14 +14,13 @@ from railgun.maintain.permissions import RunnerPermissionCheckTask
 
 class GlobalChecker(object):
 
-    def __init__(self, logger):
+    def __init__(self):
         self.errcount = 0
         self.message = None
-        self.logger = logger
 
-    def execute(self):
+    def execute(self, logger):
         checker = RunnerPermissionCheckTask()
-        checker.logger = self.logger
+        checker.logger = logger
         checker.execute()
         self.errcount = checker.errcount
 

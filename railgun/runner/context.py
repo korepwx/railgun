@@ -19,4 +19,4 @@ logger = get_task_logger(__name__)
 
 # check permissions if RUNNER_CHECK_PERM is enabled
 if runconfig.RUNNER_CHECK_PERM:
-    permcheck.checker.execute()
+    permcheck.checker.execute(logger)
