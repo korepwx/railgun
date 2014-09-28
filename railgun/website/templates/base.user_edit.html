@@ -11,7 +11,19 @@
 {% import "utility.html" as utility %}
 {% macro the_content() -%}
 <form role="form" class="form-profile" method="POST" action="{{ submit_url }}">
-  <h2 class="form-heading">{{ pagetitle }}</h2>
+  <h2 class="form-heading">
+    {{ pagetitle }}
+    {% if 'is_admin' in form and current_user.is_admin %}
+      <span class="pull-right">
+        {% if the_user.is_active -%}
+          <a href="{{ url_for('admin.user_deactivate', name=the_user.name, next=request.url) }}" class="btn btn-warning">{{ _('Disable') }}</a>
+        {%- else -%}
+          <a href="{{ url_for('admin.user_activate', name=the_user.name, next=request.url) }}" class="btn btn-success">{{ _('Enable') }}</a>
+        {%- endif %}
+        <a href="{{ url_for('admin.user_delete', name=the_user.name) }}" class="btn btn-danger">{{ _('Delete') }}</a>
+      </span>
+    {% endif %}
+  </h2>
 
   <!-- Passport settings -->
   <div class="panel panel-default">
