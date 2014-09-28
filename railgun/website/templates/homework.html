@@ -54,7 +54,7 @@
 
   <!-- Homework attachments here -->
   {% if hw.count_attach() > 0 -%}
-    <div class="hw-attach panel panel-{% if is_locked %}danger{% else %}default{% endif %}">
+    <div class="hw-attach panel {% if is_locked %}panel-danger text-danger{% else %}panel-default{% endif %}">
       <div class="panel-heading">{{ _('Attachments') }}</div>
       <div class="panel-body">
         {% if is_locked -%}

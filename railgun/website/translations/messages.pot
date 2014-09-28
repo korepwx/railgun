@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2014-09-28 16:44+0800\n"
+"POT-Creation-Date: 2014-09-28 21:54+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -142,7 +142,7 @@ msgid "Requested homework not found."
 msgstr ""
 
 #: railgun/website/admin.py:278 railgun/website/forms.py:41
-#: railgun/website/templates/base.user_edit.html:20
+#: railgun/website/templates/base.user_edit.html:32
 msgid "Username"
 msgstr ""
 
@@ -165,7 +165,7 @@ msgstr ""
 msgid "Users"
 msgstr ""
 
-#: railgun/website/admin.py:333 railgun/website/views.py:392
+#: railgun/website/admin.py:333 railgun/website/views.py:397
 msgid "Submissions"
 msgstr ""
 
@@ -226,7 +226,7 @@ msgid "Username must be no shorter than 3 and no longer than 32 characters"
 msgstr ""
 
 #: railgun/website/forms.py:48 railgun/website/forms.py:94
-#: railgun/website/templates/base.user_edit.html:21
+#: railgun/website/templates/base.user_edit.html:33
 msgid "Email Address"
 msgstr ""
 
@@ -244,7 +244,7 @@ msgstr ""
 
 #: railgun/website/forms.py:54 railgun/website/forms.py:75
 #: railgun/website/forms.py:82 railgun/website/forms.py:100
-#: railgun/website/templates/base.user_edit.html:22
+#: railgun/website/templates/base.user_edit.html:34
 msgid "Password"
 msgstr ""
 
@@ -281,7 +281,7 @@ msgid "Remember me?"
 msgstr ""
 
 #: railgun/website/forms.py:106
-#: railgun/website/templates/base.user_edit.html:63
+#: railgun/website/templates/base.user_edit.html:75
 msgid "Given Name"
 msgstr ""
 
@@ -290,7 +290,7 @@ msgid "Given name must be no longer than 64 characters"
 msgstr ""
 
 #: railgun/website/forms.py:110
-#: railgun/website/templates/base.user_edit.html:64
+#: railgun/website/templates/base.user_edit.html:76
 msgid "Family Name"
 msgstr ""
 
@@ -299,7 +299,7 @@ msgid "Family name must be no longer than 64 characters"
 msgstr ""
 
 #: railgun/website/forms.py:117
-#: railgun/website/templates/base.user_edit.html:39
+#: railgun/website/templates/base.user_edit.html:51
 msgid "Speaking Language"
 msgstr ""
 
@@ -308,7 +308,7 @@ msgid "Speaking language can't be blank"
 msgstr ""
 
 #: railgun/website/forms.py:123
-#: railgun/website/templates/base.user_edit.html:54
+#: railgun/website/templates/base.user_edit.html:66
 msgid "Timezone"
 msgstr ""
 
@@ -430,7 +430,7 @@ msgid ""
 "this homework."
 msgstr ""
 
-#: railgun/website/views.py:192 railgun/website/templates/homework.html:79
+#: railgun/website/views.py:192 railgun/website/templates/homework.html:83
 msgid "This homework is locked and cannot be submitted."
 msgstr ""
 
@@ -446,40 +446,40 @@ msgstr ""
 msgid "Internal server error, please try again."
 msgstr ""
 
-#: railgun/website/views.py:291 railgun/website/views.py:316
+#: railgun/website/views.py:296 railgun/website/views.py:321
 msgid "Submission not found"
 msgstr ""
 
-#: railgun/website/views.py:375
+#: railgun/website/views.py:380
 msgid "Home"
 msgstr ""
 
-#: railgun/website/views.py:378 railgun/website/templates/base.handins.html:11
+#: railgun/website/views.py:383 railgun/website/templates/base.handins.html:11
 #: railgun/website/templates/homework.html:30
 msgid "Homework"
 msgstr ""
 
-#: railgun/website/views.py:407
+#: railgun/website/views.py:412
 msgid "Manual"
 msgstr ""
 
-#: railgun/website/views.py:411
+#: railgun/website/views.py:416
 msgid "User Guide"
 msgstr ""
 
-#: railgun/website/views.py:413
+#: railgun/website/views.py:418
 msgid "Scoring Details"
 msgstr ""
 
-#: railgun/website/views.py:416
+#: railgun/website/views.py:421
 msgid "Documentation"
 msgstr ""
 
-#: railgun/website/views.py:420
+#: railgun/website/views.py:425
 msgid "FAQ"
 msgstr ""
 
-#: railgun/website/views.py:422
+#: railgun/website/views.py:427
 msgid "About"
 msgstr ""
 
@@ -607,18 +607,6 @@ msgstr ""
 msgid "Edit"
 msgstr ""
 
-#: railgun/website/templates/admin.users.html:52
-msgid "Disable"
-msgstr ""
-
-#: railgun/website/templates/admin.users.html:56
-msgid "Enable"
-msgstr ""
-
-#: railgun/website/templates/admin.users.html:60
-msgid "Delete"
-msgstr ""
-
 #: railgun/website/templates/base.handins.html:13
 msgid "User"
 msgstr ""
@@ -671,28 +659,40 @@ msgstr ""
 msgid "Sign in"
 msgstr ""
 
-#: railgun/website/templates/base.user_edit.html:18
+#: railgun/website/templates/base.user_edit.html:19
+msgid "Disable"
+msgstr ""
+
+#: railgun/website/templates/base.user_edit.html:21
+msgid "Enable"
+msgstr ""
+
+#: railgun/website/templates/base.user_edit.html:23
+msgid "Delete"
+msgstr ""
+
+#: railgun/website/templates/base.user_edit.html:30
 msgid "Passport"
 msgstr ""
 
-#: railgun/website/templates/base.user_edit.html:22
+#: railgun/website/templates/base.user_edit.html:34
 #: railgun/website/templates/signup.html:11
 msgid "Use at least seven characters"
 msgstr ""
 
-#: railgun/website/templates/base.user_edit.html:23
+#: railgun/website/templates/base.user_edit.html:35
 msgid "Confirm the password"
 msgstr ""
 
-#: railgun/website/templates/base.user_edit.html:37
+#: railgun/website/templates/base.user_edit.html:49
 msgid "Locale"
 msgstr ""
 
-#: railgun/website/templates/base.user_edit.html:61
+#: railgun/website/templates/base.user_edit.html:73
 msgid "Personal"
 msgstr ""
 
-#: railgun/website/templates/base.user_edit.html:68
+#: railgun/website/templates/base.user_edit.html:80
 msgid "Save profile"
 msgstr ""
 
@@ -797,31 +797,35 @@ msgstr ""
 msgid "Submit"
 msgstr ""
 
-#: railgun/website/templates/homework.html:36
+#: railgun/website/templates/homework.html:37
 msgid "View Submissions"
 msgstr ""
 
-#: railgun/website/templates/homework.html:42
+#: railgun/website/templates/homework.html:43
 msgid "Description"
 msgstr ""
 
-#: railgun/website/templates/homework.html:49
+#: railgun/website/templates/homework.html:50
 msgid "Solution"
 msgstr ""
 
-#: railgun/website/templates/homework.html:57
+#: railgun/website/templates/homework.html:58
 msgid "Attachments"
 msgstr ""
 
-#: railgun/website/templates/homework.html:76
+#: railgun/website/templates/homework.html:61
+msgid "This homework is locked and the attachments cannot be accessed."
+msgstr ""
+
+#: railgun/website/templates/homework.html:80
 msgid "Deadlines"
 msgstr ""
 
-#: railgun/website/templates/homework.html:81
+#: railgun/website/templates/homework.html:85
 msgid "This homework is already out of date."
 msgstr ""
 
-#: railgun/website/templates/homework.html:83
+#: railgun/website/templates/homework.html:87
 #, python-format
 msgid ""
 "This homework will reach next deadline in <span style=\"color: "
@@ -829,15 +833,15 @@ msgid ""
 "style=\"color: %(scalecolor)s\">%(scale)s</span>."
 msgstr ""
 
-#: railgun/website/templates/homework.html:94
+#: railgun/website/templates/homework.html:98
 msgid "Due date"
 msgstr ""
 
-#: railgun/website/templates/homework.html:95
+#: railgun/website/templates/homework.html:99
 msgid "Score scale "
 msgstr ""
 
-#: railgun/website/templates/homework.html:116
+#: railgun/website/templates/homework.html:120
 msgid "Submission"
 msgstr ""
 
