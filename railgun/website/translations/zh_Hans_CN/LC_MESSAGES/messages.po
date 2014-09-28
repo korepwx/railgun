@@ -1153,17 +1153,17 @@ msgstr "作业被管理员锁定，你不能下载附件。"
 
 #: railgun/website/templates/base.user_edit.html:88
 msgid "Close"
-msgstr ""
+msgstr "关闭"
 
 #: railgun/website/templates/base.user_edit.html:89
 msgid "Confirm your action"
-msgstr ""
+msgstr "确认你的操作"
 
 #: railgun/website/templates/base.user_edit.html:92
 msgid "Are you sure to delete this user? This operation cannot rollback."
-msgstr ""
+msgstr "你是否确定删除这个用户？此操作不能撤销。"
 
 #: railgun/website/templates/base.user_edit.html:95
 msgid "Cancel"
-msgstr ""
+msgstr "取消"
 
