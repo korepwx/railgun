@@ -30,6 +30,7 @@
 {{ hw.info.name }} - {{ _('Homework') }}
 {%- endblock %}
 {% block content -%}
+  {% set is_locked = hw.is_locked() and not current_user.is_admin -%}
   <h3 class="hw-heading">
     {{ hw.info.name }}
     <span class="pull-right">
@@ -53,23 +54,26 @@
 
   <!-- Homework attachments here -->
   {% if hw.count_attach() > 0 -%}
-    <div class="hw-attach panel panel-default">
+    <div class="hw-attach panel panel-{% if is_locked %}danger{% else %}default{% endif %}">
       <div class="panel-heading">{{ _('Attachments') }}</div>
       <div class="panel-body">
-        {% for c in hwlangs -%}
-          {% if hw.get_code(c).has_attach -%}
-            <div class="lang">
-              <a href="{{ hw.attach_url(c) }}">{{ c | codelang }}</a>
-              <span class="size">({{ hw.attach_size(c) | sizeformat }})</span>
-            </div>
-          {%- endif %}
-        {%- endfor %}
+        {% if is_locked -%}
+          {{ _('This homework is locked and the attachments cannot be accessed.') }}
+        {%- else -%}
+          {% for c in hwlangs -%}
+            {% if hw.get_code(c).has_attach -%}
+              <div class="lang">
+                <a href="{{ hw.attach_url(c) }}">{{ c | codelang }}</a>
+                <span class="size">({{ hw.attach_size(c) | sizeformat }})</span>
+              </div>
+            {%- endif %}
+          {%- endfor %}
+        {%- endif %}
       </div>
     </div>
   {%- endif %}
 
   <!-- Homework deadlines here -->
-  {% set is_locked = hw.is_locked() and not current_user.is_admin -%}
   {% set next_ddl = hw.get_next_deadline() -%}
   {%- set ddl_text_class = 'default' if next_ddl and not is_locked else 'danger' -%}
   <div class="hw-deadlines panel panel-{{ ddl_text_class }} text-{{ ddl_text_class }}">

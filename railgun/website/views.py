@@ -13,7 +13,7 @@ from flask import render_template, url_for, redirect, flash, request, g, \
 from flask.ext.babel import lazy_gettext, get_locale, gettext as _
 from flask.ext.login import login_user, logout_user, current_user, \
     confirm_login
-from werkzeug.exceptions import NotFound
+from werkzeug.exceptions import NotFound, Forbidden
 
 from .context import app, db
 from .navibar import navigates, NaviItem, set_navibar_identity
@@ -232,11 +232,16 @@ def homework(slug):
 
 
 @app.route('/hwpack/<slug>/<lang>.zip')
+@login_required
 def hwpack(slug, lang):
-    # NOTE: I suppose that there's no need to guard the homework archives
-    #       by @login_required. regarding this, the packed archives can be
-    #       served by nginx, not flask framework, which should be much
-    #       faster to be responded.
+    # attachments of locked homework should not be downloaded by non-admin
+    # users.  so we get the homework object, and check the privilege.
+    hw = g.homeworks.get_by_slug(slug)
+    if not hw:
+        raise NotFound()
+    if hw.is_locked() and not current_user.is_admin:
+        raise Forbidden()
+    # if user can download this attachment, send it.
     filename = '%(slug)s/%(lang)s.zip' % {'slug': slug, 'lang': lang}
     return send_from_directory(app.config['HOMEWORK_PACK_DIR'], filename)
 
