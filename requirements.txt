@@ -18,4 +18,3 @@ pep8 >= 1.5.7
 passlib
 MySQL-python >= 1.2.5
 alabaster
-

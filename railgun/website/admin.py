@@ -19,7 +19,7 @@ from werkzeug.exceptions import NotFound
 
 from railgun.runner.context import app as runner_app
 from .context import app, db
-from .models import User, Handin
+from .models import User, Handin, FinalScore
 from .forms import AdminUserEditForm
 from .userauth import auth_providers
 from .credential import login_manager
@@ -122,6 +122,54 @@ def user_edit(name):
         form=form,
         the_user=the_user,
     )
+
+
+@bp.route('/users/<name>/activate/')
+@admin_required
+def user_activate(name):
+    next = request.args.get('next')
+    the_user = User.query.filter(User.name == name).one()
+    the_user.is_active = True
+    db.session.commit()
+    flash(_('User activated.'), 'success')
+    return redirect(next or url_for('.users'))
+
+
+@bp.route('/users/<name>/deactivate/')
+@admin_required
+def user_deactivate(name):
+    next = request.args.get('next')
+    the_user = User.query.filter(User.name == name).one()
+    # should not allow the user to deactivate himself!
+    if the_user.id == current_user.id:
+        flash(_('You cannot deactivate yourself!'), 'warning')
+    else:
+        the_user.is_active = False
+        db.session.commit()
+        flash(_('User deactivated.'), 'warning')
+    return redirect(next or url_for('.users'))
+
+
+@bp.route('/users/<name>/delete/')
+@admin_required
+def user_delete(name):
+    next = request.args.get('next')
+    the_user = User.query.filter(User.name == name).one()
+    # should not allow the user to delete himself!
+    if the_user.id == current_user.id:
+        flash(_('You cannot delete yourself!'), 'warning')
+    else:
+        # Delete all top scores of this user
+        FinalScore.query.filter(FinalScore.user_id == the_user.id).delete()
+        # Delete all submissions of this user
+        Handin.query.filter(Handin.user_id == the_user.id).delete()
+        # Delete this user
+        User.query.filter(User.id == the_user.id).delete()
+        # commit the changes
+        db.session.commit()
+        # show messages
+        flash(_('User deleted.'), 'warning')
+    return redirect(next or url_for('.users'))
 
 
 @bp.route('/handin/')

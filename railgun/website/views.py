@@ -68,11 +68,13 @@ def signin():
         # Check whether the user exists
         user = authenticate(form.login.data, form.password.data)
         if user:
-            # Now we can login this user and redirect to index!
-            login_user(UserContext(user), remember=form.remember.data)
-            return redirect(next_url or url_for('index'))
-        # Report username or password error
-        flash(_('Incorrect username or password.'), 'danger')
+            if user.is_active:
+                # Now we can login this user and redirect to index!
+                login_user(UserContext(user), remember=form.remember.data)
+                return redirect(next_url or url_for('index'))
+            flash(_('Your account is locked by admin.'), 'warning')
+        else:
+            flash(_('Incorrect username or password.'), 'danger')
     return render_template('signin.html', form=form, next=next_url)
 
 

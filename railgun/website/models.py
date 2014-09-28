@@ -41,6 +41,9 @@ class User(db.Model):
     # Whether this user is admin?
     is_admin = db.Column(db.Boolean, default=False)
 
+    # Whether this user is active? (if not active, it should be locked)
+    is_active = db.Column(db.Boolean, default=True)
+
     # User detail information
     given_name = db.Column(db.String(64), default='')
     family_name = db.Column(db.String(64), default='')

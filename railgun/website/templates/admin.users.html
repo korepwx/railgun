@@ -11,7 +11,8 @@
       <th>{{ _('Email') }}</th>
       <th>{{ _('Group') }}</th>
       <th>{{ _('Source') }}</th>
-      <th style="width: 10%">{{ _('Action') }}</th>
+      <th>{{ _('Status') }}</th>
+      <th class="text-right">{{ _('Action') }}</th>
     </tr>
     {% for user in the_page.items -%}
     <tr>
@@ -35,9 +36,28 @@
           <span class="text-muted">{{ _('Sign up') }}</span>
         {%- endif %}
       </td>
-      <td class="user-action">
-        <a href="{{ url_for('admin.user_edit', name=user.name) }}">
+      <td class="user-status">
+        {% if user.is_active -%}
+          <span class="text-success">{{ _('Active') }}</span>
+        {%- else -%}
+          <span class="text-danger">{{ _('Disabled') }}</span>
+        {%- endif %}
+      </td>
+      <td class="user-action text-right">
+        <a href="{{ url_for('admin.user_edit', name=user.name, next=request.url) }}" class="btn btn-xs btn-default">
           {{ _("Edit") }}
+        </a>
+        {% if user.is_active -%}
+          <a href="{{ url_for('admin.user_deactivate', name=user.name, next=request.url) }}" class="btn btn-xs btn-warning">
+            {{ _("Disable") }}
+          </a>
+        {%- else -%}
+          <a href="{{ url_for('admin.user_activate', name=user.name, next=request.url) }}" class="btn btn-xs btn-success">
+            {{ _("Enable") }}
+          </a>
+        {%- endif %}
+        <a href="{{ url_for('admin.user_delete', name=user.name, next=request.url) }}" class="btn btn-xs btn-danger">
+          {{ _("Delete") }}
         </a>
       </td>
     </tr>

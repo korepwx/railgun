@@ -35,7 +35,7 @@ class UserContext(object):
         return True
 
     def is_active(self):
-        return self.is_authenticated()
+        return self.dbo.is_active
 
     def is_anonymous(self):
         return not self.is_authenticated()
@@ -96,7 +96,7 @@ def fresh_login_required(method):
 @login_manager.user_loader
 def __load_user_before_request(uid):
     ret = db.session.query(User).filter(User.id == uid).first()
-    if ret:
+    if ret and ret.is_active:
         return UserContext(ret)
 
 
