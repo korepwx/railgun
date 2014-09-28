@@ -20,7 +20,7 @@
         {%- else -%}
           <a href="{{ url_for('admin.user_activate', name=the_user.name, next=request.url) }}" class="btn btn-success">{{ _('Enable') }}</a>
         {%- endif %}
-        <a href="{{ url_for('admin.user_delete', name=the_user.name) }}" class="btn btn-danger">{{ _('Delete') }}</a>
+        <a class="btn btn-danger" data-toggle="modal" data-target="#myModal">{{ _('Delete') }}</a>
       </span>
     {% endif %}
   </h2>
@@ -80,6 +80,24 @@
   <button type="submit" class="btn btn-success">{{ _('Save profile') }}</button>
   {{ form.hidden_tag() }}
 </form>
+<!-- Window to confirm the delete -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">{{ _('Close') }}</span></button>
+        <h4 class="modal-title" id="myModalLabel">{{ _('Confirm your action') }}</h4>
+      </div>
+      <div class="modal-body">
+        {{ _('Are you sure to delete this user? This operation cannot rollback.') }}
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">{{ _('Cancel') }}</button>
+        <a type="button" class="btn btn-danger" href="{{ url_for('admin.user_delete', name=the_user.name) }}">{{ _('Confirm') }}</a>
+      </div>
+    </div>
+  </div>
+</div>
 {%- endmacro %}
 {% macro the_tail() -%}
   <script type="text/javascript" src="{{ url_for('static', filename='js/profile_edit.js') }}"></script>

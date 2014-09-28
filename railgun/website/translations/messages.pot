@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2014-09-28 21:54+0800\n"
+"POT-Creation-Date: 2014-09-28 22:49+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -696,6 +696,27 @@ msgstr ""
 msgid "Save profile"
 msgstr ""
 
+#: railgun/website/templates/base.user_edit.html:88
+msgid "Close"
+msgstr ""
+
+#: railgun/website/templates/base.user_edit.html:89
+msgid "Confirm your action"
+msgstr ""
+
+#: railgun/website/templates/base.user_edit.html:92
+msgid "Are you sure to delete this user? This operation cannot rollback."
+msgstr ""
+
+#: railgun/website/templates/base.user_edit.html:95
+msgid "Cancel"
+msgstr ""
+
+#: railgun/website/templates/base.user_edit.html:96
+#: railgun/website/templates/reauthenticate.html:9
+msgid "Confirm"
+msgstr ""
+
 #: railgun/website/templates/handin_detail.html:3
 msgid "Submission Detail"
 msgstr ""
@@ -889,10 +910,6 @@ msgstr ""
 
 #: railgun/website/templates/reauthenticate.html:4
 msgid "Authenticate your account"
-msgstr ""
-
-#: railgun/website/templates/reauthenticate.html:9
-msgid "Confirm"
 msgstr ""
 
 #: railgun/website/templates/signup.html:4

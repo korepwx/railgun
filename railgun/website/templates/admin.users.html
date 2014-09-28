@@ -44,7 +44,7 @@
         {%- endif %}
       </td>
       <td class="user-action text-right">
-        <a href="{{ url_for('admin.user_edit', name=user.name, next=request.url) }}" class="btn btn-xs btn-default">
+        <a href="{{ url_for('admin.user_edit', name=user.name, next=request.url) }}">
           {{ _("Edit") }}
         </a>
       </td>
