@@ -15,7 +15,10 @@ rarfile.PATH_SEP = '/'
 
 
 def file_get_contents(path):
-    """Get the content of `path`, or None if exception raised."""
+    """Read the file contents of `path`.
+
+    :returns: File content as string, or None if any error occurred.
+    """
     try:
         with open(path, 'rb') as f:
             return unicode(f.read(), 'utf-8')
@@ -24,19 +27,40 @@ def file_get_contents(path):
 
 
 def remove_firstdir(path):
-    """Remove the first level directory from `path`"""
+    """Remove the first directory of given `path` and return modified str.
+
+    If '/' is not found in `path`, assume that it does not contain a directory.
+    For examples::
+
+        >>> remove_firstdir('/entity')
+        'entity'
+        >>> remove_firstdir('top/entity')
+        'entity'
+        >>> remove_firstdir('entity')
+        'entity'
+
+    :param path: The input path string.
+    :type path: :class:`str`
+    :return: Path of which the first directory is removed.
+    """
+
     slash_pos = path.find('/')
     if slash_pos >= 0:
         path = path[slash_pos+1:]
     return path
 
 
-def dirtree(path):
-    """Get all file entries under directory `path`."""
+def dirtree(parent):
+    """Get an iterable object over all relative paths of entities under
+    directory `parent`.
 
-    def F(parent, p):
-        for f in os.listdir(parent):
-            fpath = os.path.join(parent, f)
+    :returns: iterable object over all relative paths.
+    :raises: :class:`Exception` from the system libraries.
+    """
+
+    def F(pa, p):
+        for f in os.listdir(pa):
+            fpath = os.path.join(pa, f)
             p2 = p + f
             # if directory, scan recursively
             if os.path.isdir(fpath):
@@ -44,11 +68,23 @@ def dirtree(path):
                     yield p3
             yield p2
 
-    return F(os.path.realpath(path), '')
+    return F(os.path.realpath(parent), '')
 
 
 def packzip(base_path, files, target, path_prefix=''):
-    """Pack all items in `files` under `base_path` into `target` zipfile."""
+    """Pack all entities in `files` under `base_path` into `target` zipfile.
+
+    :param base_path: the base path of all entities.
+    :type base_path: :class:`str`
+    :param files: iterable object over relative paths of file entities.
+    :type files: :class:`object`
+    :param target: Target zipfile object.
+    :type target: :class:`zipfile.ZipFile`
+    :param path_prefix: prefix of paths to be added into archive file.
+    :type path_prefix: :class:`str`
+
+    :return: `target`
+    """
     for f in files:
         fp = os.path.join(base_path, f)
         target.write(fp, path_prefix + f)
@@ -56,12 +92,40 @@ def packzip(base_path, files, target, path_prefix=''):
 
 
 def makezip(filename):
-    """Make a new compressed zip file `filename`."""
+    """Create a new :class:`zipfile.ZipFile` object.
+
+    :param filename: the file system path of created zip file.
+    :type filename: :class:`str`
+
+    :return: :class:`zipfile.ZipFile` object.
+    """
+
     return zipfile.ZipFile(filename, 'w', zipfile.ZIP_DEFLATED)
 
 
 class Extractor(object):
-    """Basic interface for archive file extractor."""
+    """The unique interface for archive file extractors.
+
+    `Railgun` system can extract various types of archive files.  This class
+    provides a unique interface to create an extractor on given archive file.
+    The format of archive will be recognized according to file extension,
+    For examples::
+
+        >>> Extractor.open('a.zip')
+        <ZipExtractor instance>
+        >>> Extractor.open('a.rar')
+        <RarExtractor instance>
+
+    Also, the :class:`Extractor` objects implements context manager, for
+    example:
+
+    .. code-block:: python
+
+        with Extractor.open('a.zip') as f:
+            for fname, fobj in f:
+                print 'the content of %s is:' % fname
+                print fobj.read()
+    """
 
     def __init__(self, fobj):
         self.fobj = fobj
@@ -85,23 +149,30 @@ class Extractor(object):
 
     # basic method to get next file from archive
     def extract(self):
-        """Get iterable (fname, fobj) from the archive."""
+        """Get iterable (fname, fobj) from the archive.
+
+        You may simply iterate over a :class:`Extractor` object, which is
+        same as calling to this method.
+
+        :return: list of tuple (fname, fobj), where `fname` is a :class:`str`,
+            and `fobj` is a file-like object.
+        """
         raise NotImplementedError()
 
     # basic method to get names of all files
     def filelist(self):
-        """Get iterable fname from the archive."""
+        """Get iterable name lists in this archive file."""
         raise NotImplementedError()
 
     def countfiles(self, maxcount=1048576):
         """Count all files in the archive.
 
-        Args:
-            maxcount (int): Maximum files to count.  If exceeds this limit,
-                return ``maxcount + 1``.  Default is 1048576.
+        :param maxcount: maximum files to count.  If exceeds this limit,
+            the method will be interrupted, and ``maxcount + 1`` will be
+            returned.
+        :type maxcount: :class:`int`
 
-        Returns:
-            The count of entities in this archive.
+        :return: the number of files in this archive.
         """
 
         counter = 0
@@ -112,7 +183,18 @@ class Extractor(object):
         return counter
 
     def onedir(self):
-        """Check whether this archive contains only one directory"""
+        """Check whether this archive contains only one top-level directory?
+
+        Some students may compress a whole directory.  We want to detect such
+        situations.
+
+        .. note::
+            OS X may add a hidden directory named `__MACOSX` to zip archives.
+            This method will ignore such directory.
+
+        :return: True if the archive file indeed contains only one top-level
+            directory, while False otherwise.
+        """
         last_dname = None
         for fname in self.filelist():
             # get the first directory name
@@ -136,7 +218,15 @@ class Extractor(object):
 
     @staticmethod
     def open(fpath):
-        """Open an extractor for given `fpath`."""
+        """Open an extractor for given archive file.
+
+        :param fpath: the path of archive file.
+        :type fpath: :class:`str`
+
+        :return: instance derived from :class:`Extractor`.
+        :raises: :class:`ValueError` if the extension of given file is not
+            supported.
+        """
 
         fext = os.path.splitext(fpath)[1].lower()
         if fext in ('.rar'):

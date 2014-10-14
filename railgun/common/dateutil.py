@@ -5,66 +5,97 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # This file is released under BSD 2-clause license.
 
+"""
+Utilities for conversions between `plain datetime`, `localized datetime` and
+`UTC datetime`.  These three types are all :class:`datetime.datetime` objects,
+while the only difference is their `tzinfo` property.  `tzinfo` is the timezone
+information attached to :class:`datetime.datetime`.
+
+.. tabularcolumns:: |p{4cm}|p{11cm}|
+
+=============== ========================================================
+Type            Description
+=============== ========================================================
+plain           `tzinfo` is None, which means no timezone is attached.
+                Only (year, month, day, hour, min, sec, ms) tuple of
+                such datetime objects are meaningful.
+UTC             `tzinfo` is :class:`pytz.UTC`, which means the time
+                tuple represents a datetime in UTC timezone.
+localized       `tzinfo` neither None, nor :class:`pytz.UTC`,
+                representing a datetime in given timezone.
+=============== ========================================================
+
+Be careful that some timezone, such as `Asia/Shanghai`, is not on the exact
+boundary of hours (`Asia/Shanghai` is +08:06).  Others may carry DST data.
+So you SHOULD ONLY use the methods provided in this module to do datetime
+conversions.
+"""
+
 from datetime import datetime
 
 from pytz import UTC
 
 
 def utc_now():
-    """get the current date time in UTC timezone."""
+    """Get the current UTC datetime object."""
     return UTC.normalize(UTC.localize(datetime.utcnow()))
 
 
 def from_plain_date(dt, tz):
-    """Convert a plain datetime to its best format in given timezone.
+    """Attach timezone to a plain datetime object.
 
-    Some timezone, such as Asia/Shanghai, is not on the exact boundary of
-    timezones (Asia/Shanghai is +08:06).  This method will ensure the tzinfo
-    attached to plain datetime object is on the boundary.
+    This method only attaches the timezone data to `dt`, with no adjust
+    performed on time data.  This method will ensure that the tzinfo attached
+    to plain datetime object is on the exact boundary of hours.
 
-    Args:
-        dt: the plain datetime object.
-        tz: the timezone object.
+    :param dt: the plain datetime object.
+    :type dt: :class:`datetime.datetime`
+    :param tz: the timezone object.
+    :type tz: :class:`datetime.tzinfo`
 
-    Returns:
-        A localized datetime object with given timezone.
+    :return: a localized datetime object.
     """
     return tz.normalize(tz.localize(dt))
 
 
 def to_plain_date(dt):
-    """Replace the tzinfo of the date time object to None."""
+    """Strip timezone from a localized or UTC datetime object.
+
+    This method only strips the timezone data from `dt`, with no adjust
+    performed on time data.
+
+    :param dt: the localized or UTC datetime object.
+    :type dt: :class:`datetime.datetime`
+
+    :return: a plain datetime object.
+    """
     return dt.replace(tzinfo=None)
 
 
 def to_utc_date(dt):
-    """Convert a localized datetime object to utc datetime object.
+    """Convert a localized datetime object to UTC one.
 
-    Some timezone, such as Asia/Shanghai, is not on the exact boundary of
-    timezones (Asia/Shanghai is +08:06).  Others may carry DST information.
-    This method will ensure the conversion to UTC date time is correct.
+    This method will adjust the time data, to make sure the conversion from
+    localized timezone to UTC is correct.
 
-    Args:
-        dt: the localized datetime object.
-
-    Returns:
-        A UTC datetime object.
+    :param dt: a localized datetime object.
+    :type dt: :class:`datetime.datetime`
+    :return: a UTC datetime object.
     """
     return UTC.normalize(dt.astimezone(UTC))
 
 
 def from_utc_date(dt, tz):
-    """Convert a UTC datetime object to localized datetime object.
+    """Convert a UTC datetime object to localized one.
 
-    Some timezone, such as Asia/Shanghai, is not on the exact boundary of
-    timezones (Asia/Shanghai is +08:06).  Others may carry DST information.
-    This method will ensure the conversion from UTC date time is correct.
+    This method will adjust the time data, to make sure the conversion from
+    UTC to localized timezone is correct.
 
-    Args:
-        dt: the UTC datetime object.
-        tz: the timezone object.
+    :param dt: a localized datetime object.
+    :type dt: :class:`datetime.datetime`
+    :param tz: the timezone object.
+    :type tz: :class:`datetime.tzinfo`
 
-    Returns:
-        A UTC datetime object.
+    :return: a localized datetime object.
     """
     return tz.normalize(dt.astimezone(tz))

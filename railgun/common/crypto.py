@@ -14,6 +14,10 @@ class AESCipher(object):
     in any size to encrypt a plain text in any length, and decrypt it
     backwards.  You don't need to worry about the paddings, in that this
     class will take care of it for you.
+
+    :param key: Encryption and decryption key for AES algorithm.
+        If `len(key)` != 32, it will be padded or truncated.
+    :type key: :class:`str`
     """
 
     def __init__(self, key):
@@ -30,14 +34,22 @@ class AESCipher(object):
             self.key = self._padkey(key)
 
     def encrypt(self, raw):
-        """Encrypt the `raw` text."""
+        """Encrypt the `raw` text.
+
+        :param raw: Plain text to be encrypted.
+        :type raw: :class:`str`
+        """
         raw = self._pad(raw)
         iv = Random.new().read(self.IVSize)
         cipher = AES.new(self.key, AES.MODE_CBC, iv)
         return iv + cipher.encrypt(raw)
 
     def decrypt(self, enc):
-        """Decrypt the `enc` text."""
+        """Decrypt the `enc` text.
+
+        :param enc: Cipher text to be decrypted.
+        :type enc: :class:`str`
+        """
         iv = enc[:self.IVSize]
         cipher = AES.new(self.key, AES.MODE_CBC, iv)
         return self._unpad(cipher.decrypt(enc[self.IVSize:]))
@@ -57,10 +69,22 @@ class AESCipher(object):
 
 
 def DecryptMessage(s, key):
-    """Convenient method to encrypt `s` with `key`."""
+    """Convenient method to encrypt `s` with `key`.
+
+    :param s: Cipher text to be decrypted.
+    :type s: :class:`str`
+    :param key: Key to be used in AES algorithm.
+    :type key: :class:`str`
+    """
     return AESCipher(key).decrypt(s)
 
 
 def EncryptMessage(s, key):
-    """Convenient method to decrypt `s` with `key`."""
+    """Convenient method to decrypt `s` with `key`.
+
+    :param s: Plain text to be encrypted.
+    :type s: :class:`str`
+    :param key: Key to be used in AES algorithm.
+    :type key: :class:`str`
+    """
     return AESCipher(key).encrypt(s)

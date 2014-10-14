@@ -38,7 +38,8 @@ class GetTextString(object):
         return '<GetText(%s)>' % self.render()
 
 
-lazy_gettext = GetTextString
+def lazy_gettext(__s, **kwargs):
+    return GetTextString(__s, **kwargs)
 
 
 def lazystr_to_plain(s):
