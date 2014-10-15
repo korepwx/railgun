@@ -394,7 +394,6 @@ navigates.add(
             NaviItem(title=hw.info.name, url=url_for('homework', slug=hw.slug),
                      identity='homework.%s' % hw.slug)
             for hw in g.homeworks
-            if current_user.is_admin or not hw.is_hidden()
         ]
     )
 )

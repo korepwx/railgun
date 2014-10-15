@@ -8,6 +8,7 @@
 import os
 
 from flask import g, url_for
+from flask.ext.login import current_user
 
 from railgun.common.hw import HwSet, utc_now
 from .context import app
@@ -59,7 +60,8 @@ class HwSetProxy(object):
 
     def __init__(self, hwset):
         # cache all HwProxy instances
-        self.items = [HwProxy(hw) for hw in hwset]
+        self.items = [HwProxy(hw) for hw in hwset
+                      if not hw.is_hidden() or current_user.is_admin]
 
         # build slug-to-hw and uuid-to-hw lookup dictionary
         self.__slug_to_hw = {hw.slug: hw for hw in self.items}
