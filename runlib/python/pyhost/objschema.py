@@ -97,7 +97,7 @@ class BaseSchema(object):
 
     def print_tree(self, pad=0):
         """Print the schema tree."""
-        print '' % (' ' * pad, self.get_description())
+        print '%s%s' % (' ' * pad, self.get_description())
         for c in self.children:
             c.print_tree(pad+2)
 
