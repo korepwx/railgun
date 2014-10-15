@@ -26,14 +26,14 @@ class User(db.Model):
     # database engine.
     __table_args__ = {'mysql_engine': 'InnoDB'}
 
-    # Primary key of the table
+    #: Primary key of the table
     id = db.Column(db.Integer, db.Sequence('user_id_seq'), primary_key=True)
 
-    # Which authenticate provider does this user come from?
-    # If None or empty, this user does not come from external providers.
+    #: Which authenticate provider does this user come from?
+    #: If None or empty, this user does not come from external providers.
     provider = db.Column(db.String(32), default='')
 
-    # User passport
+    #: User passport
     name = db.Column(db.String(50), unique=True)
     email = db.Column(db.String(80), unique=True)
     password = db.Column(db.String(255))

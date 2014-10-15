@@ -9,19 +9,24 @@ use the Railgun system.
 
    userguide/foreword
    userguide/installation
+   userguide/configuration
    userguide/homework
    userguide/practice
 
-Framework
----------
+.. _design:
+
+System Design
+-------------
 
 If you want to make some development on Railgun, you may get started with
-this documentation on system design.
+this documentation on :ref:`design_overview`.
 
 .. toctree::
    :maxdepth: 2
 
-   framework
+   design/overview
+   design/packages
+   design/webapi
 
 .. _api:
 

@@ -6,6 +6,21 @@ Website Package
 This part of the documentation describes the website package.
 It includes all parts of website implementation.
 
+Database Models
+---------------
+
+.. module:: railgun.website.models
+
+.. autoclass:: railgun.website.models.User
+    :members:
+
+.. autoclass:: railgun.website.models.Handin
+    :members:
+
+.. autoclass:: railgun.website.models.FinalScore
+    :members:
+
+
 Flask Context Objects
 ---------------------
 

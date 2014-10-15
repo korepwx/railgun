@@ -140,8 +140,8 @@ class CsvBoolean(CsvField):
     ======================= ================================================
     Value                   Literals (Case Insensitive)
     ======================= ================================================
-    :keyword:`True`         'true', 'on', '1', 'yes'
-    :keyword:`False`        'false', 'off', '0', 'no'
+    `True`                  'true', 'on', '1', 'yes'
+    `False`                 'false', 'off', '0', 'no'
     :class:`ValueError`     Any other literal
     ======================= ================================================
     """

@@ -7,7 +7,7 @@ Welcome to Railgun's documentation.  This documentation is divided into
 different parts.  For Railgun users, I recommend that you get started
 with :ref:`installation` and then head over to :ref:`homework`.
 For developers who'd rather dive into the internals of Railgun,
-check out the :ref:`framework` and the :ref:`api`.
+check out the :ref:`design` and the :ref:`api`.
 
 Railgun depends on many external libraries. Among all of them, the `Flask`_
 web framework and the `Celery`_ task queue are the most important.  These

@@ -11,19 +11,32 @@ import sys
 def find_object(name):
     """Find object according to `name`.
 
-    This method will try to import all the essential modules to find the
+    This method will try to import all the intermediate modules to find the
     requested object.
 
-    Args:
-        name (str): The name of the object, should contain full module
-            names from the global scope.
+    Examples:
 
-    Returns:
-        The object instance.
+        >>> find_object('os')
+        <module 'os' from '?'>
 
-    Raises:
-        ImportError: If object with `name` cannot be found.
-        Exception: When importing external module, they may raise exceptions.
+        >>> find_object('os.path')
+        <module 'posixpath' from '?'>
+
+        >>> find_object('os.remove')
+        <function posix.remove>
+
+        >>> find_object('os.path.split')
+        <function posixpath.split>
+
+        >>> find_object('os.path.split.__name__')
+        'split'
+
+    :param name: The name of the object, should contain full path from the
+        global scope.
+    :type name: :class:`str`
+
+    :return: The object instance.
+    :raises: :class:`ImportError` if object with `name` cannot be found.
     """
 
     # If name is empty, fail fast

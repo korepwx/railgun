@@ -1,4 +1,0 @@
-.. _framework:
-
-System Design
-=============

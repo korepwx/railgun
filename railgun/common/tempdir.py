@@ -135,13 +135,15 @@ class TempDir(object):
             os.chmod(dstpath, mode)
 
     def chown(self, uid, gid=None, recursive=False):
-        """Change the owner of this temporary directory.
+        """Change the owner uid and gid of this directory.
 
-        Args:
-            uid: the new uid of this directory.
-            gid: the new gid of this directory.  If not given, current gid
-                will be used.
-            recursive: should traverse the directory? default is False.
+        :param uid: Name or id of owner user.
+        :type uid: :class:`str` or :class:`int`
+        :param gid: Name or id of owner group.  If not given, gid will not be
+            changed.
+        :type uid: :class:`str` or :class:`int`
+        :param recursive: Whether or not to chown all children?
+        :type recursive: :class:`bool`
         """
         if gid is None:
             gid = os.stat(self.path).st_gid
@@ -154,11 +156,12 @@ class TempDir(object):
             os.chown(self.path, uid, gid)
 
     def chmod(self, mode, recursive=False):
-        """Change the mode of this temporary directory.
+        """Change the Unix file system mode of this directory.
 
-        Args:
-            mode: the new mode of this directory.
-            recursive: should traverse the directory? default is False.
+        :param mode: File system mode number.
+        :type mode: :class:`int`
+        :param recursive: Whether or not to chmod all children?
+        :type recursive: :class:`bool`
         """
         if recursive:
             for dpath, _, fnames in os.walk(self.path):
