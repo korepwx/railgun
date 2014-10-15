@@ -20,7 +20,7 @@ from werkzeug.exceptions import NotFound
 from railgun.runner.context import app as runner_app
 from .context import app, db
 from .models import User, Handin, FinalScore
-from .forms import AdminUserEditForm
+from .forms import AdminUserEditForm, CreateUserForm
 from .userauth import auth_providers
 from .credential import login_manager
 from .navibar import navigates, NaviItem
@@ -65,6 +65,27 @@ def users():
         'admin.users.html',
         the_page=users.paginate(page, perpage)
     )
+
+
+@bp.route('/adduser/', methods=['GET', 'POST'])
+@admin_required
+def adduser():
+    form = CreateUserForm()
+    if form.validate_on_submit():
+        # Construct user data object
+        user = User()
+        form.populate_obj(user)
+        user.email = user.name + app.config['EXAMPLE_USER_EMAIL_SUFFIX']
+        user.set_password(form.password.data)
+        try:
+            db.session.add(user)
+            db.session.commit()
+            return redirect(url_for('.users'))
+        except Exception:
+            app.logger.exception('Cannot create account %s' % user.name)
+        flash(_("I'm sorry but we may have met some trouble. Please try "
+                "again."), 'warning')
+    return render_template('admin.adduser.html', form=form)
 
 
 @bp.route('/users/<name>/', methods=['GET', 'POST'])

@@ -35,8 +35,8 @@ class HandinTextArea(TextArea):
         return super(HandinTextArea, self).__call__(field, **kwargs)
 
 
-class SignupForm(Form):
-    """Form for `signup` view."""
+class CreateUserForm(Form):
+    """Base form to create a user account."""
 
     name = StringField(_('Username'), validators=[
         Regexp('^[A-Za-z0-9_]*$', message=_("Only letters, digits and '_' can "
@@ -44,12 +44,6 @@ class SignupForm(Form):
         DataRequired(message=_("Username can't be blank")),
         Length(min=3, max=32, message=_("Username must be no shorter than 3 "
                                         "and no longer than 32 characters")),
-    ])
-    email = StringField(_('Email Address'), validators=[
-        DataRequired(message=_("Email can't be blank")),
-        Email(message=_("Email is invalid")),
-        Length(message=_("Email must be no longer than 80 characters"),
-               max=80),
     ])
     password = PasswordField(_('Password'), validators=[
         InputRequired(message=_("Password can't be blank")),
@@ -62,6 +56,17 @@ class SignupForm(Form):
     def validate_name(form, field):
         if has_user(field.data):
             raise ValidationError(_('Username already taken'))
+
+
+class SignupForm(CreateUserForm):
+    """Form for `signup` view."""
+
+    email = StringField(_('Email Address'), validators=[
+        DataRequired(message=_("Email can't be blank")),
+        Email(message=_("Email is invalid")),
+        Length(message=_("Email must be no longer than 80 characters"),
+               max=80),
+    ])
 
     def validate_email(form, field):
         if has_user(field.data):

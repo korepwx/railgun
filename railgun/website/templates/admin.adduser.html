@@ -1,0 +1,15 @@
+{% extends "admin.html" %}
+{% import "utility.html" as utility %}
+{% block subtitle -%}
+{{ _('Create User') }}
+{%- endblock %}
+{% block content -%}
+<form role="form" class="form-adduser form-single" method="POST" action="{{ url_for('.adduser') }}">
+  <h2 class="form-heading">{{ _('Create User') }}</h2>
+  {{ utility.form_group(form.name) }}
+  {{ utility.form_group(form.password, _('Use at least seven characters')) }}
+  {{ utility.form_group(form.confirm) }}
+  <button type="submit" class="btn btn-success">{{ _('Create account') }}</button>
+  {{ form.hidden_tag() }}
+</form>
+{%- endblock %}

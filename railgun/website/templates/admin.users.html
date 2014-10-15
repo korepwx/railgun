@@ -4,7 +4,12 @@
 {{ _('Users') }}
 {%- endblock %}
 {% block content -%}
-  <h3 class="user-heading">{{ _('All Users') }}</h3>
+  <h3 class="user-heading">
+    {{ _('All Users') }}
+    <span class="pull-right">
+      <a href="{{ url_for('.adduser') }}" class="btn btn-primary">{{ _('Create User') }}</a>
+    </span>
+  </h3>
   <table class="table table-hover">
     <tr>
       <th>{{ _('Name') }}</th>
