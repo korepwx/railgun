@@ -54,7 +54,8 @@ class HwSetProxy(object):
 
     def __init__(self, hwset):
         # cache all HwProxy instances
-        self.items = [HwProxy(hw) for hw in hwset]
+        self.items = [HwProxy(hw) for hw in hwset
+                      if hw.uuid not in app.config['HIDDEN_HOMEWORKS']]
 
         # build slug-to-hw and uuid-to-hw lookup dictionary
         self.__slug_to_hw = {hw.slug: hw for hw in self.items}

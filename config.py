@@ -96,6 +96,9 @@ UPLOAD_STORE_DIR = os.path.join(RAILGUN_ROOT, 'upload')
 # NOTE: if '*' is in LOCKED_HOMEWORKDS, then all the homeworks will be locked
 LOCKED_HOMEWORKS = ()
 
+# HIDDEN_HOMEWORKS define the list of homeworks that cannot be view.
+HIDDEN_HOMEWORKS = ()
+
 # IGNORE_HANDINS_OF_REMOVED_HW determines whether to list submissions for
 # deleted homeworks
 IGNORE_HANDINS_OF_REMOVED_HW = True

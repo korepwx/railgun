@@ -38,7 +38,10 @@ def get_comm_key():
 
 
 class FileRules(object):
-    """Store and manipulate file match rules."""
+    """Store and manipulate file match rules.
+
+    See :ref:`hwpack`.
+    """
 
     # The pre-defined actions for files
     ACCEPT, LOCK, HIDE, DENY = range(4)

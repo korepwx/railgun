@@ -11,6 +11,8 @@ even the submitted program, could import this module.
 Homework Definition
 -------------------
 
+.. automodule:: railgun.common.hw
+
 .. autoclass:: railgun.common.hw.FileRules
     :members:
 
@@ -43,6 +45,8 @@ Scoring Utility
 AES Encryption
 --------------
 
+.. automodule:: railgun.common.crypto
+
 .. autoclass:: railgun.common.crypto.AESCipher
     :members:
     :inherited-members:
@@ -54,6 +58,8 @@ AES Encryption
 
 CSV Object Parser
 -----------------
+
+.. automodule:: railgun.common.csvdata
 
 .. autoclass:: railgun.common.csvdata.CsvField
     :members:
@@ -90,6 +96,8 @@ FileSystem and Path Utility
 
 Translation Utility
 -------------------
+
+.. automodule:: railgun.common.lazy_i18n
 
 .. autoclass:: railgun.common.lazy_i18n.GetTextString
     :members:

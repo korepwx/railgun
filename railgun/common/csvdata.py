@@ -5,13 +5,66 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # This file is released under BSD 2-clause license.
 
+"""
+Utilities to load objects from csv file.
+
+Suppose you are given csv data like this:
+
+.. code-block: csv
+    name,student-number,year,registered
+    Jenny,00001,21,True
+    Bob,000002,22,False
+
+You may derive an object schema from :class:`CsvSchema`, giving the names and
+types of the columns::
+
+    class MyObjectSchema(CsvSchema):
+
+        name = CsvString()
+        stdno = CsvString(name='student-number')
+        year = CsvInteger()
+        registered = CsvBoolean()
+
+Then you may get the objects by::
+
+    with open('data.csv', 'rb') as f:
+        for obj in CsvSchema.LoadCSV(MyObjectSchema, f):
+            print obj
+
+.. note::
+    The first row in csv file must be the column names!  However, they may
+    not be at the same order as defined in schema.  :class:`CsvSchema`
+    uses this row to detect the order.
+"""
+
 import csv
 
 from railgun.common.lazy_i18n import lazy_gettext
 
 
 class CsvField(object):
-    """Represent a field in a CSV data schema."""
+    """Define a column in csv file.
+
+    This is the base class for all types of columns.  You may inherit this
+    class to provide your own field type, for example::
+
+        import json
+
+        class CsvJsonField(object):
+
+            def fromString(self, value):
+                return json.loads(value)
+
+            def toString(self, value):
+                return json.dumps(value)
+
+    :param name: Give the name of column. If not given, use the attribute
+        name in :class:`CsvSchema`.
+    :type name: :class:`str`
+    :param default: Give the default value of this column. If given, this
+        value will be used if such column does not exist. If not given,
+        :class:`KeyError` will be raised if not exist.
+    """
 
     def __init__(self, **kwargs):
         # If name is given, this field will use a different name from its
@@ -23,13 +76,19 @@ class CsvField(object):
         self.has_default = 'default' in kwargs
         self.default = kwargs.get('default', None)
 
-    def _parseString(self, value):
+    def fromString(self, value):
+        """Convert `value` from :class:`str` to field type.
+
+        Derived classes should overwrite this.  You may raise any exceptions
+        as you need.
+
+        :return: Converted object.
+        """
         pass
 
     def parseString(self, value):
-        """Parse Python object from CSV string value."""
         try:
-            return self._parseString(value)
+            return self.fromString(value)
         except Exception:
             raise ValueError(lazy_gettext(
                 'Cannot convert "%(value)s" to %(type)s.',
@@ -37,7 +96,13 @@ class CsvField(object):
             ))
 
     def toString(self, value):
-        """Convert Python object into CSV string value."""
+        """Convert `value` from field type to :class:`str`.
+
+        You must return such string representations that `fromString`
+        can convert it back.
+
+        :return: Converted str.
+        """
         return str(value)
 
     def __repr__(self):
@@ -45,22 +110,43 @@ class CsvField(object):
 
 
 class CsvInteger(CsvField):
-    def _parseString(self, value):
+    """Define an integral field in csv file."""
+
+    def fromString(self, value):
         return int(value)
 
 
 class CsvString(CsvField):
-    def _parseString(self, value):
+    """Define a string field in csv file."""
+
+    def fromString(self, value):
         return value
 
 
 class CsvFloat(CsvField):
-    def _parseString(self, value):
+    """Define a float field in csv file."""
+
+    def fromString(self, value):
         return float(value)
 
 
 class CsvBoolean(CsvField):
-    def _parseString(self, value):
+    """Define a boolean field in csv file.
+
+    String literals will be converted according to the following table:
+
+    .. tabularcolumns:: |p{4cm}|p{11cm}|
+
+    ======================= ================================================
+    Value                   Literals (Case Insensitive)
+    ======================= ================================================
+    :keyword:`True`         'true', 'on', '1', 'yes'
+    :keyword:`False`        'false', 'off', '0', 'no'
+    :class:`ValueError`     Any other literal
+    ======================= ================================================
+    """
+
+    def fromString(self, value):
         val = value.lower()
         if val in ('true', 'on', '1', 'yes'):
             return True
