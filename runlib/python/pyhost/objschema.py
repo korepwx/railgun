@@ -95,6 +95,12 @@ class BaseSchema(object):
         # The pattern is not string, so it should be regex object.
         return self.pattern.pattern
 
+    def print_tree(self, pad=0):
+        """Print the schema tree."""
+        print '' % (' ' * pad, self.get_description())
+        for c in self.children:
+            c.print_tree(pad+2)
+
     def get_description(self):
         """Get the one-line description of this schema."""
         raise NotImplementedError()
