@@ -68,7 +68,7 @@ class HwSetProxy(object):
 
     def __iter__(self):
         """get iterable object through all HwProxy instances."""
-        if current_user.is_admin:
+        if not current_user.is_anonymous() and current_user.is_admin:
             return iter(self.items)
         return (i for i in self.items if not i.is_hidden())
 
