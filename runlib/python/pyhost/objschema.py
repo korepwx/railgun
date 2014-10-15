@@ -178,6 +178,9 @@ class RootSchema(BaseSchema):
     def check_self(self, collector):
         self.exist = True
 
+    def check_require(self, collector):
+        """Root schema should report neither success or failure."""
+
 
 class ModuleSchema(BaseSchema):
     """Define the schema rules of particular module."""
