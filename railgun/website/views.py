@@ -167,6 +167,9 @@ def homework(slug):
     hw = g.homeworks.get_by_slug(slug)
     if not hw:
         raise NotFound()
+    # hidden homeworks should only be viewed by admins
+    if hw.is_hidden() and not current_user.is_admin:
+        raise NotFound()
     # generate multiple forms with different prefix
     hwlangs = hw.get_code_languages()
     forms = {
@@ -238,6 +241,8 @@ def hwpack(slug, lang):
     # users.  so we get the homework object, and check the privilege.
     hw = g.homeworks.get_by_slug(slug)
     if not hw:
+        raise NotFound()
+    if hw.is_hidden() and not current_user.is_admin:
         raise NotFound()
     if hw.is_locked() and not current_user.is_admin:
         raise Forbidden()
@@ -389,6 +394,7 @@ navigates.add(
             NaviItem(title=hw.info.name, url=url_for('homework', slug=hw.slug),
                      identity='homework.%s' % hw.slug)
             for hw in g.homeworks
+            if current_user.is_admin or not hw.is_hidden()
         ]
     )
 )

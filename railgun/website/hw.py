@@ -34,6 +34,11 @@ class HwProxy(object):
         return self.hw.uuid in app.config['LOCKED_HOMEWORKS'] or \
             '*' in app.config['LOCKED_HOMEWORKS']
 
+    def is_hidden(self):
+        """Whether this homework is hidden?"""
+        return self.hw.uuid in app.config['HIDDEN_HOMEWORKS'] or \
+            '*' in app.config['HIDDEN_HOMEWORKS']
+
     def attach_url(self, lang):
         """get the attachment url for given `lang`"""
         return url_for('hwpack', slug=self.slug, lang=lang)
@@ -54,8 +59,7 @@ class HwSetProxy(object):
 
     def __init__(self, hwset):
         # cache all HwProxy instances
-        self.items = [HwProxy(hw) for hw in hwset
-                      if hw.uuid not in app.config['HIDDEN_HOMEWORKS']]
+        self.items = [HwProxy(hw) for hw in hwset]
 
         # build slug-to-hw and uuid-to-hw lookup dictionary
         self.__slug_to_hw = {hw.slug: hw for hw in self.items}
