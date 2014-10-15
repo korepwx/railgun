@@ -60,8 +60,7 @@ class HwSetProxy(object):
 
     def __init__(self, hwset):
         # cache all HwProxy instances
-        self.items = [HwProxy(hw) for hw in hwset
-                      if not hw.is_hidden() or current_user.is_admin]
+        self.items = [HwProxy(hw) for hw in hwset]
 
         # build slug-to-hw and uuid-to-hw lookup dictionary
         self.__slug_to_hw = {hw.slug: hw for hw in self.items}
@@ -69,7 +68,9 @@ class HwSetProxy(object):
 
     def __iter__(self):
         """get iterable object through all HwProxy instances."""
-        return iter(self.items)
+        if current_user.is_admin:
+            return iter(self.items)
+        return (i for i in self.items if not i.is_hidden())
 
     def get_by_uuid(self, uuid):
         """get HwProxy by uuid."""
