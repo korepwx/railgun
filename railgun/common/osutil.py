@@ -13,12 +13,19 @@ import subprocess
 
 
 class ProcessTimeout(Exception):
-    """Indicate that the execution of an external process is timeout."""
+    """Indicate that the timeout was reached when executing a process."""
     pass
 
 
 def is_running(pid):
-    """Check whether `pid` is still running."""
+    """Check whether the process with given `pid` is still running.
+
+    :param pid: The process id.
+    :type pid: :class:`int`
+
+    :return: :token:`True` if the process is still alive, :token:`False`
+        otherwise.
+    """
     try:
         os.kill(pid, 0)
         return True
@@ -27,14 +34,19 @@ def is_running(pid):
 
 
 def execute(cmd, timeout=None, **kwargs):
-    '''
-    Will execute a command, read the output and return it back.
+    """Execute a command, read the output and return it back.
 
-    @param cmd: command to execute
-    @param timeout: process timeout in seconds
-    @return: a tuple of three: first stdout, then stderr, then exit code
-    @raise OSError: on missing command or if a timeout was reached
-    '''
+    :param cmd: Command to execute.
+    :type cmd: :class:`str`
+    :param timeout: Process timeout in seconds.
+    :type timeout: :class:`int`
+    :param kwargs: Named arguments for `subprocess.Popen`.
+    :return: (stdout, stderr, exit code)
+    :rtype: :class:`tuple`
+
+    :raises: :class:`OSError` on missing command or any other OS errors.
+    :raises: :class:`ProcessTimeout` if a timeout was reached.
+    """
 
     ph_out = None   # process output
     ph_err = None   # stderr

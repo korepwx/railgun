@@ -5,11 +5,11 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # This file is released under BSD 2-clause license.
 
-from flask.ext.babel import gettext as _babel_gettext
-
 """
 this module contains a serializable lazy gettext utility.
 """
+
+from flask.ext.babel import gettext as _babel_gettext
 
 
 class GetTextString(object):

@@ -71,8 +71,9 @@ DEFAULT_HIDE_RULES = (
     '^\\._.*$|/\\._.*$',    # OS X special backup files
     '\\.directory$',        # dolphin directory meta
     '\\.py[cdo]$',          # hide all python binary files
-    '^(py|java)host.*',     # prevent runlib from overwritten
-    '^railgun.*',           # prevent railgun lib from overwritten
+    # prevent system libraries from overwritten
+    '^(railgun|pyhost|javahost|unittest|coverage|pep8|traceback|SafeRunner)'
+    '(\.py$|/.*)',
 )
 
 # HOMEWORK_DIR stores the definitions of homeworks

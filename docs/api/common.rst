@@ -5,7 +5,7 @@ Common Library
 
 This part of the documentation describes the common library.
 All of the components, including the runner, the website, and
-even the submitted program, could import this module.
+even the submitted program, can import this module.
 
 
 Homework Definition
