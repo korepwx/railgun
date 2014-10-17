@@ -11,7 +11,7 @@ from flask import redirect, flash, request, url_for
 from flask.ext.login import LoginManager, current_user, login_fresh
 from flask.ext.babel import gettext as _
 
-from railgun.common.gravatar import get_avatar
+from railgun.website.gravatar import get_avatar
 from .models import User
 from .context import app, db
 from .userauth import auth_providers

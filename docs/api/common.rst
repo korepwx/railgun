@@ -131,9 +131,3 @@ URL Utility
 .. automodule:: railgun.common.url
     :members:
 
-
-Other Utilities
----------------
-
-.. autofunction:: railgun.common.gravatar.get_avatar
-
