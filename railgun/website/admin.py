@@ -193,9 +193,14 @@ def user_delete(name):
     return redirect(next or url_for('.users'))
 
 
-@bp.route('/handin/')
-@admin_required
-def handins():
+def show_handins(username=None):
+    """Render an administrator page to show submissions.
+
+    :param user: The interested user's name. If not given, show submissions
+        from all users.
+    :type user: :class:`str`
+    :return: A :class:`flask.Response` object.
+    """
     # get pagination argument
     try:
         page = int(request.args.get('page', 1))
@@ -209,7 +214,6 @@ def handins():
     handins = Handin.query.join(Handin.user). \
         options(contains_eager(Handin.user)).filter()
     # whether we want to view the submissions from one single user?
-    username = request.args.get('username')
     if username:
         user = User.query.filter(User.name == username).one()
         handins = handins.filter(Handin.user_id == user.id)
@@ -217,7 +221,20 @@ def handins():
     handins = handins.order_by(-Handin.id)
     # build pagination object
     return render_template(
-        'admin.handins.html', the_page=handins.paginate(page, perpage))
+        'admin.handins.html', the_page=handins.paginate(page, perpage),
+        username=username
+    )
+
+@bp.route('/handin/')
+@admin_required
+def handins():
+    return show_handins(None)
+
+
+@bp.route('/handin/<username>/')
+@admin_required
+def handins_for_user(username):
+    return show_handins(username)
 
 
 @bp.route('/runqueue/clear/')
