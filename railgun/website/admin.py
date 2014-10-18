@@ -208,6 +208,11 @@ def handins():
     # query about all handins
     handins = Handin.query.join(Handin.user). \
         options(contains_eager(Handin.user)).filter()
+    # whether we want to view the submissions from one single user?
+    username = requests.args.get('username')
+    if username:
+        user = User.query.filter(User.name == username).one()
+        handins = handins.filter(Handin.user_id == user.id)
     # Sort the handins
     handins = handins.order_by(-Handin.id)
     # build pagination object
