@@ -215,7 +215,9 @@ def show_handins(username=None):
         options(contains_eager(Handin.user)).filter()
     # whether we want to view the submissions from one single user?
     if username:
-        user = User.query.filter(User.name == username).one()
+        user = User.query.filter(User.name == username).get()
+        if not user:
+            raise NotFound()
         handins = handins.filter(Handin.user_id == user.id)
     # Sort the handins
     handins = handins.order_by(-Handin.id)
