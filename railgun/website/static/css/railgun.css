@@ -72,6 +72,7 @@ body {
 .content-admin_users .user-heading,
 .content-admin_user_edit .form-heading,
 .content-admin_handins .handin-heading,
+.content-admin_handins_for_user .handin-heading,
 .content-admin_scores .hw-heading,
 .content .csv-heading,
 .content .maintain-heading {
