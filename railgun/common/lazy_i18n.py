@@ -13,7 +13,7 @@ support translations, even for the strings already stored in databases.
 We know that a simple solution to the translations in a website system
 is to use the :mod:`gettext` package.  Suppose we've created a message
 category including the translation from "My name is %(name)s." to
-"我的姓名是 %(name)s。", then we may write::
+"MY NAME IS %(name)s。", then we may write::
 
     from gettext import gettext
 
@@ -21,7 +21,7 @@ category including the translation from "My name is %(name)s." to
     str
 
     >>> print gettext('My name is %(name)s.') % {'name': 'Alice'}
-    '我的姓名是 Alice。'
+    'MY NAME IS Alice。'
 
 The main functionality of `gettext` is to lookup a translation table,
 find the suitable translated text for input string, and then return it.
@@ -33,7 +33,7 @@ and lazy_gettext method from :mod:`flask.ext.babel`::
     from flask.ext.babel import gettext, lazy_gettext
 
     >>> gettext('My name is %(name)s.', name='Alice')
-    '我的姓名是 Alice。'
+    'MY NAME IS Alice。'
 
     >>> type(gettext('My name is %(name)s.', name='Alice'))
     :class:`str`
