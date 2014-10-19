@@ -14,7 +14,24 @@ Homework Definition
 .. automodule:: railgun.common.hw
 
 .. autoclass:: railgun.common.hw.FileRules
-    :members:
+
+    .. autoattribute:: ACCEPT
+
+    .. autoattribute:: LOCK
+
+    .. autoattribute:: HIDE
+
+    .. autoattribute:: DENY
+
+    .. automethod:: get_action
+
+    .. automethod:: append_action
+
+    .. automethod:: prepend_action
+
+    .. automethod:: filter
+
+    .. automethod:: parse_xml
 
 .. autoclass:: railgun.common.hw.HwInfo
     :members:
@@ -30,6 +47,8 @@ Homework Definition
 
 .. autoclass:: railgun.common.hw.HwSet
     :members:
+
+.. autofunction:: railgun.common.hw.parse_bool
 
 
 Scoring Utility

@@ -15,6 +15,9 @@
 import sys
 import os
 
+# Check whether we are on rtd.org?
+on_rtd = os.environ.get('READTHEDOCS', None) == 'True'
+
 # These codes should add railgun libraries into path
 RAILGUN_ROOT = os.path.split(os.path.dirname(__file__))[0]
 sys.path.insert(0, RAILGUN_ROOT)
@@ -37,6 +40,10 @@ extensions = [
     'sphinx.ext.autodoc',
     'sphinx.ext.viewcode',
 ]
+
+# PlantUML is not supported on rtd.org
+if not on_rtd:
+    extensions += ['sphinxcontrib.plantuml']
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']

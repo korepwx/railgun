@@ -5,6 +5,32 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # This file is released under BSD 2-clause license.
 
+"""Homework assignments in Railgun are defined by xml files.  All the
+definition xml files along with the resources should be placed in a
+single directory.  You may refer to :ref:`homework` for more details
+about how to define a homework assignment.
+
+When the Railgun system is booted, it will scan all the directories
+under ``config.HOMEWORK_DIR`` to load the assignments.  Each homework
+assignment is stored in a :class:`Homework`.  Also, the loaded
+:class:`Homework` instances are gathered in a global :class:`HwSet`
+instance.
+
+All the classes to represent the homework assignments are defined
+in this module.  The relationships between these classes are:
+
+    .. uml::
+
+        HwSet o-- Homework : aggregation
+        Homework "1" *-- "many" HwInfo : contains
+        Homework "1" *-- "1" FileRules : contains
+        Homework "1" *-- "many" HwCode : contains
+        HwCode "1" *-- "1" FileRules : contains
+        HwCode "1" *-- "many" HwScorerSettings: contains
+
+You may head over to read more about these classes.
+"""
+
 import re
 import os
 from datetime import datetime
@@ -23,28 +49,56 @@ from .url import reform_path, UrlMatcher
 
 
 def parse_bool(s):
-    """Convert a string into bool value."""
+    """Convert a string literal into its boolean value.
+
+    :param s: The string literal that represents a boolean value.
+    :type s: :class:`str`
+    :return: `True` if s.lower() is one of (true, on, 1, yes), `False`
+        otherwise.
+    """
     if not s:
         return False
     s = str(s).lower()
     return (s == 'true' or s == 'on' or s == '1' or s == 'yes')
 
 
-def get_comm_key():
-    """Load encryption key from `keys/commKey.txt`."""
-    path = os.path.join(config.RAILGUN_ROOT, 'keys/commKey.txt')
-    with open(path, 'rb') as f:
-        return f.read().strip()
-
-
 class FileRules(object):
-    """Store and manipulate file match rules.
+    """Manage a set of file rules.
 
-    See :ref:`hwpack`.
+    A file rule is a 2-element tuple (pattern, action), where :token:`pattern`
+    determines what files to be ruled, and :token:`action` determines what
+    operations these files will take.
+
+    :token:`pattern` is a regular expression.  It should contain patterns
+    to the relative paths of files.
+
+    :token:`action` may be one of the following operations: `ACCEPT`,
+    `LOCK`, `HIDE` and `DENY`.
+
+    Since the file rules are mainly used to determine what files in a homework
+    pack can be revealed to students, and what files submitted from the
+    students can be received.
+
+    You may refer to :ref:`hwpack` for more details about these four actions.
     """
 
-    # The pre-defined actions for files
-    ACCEPT, LOCK, HIDE, DENY = range(4)
+    #: Indicate that the matching files are revealed to students in the
+    #: homework attachment, and students can overwrite these files in
+    #: their submissions.
+    ACCEPT = 0
+
+    #: Indicate that the matching files are revealed to students in the
+    #: homework attachment, but the students cannot overwrite these files
+    #: in their submissions.
+    LOCK = 1
+
+    #: Indicate that the matching files are `NOT` revealed to students,
+    #: `NOR` should they been overwritten.
+    HIDE = 2
+
+    #: Indicate that the matching files are denied, and the submission
+    #: containing these files will be `REJECTED` immediately.
+    DENY = 3
 
     def __init__(self):
         # list of (action, pattern)
@@ -54,7 +108,15 @@ class FileRules(object):
         return repr(self.data)
 
     def get_action(self, filename, default_action=LOCK):
-        """Get the action for given `filename`."""
+        """Get the action to take on given file.
+
+        :param filename: The name of the file.
+        :type filename: :class:`str`
+        :param default_action: If no rule in this set is matched, what action
+            should this file take?
+
+        :return: One action out of ``(ACCEPT, LOCK, HIDE, DENY)``.
+        """
 
         for a, p in self.data:
             if p.match(filename):
@@ -64,8 +126,6 @@ class FileRules(object):
         return default_action
 
     def _make_action(self, action, pattern):
-        """Check the type and value of (action, pattern)."""
-
         act = None
         if action.isalpha():
             act = getattr(FileRules, action.upper(), None)
@@ -75,15 +135,52 @@ class FileRules(object):
         return (act, pat)
 
     def append_action(self, action, pattern):
-        """Append (action, pattern) into rule collection."""
+        """Append a file rule (action, pattern) to the end of rule list.
+
+        The rules are matched in list order.  If a given file is matched
+        by some rule in the list, all the remaining rules after it will
+        not be checked any longer.
+
+        :param action: The action of the rule.
+        :type action: One action out of ``(ACCEPT, LOCK, HIDE, DENY)``
+        :param pattern: The file name pattern of the rule.
+        :type pattern: Regular expression :class:`str`
+        """
         self.data.append(self._make_action(action, pattern))
 
     def prepend_action(self, action, pattern):
-        """Prepend (action, pattern) into rule collection."""
+        """Prepend a file rule (action, pattern) to the front of rule list.
+
+        :param action: The action of the rule.
+        :type action: One action out of ``(ACCEPT, LOCK, HIDE, DENY)``
+        :param pattern: The file name pattern of the rule.
+        :type pattern: Regular expression :class:`str`
+        """
         self.data.insert(0, self._make_action(action, pattern))
 
-    def filter(self, files, allow_actions):
-        """Remove items in `files` whose action not in `allow_actions`."""
+    def filter(self, files, allow_actions, default_action=LOCK):
+        """Return a new iterator on given file iterator, where files not
+        taking operations from `allowed_actions` should be removed.
+
+        Because this method return the new file name iterator, not a new list,
+        you must store the list somewhere if you want to use the result for
+        more than one times, for example::
+
+            rules = FileRules()
+            accepted_files = rules.filter(
+                dirtree('.'),
+                (FileRules.ACCEPT, FileRules.LOCK),
+            )
+
+        :param files: The input file name iterator.
+        :type files: Iterable file names
+        :param allow_actions: Set of file rules ``(ACCEPT, LOCK, HIDE, DENY)``.
+        :type allow_actions: :class:`set` or :class:`tuple`
+        :param default_action: If no rule in rule list is matched, what action
+            should a given file take?
+
+        :return: The new file name iterator.
+        """
 
         return ifilter(
             lambda f: self.get_action(f) in allow_actions,
@@ -92,7 +189,24 @@ class FileRules(object):
 
     @staticmethod
     def parse_xml(xmlnode):
-        """Parse the rules defined in `xmlnode`."""
+        """Load file rules from an xml node object.
+
+        This method does not care about the tag name of the given node.
+        It only parses the children of given node.  Here's an example of
+        a file rule node:
+
+        .. code-block:: xml
+
+            <rules>
+                <accept>.*\\.py$</accept>
+                <lock>.*\\.conf$</lock>
+                <hide>.*\\.pyc$</hide>
+                <deny>.*\\.exe$</deny>
+            <rules>
+
+        :param xmlnode: The xml node object that contains file rules.
+        :type xmlnode: :class:`xml.etree.ElementTree.Element`
+        """
 
         ret = FileRules()
 
@@ -106,27 +220,51 @@ class FileRules(object):
 
 
 class HwInfo(object):
-    """Represent human readable information of homework."""
+    """Object to store the homework info (name, description & solution).
+
+    The description and the solution should be written in Markdown syntax.
+    There are some extensions to the original Markdown standard.  Refer to
+    :ref:`hwdesc` for more details.
+
+    :param lang: The language for name, description and solution.
+    :type lang: :class:`str`
+    :param name: The homework name.
+    :type name: :class:`str`
+    :param desc: The homework description (Markdown source code).
+    :type desc: :class:`str`
+    :param solve: The homework solution (Markdown source code).
+    :type solve: :class:`str`
+    """
 
     def __init__(self, lang, name, desc, solve):
-        # the language name of this info.
-        # compatible with request.accept_languages
+        #: The language name of this info object,
+        #: should be compatible with request.accept_languages.
         self.lang = lang
-        # the name of this homework
+        #: The name of the homework.
         self.name = name
-        # the description of this homework
+        #: The description of the homework (Markdown source code).
         self.desc = desc
-        # the solution of this homework
+        #: The solution of this homework (Markdown source code).
         self.solve = solve
-        # the formatted description of this homework, used for caching
-        # pre-calculated value
+        #: The formatted description of this homework.
+        #: :class:`Homework` will call `format_markdown` to set this
+        #: field, so you may use it for free.
         self.formatted_desc = None
-        # the formatted solution of this homework, used for caching
-        # pre-calculated value
+        #: The formatted solution of this homework.
+        #: :class:`Homework` will call `format_markdown` to set this
+        #: field, so you may use it for free.
         self.formatted_solve = None
 
     def format_markdown(self, hwslug):
-        """Format the markdown description in `lang` locale."""
+        """Generate html description and solution from Markdown source code.
+
+        After this method is called, `formatted_desc` and `formatted_solve`
+        will be set.
+
+        :param hwslug: The slug of owner homework.  Necessary when formatting
+            markdown sources.
+        :type hwslug: :class:`str`
+        """
         # To expose static resources in homework desc directory, we need to
         # convert all "hw://<path>" urls to hwstatic view urls.
         def translate_url(u):
@@ -171,16 +309,33 @@ class HwInfo(object):
 
 
 class HwScorerSetting(object):
-    """Special settings for a given scorer."""
+    """Store the settings for a particular scorer in ``code.xml``.
+
+    This class is a component in :class:`HwCode`.  Different programming
+    languages may carry different scorers, and may reveal different
+    level of program output to the students.
+
+    :param detail: Whether this scorer should show detail reports?
+    """
 
     def __init__(self, detail=None):
-        # Whether or not to display the detail of this scorer?
-        # If None, using code.xml::reportRuntime.
+        #: Whether or not to display the detail of this scorer?
+        #: If None, Railgun will use `HwCode.reportRuntime` as value.
         self.detail = detail
 
     @staticmethod
     def parse_xml(xmlnode):
-        """Parse the settings defined in `xmlnode`."""
+        """Get scorer settings from given xml node object.
+
+        An xml node to configure a particular scorer may be like this:
+
+        .. code-block:: xml
+
+            <scorer name="CodeStyleScorer" detail="true" />
+
+        :param xmlnode: Xml node object holding the settings.
+        :type xmlnode: :class:`xml.etree.ElementTree.Element`
+        """
 
         ret = HwScorerSetting()
         if xmlnode.get('detail'):
@@ -192,24 +347,36 @@ class HwCode(object):
     """Represent code package of homework."""
 
     def __init__(self, path, lang):
-        # the base path of code package, under [hw.path]/code/[lang]
+        #: The root path of code package, should be ``[hw.path]/code/[lang]``.
         self.path = path
-        # the programming language of this code package
+        #: The programming language of this code package.
         self.lang = lang
 
-        # whether or not this code package provides attachment
+        #: Whether or not students can download an attachment for this
+        #: programming language?
         self.has_attach = True
-        # the compiler parameters of this code package
+
+        #: An xml node object that stores the compiler parameters.
+        #: Let the runner host to parse the parameters.
         self.compiler_params = None
-        # the runner parameters of this code package
+
+        #: An xml node object that stores the runner parameters.
+        #: Let the runner host to parse the parameters.
         self.runner_params = None
-        # the file match rules of this code package
+
+        #: The file match rules of this code package.
         self.file_rules = None
-        # settings for display the submission
+
+        #: Whether the compiler messages should be revealed to students?
+        #: Default value is `True`.
         self.reportCompile = True
+
+        #: Whether the runtime messages should be revealed to students?
+        #: Default value is `False`.
         self.reportRuntime = False
 
-        # special rules for scorers
+        #: A dict ("Scorer's Type Name" -> :class:`HwScorerSetting`).
+        #: Store the specialized settings for various scorers.
         self.scorers = {}
 
     def __repr__(self):

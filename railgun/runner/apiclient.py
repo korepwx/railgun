@@ -5,12 +5,19 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # This file is released under BSD 2-clause license.
 
+import os
 import json
 import requests
 
-from railgun.common.hw import get_comm_key
 from railgun.common.crypto import EncryptMessage
 from . import runconfig
+
+
+def get_comm_key():
+    """Load encryption key from `keys/commKey.txt`."""
+    path = os.path.join(runconfig.RAILGUN_ROOT, 'keys/commKey.txt')
+    with open(path, 'rb') as f:
+        return f.read().strip()
 
 
 class ApiClient(object):

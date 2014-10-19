@@ -19,3 +19,4 @@ passlib
 MySQL-python >= 1.2.5
 alabaster
 sphinx
+sphinxcontrib-plantuml
