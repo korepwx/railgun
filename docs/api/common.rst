@@ -48,17 +48,13 @@ Homework Definition
 .. autoclass:: railgun.common.hw.HwSet
     :members:
 
-.. autofunction:: railgun.common.hw.parse_bool
-
-
-Scoring Utility
----------------
-
 .. autoclass:: railgun.common.hw.HwPartialScore
     :members:
 
 .. autoclass:: railgun.common.hw.HwScore
     :members:
+
+.. autofunction:: railgun.common.hw.parse_bool
 
 
 AES Encryption

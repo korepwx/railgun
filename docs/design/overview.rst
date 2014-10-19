@@ -79,6 +79,8 @@ RunQueue & RunHost
 Away from Exploit
 -----------------
 
+.. _i18n_everywhere:
+
 I18n Everywhere
 ---------------
 

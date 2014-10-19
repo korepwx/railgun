@@ -28,6 +28,14 @@ in this module.  The relationships between these classes are:
         HwCode "1" *-- "1" FileRules : contains
         HwCode "1" *-- "many" HwScorerSettings: contains
 
+In addition, the JSON objects carrying the scores for a submission used
+in the communication between the runner host and the website are also
+defined in this module.  The relationships between these classes are:
+
+    .. uml::
+
+        HwScore "1" *-- "many" HwPartialScore : contains
+
 You may head over to read more about these classes.
 """
 
@@ -344,7 +352,26 @@ class HwScorerSetting(object):
 
 
 class HwCode(object):
-    """Represent code package of homework."""
+    """Store the definition of a particular programming language in a
+    homework assignment.
+
+    The Railgun system is designed to allow the students to choose their
+    preferred programming language the finish their homework.  Because of
+    these, each homework should contain seperated code files for each
+    individual language.
+
+    :class:`HwCode` is the class to store language definitions and settings.
+    The settings may include compiler parameters, runner parameters and
+    verbosity of output messages.
+
+    All the configurations are loaded from ``code.xml``.  Refer to
+    :ref:`hwstruct` to see how ``code.xml`` is organized.
+
+    :param path: The root path of the code package.
+    :type path: :class:`str`
+    :param lang: The name of programming language.
+    :type lang: :class:`str`
+    """
 
     def __init__(self, path, lang):
         #: The root path of code package, should be ``[hw.path]/code/[lang]``.
@@ -383,15 +410,21 @@ class HwCode(object):
         return '<HwCode(%s)>' % self.path
 
     def get_scorer(self, typeName):
-        """Get scorer settings according to `typeName`.
+        """Get the settings of a particular scorer.
 
-        Args:
-            typeName (str): Full or partial type name.
-                The full type name will be searched in scorer settings, and
-                if not matched, truncate it into partial type name.
+        :param typeName: The scorer type name.  It may be the full name of
+            the scorer, or a partial name that matches the last part of
+            the type name.  For example, if we call `get_scorer` with:
 
-        Returns:
-            HwScorerSetting object if found, None if not.
+            *   common.scorers.BaseScorer
+            *   BaseScorer
+
+            We will both get the `common.scorers.BaseScorer`.
+
+        :type typeName: :class:`str`
+
+        :return: The scorer setting object if found, or `None` otherwise.
+        :rtype: :class:`HwScorerSetting` or :token:`None`
         """
 
         if typeName in self.scorers:
@@ -403,9 +436,20 @@ class HwCode(object):
             return self.scorers.get(typeName, None)
 
     @staticmethod
-    def load(path, lang):
-        """Load the code package under `path`."""
+    def load(path):
+        """Load the definitions as a code package under `path`.
 
+        This method will create a :class:`HwCode` object that loads settings
+        from ``[path]/code.xml``, of which the programming language will be
+        set to ``os.path.split(path)[1]``.
+
+        :param path: The root directory of the code package.
+        :type path: :class:`str`
+
+        :return: A :class:`HwCode` object.
+        """
+
+        lang = os.path.split(path)[1]
         ret = HwCode(path, lang)
         tree = ElementTree.parse(os.path.join(path, 'code.xml'))
         root = tree.getroot()
@@ -445,29 +489,53 @@ class HwCode(object):
 
 
 class Homework(object):
-    """Class to parse and process a Railgun homework."""
+    """Store the definition of a homework assignment.
+
+    The constructor of this class will only create an empty :class:`Homework`
+    object.  You may use `Homework.load(path)` to construct the instance
+    according to external homework definition files.
+    """
 
     def __init__(self):
-        """Initialize all homework settings to empty."""
-
-        # url slug of this homework, usually last part of path
+        #: The url slug of this homework assignment.
         self.slug = None
-        # root path of this homework
+        #: The root directory of this homework assignment.
         self.path = None
-        # string of unique id
+        #: Unique id of this homework.  The submissions and final scores
+        #: are associated with homework according to `uuid`.
         self.uuid = None
-        # list of `HwInfo` instances
+        #: :class:`HwInfo` objects for different speaking languages.
         self.info = []
-        # list of (date, scale) to represent deadlines
+        #: List of (deadline datetime, scale factor).
         self.deadlines = []
-        # file match rules for root directory
+        #: The file matching rules that affects all programming languages.
         self.file_rules = None
-        # list of `HwCode` instances
+        #: :class:`HwCode` objects for different programming languages.
         self.codes = []
+        #: Cache the mapping from locale name to :class:`HwInfo` object.
+        self._locale_to_info = {}
+        #: Cache the mapping from language name to :class:`HwCode` object.
+        self._lang_to_code = {}
 
     @staticmethod
     def load(path):
-        """Load the contents of homework under `path`."""
+        """Load the definitions of homework under `path`.
+
+        This method will load the settings from ``[path]/hw.xml``, and create
+        all :class:`HwInfo` and :class:`HwCode` objects according to the
+        sub-directories.
+
+        Also, the descriptions and solutions in every locale will be formatted
+        from Markdown source code to html display text.  You may get the html
+        from the `formatted_desc` and `formatted_solve` attribute of
+        :class:`HwInfo`.
+
+        :param path: The root directory of homework.
+        :type path: :class:`str`
+
+        :return: A :class:`Homework` object.
+        :raises: :class:`ValueError` if the homework definition is wrong.
+        """
 
         # Stage 1: load the homework meta data from hw.xml
         ret = Homework()
@@ -524,7 +592,7 @@ class Homework(object):
             if not os.path.isfile(pl_meta):
                 continue
             # load the programming language definition
-            ret.codes.append(HwCode.load(pl_path, pl))
+            ret.codes.append(HwCode.load(pl_path))
 
         # Stage 3: check integrity
         if not ret.info:
@@ -541,12 +609,19 @@ class Homework(object):
         for r in config.DEFAULT_HIDE_RULES:
             ret.file_rules.prepend_action('hide', r)
 
-        # Pre-build all descriptions
-        ret.cache_formatted_markdown()
+        # Stage 5: Cache necessary objects
+        ret._cache_formatted_markdown()
+        ret._cache_mappings()
+
         return ret
 
-    def cache_formatted_markdown(self):
-        """Format and cache the descriptions and solutions in all locales.
+    def _cache_mappings(self):
+        """Cache mappings from key to value."""
+        self._lang_to_code = {c.lang: c for c in self.codes}
+        self._locale_to_info = {i.lang: i for i in self.info}
+
+    def _cache_formatted_markdown(self):
+        """Format the descriptions and solutions in all :class:`HwInfo`.
 
         In the performance profiler, formatting the homework description
         can take up to 100ms.  So I decide to pre-calculate and cache all
@@ -556,19 +631,29 @@ class Homework(object):
             i.format_markdown(self.slug)
 
     def get_name_locales(self):
-        """Get the name locales provided by this homework."""
+        """Get the locale names of all :class:`HwInfo` objects.
+
+        :return: :class:`list` of all locale names.
+        """
         return [i.lang for i in self.info]
 
     def get_code_languages(self):
-        """Get the programming languages provided by this homework."""
+        """Get the programming language names of all :class:`HwCode` objects.
+
+        :return: :class:`list` of all programming language names.
+        """
         return sorted([c.lang for c in self.codes])
 
     def get_code(self, lang):
-        """Get HwCode instance for `lang`"""
-        return [c for c in self.codes if c.lang == lang][0]
+        """Get the :class:`HwCode` object whose programming language is `lang`.
+
+        :return: The requested :class:`HwCode` object.
+        :raises: :class:`KeyError` if given language is not found.
+        """
+        return self._lang_to_code[lang]
 
     def count_attach(self):
-        """Count the number of HwCode packages having attachment."""
+        """Count the number of :class:`HwCode` objects with attachment."""
         ret = 0
         for c in self.codes:
             if c.has_attach:
@@ -576,7 +661,18 @@ class Homework(object):
         return ret
 
     def pack_assignment(self, lang, filename):
-        """Pack assignment zipfile for `lang` programming language."""
+        """Pack the attachment for given programming language into `filename`.
+
+        All the code and resource files will be packed into a new zip archive
+        file.  This behaviour is controlled by :class:`FileRules` in the
+        :class:`Homework` and the :class:`HwCode` objects.  You may refer
+        to :ref:`hwpack` for more details.
+
+        :param lang: The programming language name.
+        :type lang: :class:`str`
+        :param filename: The zip attachment file path.
+        :type filename: :class:`str`
+        """
 
         # select the code package
         code = self.get_code(lang)
@@ -603,7 +699,21 @@ class Homework(object):
             fileutil.packzip(code.path, code_files, zipf, path_prefix)
 
     def list_files(self, lang):
-        """List all files for `lang` programming language."""
+        """List all runtime files for given programming language.
+
+        This method is typically called when you want to get the list of
+        files that will be copied to runtime directory when executing
+        a submission in the given programming language.
+
+        .. note::
+            Some files in the result of this method should not be revealed
+            to students in a downloadable attachment!  Use with caution!
+
+        :param lang: The programming language name.
+        :type lang: :class:`str`
+
+        :return: An iterable object of file names.
+        """
         # select the code package
         code = self.get_code(lang)
 
@@ -623,8 +733,9 @@ class Homework(object):
     def get_next_deadline(self):
         """Get the next deadline of this homework.
 
-        Returns:
-            (date, scale) if the next deadline, or None if already expired.
+        :return: A :class:`tuple` of (deadline datetime, score scale) if the
+            next deadline exists, or :token:`None` if the homework has already
+            expired.
         """
 
         now = utc_now()
@@ -633,10 +744,11 @@ class Homework(object):
                 return (ddl[0], ddl[1])
 
     def get_last_deadline(self):
-        """Get the last deadline of this homework.
+        """Get the final deadline of this homework.
 
-        Returns:
-            (date, scale) if the last deadline, or None if already expired.
+        :return: A :class:`tuple` of (deadline datetime, score scale) if the
+            final deadline exists, or :token:`None` if the homework has already
+            expired.
         """
 
         now = utc_now()
@@ -646,23 +758,36 @@ class Homework(object):
 
 
 class HwSet(object):
-    """Collection of all homeworks."""
+    """Collection of :class:`Homework` definition objects.
+
+    Given the root directory of all homework definitions, :class:`HwSet`
+    will discover and load all homework assignments under that directory.
+
+    :param hwdir: The root directory of all homework definitions.
+    :type hwdir: :class:`str`
+    """
 
     def __init__(self, hwdir):
 
-        # `hwdir` is the root path of homework
+        #: The root directory of all homework definitions.
         self.hwdir = hwdir
-        # `items` store all discovered homeworks in order of `slug`.
+        #: :class:`Homework` objects in the order of `slug`.
         self.items = None
 
-        # hash uuid & slug to items
+        #: Cache the mapping from `uuid` to :class:`Homework`.
         self.__uuid_to_hw = {}
+
+        #: Cache the mapping from `slug` to :class:`Homework`.
         self.__slug_to_hw = {}
 
         self.reload()
 
     def reload(self):
-        """reload the homeworks from directory."""
+        """Reload the homeworks under root directory.
+
+        You may manually call this method to reload the definitions.
+        :class:`HwSet` will not monitor the file changes.
+        """
 
         # load all homeworks
         self.items = []
@@ -678,35 +803,74 @@ class HwSet(object):
         self.__slug_to_hw = {hw.slug: hw for hw in self.items}
 
     def __iter__(self):
-        """get iterable object through all homeworks."""
+        """Iterate over :class:`Homework` objects."""
         return iter(self.items)
 
     def get_by_uuid(self, uuid):
+        """Get the :class:`Homework` object with given `uuid`."""
         return self.__uuid_to_hw.get(uuid, None)
 
     def get_by_slug(self, slug):
+        """Get the :class:`Homework` object with given `slug`."""
         return self.__slug_to_hw.get(slug, None)
 
     def get_uuid_list(self):
-        """Get uuid list of all homeworks."""
+        """Get the list of `uuid` of all :class:`Homework` objects."""
         return [hw.uuid for hw in self.items]
 
 
 class HwPartialScore(object):
-    """A serializable partial score object."""
+    """A serializable partial score object.
+
+    The final score of a submission is a combinition of all scorers.
+    The scores from every scorer are multiplied with a given `weight`,
+    and sumed up to form the final score.  A :class:`HwPartialScore` is
+    the score of one scorer.
+
+    :param scorer_name: The human readable name of this scorer.
+    :type scorer_name: :class:`railgun.common.lazy_i18n.GetTextString`
+    :param scorer_type_name: The type name of this scorer.
+    :type scorer_type_name: :class:`str`
+    :param score: The final score, range in [0, 100].
+    :type score: :class:`float`
+    :param weight: The weight of this scorer.
+    :type weight: :class:`float`
+    :param time: The running time of this scorer (in seconds).
+    :type time: :class:`float`
+    :param brief_report: The brief output message of this scorer.
+    :type brief_report: :class:`railgun.common.lazy_i18n.GetTextString`
+    :param detail_report: The detailed output messages of this scorer.
+    :type detail_report: :class:`list` of
+        :class:`railgun.common.lazy_i18n.GetTextString`
+    """
 
     def __init__(self, scorer_name, scorer_type_name, score, weight, time,
                  brief_report, detail_report):
+        #: The human readable name of this scorer.
+        #: (:class:`railgun.common.lazy_i18n.GetTextString`)
         self.name = scorer_name
+        #: The type name of this scorer.
         self.typeName = scorer_type_name
+        #: The final score, range in [0, 100].
         self.score = score
+        #: The weight of this scorer.
         self.weight = weight
+        #: The running time of this scorer (in seconds).
         self.time = time
+        #: The brief output message of this scorer.
+        #: (:class:`railgun.common.lazy_i18n.GetTextString`)
         self.brief = brief_report
+        #: The detailed output messages of this scorer.
+        #: (class:`list` of :class:`railgun.common.lazy_i18n.GetTextString`)
         self.detail = detail_report
 
     def to_plain(self):
-        """Convert this partial score object to plain object."""
+        """Convert this partial score object to a plain object that can be
+        serialized in JSON message.
+
+        :return: A plain object that is composed only with :class:`dict`,
+            :class:`list`, :class:`str`, :class:`bool` and numeric types.
+        """
         return {
             'name': lazystr_to_plain(self.name),
             'typeName': self.typeName,
@@ -719,12 +883,20 @@ class HwPartialScore(object):
 
     @property
     def get_time(self):
-        """Get timedelta object for the run time."""
+        """Get the running time of this scorer.
+
+        :return: A :class:`datetime.timedelta` object, or :token:`None`
+            if timing is not performed.
+        """
         return timedelta(seconds=self.time) if self.time else None
 
     @staticmethod
     def from_plain(obj):
-        """Convert plain object to partial score object."""
+        """Make a :class:`HwPartialScore` object from a plain object.
+
+        :raises: :class:`TypeError` or :class:`KeyError` if the given plain
+            object does not represent a valid :class:`HwScore` object.
+        """
         return HwPartialScore(
             plain_to_lazystr(obj['name']),
             obj['typeName'],
@@ -737,30 +909,49 @@ class HwPartialScore(object):
 
 
 class HwScore(object):
-    """A serializable final score object, set of `HwPartialScore`."""
+    """A serializable final score object.
+
+    :param accepted: Whether the submission is accepted?
+    :type accepted: :class:`bool`
+    :param result: A brief comment on the submission.
+    :type result: :class:`railgun.common.lazy_i18n.GetTextString`
+    :param compile_error: The compiler error message.
+    :type compile_error: :class:`railgun.common.lazy_i18n.GetTextString`
+        or :class:`basestring`
+    :param partials: The :class:`HwPartialScore` objects.
+    :type partials: :class:`list` of :class:`HwPartialScore`
+    """
 
     def __init__(self, accepted, result=None, compile_error=None,
                  partials=None):
-        # `accepted` indicate whether final state of this handin is Accepted
-        # or Rejected.
+        # Whether the state of the submission is accepted?
         self.accepted = accepted
-        # brief result message string
+        #: A brief comment on the submission.
+        #: (:class:`railgun.common.lazy_i18n.GetTextString`)
         self.result = result
-        # detailed compile error message
+        #: The compiler error message.
+        #: (:class:`railgun.common.lazy_i18n.GetTextString` or
+        #: :class:`basestring`)
         self.compile_error = compile_error
-        # all partial scores to be sumed up
+        #: The :class:`HwPartialScore` objects.
+        #: (:class:`list` of :class:`HwPartialScore`)
         self.partials = partials or []
 
     def get_score(self):
-        """Sum the final score."""
+        """Sum up the final score."""
         return sum([p.weight * p.score for p in self.partials])
 
     def add_partial(self, partial):
-        """Add a partial score into this final score."""
+        """Add a :class:`HwPartialScore` object."""
         self.partials.append(partial)
 
     def to_plain(self):
-        """Convert this final score object to plain object."""
+        """Convert this partial score object to a plain object that can be
+        serialized in JSON message.
+
+        :return: A plain object that is composed only with :class:`dict`,
+            :class:`list`, :class:`str`, :class:`bool` and numeric types.
+        """
         return {
             'accepted': self.accepted,
             'result': lazystr_to_plain(self.result),
@@ -770,8 +961,11 @@ class HwScore(object):
 
     @staticmethod
     def from_plain(obj):
-        """Convert plain object to final score object."""
+        """Make a :class:`HwScore` object from a plain object.
 
+        :raises: :class:`TypeError` or :class:`KeyError` if the given plain
+            object does not represent a valid :class:`HwScore` object.
+        """
         ret = HwScore(obj['accepted'], plain_to_lazystr(obj['result']),
                       plain_to_lazystr(obj['compile_error']))
         for p in obj['partials']:

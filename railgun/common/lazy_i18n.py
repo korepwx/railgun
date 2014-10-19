@@ -5,22 +5,81 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # This file is released under BSD 2-clause license.
 
-"""
-this module contains a serializable lazy gettext utility.
+"""Utilities for serializable lazy translated strings.
+
+As mentioned in :ref:`i18n_everywhere`, we want our Railgun system to
+support translations, even for the strings already stored in databases.
+
+We know that a simple solution to the translations in a website system
+is to use the :mod:`gettext` package.  Suppose we've created a message
+category including the translation from "My name is %(name)s." to
+"我的姓名是 %(name)s。", then we may write::
+
+    from gettext import gettext
+
+    >>> type(gettext('My name is %(name)s.'))
+    str
+
+    >>> print gettext('My name is %(name)s.') % {'name': 'Alice'}
+    '我的姓名是 Alice。'
+
+The main functionality of `gettext` is to lookup a translation table,
+find the suitable translated text for input string, and then return it.
+However, :mod:`gettext` can only be configured to use a global locale.
+
+To support multi-users in a website environment, we may use the gettext
+and lazy_gettext method from :mod:`flask.ext.babel`::
+
+    from flask.ext.babel import gettext, lazy_gettext
+
+    >>> gettext('My name is %(name)s.', name='Alice')
+    '我的姓名是 Alice。'
+
+    >>> type(gettext('My name is %(name)s.', name='Alice'))
+    :class:`str`
+
+    >>> type(lazy_gettext('My name is %(name)s.', name='Alice'))
+    :class:`speaklater._LazyString`
+
+The `gettext` from :mod:`flask.ext.babel` will use the locale settings
+from current request, but it will translate the string at once, so you may
+not create a global translated text with `gettext`.
+
+On the other side, the `lazy_gettext` will store all the arguments
+and create a :class:`speaklater._LazyString` instance, and will only
+do the translation until it is being output.  So you can make a global
+translated text with `lazy_gettext`.
+
+However, we still have problems. :class:`speaklater._LazyString` could not
+be serialized into a JSON message, nor could it be stored into database.
+
+This is why I create my own :class:`GetTextString` as well as `gettext` and
+`lazy_gettext` methods.  However, these utilities do have some limitations:
+
+*   The arguments passed to `gettext` and `lazy_gettext` must be "plain"
+    objects, including :class:`bool`, :class:`str`, :class:`unicode` and
+    the numeric types.
+*   `ngettext`, `dgettext` and `ndgettext` are not supported.
 """
 
 from flask.ext.babel import gettext as _babel_gettext
 
 
 class GetTextString(object):
-    """keyword formattable and serializable lazy gettext string"""
+    """Make a serializable lazy gettext object.
+
+    :param __s: The text to be translated.
+    :type __s: :class:`basestring`
+    :param kwargs: Keyword arguments to be formatted.
+    :type kwargs: :class:`dict`
+    """
 
     def __init__(self, __s, **kwargs):
         self.text = __s
         self.kwargs = kwargs
 
     def render(self):
-        """render lazy string and get translated text"""
+        """Render the lazy gettext object into :class:`unicode` string."""
 
         # There's a very strange behaviour: gettext('') will return the version
         # string of babel. Get rid of it!
@@ -38,12 +97,18 @@ class GetTextString(object):
         return '<GetText(%s)>' % self.render()
 
 
-def lazy_gettext(__s, **kwargs):
-    return GetTextString(__s, **kwargs)
+lazy_gettext = GetTextString
 
 
 def lazystr_to_plain(s):
-    """Convert string or unicode or GetTextString to plain object."""
+    """Convert a :class:`basestring` or a :class:`GetTextString` object to
+    a JSON serializable plain object.
+
+    :param s: The string object to be converted.
+    :return: A plain object that is composed only with :class:`dict`,
+            :class:`list`, :class:`str`, :class:`bool` and numeric types.
+    :raises: :class:`TypeError` if `s` is not converible.
+    """
     if s is None or isinstance(s, str) or isinstance(s, unicode):
         return s
     if isinstance(s, GetTextString):
@@ -52,7 +117,13 @@ def lazystr_to_plain(s):
 
 
 def plain_to_lazystr(s):
-    """Convert plain object to unicode or GetTextString."""
+    """Convert a plain object to :class:`basestring` or :class:`GetTextString`.
+
+    :param s: The plain object.
+    :return: A :class:`basestring` or a :class:`GetTextString` object.
+
+    :raises: :class:`KeyError` if `s` is not converible.
+    """
     if s is None or isinstance(s, str) or isinstance(s, unicode):
         return s
     return GetTextString(s['text'], **s['kwargs'])
