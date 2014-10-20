@@ -45,6 +45,35 @@ def LoadConfig(obj, fpath):
         execfile(fpath, the_globals, values)
         extract_configs(values, obj)
 
+
+def ReadKeyFile(fpath, keysize=32):
+    """Read key from `fpath`, or generate a new key if path not found."""
+    if not os.path.exists(fpath):
+        import string
+        import random
+
+        # generate the new key
+        alphabet = string.letters + string.digits
+        theKey = ''.join([
+            random.choice(alphabet)
+            for i in xrange(keysize)
+        ])
+
+        # create necessary directories
+        dpath = os.path.split(fpath)[0]
+        if not os.path.isdir(dpath):
+            os.makedirs(dpath, 0700)
+
+        # save the file
+        with open(fpath, 'wb') as f:
+            f.write('%s\n' % theKey)
+        os.chmod(fpath, 0700)
+    else:
+        theKey = open(fpath, 'rb').read().strip()
+
+    return theKey
+
+
 # RAILGUN_ROOT stores the path of railgun project
 RAILGUN_ROOT = os.path.realpath(os.path.dirname(__file__))
 

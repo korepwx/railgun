@@ -19,13 +19,13 @@ MAX_CONTENT_LENGTH = MAX_SUBMISSION_SIZE * 10
 
 # SECRET_KEY is the private key for session encryption.
 SECRET_KEY = (
-    open(os.path.join(RAILGUN_ROOT, 'keys/webKey.txt'), 'rb').read().strip()
+    ReadKeyFile(os.path.join(RAILGUN_ROOT, 'keys/webKey.txt'))
 )
 
 # COMM_KEY is the secret key to encrypt /api/handin/update/<uuid>/
 # payloads.
 COMM_KEY = (
-    open(os.path.join(RAILGUN_ROOT, 'keys/commKey.txt'), 'rb').read().strip()
+    ReadKeyFile(os.path.join(RAILGUN_ROOT, 'keys/commKey.txt'))
 )
 
 # SQLDB_KEY is the secret key to interact with external database server.
@@ -37,7 +37,7 @@ COMM_KEY = (
 #     % SQLDB_KEY
 # )
 SQLDB_KEY = (
-    open(os.path.join(RAILGUN_ROOT, 'keys/sqlKey.txt'), 'rb').read().strip()
+    ReadKeyFile(os.path.join(RAILGUN_ROOT, 'keys/sqlKey.txt'))
 )
 
 # BABEL_DEFAULT_LOCALE language is provided to the client when prefered
