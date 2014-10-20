@@ -310,6 +310,8 @@ class Handin(db.Model):
 
 # If the system uses SQL database, we try to create "db" directory.
 if app.config['SQLALCHEMY_DATABASE_URI'].startswith('sqlite://'):
-    os.makedirs(os.path.join(app.config['RAILGUN_ROOT'], 'db'))
+    dpath = os.path.join(app.config['RAILGUN_ROOT'], 'db')
+    if not os.path.isdir(dpath):
+        os.makedirs(dpath)
 
 db.create_all()
