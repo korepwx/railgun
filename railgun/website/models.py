@@ -11,6 +11,7 @@ You may refer to `SQLAlchemy Object Relational Tutorial
 at the usage of this library.
 """
 
+import os
 from datetime import datetime
 
 from babel.dates import UTC
@@ -305,5 +306,10 @@ class Handin(db.Model):
         or the translated :attr:`compile_error`.
         """
         return unicode(self.compile_error) if self.compile_error else u''
+
+
+# If the system uses SQL database, we try to create "db" directory.
+if app.config['SQLALCHEMY_DATABASE_URI'].startswith('sqlite://'):
+    os.makedirs(os.path.join(app.config['RAILGUN_ROOT'], 'db'))
 
 db.create_all()
