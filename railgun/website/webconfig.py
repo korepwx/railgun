@@ -62,6 +62,9 @@ AUTH_PROVIDERS = [
     }),
 ]
 
+# LOG_FILE defines the main log file for the website
+LOG_FILE = os.path.join(RAILGUN_ROOT, 'logs/website.log')
+
 # WEBSITE_LOGGING configures the logging facility of Python for the website.
 WEBSITE_LOGGING = {
     'version': 1,
@@ -76,7 +79,7 @@ WEBSITE_LOGGING = {
             'level': 'INFO',
             'class': 'logging.handlers.RotatingFileHandler',
             'formatter': 'verbose',
-            'filename': os.path.join(RAILGUN_ROOT, 'logs/website.log'),
+            'filename': LOG_FILE,
             'maxBytes': 204800,
             'backupCount': 3,
         },

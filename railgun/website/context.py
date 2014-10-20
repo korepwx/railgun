@@ -5,6 +5,7 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # This file is released under BSD 2-clause license.
 
+import os
 import logging.config
 
 from flask import Flask
@@ -21,6 +22,9 @@ app.config.from_object(webconfig)
 # NOTE: when DEBUG is on, I suppose that the user want to see logs directly
 #       from console, so skip the logging configuration.
 if not app.config['DEBUG']:
+    dpath = os.path.split(app.config['LOG_FILE'])
+    if not os.path.isdir(dpath):
+        os.makedirs(dpath, 0700)
     logging.config.dictConfig(app.config['WEBSITE_LOGGING'])
 
 # Protect the website from CSRF attack
