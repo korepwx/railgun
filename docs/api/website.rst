@@ -9,7 +9,7 @@ It includes all parts of website implementation.
 Database Models
 ---------------
 
-.. module:: railgun.website.models
+.. automodule:: railgun.website.models
 
 .. autoclass:: railgun.website.models.User
     :members:
@@ -26,20 +26,42 @@ Flask Context Objects
 
 .. data:: railgun.website.context.app
 
+    A :class:`~flask.Flask` object.  It implements a WSGI application and acts
+    as the central object of the website.
+
 .. data:: railgun.website.context.csrf
+
+    A :class:`flask_wtf.csrf.CsrfProtect` object.  It extends the
+    :data:`~railgun.website.context.app` so that all post requests will be
+    protected from csrf attack, unless disabled explicitly.
 
 .. data:: railgun.website.context.db
 
+    A :class:`flask.ext.sqlalchemy.SQLAlchemy` object.  It extends the
+    :data:`~railgun.website.context.app` so that each request will bind
+    a database session.
+
 .. data:: railgun.website.admin.bp
+
+    A :class:`~flask.Blueprint` object.  All the views for administration
+    are registered to this blueprint.
 
 .. data:: railgun.website.credential.login_manager
 
+    A :class:`flask.ext.login.LoginManager` object.  It extends the
+    :data:`~railgun.website.context.app` to support login & logout.
+
 .. data:: railgun.website.i18n.babel
+
+    A :class:`flask.ext.babel.Babel` object.  It extends the
+    :data:`~railgun.website.context.app` to support translations for
+    each request.
 
 
 Jinja2 Template Filters
 -----------------------
 
+.. autofunction:: railgun.website.utility.__inject_template_duecolor
 
 Common Utility for Single Requests
 ----------------------------------

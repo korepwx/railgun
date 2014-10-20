@@ -197,22 +197,22 @@ htmlhelp_basename = 'Railgundoc'
 # -- Options for LaTeX output ---------------------------------------------
 
 latex_elements = {
-# The paper size ('letterpaper' or 'a4paper').
-#'papersize': 'letterpaper',
+    # The paper size ('letterpaper' or 'a4paper').
+    #'papersize': 'letterpaper',
 
-# The font size ('10pt', '11pt' or '12pt').
-#'pointsize': '10pt',
+    # The font size ('10pt', '11pt' or '12pt').
+    #'pointsize': '10pt',
 
-# Additional stuff for the LaTeX preamble.
-#'preamble': '',
+    # Additional stuff for the LaTeX preamble.
+    #'preamble': '',
 }
 
 # Grouping the document tree into LaTeX files. List of tuples
 # (source start file, target name, title,
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
-  ('index', 'Railgun.tex', u'Railgun Documentation',
-   u'Railgun Project', 'manual'),
+    ('index', 'Railgun.tex', u'Railgun Documentation',
+     u'Railgun Project', 'manual'),
 ]
 
 # The name of an image file (relative to this directory) to place at the top of
@@ -255,9 +255,9 @@ man_pages = [
 # (source start file, target name, title, author,
 #  dir menu entry, description, category)
 texinfo_documents = [
-  ('index', 'Railgun', u'Railgun Documentation',
-   u'Railgun Project', 'Railgun', 'One line description of project.',
-   'Miscellaneous'),
+    ('index', 'Railgun', u'Railgun Documentation',
+     u'Railgun Project', 'Railgun', 'One line description of project.',
+     'Miscellaneous'),
 ]
 
 # Documents to append as an appendix to all manuals.
@@ -281,6 +281,71 @@ html_theme = 'alabaster'
 # html_sidebars = {
 #     '**': [
 #         'navigation.html', 'searchbox.html',
-#         #'about.html', 'navigation.html', 'searchbox.html', 'donate.html',
+# 'about.html', 'navigation.html', 'searchbox.html', 'donate.html',
 #     ]
 # }
+
+# We prefer group wise order when documenting the members
+autodoc_member_order = 'groupwise'
+
+
+# Chinese support for LaTeX
+if on_rtd:
+    latex_elements = {
+        # The paper size ('letterpaper' or 'a4paper').
+        #'papersize': 'letterpaper',
+
+        # The font size ('10pt', '11pt' or '12pt').
+        #'pointsize': '10pt',
+
+        # Additional stuff for the LaTeX preamble.
+        #'preamble': '',
+        'preamble': r'''
+    \hypersetup{unicode=true}
+    \usepackage{CJKutf8}
+    \DeclareUnicodeCharacter{00A0}{\nobreakspace}
+    \DeclareUnicodeCharacter{2203}{\ensuremath{\exists}}
+    \DeclareUnicodeCharacter{2200}{\ensuremath{\forall}}
+    \DeclareUnicodeCharacter{2286}{\ensuremath{\subseteq}}
+    \DeclareUnicodeCharacter{2713}{x}
+    \DeclareUnicodeCharacter{27FA}{\ensuremath{\Longleftrightarrow}}
+    \DeclareUnicodeCharacter{221A}{\ensuremath{\sqrt{}}}
+    \DeclareUnicodeCharacter{221B}{\ensuremath{\sqrt[3]{}}}
+    \DeclareUnicodeCharacter{2295}{\ensuremath{\oplus}}
+    \DeclareUnicodeCharacter{2297}{\ensuremath{\otimes}}
+    \begin{CJK}{UTF8}{gbsn}
+    \AtEndDocument{\end{CJK}}
+    ''',
+    }
+else:
+    latex_elements = {
+        'inputenc': '',
+        'utf8extra': '',
+        'preamble': r"""
+\usepackage[CJKnumber,AutoFakeBold,AutoFakeSlant,EmboldenFactor=2.5]{xeCJK}
+\usepackage{fontspec,xunicode,xltxtra}
+
+% Font Configuration
+\setCJKmainfont{Adobe Song Std}
+\setCJKsansfont{WenQuanYi Micro Hei}
+\setCJKmonofont{WenQuanYi Micro Hei Mono}
+\setCJKfallbackfamilyfont{\CJKrmdefault}[AutoFakeBold,AutoFakeSlant]{
+    {Adobe Song Std}
+}
+\setCJKfallbackfamilyfont{\CJKsfdefault}
+[AutoFakeBold,AutoFakeSlant]{
+    {Adobe Heiti Std},
+    {Microsoft YaHei},
+    {SimSun}
+}
+\setCJKfallbackfamilyfont{\CJKttdefault}
+[AutoFakeBold,AutoFakeSlant]{
+    {Adobe Heiti Std},
+    {Microsoft YaHei},
+    {SimSun}
+}
+\setmainfont{Adobe Garamond Pro}
+\setsansfont{Liberation Sans}
+\setmonofont{Liberation Mono}
+""",
+    }

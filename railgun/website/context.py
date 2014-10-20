@@ -13,7 +13,7 @@ from flask.ext.sqlalchemy import SQLAlchemy
 
 from . import webconfig
 
-# Initialize the Flask application
+# The Flask application object.
 app = Flask(__name__)
 app.config.from_object(webconfig)
 
