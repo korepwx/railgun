@@ -324,6 +324,8 @@ if not on_rtd:
     }
 else:
     latex_elements = {
-        "inputenc": "",
+        "inputenc": r"""
+         \usepackage{ucs}
+         \usepackage[utf8x]{inputenc}""",
         "utf8extra": "",
     }
