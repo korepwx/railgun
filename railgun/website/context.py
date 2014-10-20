@@ -22,7 +22,7 @@ app.config.from_object(webconfig)
 # NOTE: when DEBUG is on, I suppose that the user want to see logs directly
 #       from console, so skip the logging configuration.
 if not app.config['DEBUG']:
-    dpath = os.path.split(app.config['LOG_FILE'])
+    dpath = os.path.split(app.config['LOG_FILE'])[0]
     if not os.path.isdir(dpath):
         os.makedirs(dpath, 0700)
     logging.config.dictConfig(app.config['WEBSITE_LOGGING'])
