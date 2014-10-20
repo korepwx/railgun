@@ -322,3 +322,8 @@ if not on_rtd:
 \setmonofont{Liberation Mono}
 """,
     }
+else:
+    latex_elements = {
+        "inputenc": "",
+        "utf8extra": "",
+    }
