@@ -290,18 +290,7 @@ autodoc_member_order = 'groupwise'
 
 
 # Chinese support for LaTeX
-if on_rtd:
-    latex_elements = {
-        "inputenc": "",
-        "utf8extra": "",
-        "preamble": r"""
-\hypersetup{unicode=true}
-\usepackage{CJKutf8}
-\begin{CJK}{UTF8}{gbsn}
-\AtEndDocument{\end{CJK}}
-    """,
-    }
-else:
+if not on_rtd:
     latex_elements = {
         "inputenc": "",
         "utf8extra": "",
