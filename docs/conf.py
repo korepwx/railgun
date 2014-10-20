@@ -39,6 +39,7 @@ sys.path.insert(0, os.path.join(RAILGUN_ROOT, 'runlib/python'))
 extensions = [
     'sphinx.ext.autodoc',
     'sphinx.ext.viewcode',
+    'sphinx.ext.intersphinx',
 ]
 
 # PlantUML is not supported on rtd.org
@@ -288,6 +289,11 @@ html_theme = 'alabaster'
 # We prefer group wise order when documenting the members
 autodoc_member_order = 'groupwise'
 
+# Link to other projects
+# Example configuration for intersphinx: refer to the Python standard library.
+intersphinx_mapping = {'http://docs.python.org/': None,
+                       'http://flask.pocoo.org/docs/': None,
+                       'http://www.sqlalchemy.org/docs/': None}
 
 # Chinese support for LaTeX
 if not on_rtd:

@@ -61,7 +61,23 @@ Flask Context Objects
 Jinja2 Template Filters
 -----------------------
 
-.. autofunction:: railgun.website.utility.__inject_template_duecolor
+.. module::
+
+.. function:: timedelta(delta_or_date)
+
+    Format :class:`~datetime.datetime` or :class:`~datetime.timedelta`
+    into localized string.
+
+    If given parameter is a :class:`~datetime.datetime`, 
+    it will be subtracted by :func:`railgun.common.dateutil.utcnow` to
+    get the :class:`~datetime.timedelta`.
+
+    :param delta_or_date: A :class:`~datetime.datetime` or a
+        :class:`~datetime.timedelta` object.
+    :return: :token:`None` if `delta_or_date` is `None`, otherwise the
+        localized timedelta string.
+
+    
 
 Common Utility for Single Requests
 ----------------------------------

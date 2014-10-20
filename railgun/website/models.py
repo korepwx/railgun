@@ -113,8 +113,8 @@ class User(db.Model):
     def check_password(self, password):
         """Validate the plain text `password`.
 
-        Since all users from third-party users will store :token:`None`
-        in this attribute, you may call
+        Since all users from third-party authentication providers will store
+        :token:`None` in this attribute, you may call
         :func:`railgun.website.userauth.authenticate` if you just want
         to validate a user login at a very high-level stage.  This method,
         however, is called mainly by the utilities in
