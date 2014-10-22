@@ -355,12 +355,3 @@ def has_user(login):
 
 # Initialize the builtin auth providers
 auth_providers = AuthProviderSet()
-
-
-# Inject the template method to get display name of given auth provider
-@app.template_filter(name='provider_name')
-def __inject_template_provider_name(name):
-    p = auth_providers.get(name)
-    if not p:
-        return None
-    return p.display_name()

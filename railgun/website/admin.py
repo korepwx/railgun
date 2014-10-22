@@ -9,8 +9,8 @@ import csv
 from functools import wraps
 import cStringIO as StringIO
 
-from flask import Blueprint, render_template, request, g, flash, redirect, \
-    url_for, send_file
+from flask import (Blueprint, render_template, request, g, flash, redirect,
+                   url_for, send_file)
 from flask.ext.babel import get_locale, lazy_gettext, gettext as _
 from flask.ext.login import login_fresh, current_user
 from sqlalchemy import func

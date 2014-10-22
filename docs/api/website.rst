@@ -62,9 +62,35 @@ Jinja2 Template Filters
 -----------------------
 
 .. automodule:: railgun.website.jinja_filters
+    :members:
 
-    
+
+Jinja2 Context Functions and Variables
+--------------------------------------
+
+The following table lists all the functions and variables accessible in
+a jinja context, in addition to the standard Flask configutaion.
+
+=================== ========================================================
+Object Name         Description
+=================== ========================================================
+languages       
+current_user    
+allow_signup    
+pagelng         
+naviages        
+navibar         
+renderPartialScore  Refer to function
+                    :func:`~railgun.website.renders.renderPartialScore`.
+=================== ========================================================
+
 
 Common Utility for Single Requests
 ----------------------------------
+
+Other Utilities
+---------------
+
+.. automodule:: railgun.website.utility
+    :members:
 

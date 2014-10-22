@@ -180,15 +180,6 @@ languages = {
 }
 
 
-# get human readable name for given code lang
-@app.template_filter(name='codelang')
-def __inject_template_codelang(s):
-    lang = languages.get(s, None)
-    if lang:
-        return lang.name
-
-
-# inject languages dictionary into template context
 @app.context_processor
 def __inject_languages():
     return dict(languages=languages)

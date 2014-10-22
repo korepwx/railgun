@@ -5,6 +5,6 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # This file is released under BSD 2-clause license.
 
-from . import (admin, api, codelang, context, credential, forms, gravatar,
-               hw, i18n, jinja_filters, manual, models, navibar, renders,
-               scriptlibs, userauth, utility, views, webconfig)
+from . import (admin, api, codelang, context, credential, forms,
+               hw, i18n, jinja_filters, manual, models, navibar,
+               renders, scriptlibs, userauth, utility, views, webconfig)

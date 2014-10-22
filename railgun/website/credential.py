@@ -11,7 +11,6 @@ from flask import redirect, flash, request, url_for
 from flask.ext.login import LoginManager, current_user, login_fresh
 from flask.ext.babel import gettext as _
 
-from railgun.website.gravatar import get_avatar
 from .models import User
 from .context import app, db
 from .userauth import auth_providers
@@ -123,7 +122,3 @@ def needs_refresh_handler():
             'page.'), 'info')
     return redirect(url_for('reauthenticate',
                             next=request.script_root + request.path))
-
-
-# Inject `get_avatar` as `gravatar` filter into Jinja2 template engine.
-app.template_filter('gravatar')(lambda user, size=24: get_avatar(user, size))

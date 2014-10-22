@@ -6,23 +6,25 @@
 # This file is released under BSD 2-clause license.
 
 import colorsys
+import hashlib
+
+from flask import request
 from flask.ext.babel import gettext as _
 
 
-def float_color(v):
-    """Get a color to describe the float `v`.
+def float_color(value):
+    """Get a color to describe the safety level.
 
-    When `v` is close to 1.0 the color will be close to green,
-    and when `v` is close to 0.0 the color will be close to red.
+    Safety level should be a floating number in range [0.0, 1.0].
+    The color will be more close to green if the safety level is more close
+    to 1.0, and more close to red if level is more close to 0.0.
 
-    Args:
-        v (float): The float number in range [0.0, 1.0].
-
-    Returns:
-        An HTML color string, for example "#ffffff".
+    :param value: The value of safety level.
+    :type value: :class:`float`
+    :return: An html color string, for example, "#ffffff".
     """
 
-    h = v / 3.0
+    h = value / 3.0
     l = 0.3
     s = 1.0
     rgb = map((lambda i: int(i * 255)), colorsys.hls_to_rgb(h, l, s))
@@ -30,34 +32,73 @@ def float_color(v):
 
 
 def format_size(size):
-    """Format `size` into human readable string.
+    """Get a human readable string of the given size in bytes.
 
-    Args:
-        size (int): Integral file size in bytes.
+    Returns two-digit floating number with the size unit following, unless
+    it is smaller than 1000B, the number part will be an integer.
 
-    Returns:
-        A human readable string to represent the `size`.
+    The conversion between size units is `1G = 1024M = 1048576K = 1073741824B`.
+    However, if the size is larger than 10^3 the size of a smaller unit,
+    it will be formatted as the larger unit.
+
+    For example::
+
+        >>> format_size(10)
+        '10B'
+
+        >>> format_size(1000)
+        '0.98K'
+
+        >>> format_size(1048576)
+        '1.00M'
+
+    :param size: Given size in bytes.
+    :type size: :class:`int`
+    :return: A human readable string to represent the size.
     """
 
     if not size:
         return None
-    if size > 1e9:
+    if size >= 1e9:
         return _('%(size).2fG', size=size / (1024.0 * 1024.0 * 1024.0))
-    if size > 1e6:
+    if size >= 1e6:
         return _('%(size).2fM', size=size / (1024.0 * 1024.0))
-    if size > 1e3:
+    if size >= 1e3:
         return _('%(size).2fK', size=size / 1024.0)
     return _('%(size)dB', size=int(size))
 
 
 def round_score(score):
-    """Round `score` to closest float whose precision is 0.1.
+    """Get the closest number to given score, whose precision is 0.1.
 
-    Args:
-        score (float): Score of floating number.
-
-    Returns:
-        Rounded score number.
+    :param score: The given score in floating number.
+    :type score: :class:`float`
+    :return: The rounded score.
     """
 
     return round(score * 10) * 0.1
+
+
+def get_avatar(user_or_email, size):
+    """Get the gravatar url of given user.
+
+    :param user_or_email: If it is a :class:`basestring`, representing the
+        email address; otherwise it must carry an attribute `email`.
+    :type user_or_email: :class:`basestring` or :class:`object`
+    :param size: Size of avatar in pixels.
+    :type size: :class:`int`
+
+    :return: The url to the gavatar image.
+    """
+
+    if isinstance(user_or_email, str) or isinstance(user_or_email, unicode):
+        email = user_or_email
+    else:
+        email = getattr(user_or_email, 'email', None)
+    if email:
+        hashcode = hashlib.md5(email.lower()).hexdigest()
+    else:
+        hashcode = '00000000000000000000000000000000'
+    schema = 'http://' if request.url.startswith('http://') else 'https://'
+    ret = '%(schema)swww.gravatar.com/avatar/%(hashcode)s.jpg?s=%(size)d&d=mm'
+    return ret % {'schema': schema, 'hashcode': hashcode, 'size': size}

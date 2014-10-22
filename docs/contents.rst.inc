@@ -25,7 +25,7 @@ this documentation on :ref:`design_overview`.
    :maxdepth: 2
 
    design/overview
-   design/packages
+   design/multilang
    design/webapi
 
 .. _api:
