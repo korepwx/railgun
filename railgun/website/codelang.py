@@ -178,8 +178,3 @@ languages = {
     'netapi': NetApiLanguage(),
     'input': InputLanguage(),
 }
-
-
-@app.context_processor
-def __inject_languages():
-    return dict(languages=languages)

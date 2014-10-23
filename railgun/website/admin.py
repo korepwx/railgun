@@ -7,7 +7,7 @@
 
 import csv
 from functools import wraps
-import cStringIO as StringIO
+from cStringIO import StringIO
 
 from flask import (Blueprint, render_template, request, g, flash, redirect,
                    url_for, send_file)
@@ -226,6 +226,7 @@ def show_handins(username=None):
         'admin.handins.html', the_page=handins.paginate(page, perpage),
         username=username
     )
+
 
 @bp.route('/handin/')
 @admin_required

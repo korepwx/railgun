@@ -74,7 +74,6 @@ a jinja context, in addition to the standard Flask configutaion.
 =================== ========================================================
 Object Name         Description
 =================== ========================================================
-languages       
 current_user    
 allow_signup    
 pagelng         

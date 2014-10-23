@@ -46,9 +46,9 @@ class User(db.Model):
     #: the login name and password, and provide account information if the
     #: user passes validation.
     #:
-    #: :class:`railgun.website.TsinghuaAuthProvider` is the authentication
-    #: provider to connect to Tsinghua account.  Other providers may connect
-    #: to csv account files, or ldap account servers.
+    #: :class:`railgun.website.thuauth.TsinghuaAuthProvider` is the
+    #: authentication provider to connect to Tsinghua account.  Other
+    #: providers may connect to csv account files, or ldap account servers.
     #:
     #: :token:`None` or empty indicates that this user does not come from
     #: any external provider.
