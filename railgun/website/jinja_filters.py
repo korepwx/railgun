@@ -218,7 +218,6 @@ def gravatar_filter(user, size=24):
 
     :return: The gravatar image url.
     """
-    from .gravatar import get_avatar
     return get_avatar(user, size)
 
 
