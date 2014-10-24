@@ -23,7 +23,7 @@ def is_running(pid):
     :param pid: The process id.
     :type pid: :class:`int`
 
-    :return: :token:`True` if the process is still alive, :token:`False`
+    :return: :data:`True` if the process is still alive, :data:`False`
         otherwise.
     """
     try:

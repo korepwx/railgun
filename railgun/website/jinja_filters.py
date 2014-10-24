@@ -33,7 +33,7 @@ def timedelta_filter(delta_or_date):
 
     :param delta_or_date: A :class:`~datetime.datetime` or a
         :class:`~datetime.timedelta` object.
-    :return: :token:`None` if `delta_or_date` is :token:`None`, otherwise the
+    :return: :data:`None` if `delta_or_date` is :data:`None`, otherwise the
         localized timedelta string.
     """
 

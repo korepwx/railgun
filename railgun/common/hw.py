@@ -61,8 +61,8 @@ def parse_bool(s):
 
     :param s: The string literal that represents a boolean value.
     :type s: :class:`str`
-    :return: `True` if s.lower() is one of (true, on, 1, yes), `False`
-        otherwise.
+    :return: :data:`True` if s.lower() is one of (true, on, 1, yes),
+        :data:`False` otherwise.
     """
     if not s:
         return False
@@ -395,11 +395,11 @@ class HwCode(object):
         self.file_rules = None
 
         #: Whether the compiler messages should be revealed to students?
-        #: Default value is `True`.
+        #: Default value is :data:`True`.
         self.reportCompile = True
 
         #: Whether the runtime messages should be revealed to students?
-        #: Default value is `False`.
+        #: Default value is :data:`False`.
         self.reportRuntime = False
 
         #: A dict ("Scorer's Type Name" -> :class:`HwScorerSetting`).
@@ -423,8 +423,8 @@ class HwCode(object):
 
         :type typeName: :class:`str`
 
-        :return: The scorer setting object if found, or `None` otherwise.
-        :rtype: :class:`HwScorerSetting` or :token:`None`
+        :return: The scorer setting object if found, or :data:`None` otherwise.
+        :rtype: :class:`HwScorerSetting` or :data:`None`
         """
 
         if typeName in self.scorers:
@@ -734,7 +734,7 @@ class Homework(object):
         """Get the next deadline of this homework.
 
         :return: A :class:`tuple` of (deadline datetime, score scale) if the
-            next deadline exists, or :token:`None` if the homework has already
+            next deadline exists, or :data:`None` if the homework has already
             expired.
         """
 
@@ -747,7 +747,7 @@ class Homework(object):
         """Get the final deadline of this homework.
 
         :return: A :class:`tuple` of (deadline datetime, score scale) if the
-            final deadline exists, or :token:`None` if the homework has already
+            final deadline exists, or :data:`None` if the homework has already
             expired.
         """
 
@@ -885,7 +885,7 @@ class HwPartialScore(object):
     def get_time(self):
         """Get the running time of this scorer.
 
-        :return: A :class:`datetime.timedelta` object, or :token:`None`
+        :return: A :class:`datetime.timedelta` object, or :data:`None`
             if timing is not performed.
         """
         return timedelta(seconds=self.time) if self.time else None

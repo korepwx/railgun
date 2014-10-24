@@ -13,34 +13,59 @@ from flask.ext.login import current_user
 
 from .context import app
 
-# We must import credential here, so that all hooks should be initialized by
-# flask.login before we start i18n hooks
-# from . import credential
-
-# Initialize the Babel translation system
+#: A :class:`flask.ext.babel.Babel` object.  It extends the
+#: :data:`~railgun.website.context.app` to support translations for
+#: each request.
 babel = Babel(app)
 
 
 def list_locales():
-    """Get the list of all locales in order of display name."""
+    """Get a list of available :class:`babel.core.Locale` objects.
+
+    Whatever translations the system provides, "en" should always
+    appear in the list.  The returned list should be sorted in the order
+    of display names, which may be vary in different languages.
+
+    :return: :class:`list` of :class:`babel.core.Locale` objects.
+    """
     ret = [Locale('en')] + babel.list_translations()
     return sorted(ret, cmp=lambda a, b: cmp(a.display_name, b.display_name))
 
 
 def get_best_locale_name(locale_names):
-    """Get the best match locale from `locale_names` to current request.
+    """Select the best matching locale from `locale_names` according to
+    current request.
 
-    Select the best matching locale according the language, script
-    and territory of `locale_names`.  If best not found, fallback to
-    app.config['DEFAULT_LOCALE'].  If not found either, fallback to
-    the last locale in `locale_names`.
+    The locales are evaluated according to the language, script and territory.
+    If no best choice is found, fallback to ``app.config['DEFAULT_LOCALE']``.
+    Moreover, if even ``app.config['DEFAULT_LOCALE']`` does not appear in
+    `locale_names`, choose the last item in `locale_names`.
 
-    Args:
-        locale_names (list): List of locale names, for example,
-            ['zh-cn', 'en']
+    Usage:
 
-    Returns:
-        The best matching or fallback locale.
+    .. code-block:: python
+
+        # If current user prefers zh-CN, or zh-TW.
+        >>> get_best_locale_name(['zh-cn', 'en'])
+        'zh-cn'
+
+        # If current user prefers en-US.
+        >>> get_best_locale_name(['zh-cn', 'en'])
+        'en'
+
+        # If current user prefers ja-JP, and default locale is zh-CN.
+        >>> get_best_locale_name(['zh-cn', 'en'])
+        'zh-cn'
+
+        # If current user prefers ja-JP, and default locale is zh-CN.
+        >>> get_best_locale_name(['fr', 'en'])
+        'en'
+
+    :param locale_names: List of alternative locale names.
+    :type locale_names: :class:`list`
+
+    :return: The best matching or fallback locale name.
+    :rtype: :class:`str`
     """
 
     top_score = 0
@@ -121,7 +146,9 @@ best_matches = __make_best_match()
 
 @babel.localeselector
 def __select_request_locale():
-    """Select the prefered language according to Accept-Language."""
+    """Detect the request locale according to the user setting and browser
+    request headers.
+    """
     if current_user.is_authenticated():
         return current_user.locale
     best_match = request.accept_languages.best_match(best_matches)
@@ -130,6 +157,12 @@ def __select_request_locale():
 
 @babel.timezoneselector
 def __select_request_timezone():
+    """Detect the request timezone according to the user settings.
+
+    Flask-Babel should be initialized to format datetime in the user's
+    timezone after this method is called, so the timezone name should be
+    compatible with :mod:`flask.ext.babel`.
+    """
     # TODO: set the correct time zone according to user configuration.
     #       if possible, also guess by client ip.
     if current_user.is_authenticated():
@@ -139,8 +172,15 @@ def __select_request_timezone():
 
 @app.context_processor
 def __inject_template_context():
-    """Add `pagelng` variable to template context.  `pagelng` should be
-    compatible with HTML lang attribute."""
+    """Add `pagelng` to Jinja2 template context.
+
+    `pagelng` is the locale name which can be used to describe the language of
+    html elements.  For example::
+
+        <html lang={{ pagelang }}>
+            ...
+        </html>
+    """
 
     pagelng = get_locale()
     if pagelng.territory:

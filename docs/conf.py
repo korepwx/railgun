@@ -22,6 +22,7 @@ on_rtd = os.environ.get('READTHEDOCS', None) == 'True'
 RAILGUN_ROOT = os.path.split(os.path.dirname(__file__))[0]
 sys.path.insert(0, RAILGUN_ROOT)
 sys.path.insert(0, os.path.join(RAILGUN_ROOT, 'runlib/python'))
+sys.path.insert(0, os.path.join(RAILGUN_ROOT, 'docs'))
 
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
@@ -40,6 +41,7 @@ extensions = [
     'sphinx.ext.autodoc',
     'sphinx.ext.viewcode',
     'sphinx.ext.intersphinx',
+    'sphinx_patch',
 ]
 
 # PlantUML is not supported on rtd.org
@@ -291,9 +293,16 @@ autodoc_member_order = 'groupwise'
 
 # Link to other projects
 # Example configuration for intersphinx: refer to the Python standard library.
-intersphinx_mapping = {'http://docs.python.org/': None,
-                       'http://flask.pocoo.org/docs/': None,
-                       'http://www.sqlalchemy.org/docs/': None}
+intersphinx_mapping = {
+    'http://docs.python.org/': None,
+    'http://www.sqlalchemy.org/docs/': None,
+    'http://flask.pocoo.org/docs/': None,
+    'http://flask-wtf.readthedocs.org/en/latest/': None,
+    'http://pythonhosted.org/Flask-Babel/': None,
+    'http://pythonhosted.org/Flask-SQLAlchemy/': None,
+    'http://babel.pocoo.org/docs/': None,
+    'http://wtforms.readthedocs.org/en/latest/': None,
+}
 
 # Chinese support for LaTeX
 if not on_rtd:

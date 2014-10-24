@@ -138,7 +138,7 @@ navigates = Navibar()
 @app.context_processor
 def __inject_navigate_links():
     """inject navigate links into template context."""
-    return dict(navigates=navigates, navibar=NavibarProxy(navigates))
+    return dict(navibar=NavibarProxy(navigates))
 
 
 def set_navibar_identity(identity):

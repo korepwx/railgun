@@ -26,7 +26,8 @@ from .credential import login_manager
 from .navibar import navigates, NaviItem
 from .utility import round_score
 
-# The admin application blueprint
+#: A :class:`~flask.Blueprint` object.  All the views for administration
+#: are registered to this blueprint.
 bp = Blueprint('admin', __name__)
 
 

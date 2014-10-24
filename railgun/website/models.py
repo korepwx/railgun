@@ -50,7 +50,7 @@ class User(db.Model):
     #: authentication provider to connect to Tsinghua account.  Other
     #: providers may connect to csv account files, or ldap account servers.
     #:
-    #: :token:`None` or empty indicates that this user does not come from
+    #: :data:`None` or empty indicates that this user does not come from
     #: any external provider.
     provider = db.Column(db.String(32), default='')
 
@@ -69,7 +69,7 @@ class User(db.Model):
     email = db.Column(db.String(80), unique=True)
 
     #: The hashed user password, maximum 255 characters.
-    #: Users from third-party authentication providers will have :token:`None`
+    #: Users from third-party authentication providers will have :data:`None`
     #: in `password` field.
     password = db.Column(db.String(255))
 
@@ -114,11 +114,11 @@ class User(db.Model):
         """Validate the plain text `password`.
 
         Since all users from third-party authentication providers will store
-        :token:`None` in this attribute, you may call
+        :data:`None` in this attribute, you may call
         :func:`railgun.website.userauth.authenticate` if you just want
         to validate a user login at a very high-level stage.  This method,
         however, is called mainly by the utilities in
-        :mod:`railgun.website.userauth`.
+        :mod:`~railgun.website.userauth`.
 
         :param password: The plain text password.
         :type password: :class:`str`
@@ -280,30 +280,30 @@ class Handin(db.Model):
 
     def get_result(self):
         """The brief comment on this submission may be instance of
-        :class:`railgun.common.lazy_i18n.GetTextString` or `None`.
+        :class:`railgun.common.lazy_i18n.GetTextString` or :data:`None`.
 
         If we call ``unicode(result)`` to get the translated text, we may
         have the risk to get the literal of "None".
         This is a safe method to get empty string if :attr:`result`
-        is `None`, or the translated text.
+        is :data:`None`, or the translated text.
         """
         return unicode(self.result) if self.result else u''
 
     def get_stdout(self):
-        """Safe method to get empty string if :attr:`stdout` is `None`, or the
-        translated :attr:`stdout`.
+        """Safe method to get empty string if :attr:`stdout` is :data:`None`,
+        or the translated :attr:`stdout`.
         """
         return unicode(self.stdout) if self.stdout else u''
 
     def get_stderr(self):
-        """Safe method to get empty string if :attr:`stderr` is `None`, or the
-        translated :attr:`stderr`.
+        """Safe method to get empty string if :attr:`stderr` is :data:`None`,
+        or the translated :attr:`stderr`.
         """
         return unicode(self.stderr) if self.stderr else u''
 
     def get_compile_error(self):
-        """Safe method to get empty string if :attr:`compile_error` is `None`,
-        or the translated :attr:`compile_error`.
+        """Safe method to get empty string if :attr:`compile_error` is
+        :data:`None`, or the translated :attr:`compile_error`.
         """
         return unicode(self.compile_error) if self.compile_error else u''
 

@@ -28,7 +28,13 @@ from .manual import manual_pages
 
 @app.route('/')
 def index():
-    g.scripts.headScripts()
+    """The index page that displays the jumbotron to anonymous users,
+    and show the scores of submitted homework to login user.
+
+    :route: /
+    :method: GET
+    :template: index.html
+    """
     # check user email when authenticated
     if current_user.is_authenticated():
         if should_update_email():
@@ -38,6 +44,18 @@ def index():
 
 @app.route('/signup/', methods=['GET', 'POST'])
 def signup():
+    """The form page for anonymous user to create a new account.
+
+    If the requested operation is successful, the user will be redirected
+    to :func:`signin` view.  You may disable the registration by setting
+    ``config.ALLOW_SIGNUP`` to :data:`False`, where a 403 http error will
+    be responded to request users.
+
+    :route: /signup/
+    :method: GET, POST
+    :template: signup.html
+    :form: :class:`~railgun.website.forms.SignupForm`
+    """
     # If railgun does not allow new user signup, show 403 forbidden
     # TODO: beautify this page.
     if not app.config['ALLOW_SIGNUP']:
@@ -62,6 +80,17 @@ def signup():
 
 @app.route('/signin/', methods=['GET', 'POST'])
 def signin():
+    """The form page for users to login.
+
+    If the credential passes validation, the user will be redirected to
+    :func:`index` view, unless the `next` argument is given in the query
+    string, where a redirection to `next` will take place.
+
+    :route: /signin/
+    :method: GET, POST
+    :template: signin.html
+    :form: :class:`~railgun.website.forms.SigninForm`
+    """
     form = SigninForm()
     next_url = request.args.get('next')
     if form.validate_on_submit():
@@ -81,6 +110,33 @@ def signin():
 @app.route('/reauthenticate/', methods=['GET', 'POST'])
 @login_required
 def reauthenticate():
+    """The form page to ask user enter their password to revalidate their
+    stale session.
+
+    If a user let the system remember his or her login at :func:`signup`,
+    we then call it a persistent session.  This is because such session
+    will not be expired within just hours of time, nor will it become
+    invalid after quitting the browser.
+
+    We call a recovered session after a relaunch of the browser or time
+    expiration a stale session.  Sometimes we may want to make sure the
+    user owns the permission before taking any operations. In these
+    situations, the stale sessions are not enough.
+
+    So :class:`reauthenticate` view force the user to refresh their stale
+    session.  You may decorate the view by
+    :func:`~railgun.website.credential.fresh_login_required` to ensure
+    this.
+
+    If the credential passes validation, the user will be redirected to
+    :func:`index` view, unless the `next` argument is given in the query
+    string, where a redirection to `next` will take place.
+
+    :route: /reauthenticate/
+    :method: GET, POST
+    :template: reauthenticate.html
+    :form: :class:`~railgun.website.forms.ReAuthenticateForm`
+    """
     # Re-authenticate form is just like signin but do not contain "remember"
     form = ReAuthenticateForm()
     next_url = request.args.get('next')
@@ -98,6 +154,11 @@ def reauthenticate():
 
 @app.route('/signout/')
 def signout():
+    """Sign out the logged user, and redirect to :func:`index` view.
+
+    :route: /signout/
+    :method: GET
+    """
     logout_user()
     return redirect(url_for('index'))
 
@@ -105,6 +166,13 @@ def signout():
 @app.route('/profile/edit/', methods=['GET', 'POST'])
 @fresh_login_required
 def profile_edit():
+    """The form page for the user to edit their profile.
+
+    :route: /profile/edit/
+    :method: GET, POST
+    :template: profile_edit.html
+    :form: :class:`railgun.website.forms.ProfileForm`
+    """
     # Profile edit should use typeahead.js
     g.scripts.deps('typeahead.js')
 

@@ -15,9 +15,9 @@ if os.environ['TERM'] in ('xterm-color'):
     color_output = True
 
 pattern = sys.argv[1]
-SOURCE_EXT = ('.py', '.h', '.cpp')
+SOURCE_EXT = ('.py', '.h', '.cpp', '.rst')
 
-for pkg in ('railgun', 'runlib'):
+for pkg in ('railgun', 'runlib', 'docs'):
     for dpath, dnames, fnames in os.walk(pkg):
         for fname in fnames:
             fpath = os.path.join(dpath, fname)

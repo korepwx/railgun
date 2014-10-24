@@ -18,7 +18,8 @@ from .userauth import auth_providers
 # Initialize all the external auth providers
 auth_providers.init_providers()
 
-# The global login manager for web application
+#: A :class:`flask.ext.login.LoginManager` object.  It extends the
+#: :data:`~railgun.website.context.app` to support login & logout.
 login_manager = LoginManager()
 login_manager.init_app(app)
 

@@ -5,5 +5,5 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # This file is released under BSD 2-clause license.
 
-from . import crypto, csvdata, dateutil, fileutil, hw, lazy_i18n, \
-    osutil, pyutil, tempdir, url
+from . import (crypto, csvdata, dateutil, fileutil, hw, lazy_i18n,
+               osutil, pyutil, tempdir, url)
