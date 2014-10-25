@@ -67,6 +67,7 @@ any modifications to the code, you may execute:
 
     mkdir -p config
     echo "DEBUG = True" >> config/website.py
+    echo "DEBUG_TB_INTERCEPT_REDIRECTS = False" >> config/website.py
 
 Then you may restart ``website.py``.
 
@@ -104,4 +105,22 @@ Then you may execute the following commands:
     The package name is `unrar`, not `unrar-free`!  The latter one is not
     compatible with the Python package `rarfiles`.
 
+After all the dependencies are correctly installed, you may start the runner
+queue by the following commands:
 
+.. code-block:: bash
+
+    . env/bin/activate
+    python runner.py
+
+The final step is to create a default admin account.  Create a new file
+``config/users.csv`` and copy the following text into this file::
+
+.. code-block:: csv
+
+    name,password,email,admin
+    "admin","pbkdf2:sha1:1000$aWa1MeYA$812c7fe6cfa00060b6e3fe0dfbbe99da98b6d1eb","admin@example.org",True
+
+Open a web browser and navigate to
+`http://localhost:5000 <http://localhost:5000>`_, and you may log into the
+system by `admin` account, of which the password is `admin123`.
