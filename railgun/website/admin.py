@@ -32,16 +32,32 @@ bp = Blueprint('admin', __name__)
 
 
 def admin_required(method):
-    """Decorator that protects a given view to only accessible to admins."""
+    """A decorator on Flask view functions that validate whether the request
+    user is an administrator.
+
+    If not authenticated, the request user will be redirected to
+    :func:`~railgun.website.views.signin`.
+    If not an administrator, an error message will be flashed and the
+    request user will be redirected to :class:`~railgun.website.views.index`.
+    If the session is stale, the request user will be redirected to
+    :func:`~railgun.website.views.reauthenticate`.
+
+    Usage::
+
+        @bp.route('/')
+        @admin_required
+        def admin_index():
+            return 'This page can only be accessed by admins.'
+    """
     @wraps(method)
     def inner(*args, **kwargs):
         if not current_user.is_authenticated():
             return login_manager.unauthorized()
-        if not login_fresh():
-            return login_manager.needs_refresh()
         if not current_user.is_admin:
             flash(_("Only admin can view this page!"), 'danger')
             return redirect(url_for('index'))
+        if not login_fresh():
+            return login_manager.needs_refresh()
         return method(*args, **kwargs)
     return inner
 
@@ -49,7 +65,18 @@ def admin_required(method):
 @bp.route('/users/')
 @admin_required
 def users():
-    """Manage all users."""
+    """Admin page to manage registered users.
+    Information of the users will be gathered on this page, and each record
+    will be given a link to its editing page.
+
+    This page supports page navigation, thus accepts `page` and `perpage`
+    query string argument, where `page` defines the navigated page id
+    (>= 1), and `perpage` defines the page size (default 10).
+
+    :route: /admin/users/
+    :method: GET
+    :template: admin.users.html
+    """
     # get pagination argument
     try:
         page = int(request.args.get('page', 1))
@@ -71,6 +98,20 @@ def users():
 @bp.route('/adduser/', methods=['GET', 'POST'])
 @admin_required
 def adduser():
+    """Admin page to create a new user.
+
+    The new users will have ``<username>@<config.EXAMPLE_USER_EMAIL_SUFFIX>``
+    as their initial email address.  The system will require such users to
+    fill in their real emails address when they log in for the first time.
+
+    If the user has been created successfully, the visitor will be redirected
+    to :func:`~railgun.website.admin.users`.
+
+    :route: /admin/adduser/
+    :method: GET, POST
+    :form: :class:`~railgun.website.forms.CreateUserForm`
+    :template: admin.adduser.html
+    """
     form = CreateUserForm()
     if form.validate_on_submit():
         # Construct user data object
@@ -92,7 +133,20 @@ def adduser():
 @bp.route('/users/<name>/', methods=['GET', 'POST'])
 @admin_required
 def user_edit(name):
-    """Edit given user `name`."""
+    """Admin page to modify an existing user.
+
+    For the accounts from third-party authentication providers, some fields
+    of the form may be locked and cannot be modified.  This feature isn't
+    implemented here, but in :mod:`railgun.website.userauth`.
+
+    If the user has been successfully updated, the visitor will be redirected
+    to :func:`~railgun.website.admin.users`.
+
+    :route: /admin/users/<name>/
+    :method: GET, POST
+    :form: :class:`~railgun.website.forms.AdminUserEditForm`
+    :template: admin.user_edit.html
+    """
     # Profile edit should use typeahead.js
     g.scripts.deps('typeahead.js')
 
@@ -101,7 +155,7 @@ def user_edit(name):
 
     # Create the profile form.
     # Note that some fields cannot be edited in certain auth providers,
-    # which should be stripped from from schema.
+    # which should be stripped from schema.
     form = AdminUserEditForm(obj=the_user)
     if the_user.provider:
         auth_providers.init_form(the_user.provider, form)
@@ -149,6 +203,18 @@ def user_edit(name):
 @bp.route('/users/<name>/activate/')
 @admin_required
 def user_activate(name):
+    """Activate the given user.
+
+    This view accepts an extra query string argument `next`, where the visitor
+    will be redirected to `next` after the operation.  If `next` is not given,
+    the visitor will be redirected to :func:`~railgun.website.admin.users`.
+
+    :route: /admin/users/<name>/activate/
+    :method: GET
+
+    :param name: The name of operated user.
+    :type name: :class:`str`
+    """
     next = request.args.get('next')
     the_user = User.query.filter(User.name == name).one()
     the_user.is_active = True
@@ -160,6 +226,22 @@ def user_activate(name):
 @bp.route('/users/<name>/deactivate/')
 @admin_required
 def user_deactivate(name):
+    """Deactivate the given user.
+
+    This view accepts an extra query string argument `next`, where the visitor
+    will be redirected to `next` after the operation.  If `next` is not given,
+    the visitor will be redirected to :func:`~railgun.website.admin.users`.
+
+    .. note::
+
+        An administrator cannot deactivate him or herself.
+
+    :route: /admin/users/<name>/deactivate/
+    :method: GET
+
+    :param name: The name of operated user.
+    :type name: :class:`str`
+    """
     next = request.args.get('next')
     the_user = User.query.filter(User.name == name).one()
     # should not allow the user to deactivate himself!
@@ -175,6 +257,22 @@ def user_deactivate(name):
 @bp.route('/users/<name>/delete/')
 @admin_required
 def user_delete(name):
+    """Delete the given user.
+
+    This view accepts an extra query string argument `next`, where the visitor
+    will be redirected to `next` after the operation.  If `next` is not given,
+    the visitor will be redirected to :func:`~railgun.website.admin.users`.
+
+    .. note::
+
+        An administrator cannot delete him or herself.
+
+    :route: /admin/users/<name>/delete/
+    :method: GET
+
+    :param name: The name of operated user.
+    :type name: :class:`str`
+    """
     next = request.args.get('next')
     the_user = User.query.filter(User.name == name).one()
     # should not allow the user to delete himself!
@@ -194,7 +292,7 @@ def user_delete(name):
     return redirect(next or url_for('.users'))
 
 
-def show_handins(username=None):
+def _show_handins(username=None):
     """Render an administrator page to show submissions.
 
     :param user: The interested user's name. If not given, show submissions
@@ -232,18 +330,50 @@ def show_handins(username=None):
 @bp.route('/handin/')
 @admin_required
 def handins():
-    return show_handins(None)
+    """The admin page to show all submissions.
+
+    This page supports page navigation, thus accepts `page` and `perpage`
+    query string argument, where `page` defines the navigated page id
+    (>= 1), and `perpage` defines the page size (default 10).
+
+    :route: /admin/handin/
+    :method: GET
+    :template: admin.handins.html
+    """
+    return _show_handins(None)
 
 
 @bp.route('/handin/<username>/')
 @admin_required
 def handins_for_user(username):
-    return show_handins(username)
+    """The admin page to show all submissions from a given user.
+
+    This page supports page navigation, thus accepts `page` and `perpage`
+    query string argument, where `page` defines the navigated page id
+    (>= 1), and `perpage` defines the page size (default 10).
+
+    :route: /admin/handin/<username>/
+    :method: GET
+    :template: admin.handins.html
+
+    :param username: The name of queried user.
+    :type username: :class:`str`
+    """
+    return _show_handins(username)
 
 
 @bp.route('/runqueue/clear/')
 @admin_required
 def runqueue_clear():
+    """Stop the runner queue, set the score of all pending and running
+    submissions to 0.0, and the state to `Rejected`.
+    The visitor will be redirected to :func:`~railgun.website.admin.handins`
+    after the operation takes place.
+
+    :route: /admin/runqueue/clear/
+    :method: GET
+    """
+
     try:
         runner_app.control.discard_all()
         print db.session.query(Handin) \
@@ -267,10 +397,17 @@ def runqueue_clear():
 @bp.route('/scores/')
 @admin_required
 def scores():
+    """The admin page to list all homework assignments, each with a link
+    to the homework score table.
+
+    :route: /admin/scores/
+    :method: GET
+    :template: admin.scores.html
+    """
     return render_template('admin.scores.html')
 
 
-def make_csv_report(q, display_headers, raw_headers, pagetitle, filename):
+def _make_csv_report(q, display_headers, raw_headers, pagetitle, filename):
     def make_record(itm, hdr):
         if isinstance(itm, dict):
             return tuple(itm[h] for h in hdr)
@@ -302,6 +439,20 @@ def make_csv_report(q, display_headers, raw_headers, pagetitle, filename):
 @bp.route('/hwscores/<hwid>/')
 @admin_required
 def hwscores(hwid):
+    """The admin page to view the student score table of a given homework.
+
+    All users except the administrators will be listed on the table, even
+    if he or she does not upload any submission.  Only the highest score
+    of a user will be displayed.
+
+    The view accepts a query string argument `csvfile`, and if `csvfile` is
+    set to 1, a csv data file will be responded to the visitor instead of
+    a html table page.
+
+    :route: /admin/hwscores/<hwid>/
+    :method: GET
+    :template: admin.csvdata.html
+    """
     def make_record(itm, hdr):
         return tuple([getattr(itm, h) for h in hdr])
 
@@ -352,7 +503,7 @@ def hwscores(hwid):
         for u in users
     ]
 
-    return make_csv_report(
+    return _make_csv_report(
         csvdata,
         display_headers,
         raw_headers,
