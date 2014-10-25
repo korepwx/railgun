@@ -140,6 +140,7 @@ class BaseHost(object):
         if not uid:
             self.config.user_id = 0
             self.config.group_id = 0
+            return
 
         # record user name for later release
         self.runner_user = uid
