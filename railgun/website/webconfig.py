@@ -11,6 +11,9 @@ from config import *
 # When DEBUG is set to True, Flask debugging console will be enabled.
 DEBUG = False
 
+# Which network interface should "website.py" listen on?
+INTERFACE = ('127.0.0.1', 5000)
+
 # MAX_CONTENT_LENGTH controls the maximum request size for flask to handle
 # NOTE: we want to display a message instead of HTTP error when the user
 #       uploads a large (but not too large) archive file, so we limit

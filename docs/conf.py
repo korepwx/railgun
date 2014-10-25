@@ -298,6 +298,7 @@ intersphinx_mapping = {
     'http://www.sqlalchemy.org/docs/': None,
     'http://flask.pocoo.org/docs/': None,
     'http://flask-wtf.readthedocs.org/en/latest/': None,
+    'http://flask-login.readthedocs.org/en/latest/': None,
     'http://pythonhosted.org/Flask-Babel/': None,
     'http://pythonhosted.org/Flask-SQLAlchemy/': None,
     'http://babel.pocoo.org/docs/': None,

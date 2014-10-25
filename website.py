@@ -11,4 +11,5 @@ from railgun.website.context import app
 # We may run flask web server individually, or we may run through other
 # interfaces like uWSGI. Only start the server when we start it as main.
 if (__name__ == '__main__'):
-    app.run()
+    host, port = app.config['INTERFACE']
+    app.run(host=host, port=port)
