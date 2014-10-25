@@ -662,7 +662,7 @@ navigates.add(
                                endpoint='scores'),
             NaviItem(
                 title=lazy_gettext('Documentation'),
-                url='http://secoder-railgun.readthedocs.org/',
+                url=app.config['ONLINE_DOC_URL'],
                 identity='documentation',
             ),
             NaviItem.make_view(title=lazy_gettext('FAQ'),
