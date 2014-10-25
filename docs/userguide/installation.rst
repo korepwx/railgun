@@ -57,7 +57,7 @@ After all the Python requirements are installed, you may run the website by:
 .. code-block:: bash
 
     . env/bin/activate
-    python website.py
+    python manage.py build-cache && python website.py
 
 The error logs will be output to ``logs/website.log``.  However, if you wish
 to view the logs on screen, and to enable the website to auto-relaunch after
@@ -111,16 +111,14 @@ queue by the following commands:
 .. code-block:: bash
 
     . env/bin/activate
-    python runner.py
+    python manage.py build-cache && python runner.py
 
 The final step is to create a default admin account.  Create a new file
 ``config/users.csv`` and copy the following text into this file::
-
-.. code-block:: csv
 
     name,password,email,admin
     "admin","pbkdf2:sha1:1000$aWa1MeYA$812c7fe6cfa00060b6e3fe0dfbbe99da98b6d1eb","admin@example.org",True
 
 Open a web browser and navigate to
 `http://localhost:5000 <http://localhost:5000>`_, and you may log into the
-system by `admin` account, of which the password is `admin123`.
+system by `admin` account, whose password is `admin123`.
