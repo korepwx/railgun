@@ -37,8 +37,8 @@ def get_best_locale_name(locale_names):
     current request.
 
     The locales are evaluated according to the language, script and territory.
-    If no best choice is found, fallback to ``app.config['DEFAULT_LOCALE']``.
-    Moreover, if even ``app.config['DEFAULT_LOCALE']`` does not appear in
+    If no best choice is found, fallback to ``config.DEFAULT_LOCALE``.
+    Moreover, if even ``config.DEFAULT_LOCALE`` does not appear in
     `locale_names`, choose the last item in `locale_names`.
 
     Usage:

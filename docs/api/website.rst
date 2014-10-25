@@ -118,6 +118,12 @@ Object                                                   Description
 ======================================================== =======================================================
 
 
+Flask-Login Integration
+-----------------------
+
+.. automodule:: railgun.website.credential
+    :members:
+
 Common Utilities
 ----------------
 
@@ -146,10 +152,11 @@ Some of the views support extra arguments in the query string.  For example,
 the login page support an extra `next` argument, representing what url to
 redirect to after the user has successfully logged in::
 
-
     /signin/?next=http%3A//www.baidu.com
 
-Which will redirect the logged user to `www.baidu.com`.
+Which will redirect the logged user to `www.baidu.com`.  Other modules may
+accept `page` and `perpage` arguments, to define the behaviour of page
+navigation.
 
 
 .. automodule:: railgun.website.views
@@ -160,4 +167,11 @@ Views for Administrators
 ------------------------
 
 .. automodule:: railgun.website.admin
+    :members:
+
+
+Views for WebAPI
+----------------
+
+.. automodule:: railgun.website.api
     :members:

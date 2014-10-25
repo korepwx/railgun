@@ -11,6 +11,7 @@ This module formats markdown manual into html pages.
 
 import os
 
+from flask import render_template
 from markdown import markdown
 from jinja2 import FileSystemLoader, Environment
 
@@ -106,6 +107,18 @@ class ManualPage(object):
         """Make pure markdown source targeted for general usage."""
         best_locale = get_best_locale_name(self.locales)
         return self._make_markdown(locale=best_locale, webpage=False)
+
+
+def translated_page(name):
+    """Render the translated page `name` to client."""
+    title, content = manual_pages[name].get()
+    return render_template('manual.html', title=title, content=content)
+
+
+def translated_page_source(name):
+    """Render the markdown source of the translated page."""
+    return manual_pages[name].markdown(), 200, \
+        {'Content-Type': 'text/x-markdown; charset=utf-8'}
 
 manual_pages = {
     k: ManualPage(k)
