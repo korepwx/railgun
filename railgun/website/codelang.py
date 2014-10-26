@@ -5,6 +5,21 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # This file is released under BSD 2-clause license.
 
+"""Railgun homework can be configured to accept submissions in different
+programming languages.
+
+The type of content for various languages may be different.  For example,
+a Python submission may be an archive file, while a NetAPI submission
+may be just a url address.
+This requires Railgun to generate different forms for these languages,
+and to handle the POST data differently according to the submission type.
+
+Thid module provides :class:`CodeLanguage` as the base class to generate
+forms and to handle requests.  Derived from :class:`CodeLanguage`,
+:class:`PythonLanguage`, :class:`JavaLanguage`, :class:`NetApiLanguage`
+and :class:`InputLanguage` are the actual implementations.
+"""
+
 import os
 import base64
 import cPickle as pickle
@@ -21,28 +36,76 @@ from railgun.runner.tasks import run_python, run_netapi, run_input
 
 
 class CodeLanguage(object):
-    """the base class for all uploading utilities of particular language"""
+    """The base class for all programming language handlers.
+    A derived class must override three methods: :meth:`upload_form`,
+    :meth:`do_handle_upload` and :meth:`do_handle_download`.
+
+    :param lang: The programming language identity.
+    :type lang: :class:`str`
+    :param lang_name: The translated programming language name.
+    :type lang_name: :class:`~railgun.common.lazy_i18n.GetTextString`
+    """
 
     def __init__(self, lang, lang_name):
         self.lang = lang
         self.name = lang_name
 
-    def make_db_record(self, handid, hw, lang):
-        """Make a Handin record"""
-        # Note: g.ddl_scale is setup in views.homework
+    def make_db_record(self, handid, hw):
+        """Create a new submission in the database.
+
+        The state of the new submission will be `Pending`.  The associated
+        user will be :data:`~flask.ext.login.current_user`, the `ctime` will
+        be set to :token:`g.ddl_date`, and the `scale` will be set to
+        :token:`g.ddl_scale`.
+
+        .. note::
+
+            :token:`g.ddl_date` and :token:`g.ddl_scale` is initialized in
+            :func:`railgun.website.views.homework`.  We use these two
+            variables instead of :func:`~railgun.common.dateutil.utc_now`,
+            because the time may change and the deadline may expire during
+            the request lifetime.
+
+        :param handid: The submission uuid.
+        :type handid: :class:`str`
+        :param hw: The homework this submission belongs to.
+        :type hw: :class:`~railgun.common.hw.Homework`
+
+        :return: The created :class:`~railgun.website.models.Handin` object.
+        """
+        # Note: g.ddl_scale is setup in :func:`railgun.website.
         #       we must only rely on this scale, because such deadline may
-        #       pass when processing the request
-        handin = Handin(uuid=handid, hwid=hw.uuid, lang=lang, state='Pending',
-                        user_id=current_user.id, scale=g.ddl_scale)
+        #       expire just during the time we process the request!
+        handin = Handin(uuid=handid, hwid=hw.uuid, lang=self.lang,
+                        state='Pending', user_id=current_user.id,
+                        scale=g.ddl_scale)
+        handin.set_ctime(g.ddl_date)
         db.session.add(handin)
         db.session.commit()
         return handin
 
     def upload_form(self, hw):
-        """make handin form for given `hw`."""
+        """Generate an upload form for the given homework in this language.
+        Derived classes must override this method.
 
-    def _store_content(self, handid, content):
-        """store `content` into upload store directory"""
+        :param hw: The homework instance.
+        :type hw: :class:`~railgun.common.hw.Homework`
+        """
+        raise NotImplementedError()
+
+    def store_content(self, handid, content):
+        """Store the original data of given submission onto disk.
+
+        Data file is placed under ``config.UPLOAD_STORE_DIR``.
+        If ``config.STORE_UPLOAD`` is disabled, this method will do nothing.
+        `content` may be any type of object, which will be serialized before
+        writing to disk file.
+
+        :param handid: The submission uuid.
+        :type handid: :class:`str`
+        :param content: The original data object.
+        :type content: :class:`object`
+        """
         if not app.config['STORE_UPLOAD']:
             return
         if not os.path.isdir(app.config['UPLOAD_STORE_DIR']):
@@ -51,24 +114,49 @@ class CodeLanguage(object):
         with open(fpath, 'wb') as f:
             f.write(pickle.dumps(content))
 
-    def _load_content(self, handid):
-        """load `content` from upload store directory."""
+    def load_content(self, handid):
+        """Load the original data of given submission from disk file.
+
+        :param handid: The submission uuid.
+        :type handid: :class:`str`
+        :return: The loaded object, or :data:`None` if data file not exist.
+        """
         fpath = os.path.join(app.config['UPLOAD_STORE_DIR'], handid)
         if os.path.isfile(fpath):
             with open(fpath, 'rb') as f:
                 return pickle.loads(f.read())
 
-    def _handle_upload(self, handid, hw, lang, form):
-        pass
+    def do_handle_upload(self, handid, hw, form):
+        """Called by :meth:`handle_upload` to help handle the submission.
+        Derived classes should implement this to store the submission data,
+        and to put this submission into runner queue.
 
-    def handle_upload(self, handid, hw, lang, form):
-        """handle upload request from student."""
+        :param handid: The submission uuid.
+        :type handid: :class:`str`
+        :param hw: The homework instance.
+        :type hw: :class:`~railgun.common.hw.Homework`
+        :param form: The upload form generated by :meth:`upload_form`
+        :type form: Derived class of :class:`flask_wtf.Form`
+        """
+        raise NotImplementedError()
+
+    def handle_upload(self, handid, hw, form):
+        """Handle the uploaded form data submitted to the given homework
+        in this programming language.
+
+        :param handid: The submission uuid.
+        :type handid: :class:`str`
+        :param hw: The homework instance.
+        :type hw: :class:`~railgun.common.hw.Homework`
+        :param form: The upload form generated by :meth:`upload_form`
+        :type form: Derived class of :class:`flask_wtf.Form`
+        """
         # save handin into the database
-        handin = self.make_db_record(handid, hw, lang)
+        handin = self.make_db_record(handid, hw)
 
         # post the job to run queue
         try:
-            self._handle_upload(handid, hw, lang, form)
+            self.do_handle_upload(handid, hw, form)
         except Exception:
             # if we cannot post to run queue, modify the handin status to error
             handin.state = 'Rejected'
@@ -78,36 +166,60 @@ class CodeLanguage(object):
             # re-raise this exception
             raise
 
-    def _handle_download(self, stored_content):
-        pass
+    def do_handle_download(self, stored_content):
+        """Called by :meth:`handle_download` to help send the original
+        submission data to the client. Derived classes should override
+        this to extract data from stored objects, to set http headers,
+        and finish other necessary process.
+
+        :param stored_content: The stored object of this submission.
+            Loading object from disk is finished in :meth:`do_handle_download`.
+        :type stored_content: :class:`object`
+        """
+        raise NotImplementedError()
 
     def handle_download(self, handid):
-        """handle download request from student."""
-        payload = self._load_content(handid)
+        """Handle user's request to download original uploaded data of
+        the given submission.
+
+        :param handid: The submission uuid.
+        :type handid: :class:`str`
+        """
+        payload = self.load_content(handid)
         if not payload:
             abort(404)
-        return self._handle_download(payload)
+        return self.do_handle_download(payload)
 
 
 class StandardLanguage(CodeLanguage):
-    """standard code language that accepts a packed archive as handin"""
+    """The basic handler for `standard` programming languages (like Python
+    and Java) that accepts archive files as submissions.
+
+    This handler class will store the uploaded file content as well as its
+    file name onto disk, in that Railgun relies on file extension to detect
+    the archive file format.
+
+    :param lang: The programming language identity.
+    :type lang: :class:`str`
+    :param lang_name: The translated programming language name.
+    :type lang_name: :class:`~railgun.common.lazy_i18n.GetTextString`
+    """
 
     def __init__(self, lang, lang_name):
         super(StandardLanguage, self).__init__(lang, lang_name)
 
     def upload_form(self, hw):
-        """make a handin form that uploads an archive"""
         return UploadHandinForm()
 
-    def _handle_upload(self, handid, hw, lang, form):
+    def do_handle_upload(self, handid, hw, form):
         filename = form.handin.data.filename
         fcnt = base64.b64encode(form.handin.data.stream.read())
         # We store the user uploaded file in local storage!
-        self._store_content(handid, {'fname': filename, 'fcnt': fcnt})
+        self.store_content(handid, {'fname': filename, 'fcnt': fcnt})
         # Push the submission to run queue
         run_python.delay(handid, hw.uuid, fcnt, {'filename': filename})
 
-    def _handle_download(self, stored_content):
+    def do_handle_download(self, stored_content):
         fcnt = base64.b64decode(stored_content['fcnt'])
         fname = stored_content['fname']
         return send_file(StringIO(fcnt), as_attachment=True,
@@ -115,63 +227,74 @@ class StandardLanguage(CodeLanguage):
 
 
 class PythonLanguage(StandardLanguage):
-    """code language implementation of Python"""
+    """The handler for Python programing language.
+    This is a derived class from :class:`StandardLanguage`, which only
+    overrides the language identity and translated name.
+    """
 
     def __init__(self):
         super(PythonLanguage, self).__init__('python', lazy_gettext('Python'))
 
 
 class JavaLanguage(StandardLanguage):
-    """code language implementation of Java"""
+    """The handler for Java programing language.
+    This is a derived class from :class:`StandardLanguage`, which only
+    overrides the language identity and translated name.
+    """
 
     def __init__(self):
         super(JavaLanguage, self).__init__('java', lazy_gettext('Java'))
 
 
 class NetApiLanguage(CodeLanguage):
-    """code language that accepts a URL address as handin"""
+    """The handler for `netapi` programming languages that accepts a url
+    address as submission data, to check whether the remote server mentioned
+    by this url works properly.
+    """
 
     def __init__(self):
         super(NetApiLanguage, self).__init__('netapi', 'NetAPI')
 
-    def _handle_upload(self, handid, hw, lang, form):
+    def do_handle_upload(self, handid, hw, form):
         # We store the user uploaded file in local storage!
-        self._store_content(handid, form.address.data)
+        self.store_content(handid, form.address.data)
         # Push the submission to run queue
         run_netapi.delay(handid, hw.uuid, form.address.data, {})
 
-    def _handle_download(self, stored_content):
+    def do_handle_download(self, stored_content):
         resp = make_response(stored_content)
         resp.headers['Content-Type'] = 'text/plain'
         return resp
 
     def upload_form(self, hw):
-        """make a handin form that inputs an address"""
         return AddressHandinForm()
 
 
 class InputLanguage(CodeLanguage):
-    """code language that accepts a CSV data as black-box input."""
+    """The handler for `input` programming languages that accepts csv data
+    as submission.
+    """
 
     def __init__(self):
         super(InputLanguage, self).__init__('input', 'CsvData')
 
-    def _handle_upload(self, handid, hw, lang, form):
+    def do_handle_upload(self, handid, hw, form):
         # We store the user uploaded file in local storage!
-        self._store_content(handid, form.csvdata.data)
+        self.store_content(handid, form.csvdata.data)
         # Push the submission to run queue
         run_input.delay(handid, hw.uuid, form.csvdata.data, {})
 
-    def _handle_download(self, stored_content):
+    def do_handle_download(self, stored_content):
         resp = make_response(stored_content)
         resp.headers['Content-Type'] = 'text/csv'
         return resp
 
     def upload_form(self, hw):
-        """make a handin form that inputs CSV data"""
         return CsvHandinForm()
 
 
+#: A `dict(Language Identity -> CodeLanguage`) that maps identities to
+#: programming language handlers.
 languages = {
     'python': PythonLanguage(),
     'java': JavaLanguage(),

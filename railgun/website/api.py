@@ -57,7 +57,32 @@ def secret_api(method):
 @app.route('/api/handin/report/<uuid>/', methods=['POST'])
 @secret_api
 def api_handin_report(uuid):
-    """Set handin score from the Runner."""
+    """Store the final score and detailed reports of given submission.
+
+    This view will compare `uuid` in POST object to the `uuid` argument.
+    If they are not equal, the operation will be rejected, since it is
+    likely to be an attack.
+
+    If the submission state is neither `Running` nor `Pending`, the operation
+    will be rejected, since it is likely to be a programmatic bug.
+
+    If the reported score is 0.0, but the state is `Accepted`, then it
+    will be modified to `Rejected`, since it is wired for a zero-score
+    submission to be `Accepted`.
+
+    If the reported brief result message is empty, it will be set to
+    a translated version of `"Your submission is accepted."` or
+    `"Your submission is rejected."`, depending on the reported state.
+
+    The :class:`~railgun.website.models.FinalScore` table records will
+    also be updated in this view.
+
+    :route: /api/handin/report/<uuid>/
+    :payload: A serialized :class:`~railgun.common.hw.HwScore` object.
+    :param uuid: The uuid of submission.
+    :type uuid: :class:`str`
+    :return: ``OK`` if succeeded, error messages otherwise.
+    """
     obj = request.payload
 
     # check uuid, so that we can prevent replay attack
@@ -126,7 +151,20 @@ def api_handin_report(uuid):
 @app.route('/api/handin/start/<uuid>/', methods=['POST'])
 @secret_api
 def api_handin_start(uuid):
-    """Update the progress of handin from "Pending" to "Running"."""
+    """Change the state of given submission from `Pending` to `Running`.
+
+    This view will compare `uuid` in POST object to the `uuid` argument.
+    If they are not equal, the operation will be rejected, since it is
+    likely to be an attack.
+
+    If the submission is not `Pending`, the operation will also be rejected,
+    since it may be a duplicated request from the runner.
+
+    :payload: {"uuid": uuid of submission}
+    :param uuid: The uuid of submission.
+    :type uuid: :class:`str`
+    :return: ``OK`` if succeeded, error messages otherwise.
+    """
     obj = request.payload
 
     # check uuid, so that we can prevent replay attack
@@ -157,7 +195,34 @@ def api_handin_start(uuid):
 @app.route('/api/handin/proclog/<uuid>/', methods=['POST'])
 @secret_api
 def api_handin_proclog(uuid):
-    """Update (exitcode, stdout, stderr) of handin."""
+    """Store the process outputs for a given submission.
+
+    This api view is usually requested after the reports of the corresponding
+    submission has been stored, so it would not change either the score or
+    the state of the submission.
+
+    If the submission state is still `Pending` or `Running`, indicating that
+    the reports have not been stored (probably the process exited abnormally
+    before report the score), the state will be updated to `Rejected`.
+
+    This view will compare `uuid` in POST object to the `uuid` argument.
+    If they are not equal, the operation will be rejected, since it is
+    likely to be an attack.
+
+    :route: /api/handin/proclog/<uuid>/
+    :payload:
+
+    .. code-block:: python
+
+        {"uuid": uuid of submission,
+         "exitcode": The exitcode of the process,
+         "stdout": The standard output of the process,
+         "stderr": The standard error output of the process}
+
+    :param uuid: The uuid of submission.
+    :type uuid: :class:`str`
+    :return: ``OK`` if succeeded, error messages otherwise.
+    """
     obj = request.payload
 
     # check uuid, so that we can prevent replay attack
@@ -197,5 +262,6 @@ def api_myip():
 
     :route: /api/myip/
     :method: GET
+    :return: The visitor's ip address.
     """
     return request.remote_addr, 200, {'Content-Type': 'text/plain'}

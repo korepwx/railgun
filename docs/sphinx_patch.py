@@ -21,6 +21,10 @@ class PatchedDataDocumenter(ModuleLevelDocumenter):
     option_spec = dict(ModuleLevelDocumenter.option_spec)
     option_spec["annotation"] = annotation_option
 
+    skip_annotation = {
+        'railgun.website.codelang.languages',
+    }
+
     @classmethod
     def can_document_member(cls, member, membername, isattr, parent):
         return isinstance(parent, ModuleDocumenter) and isattr
@@ -33,7 +37,9 @@ class PatchedDataDocumenter(ModuleLevelDocumenter):
             except ValueError:
                 pass
             else:
-                if not (objrepr.startswith('<') and objrepr.endswith('>')):
+                if self.fullname in PatchedDataDocumenter.skip_annotation:
+                    pass
+                elif not (objrepr.startswith('<') and objrepr.endswith('>')):
                     self.add_line(u'   :annotation: = ' + objrepr, '<autodoc>')
         elif self.options.annotation is SUPPRESS:
             pass

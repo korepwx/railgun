@@ -34,6 +34,25 @@ Object                                              Description
 =================================================== ========================================
 
 
+Per-Request Objects
+-------------------
+
+Per-request objects should be attached to Flask request context object
+:data:`~flask.g`.  The registered objects are listed in the following table:
+
+.. tabularcolumns:: |p{6cm}|p{9cm}|
+
+======================= ============================================
+Object                  Description
+======================= ============================================
+:token:`g.homeworks`    Localized homework collection.
+                        Refer to :mod:`railgun.website.hw` for more
+                        details.
+:token:`g.utcnow`       A :class:`~datetime.datetime` representing
+                        current time in UTC timezone.
+======================= ============================================
+
+
 Database Models
 ---------------
 
@@ -139,6 +158,41 @@ Translation Utilities
     :members:
 
 
+Localized Homeworks
+-------------------
+
+.. automodule:: railgun.website.hw
+    :members:
+
+
+Navibar Registry
+----------------
+
+.. automodule:: railgun.website.navibar
+    :members:
+
+
+Script Repository
+-----------------
+
+.. automodule:: railgun.website.scriptlibs
+    :members:
+
+
+Third-party Authentication
+--------------------------
+
+.. automodule:: railgun.website.userauth
+    :members:
+
+
+Tsinghua Authentication
+-----------------------
+
+.. automodule:: railgun.website.thuauth
+    :members:
+
+
 WTF Form Models
 ---------------
 
@@ -175,4 +229,25 @@ Views for WebAPI
 ----------------
 
 .. automodule:: railgun.website.api
+    :members:
+
+
+Manual Pages Utilities
+----------------------
+
+.. automodule:: railgun.website.manual
+    :members:
+
+
+Handle Submissions of Various Languages
+---------------------------------------
+
+.. automodule:: railgun.website.codelang
+    :members:
+
+
+HTML Formatters of Various Objects
+----------------------------------
+
+.. automodule:: railgun.website.renders
     :members:

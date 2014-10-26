@@ -913,6 +913,8 @@ class HwPartialScore(object):
 
 class HwScore(object):
     """A serializable final score object.
+    You may refer to :ref:`json_HwScore` for more details about the
+    JSON format.
 
     :param accepted: Whether the submission is accepted?
     :type accepted: :class:`bool`

@@ -326,7 +326,9 @@ def homework(slug):
             handid = uuid.uuid4().get_hex()
             try:
                 languages[handin_lang].handle_upload(
-                    handid, hw, handin_lang, forms[handin_lang]
+                    handid,
+                    hw,
+                    forms[handin_lang]
                 )
                 flash(
                     _('You submission is accepted, please wait for results.'),
