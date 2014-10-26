@@ -53,10 +53,10 @@ translated text with `lazy_gettext`.
 However, we still have problems. :class:`speaklater._LazyString` could not
 be serialized into a JSON message, nor could it be stored into database.
 
-This is why I create my own :class:`GetTextString` as well as `gettext` and
-`lazy_gettext` methods.  However, these utilities do have some limitations:
+This is why I create my own :class:`GetTextString` and :func:`lazy_gettext`
+method.  However, these utilities do have some limitations:
 
-*   The arguments passed to `gettext` and `lazy_gettext` must be "plain"
+*   The arguments passed to :func:`lazy_gettext` must be "plain"
     objects, including :class:`bool`, :class:`str`, :class:`unicode` and
     the numeric types.
 *   `ngettext`, `dgettext` and `ndgettext` are not supported.
@@ -103,6 +103,8 @@ lazy_gettext = GetTextString
 def lazystr_to_plain(s):
     """Convert a :class:`basestring` or a :class:`GetTextString` object to
     a JSON serializable plain object.
+    You may refer to :ref:`json_GetTextString` for more details about the
+    JSON format.
 
     :param s: The string object to be converted.
     :return: A plain object that is composed only with :class:`dict`,
@@ -118,6 +120,8 @@ def lazystr_to_plain(s):
 
 def plain_to_lazystr(s):
     """Convert a plain object to :class:`basestring` or :class:`GetTextString`.
+    You may refer to :ref:`json_GetTextString` for more details about the
+    JSON format.
 
     :param s: The plain object.
     :return: A :class:`basestring` or a :class:`GetTextString` object.

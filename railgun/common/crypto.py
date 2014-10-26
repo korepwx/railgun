@@ -12,8 +12,38 @@ from Crypto.Cipher import AES
 class AESCipher(object):
     """Wrap the AES encryption algorithm so that you can use secret keys
     in any size to encrypt a plain text in any length, and decrypt it
-    backwards.  You don't need to worry about the paddings, in that this
-    class will take care of it for you.
+    backwards.
+
+    The technical parameters of this AES cipher is:
+
+    .. tabularcolumns:: |p{5cm}|p{10cm}|
+
+    =============== ========================================
+    Parameter       Description
+    =============== ========================================
+    BlockSize       16
+    IVSize          Equal to `BlockSize`.
+    KeySize         32
+    =============== ========================================
+
+    Since AES cipher is a block cipher, the size of plain text must be a
+    multiple of `BlockSize` bytes.  :class:`AESCipher` would pad the input
+    text to a multiple of `KeySize` bytes by following method:
+
+    *   Calculate the count of padded bytes: ``KeySize - len(data) % KeySize``.
+        We mark this count as `padsize`.
+    *   Append ``chr(padsize) * padsize`` (`padsize` of `chr(padsize)`
+        characters) to the tail of input text.
+    *   Encrypt on such input text.  We mark this `ciphertext`.
+
+    AES cipher relies on not only the `key` to decrypt a cipher text, but also
+    the `initial vector` to do the decryption.  So we must prepend `IV` to the
+    front of cipher text.  Thus the final encrypted text should be::
+
+        `initial vector` (`IVSize` bytes) + `ciphertext` (padded)
+
+    Any implementation of AES cipher in the runner hosts must be compatible
+    with this method.
 
     :param key: Encryption and decryption key for AES algorithm.
         If `len(key)` != 32, it will be padded or truncated.

@@ -18,6 +18,18 @@ from railgun.common.lazy_i18n import lazy_gettext
 
 
 def secret_api(method):
+    """Decorate the view method so that the POST data will be first decrypted
+    via AES cipher, then decoded as JSON message.  The resulted object will
+    be stored in `flask.request.payload`.
+
+    This decorator expects the request header
+    ``Content-Type: application/octet-stream``, otherwise it will return
+    a 400 http error.  Also, if it could not decrypt the POST data via
+    AES cipher, or if it could not decode the JSON message, it will return
+    a 400 http error as well.
+
+    :param method: The method to be decorated.
+    """
     @wraps(method)
     def inner(*args, **kwargs):
         if request.headers['content-type'] != 'application/octet-stream':
@@ -28,14 +40,14 @@ def secret_api(method):
         try:
             payload = DecryptMessage(payload, app.config['COMM_KEY'])
         except Exception:
-            return 'decryption failure'
+            return make_response(('decryption failure', 400))
 
         # decode payload in json
         try:
             request.payload = json.loads(payload)
         except Exception:
             app.logger.debug('Not valid json: %s.' % repr(payload))
-            return 'not valid json'
+            return make_response(('not valid json', 400))
 
         return method(*args, **kwargs)
     return inner
@@ -180,4 +192,10 @@ def api_handin_proclog(uuid):
 @csrf.exempt
 @app.route('/api/myip/')
 def api_myip():
+    """API routing that send back the visitor's ip address.
+    The Content-Type of response is `text/plain`.
+
+    :route: /api/myip/
+    :method: GET
+    """
     return request.remote_addr, 200, {'Content-Type': 'text/plain'}

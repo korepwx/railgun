@@ -115,6 +115,7 @@ Object                                                   Description
 :func:`~railgun.website.api.secret_api`                  Decrypt the posted data and decode the plain text as
                                                          json text, and store the loaded object as
                                                          ``request.payload``.
+:data:`~railgun.website.context.csrf`:token:`.exempt()`  Skip CSRF token validation for POSTed requests.
 ======================================================== =======================================================
 
 

@@ -26,7 +26,7 @@ class UserPool(object):
         now_time = self.current_time()
         for u in self.users:
             user_expire = self._expires[u]
-            if (user_expire < now_time):
+            if user_expire < now_time:
                 self._expires[u] = now_time + expires
                 return u
 

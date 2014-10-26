@@ -113,11 +113,7 @@ Translation Utility
 -------------------
 
 .. automodule:: railgun.common.lazy_i18n
-
-.. autoclass:: railgun.common.lazy_i18n.GetTextString
     :members:
-
-.. autofunction:: railgun.common.lazy_i18n.lazy_gettext
 
 
 Operation System Utility

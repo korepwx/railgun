@@ -827,6 +827,9 @@ class HwPartialScore(object):
     and sumed up to form the final score.  A :class:`HwPartialScore` is
     the score of one scorer.
 
+    You may refer to :ref:`json_HwPartialScore` for more details about
+    the JSON format.
+
     :param scorer_name: The human readable name of this scorer.
     :type scorer_name: :class:`railgun.common.lazy_i18n.GetTextString`
     :param scorer_type_name: The type name of this scorer.
