@@ -5,8 +5,12 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # This file is released under BSD 2-clause license.
 
-"""
-This module formats markdown manual into html pages.
+"""This module formats markdown manuals into html pages.
+
+The manual pages support translations.  They are written in markdown and
+stored under ``railgun/website/manual``.
+Each directory is one single manual page, where each locale holds the
+translated contents of this manual page in "``[lang].md``".
 """
 
 import os
@@ -110,16 +114,29 @@ class ManualPage(object):
 
 
 def translated_page(name):
-    """Render the translated page `name` to client."""
+    """Render the requested manual page to visitor.
+    The best locale for current user will be detected automatically.
+
+    :template: manual.html
+    :param name: The manual page name.
+    :type name: :class:`str`
+    """
     title, content = manual_pages[name].get()
     return render_template('manual.html', title=title, content=content)
 
 
 def translated_page_source(name):
-    """Render the markdown source of the translated page."""
+    """Render the source of requested manual page to visitor.
+    The best locale for current user will be detected automatically.
+
+    :param name: The manual page name.
+    :type name: :class:`str`
+    """
     return manual_pages[name].markdown(), 200, \
         {'Content-Type': 'text/x-markdown; charset=utf-8'}
 
+#: Cache all the manual page instances in memory, so that the markdown
+#: source code will only be formatted once.
 manual_pages = {
     k: ManualPage(k)
     for k in os.listdir(os.path.join(os.path.dirname(__file__), 'manual'))

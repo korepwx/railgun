@@ -23,6 +23,10 @@ SKIP_ANNOTATION = '|'.join(
         r'railgun\.website\.context\..*',
         r'railgun\.website\.credential\.login_manager',
         r'railgun\.website\.forms\..*',
+        r'railgun\.website\.hw\.homeworks',
+        r'railgun\.website\.manual\.manual_pages',
+        r'railgun\.website\.scriptlibs\.scripts',
+        r'railgun\.website\.userauth\.auth_providers',
     )
 )
 SKIP_ANNOTATION_RE = re.compile(SKIP_ANNOTATION)

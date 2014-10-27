@@ -16,7 +16,18 @@ from .models import User
 
 
 class TsinghuaAccount(object):
-    """We can only know username when we are playing with Tsinghua account."""
+    """Represent a Tsinghua remote account.
+
+    We can only know the username of Tsinghua accounts.  So we just put
+    a faked email into :attr:`email`.  Then the new users from Tsinghua
+    will be required to fill in their real emails.
+
+    You may refer to :func:`~railgun.website.credential.should_update_email`
+    to know about this feature.
+
+    :param name: The username of this user.
+    :type name: :class:`str`
+    """
 
     def __init__(self, name):
         self.name = name
@@ -27,7 +38,19 @@ class TsinghuaAccount(object):
 
 
 class TsinghuaAuthProvider(AuthProvider):
-    """Tsinghua auth provider that authenticates with info account."""
+    """The authentication provider that validates user with Tsinghua
+    info account.
+
+    You may activate this auth provider by adding the following contents
+    into ``config/website.py``::
+
+        AUTH_PROVIDERS += [(
+            'railgun.website.thuauth.TsinghuaAuthProvider', {
+                'name': 'tsinghua',
+                'auth_url': 'http://student.tsinghua.edu.cn/practiceLogin.do',
+            }
+        )]
+    """
 
     def __init__(self, name, auth_url):
         super(TsinghuaAuthProvider, self).__init__(name)

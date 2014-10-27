@@ -106,7 +106,12 @@ class CsvField(object):
         return str(value)
 
     def __repr__(self):
-        return '<Field(%s)>' % self.__class__.__name__
+        info = ['%s' % self.__class__.__name__]
+        if self.name:
+            info.append('name="%s"' % self.name)
+        if self.has_default:
+            info.append('default=%s' % repr(self.default))
+        return '<Field(%s)>' % ', '.join(info)
 
 
 class CsvInteger(CsvField):

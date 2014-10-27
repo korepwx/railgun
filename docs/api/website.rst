@@ -40,17 +40,23 @@ Per-Request Objects
 Per-request objects should be attached to Flask request context object
 :data:`~flask.g`.  The registered objects are listed in the following table:
 
-.. tabularcolumns:: |p{6cm}|p{9cm}|
+.. tabularcolumns:: |p{7cm}|p{8cm}|
 
-======================= ============================================
-Object                  Description
-======================= ============================================
-:token:`g.homeworks`    Localized homework collection.
-                        Refer to :mod:`railgun.website.hw` for more
-                        details.
-:token:`g.utcnow`       A :class:`~datetime.datetime` representing
-                        current time in UTC timezone.
-======================= ============================================
+=========================== ============================================
+Object                      Description
+=========================== ============================================
+:token:`g.homeworks`        :class:`~railgun.website.hw.HwSetProxy`
+                            instance.
+:token:`g.utcnow`           A :class:`~datetime.datetime` representing
+                            current time in UTC timezone.
+:token:`g.navibar_identity` The active navigation identity.  Refer to
+                            :mod:`~railgun.website.navibar` for more
+                            details.
+:token:`g.scripts`          The dependency libraries of current page.
+                            Refer to
+                            :class:`~railgun.website.scriptlibs.PageScripts`
+                            for more details.
+=========================== ============================================
 
 
 Database Models
@@ -158,8 +164,8 @@ Translation Utilities
     :members:
 
 
-Localized Homeworks
--------------------
+Homework Proxies
+----------------
 
 .. automodule:: railgun.website.hw
     :members:

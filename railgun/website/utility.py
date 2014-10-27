@@ -102,3 +102,15 @@ def get_avatar(user_or_email, size):
     schema = 'http://' if request.url.startswith('http://') else 'https://'
     ret = '%(schema)swww.gravatar.com/avatar/%(hashcode)s.jpg?s=%(size)d&d=mm'
     return ret % {'schema': schema, 'hashcode': hashcode, 'size': size}
+
+
+def is_email(login):
+    """Check whether the given login name is an email address.
+
+    :param login: The login name.
+    :type login: :class:`str`
+    :return: :data:`True` if is email, :data:`False` otherwise.
+    """
+    # TODO: Since the sign up and admin create user page all restrict the
+    #       characters to A-Za-z0-9_, just test whether '@' exists is enough.
+    return '@' in login
