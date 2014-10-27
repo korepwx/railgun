@@ -159,7 +159,7 @@ def user_edit(name):
     form = AdminUserEditForm(obj=the_user)
     if the_user.provider:
         auth_providers.init_form(the_user.provider, form)
-    form._the_user = the_user
+    form.the_user = the_user
 
     if form.validate_on_submit():
         # Set password if passwd field exists

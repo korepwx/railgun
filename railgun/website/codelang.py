@@ -54,17 +54,15 @@ class CodeLanguage(object):
         """Create a new submission in the database.
 
         The state of the new submission will be `Pending`.  The associated
-        user will be :data:`~flask.ext.login.current_user`, the `ctime` will
-        be set to :token:`g.ddl_date`, and the `scale` will be set to
-        :token:`g.ddl_scale`.
+        user will be :data:`~flask.ext.login.current_user`, and the `scale`
+        will be set to :token:`g.ddl_scale`.
 
         .. note::
 
-            :token:`g.ddl_date` and :token:`g.ddl_scale` is initialized in
-            :func:`railgun.website.views.homework`.  We use these two
-            variables instead of :func:`~railgun.common.dateutil.utc_now`,
-            because the time may change and the deadline may expire during
-            the request lifetime.
+            :token:`g.ddl_scale` is initialized in
+            :func:`railgun.website.views.homework`. We use this scale instead
+            of calculating on the fly because the time may change and the
+            deadline may expire during the request lifetime.
 
         :param handid: The submission uuid.
         :type handid: :class:`str`
