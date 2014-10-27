@@ -43,7 +43,7 @@ class MultiRowsTextArea(TextArea):
 class BaseForm(Form):
 
     def __init__(self, *args, **kwargs):
-        super(self, BaseForm).__init__(*args, **kwargs)
+        super(BaseForm, self).__init__(*args, **kwargs)
 
 
 class CreateUserForm(BaseForm):
