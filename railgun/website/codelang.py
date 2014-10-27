@@ -77,7 +77,6 @@ class CodeLanguage(object):
         handin = Handin(uuid=handid, hwid=hw.uuid, lang=self.lang,
                         state='Pending', user_id=current_user.id,
                         scale=g.ddl_scale)
-        handin.set_ctime(g.ddl_date)
         db.session.add(handin)
         db.session.commit()
         return handin
