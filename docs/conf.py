@@ -304,6 +304,7 @@ intersphinx_mapping = {
     'babel': ('http://babel.pocoo.org/docs/', None),
     'wtforms': ('http://wtforms.readthedocs.org/en/latest/', None),
     'celery': ('http://docs.celeryproject.org/en/latest/', None),
+    'requests': ('http://docs.python-requests.org/en/latest/', None),
 }
 
 # Chinese support for LaTeX

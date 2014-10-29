@@ -421,6 +421,7 @@ def _make_csv_report(q, display_headers, raw_headers, pagetitle, filename):
         for itm in q:
             writer.writerow(make_record(itm, raw_headers))
         io.flush()
+        io.seek(0, 0)   # important! we want send_file to read from the front
         return send_file(
             io,
             as_attachment=True,

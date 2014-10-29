@@ -127,6 +127,8 @@ The JSON object should follow the schema::
     }
 
 
+.. _list_of_api:
+
 List of APIs
 ------------
 

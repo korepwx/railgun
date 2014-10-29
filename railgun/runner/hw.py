@@ -8,4 +8,6 @@
 from railgun.common.hw import HwSet
 from . import runconfig
 
+#: Load the homeworks under ``config.HOMEWORK_DIR`` at the startup of runner
+#: queue.
 homeworks = HwSet(runconfig.HOMEWORK_DIR)

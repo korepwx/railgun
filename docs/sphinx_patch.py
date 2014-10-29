@@ -28,6 +28,7 @@ SKIP_ANNOTATION = '|'.join(
         r'railgun\.website\.scriptlibs\.scripts',
         r'railgun\.website\.userauth\.auth_providers',
         r'railgun\.runner\.context\..*',
+        r'railgun\.runner\.hw\.homeworks',
     )
 )
 SKIP_ANNOTATION_RE = re.compile(SKIP_ANNOTATION)

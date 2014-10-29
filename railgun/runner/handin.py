@@ -5,6 +5,16 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # This file is released under BSD 2-clause license.
 
+"""This module provides :class:`BaseHandin` as the basic interface of
+a submission handler, as well as derived classes targeted to different
+submission types.
+
+Submissions may be various in programming languages.  Each programming
+language should have a corresponding handler, which decodes the user
+uploaded data (for example, extracting the archive files, or parsing
+the csv data), and prepares for the runner host.
+"""
+
 import os
 import base64
 
@@ -17,11 +27,32 @@ from railgun.common.fileutil import Extractor
 
 
 class TempDiskUploadFile(object):
-    """Save base64 encoded upload data onto disk and delete it when leave."""
+    """Decode base64 file content and save to disk as a temporary file.
+
+    The file will be placed under ``config.TEMPORARY_DIR``.  If you manage
+    the :class:`TempDiskUploadFile` via ``with`` statement, then the file
+    will be removed automatically.  For example::
+
+        with TempDiskUploadFile(upload, '%s.zip' % uuid) as tempFile:
+            os.system('7z x "%s"' % tempeFile.path)
+
+    :param upload: The base64 encoded file content.
+    :type upload: :class:`str`
+    :param fname: The temporary file name.  If the chosen file name exists,
+        it will be overwritten.
+    :type fname: :class:`str`
+    :param ignore_error: A :class:`bool` indicating whether we should ignore
+        system exceptions when we are trying to delete the temporary file?
+    :type ignore_error: :class:`bool`
+    """
 
     def __init__(self, upload, fname, ignore_error=False):
+        #: Store the full path of this temporary file.
         self.path = os.path.join(runconfig.TEMPORARY_DIR, fname)
+        #: The original base64 encoded file content.
         self.upload = upload
+        #: Whether we should ignore the system exceptions when we are trying
+        #: to delete the temporary file?
         self.ignore_error = ignore_error
 
     def __enter__(self):
@@ -39,8 +70,15 @@ class TempDiskUploadFile(object):
 
 
 class BaseHandin(object):
-    """Basic handin management class.
+    """The basic interface of a submission handler.
 
+    :param lang: The programming language name of this handler.
+        Derived classes should provide this value in contructors.
+    :type lang: :class:`str`
+    :param handid: The uuid of this submission.
+    :type handid: :class:`str`
+    :param hwid: The uuid of the homework.
+    :type hwid: :class:`str`
     :param upload: The uploaded data of this submission.
         It may be base64 encoded byte sequence to represent an archive file
         in a `Python` submission, or a url address in a `NetAPI` submission.
@@ -50,40 +88,55 @@ class BaseHandin(object):
     :type options: :class:`dict`
     """
 
-    def __init__(self, handid, hwid, lang, upload, options):
-        # check whether options is dict
+    def __init__(self, lang, handid, hwid, upload, options):
+        #: The programming language of this handler.
+        self.lang = lang
+        # We require `options` to be a :class:`dict`
         if not isinstance(options, dict):
             raise TypeError("`options` should be dictionary.")
-        # get homework instance from all loaded homeworks
+        #: Store the corresponding :class:`~railgun.common.hw.Homework`
+        #: to `hwid`.
         self.hw = homeworks.get_by_uuid(hwid)
         if not self.hw:
             raise InternalServerError()
-        # check whether the desired language is supported by this homework.
+        # We require `lang` to be a valid programming language of this
+        # homework.
         if lang not in self.hw.get_code_languages():
             raise LanguageNotSupportError(lang)
-        # store handid & lang
+        #: The uuid of this submission.
         self.handid = handid
-        self.lang = lang
-        # store upload and options
+        #: The original uploaded data of this submission.
         self.upload = upload
+        #: The extra options of this submission.
         self.options = options
 
     def execute(self):
-        """Execute this handin, and report the result."""
+        """Run this submission and store the result.  Derived classes should
+        at least implement this.
+
+        :return: A :class:`tuple` of (`exitcode`, `stdout`, `stderr`).
+        """
+        raise NotImplementedError()
 
 
 class PythonHandin(BaseHandin):
-    """Python handin management class."""
+    """Python submission handler, derived from :class:`BaseHandin`.
+
+    :param handid: The uuid of this submission.
+    :type handid: :class:`str`
+    :param hwid: The uuid of the homework.
+    :type hwid: :class:`str`
+    :param upload: The base64 encoded archive file content.
+    :type upload: :class:`str`
+    :param options: {'filename': the original uploaded file name}
+    :type options: :class:`dict`
+    """
 
     def __init__(self, handid, hwid, upload, options):
-        super(PythonHandin, self).__init__(handid, hwid, 'python', upload,
+        super(PythonHandin, self).__init__('python', handid, hwid, upload,
                                            options)
-        self.archive = None
 
     def execute(self):
-        """Execute this handin as Python script. Should return
-        (exitcode, stdout, stderr)."""
-
         with PythonHost(self.handid, self.hw) as host:
             # put uploaded file content onto disk and then open the archive
             # this is because some Extractors may rely on disk files.
@@ -91,26 +144,34 @@ class PythonHandin(BaseHandin):
             archive_file = '%s%s' % (self.handid, archive_fext)
             with TempDiskUploadFile(self.upload, archive_file) as f:
                 try:
-                    self.archive = Extractor.open(f.path)
+                    extractor = Extractor.open(f.path)
                 except Exception:
                     raise ExtractFileFailure()
                 host.prepare_hwcode()
-                host.extract_handin(self.archive)
+                host.extract_handin(extractor)
                 return host.run()
 
 
 class NetApiHandin(BaseHandin):
-    """NetApi handin management class."""
+    """NetAPI submission handler, derived from :class:`BaseHandin`.
+
+    :param handid: The uuid of this submission.
+    :type handid: :class:`str`
+    :param hwid: The uuid of the homework.
+    :type hwid: :class:`str`
+    :param upload: The submitted url address.
+    :type upload: :class:`str`
+    :param options: {}
+    :type options: :class:`dict`
+    """
 
     def __init__(self, handid, hwid, upload, options):
-        super(NetApiHandin, self).__init__(handid, hwid, 'netapi', upload,
+        super(NetApiHandin, self).__init__('netapi', handid, hwid, upload,
                                            options)
+        #: Store the user submitted url address.
         self.remote_addr = upload
 
     def execute(self):
-        """Execute this handin as NetAPI script. Should return
-        (exitcode, stdout, stderr)."""
-
         with NetApiHost(self.remote_addr, self.handid, self.hw) as host:
             host.prepare_hwcode()
             host.compile()
@@ -118,16 +179,23 @@ class NetApiHandin(BaseHandin):
 
 
 class InputClassHandin(BaseHandin):
-    """Input class handin management."""
+    """CSV data submission handler, derived from :class:`BaseHandin`.
+
+    :param handid: The uuid of this submission.
+    :type handid: :class:`str`
+    :param hwid: The uuid of the homework.
+    :type hwid: :class:`str`
+    :param upload: The submitted csv file data.
+    :type upload: :class:`str`
+    :param options: {}
+    :type options: :class:`dict`
+    """
 
     def __init__(self, handid, hwid, upload, options):
-        super(InputClassHandin, self).__init__(handid, hwid, 'input', upload,
+        super(InputClassHandin, self).__init__('input', handid, hwid, upload,
                                                options)
 
     def execute(self):
-        """Execute this handin as InputClass script. Should return
-        (exitcode, stdout, stderr)."""
-
         with InputClassHost(self.handid, self.hw) as host:
             host.prepare_hwcode()
             with open(os.path.join(host.tempdir.path, 'data.csv'), 'wb') as f:
