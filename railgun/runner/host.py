@@ -40,19 +40,26 @@ from .errors import (RunnerError, FileDenyError, RunnerTimeout,
 class HostConfig(dict):
     """Config values passed to hosts by environmental variables."""
 
+    UPPER_KEY_RE = re.compile(r'^[A-Z][A-Z0-9_]*$')
+
     def make_environ(self):
         """Prepare the environmental variables for the host process.
 
-        All the keys stored in :class:`HostConfig` dictionary will be
-        uppercased, and be copied into the environ dictionary along with
-        their corresponding values, unless a value is :data:`None`.
-        Moreover, the values will be converted into strings.
+        Values of :data:`None` will be ignored, and other values will be
+        converted into string type before being added to environ dictionary.
+
+        All the keys matching ``[A-Z][A-Z0-9_]*`` will be used directly in the
+        new environ dictionary.
+        All the keys in other formats will be translated into uppercase,
+        and a prefix of "RAILGUN_" will be add to the key.
 
         For example::
 
-            >>> config = HostConfig(user_id=1, group_id=2, ignored=None)
+            >>> config = HostConfig(user_id=1, group_id=2, ignored=None,
+                                    PYTHONPATH='/usr/local/lib/python2.7')
             >>> config.make_environ()
-            {'USER_ID': '1', 'GROUP_ID': '2'}
+            {'RAILGUN_USER_ID': '1', 'RAILGUN_GROUP_ID': '2',
+             'PYTHONPATH': '/usr/local/lib/python2.7'}
 
         :return: The environmental variable dictionary.
         :rtype: :class:`dict`
@@ -64,8 +71,11 @@ class HostConfig(dict):
         # setup explicit values
         for k, v in self.iteritems():
             if v is not None:
-                ret[str(k).upper()] = str(v)
-        logger.warn(ret)
+                k = str(k)
+                if HostConfig.UPPER_KEY_RE.match(k):
+                    ret[k] = str(v)
+                else:
+                    ret['RAILGUN_%s' % k.upper()] = str(v)
         return ret
 
 
@@ -358,7 +368,7 @@ class PythonHost(BaseHost):
         # Add additional Python library search path.
         python_path = os.environ.get('PYTHONPATH', None)
         python_path = [python_path] if python_path else []
-        self.config['pythonpath'] = os.path.pathsep.join(
+        self.config['PYTHONPATH'] = os.path.pathsep.join(
             [runconfig.RAILGUN_ROOT,
              os.path.join(runconfig.RUNLIB_DIR, 'python')] +
             python_path
