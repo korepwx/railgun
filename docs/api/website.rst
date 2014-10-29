@@ -1,3 +1,5 @@
+.. _website_package:
+
 Website Package
 ===============
 

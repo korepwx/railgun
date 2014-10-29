@@ -6,15 +6,15 @@ Technique Overview
 System Outline
 --------------
 
-Railgun system can be divided into three parts: the :token:`website`, the :token:`runner queue`, and the :token:`runner host`.
+Railgun system can be divided into three parts: the :ref:`website_package`, the :ref:`runner_package`, and the :ref:`runlib_package`.
 
-The :token:`website` is the only connection between users and the system.  Students can sign up, sign in, edit their profiles, download their homework, upload their submissions, view the evaluations, and download the uploaded files.  Also, the administrators can manage all the users and submissions, and generate the score sheets.
+The :ref:`website_package` is the only connection between users and the system.  Students can sign up, sign in, edit their profiles, download their homework, upload their submissions, view the evaluations, and download the uploaded files.  Also, the administrators can manage all the users and submissions, and generate the score sheets.
 
 There's one more functionality of the website: it provides the necessary api for the runner host to report scores of the submissions.
 
-The :token:`runner queue` stores all pending submissions, and launch the runner hosts to do evaluations.  It usually does not give out scores, unless the submitted program couldn't be launched, or some else errors occurred.
+The :ref:`runner_package` stores all pending submissions, and launch the runner hosts to do evaluations.  It usually does not give out scores, unless the submitted program couldn't be launched, or some else errors occurred.
 
-The :token:`runner host` is the actual subsystem to evaluate student submissions.  Student uploaded code wouldn't be executed until a runner host is launched.  These runner hosts usually runs at a low privilege to protect the system from injections.  After the student code has been executed, the runner hosts then collects the statistics to give out scores, and report back to the system via website api.
+The :ref:`runlib_package` is the actual subsystem to evaluate student submissions.  Student uploaded code wouldn't be executed until a runner host is launched.  These runner hosts usually runs at a low privilege to protect the system from injections.  After the student code has been executed, the runner hosts then collects the statistics to give out scores, and report back to the system via website api.
 
 Lots of techniques have been used to keep away from exploits.  See :ref:`away_from_exploit` for more details.
 
@@ -71,9 +71,6 @@ The following block shows a simplified tree of directory structure.  Only the mo
     |-- userhost.py         : Script to launch the account server.
     +-- website.py          : Script to launch the website.
 
-RunQueue & RunHost
-------------------
-
 .. _away_from_exploit:
 
 Away from Exploit
@@ -84,5 +81,10 @@ Away from Exploit
 I18n Everywhere
 ---------------
 
-Other Topics
-------------
+When I start to draft the Railgun system, I decide to support multi-language for everything, even for the detailed reports of evaluated submissions.
+
+This is not a trivial task.  I must be careful when I'm playing with the texts.  All string literals must be wrapped by a :func:`~flask.ext.babel.gettext`, while the global constants must be wrapped with :func:`~flask.ext.babel.lazy_gettext`.
+
+When it comes to the serialization and transfer of such translated string, things become much more complex.  :func:`~flask.ext.babel.lazy_gettext` will make a :class:`speaklater._LazyString` object, which amazingly holds the function object to generate the translated string!  How can I serialize a Python function and deserialize it in C++ and Java?
+
+So I implemented my own :class:`~railgun.common.lazy_i18n.GetTextString`.  This helps a lot, since it can be serialized to and deserialized from JSON objects.  Perhaps the last inconvenient thing is that :func:`railgun.common.lazy_i18n.lazy_gettext` has the exact same name with :func:`flask.ext.babel.lazy_gettext`, since sometimes it confuses me a lot.

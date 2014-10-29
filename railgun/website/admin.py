@@ -374,6 +374,10 @@ def runqueue_clear():
     :method: GET
     """
 
+    # We must not use flask.ext.babel.lazy_gettext, because we'll going to
+    # store it in the database!
+    from railgun.common.lazy_i18n import lazy_gettext
+
     try:
         runner_app.control.discard_all()
         print db.session.query(Handin) \

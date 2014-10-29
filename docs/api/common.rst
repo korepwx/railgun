@@ -1,3 +1,5 @@
+.. _common_package:
+
 Common Library
 ==============
 

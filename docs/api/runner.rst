@@ -1,3 +1,5 @@
+.. _runner_package:
+
 Runner Queue
 ============
 

@@ -60,6 +60,15 @@ method.  However, these utilities do have some limitations:
     objects, including :class:`bool`, :class:`str`, :class:`unicode` and
     the numeric types.
 *   `ngettext`, `dgettext` and `ndgettext` are not supported.
+
+.. note::
+
+    When to use :func:`flask.ext.babel.lazy_gettext` and when to use
+    :func:`railgun.common.lazy_i18n.lazy_gettext`?  Well, if you want
+    to store the lazy string into database, or if you want to transfer
+    the string over website api, you have to use :func:`lazy_gettext`
+    provided by this module.  However, if you just want to use it
+    for website display, both can work.
 """
 
 from flask.ext.babel import gettext as _babel_gettext
@@ -111,11 +120,14 @@ def lazystr_to_plain(s):
             :class:`list`, :class:`str`, :class:`bool` and numeric types.
     :raises: :class:`TypeError` if `s` is not converible.
     """
+    import speaklater
     if s is None or isinstance(s, str) or isinstance(s, unicode):
         return s
+    if isinstance(s, speaklater._LazyString):
+        return unicode(s)
     if isinstance(s, GetTextString):
         return {'text': s.text, 'kwargs': s.kwargs}
-    raise TypeError('"%s" is not a string object.' % s)
+    raise TypeError('"%s" (%s) is not a string object.' % (s, type(s)))
 
 
 def plain_to_lazystr(s):

@@ -3,6 +3,28 @@
 Website API
 ===========
 
+.. _list_of_api:
+
+List of APIs
+------------
+
+First, let's list all the API views in the following table:
+
+.. tabularcolumns:: |p{9cm}|p{6cm}|
+
+=============================================== ========================================
+View Function                                   Description
+=============================================== ========================================
+:func:`railgun.website.api.api_handin_report`   Store the detailed reports of a given
+                                                submission.
+:func:`railgun.website.api.api_handin_start`    Change the state of a given submission
+                                                from `Pending` to `Running`.
+:func:`railgun.website.api.api_handin_proclog`  Update the process output of a given
+                                                submission.
+:func:`railgun.website.api.api_myip`            Display the visitor's ip address.
+=============================================== ========================================
+
+
 Protocol
 --------
 
@@ -66,7 +88,9 @@ JSON format.  For example, if we have the following
                  name='Alice', nation='American')
 
 Then we can serialize the object by
-:func:`railgun.common.lazy_i18n.lazystr_to_plain`::
+:func:`railgun.common.lazy_i18n.lazystr_to_plain`:
+
+.. code-block:: javascript
 
     {
         "text": "My name is %(name)s, and I am a %(nation)s",
@@ -87,7 +111,9 @@ HwPartialScore
 ~~~~~~~~~~~~~~
 
 :class:`railgun.common.hw.HwPartialScore` could be encoded to JSON format.
-The JSON object should follow the schema::
+The JSON object should follow the schema:
+
+.. code-block:: javascript
 
     {
         "name": GetTextString or string,
@@ -114,7 +140,9 @@ HwScore
 ~~~~~~~
 
 :class:`railgun.common.hw.HwScore` could be encoded to JSON format.
-The JSON object should follow the schema::
+The JSON object should follow the schema:
+
+.. code-block:: javascript
 
     {
         "accepted": boolean,
@@ -127,22 +155,109 @@ The JSON object should follow the schema::
     }
 
 
-.. _list_of_api:
+Two Examples of HwScore
+-----------------------
 
-List of APIs
-------------
+To make you better understand the transfered HwScore object, I'll show you
+two examples.  The first one is an HwScore object for an `Accepted` submission,
+while the latter one for a failure and `Rejected` submission.
 
-.. tabularcolumns:: |p{9cm}|p{6cm}|
+HwScore for Accepted
+~~~~~~~~~~~~~~~~~~~~
 
-=============================================== ========================================
-View Function                                   Description
-=============================================== ========================================
-:func:`railgun.website.api.api_handin_report`   Store the detailed reports of a given
-                                                submission.
-:func:`railgun.website.api.api_handin_start`    Change the state of a given submission
-                                                from `Pending` to `Running`.
-:func:`railgun.website.api.api_handin_proclog`  Update the process output of a given
-                                                submission.
-:func:`railgun.website.api.api_myip`            Display the visitor's ip address.
-=============================================== ========================================
+.. code-block:: json
 
+    {
+      "accepted": true, 
+      "compile_error": {
+        "text": "", 
+        "kwargs": {}
+      }, 
+      "result": {
+        "text": "Your submission is accepted.", 
+        "kwargs": {}
+      },
+      "partials": [
+        {
+          "name": {
+            "text": "InputClass Scorer", 
+            "kwargs": {}
+          },
+          "typeName": "InputClassScorer",
+          "time": 0.000146151,
+          "score": 15.3846,
+          "weight": 0.6,
+          "brief": {
+            "text": "%(rate).2f%% rules (%(cover)s out of %(total)s) covered", 
+            "kwargs": {
+              "rate": 15.3846, 
+              "total": 13, 
+              "cover": 2
+            }
+          }, 
+          "detail": [
+            {
+              "text": "NOT COVERED: %(checker)s", 
+              "kwargs": {
+                "checker": "regular triangle"
+              }
+            }, 
+            {
+              "text": "NOT COVERED: %(checker)s", 
+              "kwargs": {
+                "checker": "isosceles triangle (a, b, c > 0) and (a == b != c)"
+              }
+            }
+          ]
+        }, 
+        {
+          "name": {
+            "text": "BoundaryValue Scorer", 
+            "kwargs": {}
+          }, 
+          "typeName": "BoundaryValueScorer", 
+          "time": 6.79493e-05,
+          "score": 0, 
+          "weight": 0.4, 
+          "brief": {
+            "text": "%(rate).2f%% rules (%(cover)s out of %(total)s) covered", 
+            "kwargs": {
+              "rate": 0, 
+              "total": 2, 
+              "cover": 0
+            }
+          }, 
+          "detail": [
+            {
+              "text": "NOT COVERED: %(checker)s", 
+              "kwargs": {
+                "checker": "zero data (one of a, b, c == 0)"
+              }
+            }, 
+            {
+              "text": "NOT COVERED: %(checker)s", 
+              "kwargs": {
+                "checker": "zero data (all of a, b, c == 0)"
+              }
+            }
+          ]
+        }
+      ]
+    }
+
+HwScore for Rejected
+~~~~~~~~~~~~~~~~~~~~
+
+.. code-block:: json
+
+    {
+      "partials": [], 
+      "accepted": false, 
+      "compile_error": null, 
+      "result": {
+        "text": "Exitcode %(exitcode)s != 0.", 
+        "kwargs": {
+          "exitcode": -5
+        }
+      }
+    }

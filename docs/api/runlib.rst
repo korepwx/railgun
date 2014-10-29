@@ -1,3 +1,5 @@
+.. _runlib_package:
+
 Runner Host Library
 ===================
 
