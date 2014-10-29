@@ -25,16 +25,12 @@
       the due date for full-score submissions
     -->
     <due>
-      <!--
-      the due date for full-score submissions
-    -->
-    <due>
       <!-- time zone of this due date. default is BABEL_DEFAULT_TIMEZONE -->
       <timezone>Asia/Shanghai</timezone>
       <!-- due date, formatted in YYYY-MM-dd HH:mm:ss -->
       <date>2015-9-12 23:59:59</date>
       <!-- the score scale factor, range from 0.0 to 1.0 -->
-      <scale>0.8</scale>
+      <scale>1.0</scale>
     </due>
 
     <!--
@@ -43,13 +39,13 @@
     <due>
       <timezone>Asia/Shanghai</timezone>
       <date>2015-9-21 23:59:59</date>
-      <scale>0.4</scale>
+      <scale>0.75</scale>
     </due>
     
     <due>
       <timezone>Asia/Shanghai</timezone>
       <date>2015-9-25 23:59:59</date>
-      <scale>0.2</scale>
+      <scale>0.5</scale>
     </due>
 
     <!--
