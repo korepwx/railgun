@@ -279,6 +279,12 @@ void PyHostInit()
     }
   }
 
+  // Try to be compatible with virtualenv
+  char* virtual_env = getenv("VIRTUAL_ENV");
+  if (virtual_env != NULL) {
+    Py_SetPythonHome(virtual_env);
+  }
+
   // Initialize the Python interpreter
   Py_Initialize(); 
 

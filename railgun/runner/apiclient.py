@@ -37,9 +37,7 @@ class ApiClient(object):
 
     def __init__(self, baseurl):
         #: Store the base url of website api.
-        self.baseurl = baseurl
-        if not self.baseurl.endswith('/'):
-            self.baseurl += '/'
+        self.baseurl = baseurl.rstrip('/')
         #: Store the secret communication key.
         self.key = get_comm_key()
 
