@@ -51,7 +51,7 @@ class HostConfig(dict):
         All the keys matching ``[A-Z][A-Z0-9_]*`` will be used directly in the
         new environ dictionary.
         All the keys in other formats will be translated into uppercase,
-        and a prefix of "RAILGUN_" will be add to the key.
+        and a prefix of ``RAILGUN_`` will be add to the key.
 
         For example::
 
