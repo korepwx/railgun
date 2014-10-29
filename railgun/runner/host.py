@@ -65,7 +65,7 @@ class HostConfig(dict):
         for k, v in self.iteritems():
             if v is not None:
                 ret[str(k).upper()] = str(v)
-        logger.debug(ret)
+        logger.warn(ret)
         return ret
 
 
