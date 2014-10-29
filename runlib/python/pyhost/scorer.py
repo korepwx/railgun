@@ -5,6 +5,17 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # This file is released under BSD 2-clause license.
 
+"""This module provides all the types of :class:`Scorer` classes.
+
+A :class:`Scorer` is specialized to evaluate one aspect of the submission
+data.  Each homework assignment provides the script to create and glue
+one or more scorers toegether, to give the final score of a submission.
+
+You may refer to :class:`~railgun.common.hw.HwScore` to see how scores
+from multiple scorers are composed up.  Also, you may refer to
+:ref:`hwpython` to check the usage of all Python scorers.
+"""
+
 import re
 import os
 from time import time
@@ -21,39 +32,65 @@ from .utility import UnitTestScorerDetailResult, Pep8DetailReport
 from .objschema import SchemaResultCollector
 
 
+def load_suite(suite):
+    """If the given testing suite is a :func:`callable` object and is not
+    a :class:`~unittest.suite.TestSuite`, execute this method as if is a
+    lazy loader to generate the testing suite.
+
+    :param suite: A testing suite or a lazy loader.
+    """
+    if callable(suite) and \
+            not isinstance(suite, unittest.suite.TestSuite):
+        suite = suite()
+    return suite
+
+
 class Scorer(object):
-    """Base class for all scorers. All scorers should give a score between
-    0 and 100."""
+    """The base class for all scorer types.
+
+    :param name: The translated name of this scorer.
+    :type name: :class:`~railgun.common.lazy_i18n.GetTextString`
+    """
 
     def __init__(self, name):
-        # name of the score
+        #: Store the translated name of this scorer.
+        #: This name will be displayed to the students in detailed submission
+        #: report.
         self.name = name
-        # time used by this module
+        #: The time consumed by this scorer.
+        #: This attribute may keep :data:`None` if the scorer fails to run.
         self.time = None
-        # final score of the testing module
+        #: The final score given by this scorer.
+        #:
+        #: Derived class should set this attribute in :meth:`do_run` to give
+        #: the score (where the value should fall in the range [0, 100]).
         self.score = None
-        # brief explanation of the score
+        #: The brief explanation of the score, a translated string.
+        #: (:class:`~railgun.common.lazy_i18n.GetTextString`)
         self.brief = None
-        # detail explanation of the score
+        #: Detailed explanation of the score, a list of translated strings.
+        #: You may initialize the list yourself in :meth:`do_run`.
+        #: (:class:`list` of :class:`~railgun.common.lazy_i18n.GetTextString`)
         self.detail = None
 
-    def _run(self):
-        pass
-
-    def _load_suite(self):
-        """If `self.suite` is callable, and is not test case or test suite,
-        then this test suite must be a callback to load the test suite.
-        """
-        if callable(self.suite) and \
-                not isinstance(self.suite, unittest.suite.TestSuite):
-            self.suite = self.suite()
+    def do_run(self):
+        """Derived classes should implement this to do actual evaluations."""
+        raise NotImplementedError()
 
     def run(self):
-        """Run the testing module and generate the score. If a `ScorerFailure`
-        is generated, the score will be set to 0.0."""
+        """Run the evaluation and give the :attr:`score`.
+
+        If a :class:`~pyhost.errors.ScorerFailure` is raised, the score and
+        explanation carried by the error will be copied into this scorer,
+        as the final result.
+
+        Other exceptions are not catched by this method.  We may just leave
+        those errors not processed, so that the runner host will exit with
+        a non-zero exit code, which will force the submission to be rejected.
+        """
         try:
             startTime = time()
-            self._run()
+            self.do_run()
             self.time = time() - startTime
         except ScorerFailure, ex:
             self.brief = ex.brief
@@ -62,15 +99,33 @@ class Scorer(object):
 
 
 class UnitTestScorer(Scorer):
-    """scorer according to the result of unit test"""
+    """The scorer to give score according to a unit testing.
+
+    Suppose the student has submitted some code, and we want to evaluate
+    the functionality of the code.  We can provide our testing suite in
+    the homework evaluation script, expecting the student code to pass
+    these tests.
+
+    Then we may feed the testing suite into :class:`UnitTestScorer`.
+    This scorer will run all the testing cases, and give the score
+    according to the amount of passing cases.
+
+    :param suite: A :class:`~unittest.suite.TestSuite` or a lazy loader
+        to generate the :class:`~unittest.suite.TestSuite` object.
+    """
 
     def __init__(self, suite):
         super(UnitTestScorer, self).__init__(
             lazy_gettext('Functionality Scorer'))
+
+        #: Store the testing suite. If it is a :func:`callable` object but not
+        #: a #: :class:`~unittest.suite.TestSuite`, execute it to get the real
+        #: testing suite.  Keep the :attr:`suite` lazy can prevent the scorer
+        #: from exploits.
         self.suite = suite
 
-    def _run(self):
-        self._load_suite()
+    def do_run(self):
+        self.suite = load_suite(self.suite)
         # get the result of unittest
         result = UnitTestScorerDetailResult()
         self.suite.run(result)
@@ -93,21 +148,37 @@ class UnitTestScorer(Scorer):
 
     @staticmethod
     def FromTestCase(testcase):
-        """Make a `UnitTestScorer` instance from `testcase`"""
+        """Create a new :class:`UnitTestScorer` on the testing case class.
+        This method makes a lazy loader so that the testing case object will
+        not be constructed until :meth:`do_run` is called.
+
+        :param testcase: A class derived from :class:`unittest.TestCase`.
+        """
         return UnitTestScorer(
             lambda: unittest.TestLoader().loadTestsFromTestCase(testcase))
 
     @staticmethod
     def FromNames(names):
-        """Make a `UnitTestScorer` instance from test case `names`."""
+        """Create a new :class:`UnitTestScorer` on the given names.
+        The testing cases specified by `names` will not be loaded until
+        :meth:`do_run` is called.
+
+        :param names: A sequence of object names that can be resolved
+            into a :class:`unittest.suite.TestSuite`.
+        :type names: :class:`list` of :class:`str`
+        """
         suite = lambda: unittest.TestLoader().loadTestsFromNames(names)
         return UnitTestScorer(suite)
 
     @staticmethod
     def FromHandinDir(test_pattern='test_.*\\.py$'):
-        """Create a `UnitTestScorer` to get score for all unit tests provided
-        by students.  Only the files matching `test_pattern` will be regarded
-        as unit test files.
+        """Create a new :class:`UnitTestScorer` on the given files.
+        The :class:`unittest.suite.TestSuite` objects will be discovered
+        and loaded from the files matching the given pattern when
+        :meth:`do_run` is called.
+
+        :param test_pattern: The regex pattern of file names.
+        :type test_pattern: :class:`str`
         """
 
         p = re.compile(test_pattern)
@@ -122,11 +193,20 @@ class UnitTestScorer(Scorer):
 
 
 class CodeStyleScorer(Scorer):
-    """scorer according to the code style."""
+    """The scorer to give a score according to the coding style.
+
+    The most well-known coding style in Python world is probably `pep8`.
+    This scorer will evaluate the student code with pep8.py, and will
+    decrease `errcost` from the score for each warning.  The minimum
+    score will be 0.
+
+    :param filelist: Iterable names of files that should be checked.
+    :param skipfile: A :func:`callable` object to filter the `filelist`.
+        We only leave the names where `skipfile(name)` returns :data:`False`.
+    :param errcost: The cost of each coding style error.
+    """
 
     def __init__(self, filelist, skipfile=None, errcost=10.0):
-        """Check the code style of `filelist`, skip if `skipfile(path)` is
-        True."""
 
         super(CodeStyleScorer, self).__init__(lazy_gettext('CodeStyle Scorer'))
         skipfile = skipfile or (lambda path: False)
@@ -135,7 +215,7 @@ class CodeStyleScorer(Scorer):
                          if not skipfile(p) and is_pyfile(p)]
         self.errcost = errcost
 
-    def _run(self):
+    def do_run(self):
         guide = pep8.StyleGuide()
         guide.options.show_source = True
         guide.options.report = Pep8DetailReport(guide.options)
@@ -162,8 +242,11 @@ class CodeStyleScorer(Scorer):
 
     @staticmethod
     def FromHandinDir(ignore_files=None):
-        """Create a `CodeStyleScorer` for all files under handin directory
-        except `ignore_files`."""
+        """Create a new :class:`CodeStyleScorer` for all files under the
+        submission working directory unless they belong to `ignore_files`.
+
+        :param ignore_files: A collection of file names to be ignored.
+        """
 
         ignore_files = ignore_files or []
         if (isinstance(ignore_files, str) or
@@ -173,22 +256,39 @@ class CodeStyleScorer(Scorer):
 
 
 class CoverageScorer(Scorer):
-    """scorer according to the result of coverage."""
+    """The scorer to give score according to the coverage rate.
+
+    The coverage rate is a very important score when it comes to unit
+    testing.  We may provide a module, tell the students to write unit
+    testing code, and give them score according to the coverage rate
+    of their testing code on our module.
+
+    This scorer measures two types of coverage rate: the statement
+    coverage rate and the branch coverage rate.  Each type of coverage
+    rate will result in a score, and the final score will be composed
+    up according to :attr:`stmt_weight` and :attr:`branch_weight`.
+
+    :param suite: A :class:`~unittest.suite.TestSuite` or a lazy loader
+        to generate the :class:`~unittest.suite.TestSuite` object.
+    :param filelist: Iterable names of files that should be tested
+        by the students.  The coverage rate will be measured on these
+        files.
+    :param stmt_weight: The weight of statement coverage rate.
+    :type stmt_weight: :class:`float`
+    :param branch_weight: The weight of branch coverage rate.
+    :type branch_weight: :class:`float`
+    """
 
     def __init__(self, suite, filelist, stmt_weight=0.5, branch_weight=0.5):
-        '''
-        Run all test cases in `suite` and then get the coverage of all files
-        in `filelist`.
-        '''
         super(CoverageScorer, self).__init__(lazy_gettext('Coverage Scorer'))
 
         self.suite = suite
         self.brief = []
-        self.filelist = filelist
+        self.filelist = list(filelist)
         self.stmt_weight = stmt_weight
         self.branch_weight = branch_weight
 
-    def _run(self):
+    def do_run(self):
         def safe_divide(a, b, default=1.0):
             if b > 0:
                 return float(a) / float(b)
@@ -196,7 +296,7 @@ class CoverageScorer(Scorer):
 
         cov = coverage(branch=True)
         cov.start()
-        self._load_suite()
+        self.suite = load_suite(self.suite)
 
         # Run the test suite
         # the `result` is now ignored, but we can get use of it if necessary
@@ -353,11 +453,21 @@ class CoverageScorer(Scorer):
     @staticmethod
     def FromHandinDir(files_to_cover, test_pattern='test_.*\\.py$',
                       stmt_weight=0.5, branch_weight=0.5):
-        """Create a `CoverageScorer` to get score for all unit tests provided
-        by students according to the coverage of files in `files_to_cover`.
+        """Create a new :class:`CoverageScorer`.
 
-        Only the files matching `test_pattern` will be regarded as unit test
-        file.
+        The files for the students to test is provided in `files_to_cover`,
+        and the file name patterns of unit testing code is defined in
+        `test_pattern`.
+        The `stmt_weight` and the `branch_weight` may also be specified.
+
+        :param files_to_cover: List of files to measure the coverage rate on.
+        :type files_to_cover: :class:`list` of :class:`str`
+        :param test_pattern: The regex pattern of testing code file names.
+        :type test_pattern: :class:`str`
+        :param stmt_weight: The weight of statement coverage rate.
+        :type stmt_weight: :class:`float`
+        :param branch_weight: The weight of branch coverage rate.
+        :type branch_weight: :class:`float`
         """
 
         p = re.compile(test_pattern)
@@ -377,7 +487,33 @@ class CoverageScorer(Scorer):
 
 
 class InputDataScorer(Scorer):
-    """Scorer to the input data for BlackBox testing."""
+    """The base class for input data scorers.
+
+    Input data scorers are mainly used in BlackBox testing homework.
+    The students may provide some structured data in CSV format,
+    and we want to check whether the data covers all the equivalent
+    classes and boundary values.
+
+    To achieve that goal, I introduced :class:`InputDataScorer`.
+    It can takes a set of methods as `condition` validators, where
+    each methods only returns :data:`True` on a certain class of
+    input data or boundary value.
+
+    Then the student submitted data will be checked by all the
+    `condition` validators one row after another.  The scorer will
+    count the number of validators who have ever reported :data:`True`,
+    and give the score according to that portion.
+
+    :param name: The name of this scorer, should be set by derived classes.
+    :type name: :class:`~railgun.common.lazy_i18n.GetTestString`
+    :param schema: The schema for this scorer to parse csv data.
+    :type schema: :class:`~railgun.common.csvdata.CsvSchema`
+    :param csvdata: Iterable object over :class:`str`, each representing a
+        row in the csv data.  Usually a :class:`file` object.
+    :type csvdata: :class:`object`
+    :param check_classes: The initial list of input data validators.
+    :type check_classes: :class:`list` of :func:`callable` objects
+    """
 
     def __init__(self, name, schema, csvdata, check_classes=None):
         """Construct a new `InputClassScorer` on given `csvdata`, checked by
@@ -385,16 +521,27 @@ class InputDataScorer(Scorer):
 
         super(InputDataScorer, self).__init__(name)
 
+        #: Store the :class:`~railgun.common.csvdata.CsvSchema`.
         self.schema = schema
+        #: Rows of csv data.
         self.csvdata = csvdata
+        #: The input data validators.
         self.check_classes = check_classes or []
 
     def empty(self):
-        """Whether this scorer does not contain rules?"""
+        """Whether or not this scorer has no input data validator?"""
         return not self.check_classes
 
     def getDescription(self, check_class):
-        """Get the description for given `check_class`."""
+        """Get the description for given validator.
+
+        The `description` attribute of the given validator, or `__name__`
+        if `description` doesn't exist, or the string representation of the
+        given validator if `__name__` doesn't exist either.
+
+        :param check_class: The :func:`callable` data validator.
+        :return: The description of given validator.
+        """
 
         if hasattr(check_class, 'description'):
             return getattr(check_class, 'description')
@@ -403,15 +550,25 @@ class InputDataScorer(Scorer):
         return str(check_class)
 
     def rule(self, description):
-        """Decorator to add given `method` into `check_classes`."""
+        """Make a decorator to :func:`callable` objects which will add
+        `description` attribute to the given method, and will add that
+        method to :attr:`check_classes`.
+
+        Usage::
+
+            @scorer.rule('a >= 1 and b <= 2')
+            def a_must_not_less_than_1_and_b_must_not_greater_than_2(a, b):
+                return a >= 1 and b <= 2
+
+        :return: The decorator.
+        """
         def outer(method):
-            """Direct decorator on `method` which set method.description."""
             setattr(method, 'description', description)
             self.check_classes.append(method)
             return method
         return outer
 
-    def _run(self):
+    def do_run(self):
         try:
             self.detail = []
             covered = set()
@@ -453,6 +610,10 @@ class InputDataScorer(Scorer):
 
 
 class InputClassScorer(InputDataScorer):
+    """A :class:`InputDataScorer` called `InputClass Scorer`.
+    This class distinguishes from :class:`BoundaryValueScorer` only on the
+    name.
+    """
 
     def __init__(self, schema, csvdata, check_classes=None):
         super(InputClassScorer, self).__init__(
@@ -464,6 +625,10 @@ class InputClassScorer(InputDataScorer):
 
 
 class BoundaryValueScorer(InputDataScorer):
+    """A :class:`InputDataScorer` called `BoundaryValue Scorer`.
+    This class distinguishes from :class:`InputClassScorer` only on the
+    name.
+    """
 
     def __init__(self, schema, csvdata, check_classes=None):
         super(BoundaryValueScorer, self).__init__(
@@ -475,6 +640,20 @@ class BoundaryValueScorer(InputDataScorer):
 
 
 class BlackBoxScorerMaker(object):
+    """A factory to create both :class:`InputClassScorer` and
+    :class:`BoundaryValueScorer`.
+    You may refer to :ref:`hwinput` for examples.
+
+    :param schema: The schema for this scorer to parse csv data.
+    :type schema: :class:`~railgun.common.csvdata.CsvSchema`
+    :param csvdata: Iterable object over :class:`str`, each representing a
+        row in the csv data.  Usually a :class:`file` object.
+    :type csvdata: :class:`object`
+    :param input_class_weight: The weight for :class:`InputClassScorer`.
+    :type input_class_weight: :class:`float`
+    :param boundary_value_weight: The weight for :class:`BoundaryValueScorer`.
+    :type boundary_value_weight: :class:`float`
+    """
 
     def __init__(self, schema, csvdata, input_class_weight=0.6,
                  boundary_value_weight=0.4):
@@ -485,38 +664,60 @@ class BlackBoxScorerMaker(object):
         self.boundary_value_weight = boundary_value_weight
 
     def class_(self, description):
-        """Define an input class rule."""
+        """Get the decorator to a :class:`InputClassScorer` validator."""
         return self._input_class.rule(description)
 
     def boundary(self, description):
-        """Define a boundary value rule."""
+        """Get the decorator to a :class:`BoundaryValueScorer` validator."""
         return self._boundary_value.rule(description)
 
     def get_scorers(self, weight=1.0):
-        """Get the list of contained scorers."""
+        """Get the :class:`list` of :class:`InputClassScorer` and
+        :class:`BoundaryValueScorer` which can be appended to scorer list
+        and fed into `SafeRunner.run`.
+
+        :param weight: The total weight of two scorers.
+        :type weight: :class:`float`
+        :return: [(:class:`Scorer`, weight), ...].
+        """
         ret = []
+
+        # Get the real weight of two scorers
+        weights = [self.input_class_weight, self.boundary_value_weight]
+        if self._input_class.empty():
+            weights[1] = 1.0
+        if self._boundary_value.empty():
+            weights[0] = 1.0
+
+        # Then add the available scorers into return list
         if not self._input_class.empty():
             ret.append(
-                (self._input_class, self.input_class_weight * weight)
+                (self._input_class, weight * weights[0])
             )
         if not self._boundary_value.empty():
             ret.append(
-                (self._boundary_value, self.boundary_value_weight * weight)
+                (self._boundary_value, weight * weights[1])
             )
         return ret
 
 
 class ObjSchemaScorer(Scorer):
-    """Scorer of object structure."""
+    """In unit testing homework, we want the students to organize their
+    testing code in the exact way we tell them.  So we need to validate
+    the structure of objects.
+    :class:`ObjSchemaScorer` can parse object structure and give the score.
+
+    :param schema: A collection of object structure validators.
+    :type schema: :class:`~railgun.runner.objschema.RootSchema`
+    """
 
     def __init__(self, schema):
-        """Construct a new `ObjSchemaScorer` for given `schema`."""
         super(ObjSchemaScorer, self) .__init__(
             lazy_gettext('Object Structure Scorer')
         )
         self.schema = schema
 
-    def _run(self):
+    def do_run(self):
         try:
             collector = SchemaResultCollector()
             self.schema.check(collector)
@@ -531,7 +732,14 @@ class ObjSchemaScorer(Scorer):
             )
             self.detail = collector.errors
         except:
-            raise
+            # Why do we catch all exceptions, not the exceptions derived
+            # from :class:`Exception` here?  Because :class:`ObjSchemaScorer`
+            # is usually considered not a `harmful` scorer, and the error
+            # messages may not be hidden to the students.
+            #
+            # If we do not catch all the exceptions, then the student
+            # may submit a code that `raises` something, where the evaluation
+            # script may be revealed.
             raise ScorerFailure(
                 brief=lazy_gettext(
                     'Object Structure Scorer exited with error.'),

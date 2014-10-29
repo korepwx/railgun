@@ -5,6 +5,10 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # This file is released under BSD 2-clause license.
 
+"""This module provides the utilities to define the rules of object
+structures, and to validate the student submissions using these rules.
+"""
+
 import sys
 
 from railgun.common.lazy_i18n import lazy_gettext
@@ -36,9 +40,15 @@ class SchemaResultCollector(object):
 
 
 class SchemaExistRule(object):
+    """The existence rule of objects."""
 
+    #: The related object is required to exist.
     REQUIRE = 0
+
+    #: The related object is allowed to exist.
     ALLOW = 1
+
+    #: The related object is not allowed to exist.
     DENY = 2
 
 
@@ -50,8 +60,15 @@ class BaseSchema(object):
     and check the object according the defined rules.
 
     The basic rule of any schema is the existence of object.  The object
-    may be marked as REQUIRE, ALLOW or DENY.  If not defined, default is
-    ALLOW.
+    may be marked as `REQUIRE`, `ALLOW` or `DENY`.  If not defined, default
+    rule is `ALLOW`.
+
+    :param parent: The parent object whose members will be validated by
+        this schema.
+    :type parent: :class:`object`
+    :param pattern: The name pattern to filter members in the parent.
+        The matched elements will be validated by this schema.
+    :type pattern: :class:`str` or :class:`~_sre.SRE_Pattern`
     """
 
     def __init__(self, parent, pattern):
@@ -59,20 +76,25 @@ class BaseSchema(object):
                 not isinstance(pattern, basestring) and
                 not hasattr(pattern, 'match')):
             raise TypeError("`pattern` must be a string or a regex object.")
+        #: The parent object whose members will be validated by this schema.
         self.parent = parent
+        #: The name pattern to filter members in the parent.
         self.pattern = pattern
-        # The object existence of this schema. This value should be updated
-        # in `check_self` method.
+        #: Whether any object matched by this schema exists?
         self.exist = False
+        #: The rule of existence for objects matched by this schema.
         self.exist_rule = SchemaExistRule.ALLOW
-        # If `exist`, `objects` should store the reference to the objects
-        # matching this schema after `check_self` is called.
+        #: Store the objects matched by this schema.
         self.objects = []
-        # The children rules of this schema
+        #: Store the schemas who takes the items in :attr:`objects` as
+        #: parents (or, the children of this schema).
         self.children = []
 
     def _match_attrs(self):
-        """Select the objects from parent matching `pattern` by getattr."""
+        """Select the members in the whose name matches :attr:`pattern`.
+
+        :return: An iterable object over the members.
+        """
         # If parent not exist, no attrs could match
         if not self.parent.exist:
             return
@@ -87,7 +109,7 @@ class BaseSchema(object):
                         yield getattr(po, objn)
 
     def _pattern_string(self):
-        """Get the string of pattern."""
+        """Get the string representation of pattern."""
         if self.pattern is None:
             return
         if isinstance(self.pattern, basestring):
@@ -96,36 +118,41 @@ class BaseSchema(object):
         return self.pattern.pattern
 
     def print_tree(self, pad=0):
-        """Print the schema tree."""
+        """Recursively print the schema tree."""
         print '%s%s' % (' ' * pad, self.get_description())
         for c in self.children:
             c.print_tree(pad+2)
 
     def get_description(self):
-        """Get the one-line description of this schema."""
+        """Get a one line description of this schema."""
         raise NotImplementedError()
 
     def allow(self):
-        """Mark this schema as ALLOW, and return the schema instance."""
+        """Mark this schema as ALLOW, and return this schema itself."""
         self.exist_rule = SchemaExistRule.ALLOW
         return self
 
     def deny(self):
-        """Mark this schema as DENY, and return the schema instance."""
+        """Mark this schema as DENY, and return this schema itself."""
         self.exist_rule = SchemaExistRule.DENY
         return self
 
     def require(self):
-        """Mark this schema as REQUIRE, and return the schema instance."""
+        """Mark this schema as REQUIRE, and return this schema itself."""
         self.exist_rule = SchemaExistRule.REQUIRE
         return self
 
     def check(self, collector):
-        """Check this schema with 3 steps: check_self, check_children,
-        check_require.
+        """Check all the rules from this schema to its children recursively,
+        and put the results in `collector`.
         """
+        #: Gather the objects related to this schema, and set :attr:`exist`
+        #: flag.
         self.check_self(collector)
+        #: Test the :attr:`exist` flag again :attr:`exist_rule`.
         self.check_require(collector)
+        #: If any object matching this schema exists, check the children
+        #: schema.
         self.check_children(collector)
 
     def check_self(self, collector):
@@ -141,7 +168,7 @@ class BaseSchema(object):
             c.check(collector)
 
     def check_require(self, collector):
-        """Check whether this schema is marked as REQUIRE but the object
+        """Check whether this schema is marked as `REQUIRE` but the object
         does not exist.  All the children schema will also be notified.
         """
         if self.exist_rule == SchemaExistRule.REQUIRE and not self.exist:
@@ -160,7 +187,11 @@ class BaseSchema(object):
 
 
 class RootSchema(BaseSchema):
-    """The root schema that manages a set of file schema instances."""
+    """The root schema that manages a set of file schema instances.
+
+    :param rootpath: The root path of the files matched by this schema.
+    :type rootpath: :class:`str`
+    """
 
     def __init__(self, rootpath):
         super(RootSchema, self).__init__(parent=None, pattern=None)
@@ -170,7 +201,12 @@ class RootSchema(BaseSchema):
         return 'ROOT'
 
     def module(self, pattern):
-        """Add a `ModuleSchema` to this `RootSchema` and return it."""
+        """Add a :class:`ModuleSchema` to this :class:`RootSchema`.
+
+        :param pattern: The full name of module.
+        :type pattern: :class:`str`
+        :return: This :class:`RootSchema` instance itself.
+        """
         ms = ModuleSchema(self, pattern)
         self.children.append(ms)
         return ms
@@ -179,11 +215,16 @@ class RootSchema(BaseSchema):
         self.exist = True
 
     def check_require(self, collector):
-        """Root schema should report neither success or failure."""
+        # Root schema should report neither success or failure.
+        pass
 
 
 class ModuleSchema(BaseSchema):
-    """Define the schema rules of particular module."""
+    """The object structure rules for a module.
+
+    :param parent: The parent :class:`RootSchema`.
+    :param pattern: The module name.
+    """
 
     def __init__(self, parent, pattern):
         if not isinstance(pattern, basestring):
@@ -194,7 +235,6 @@ class ModuleSchema(BaseSchema):
         return self._pattern_string()
 
     def check_self(self, collector):
-        """Try to import the given module."""
         try:
             __import__(self.pattern)
             self.objects = [sys.modules[self.pattern]]
@@ -207,14 +247,23 @@ class ModuleSchema(BaseSchema):
             self.exist = False
 
     def class_(self, pattern):
-        """Add a `ClassSchema` to this `ModuleSchema` and return it."""
+        """Add a :class:`ClassSchema` to this :class:`ModuleSchema`.
+
+        :param pattern: The name pattern to match the classes.
+        :type pattern: :class:`str` or :class:`~_sre.SRE_Pattern`
+        :return: This :class:`ModuleSchema` instance itself.
+        """
         cs = ClassSchema(self, pattern)
         self.children.append(cs)
         return cs
 
 
 class ClassSchema(BaseSchema):
-    """Define the schema rules of particular class."""
+    """The object structure rules for the classes belong to a parent module.
+
+    :param parent: The parent :class:`ModuleSchema`
+    :param pattern: The name pattern to match member classes.
+    """
 
     def __init__(self, parent, pattern):
         super(ClassSchema, self).__init__(parent, pattern)
@@ -228,14 +277,23 @@ class ClassSchema(BaseSchema):
         self.exist = not not self.objects
 
     def method(self, pattern):
-        """Add a `MethodSchema` to this `ClassSchema` and return it."""
+        """Add a :class:`MethodSchema` to this :class:`ClassSchema`.
+
+        :param pattern: The name pattern to match the methods.
+        :type pattern: :class:`str` or :class:`~_sre.SRE_Pattern`
+        :return: This :class:`ClassSchema` instance itself.
+        """
         ms = MethodSchema(self, pattern)
         self.children.append(ms)
         return ms
 
 
 class MethodSchema(BaseSchema):
-    """Define the schema rules of particular class methods."""
+    """The object structure rules for the methods belong to a parent class.
+
+    :param parent: The parent :class:`ClassSchema`
+    :param pattern: The name pattern to match member methods.
+    """
 
     def __init__(self, parent, pattern):
         super(MethodSchema, self).__init__(parent, pattern)

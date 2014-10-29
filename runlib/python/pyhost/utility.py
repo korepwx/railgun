@@ -14,15 +14,14 @@ from railgun.common.lazy_i18n import lazy_gettext
 
 
 class UnitTestScorerDetailResult(unittest.TestResult):
-    """A test result class that gather detailed unittest report.
-    Used by UnitTestScorer."""
+    """The helper class to gather unit testing results."""
 
     def __init__(self):
         super(UnitTestScorerDetailResult, self).__init__()
+        #: The translated detail explanation is gathered in this :class:`list`.
         self.details = []
 
     def getDescription(self, test):
-        """Get description string of given `test`."""
         return str(test)
 
     def startTest(self, test):
@@ -79,7 +78,7 @@ class UnitTestScorerDetailResult(unittest.TestResult):
 
 
 class Pep8DetailReport(pep8.BaseReport):
-    """Pep8 report class that records each message in memory."""
+    """The helper class to gather pep8 coding style evaluation results."""
 
     def __init__(self, options):
         super(Pep8DetailReport, self).__init__(options)
@@ -89,12 +88,10 @@ class Pep8DetailReport(pep8.BaseReport):
         self._trouble_files = set()
 
     def init_file(self, filename, lines, expected, line_offset):
-        """Signal a new file."""
         return super(Pep8DetailReport, self).init_file(
             filename, lines, expected, line_offset)
 
     def error(self, line_number, offset, text, check):
-        """Report an error, according to options."""
         code = super(Pep8DetailReport, self).error(line_number, offset,
                                                    text, check)
         if code:
@@ -121,7 +118,11 @@ class Pep8DetailReport(pep8.BaseReport):
         return len(self._errors)
 
     def build_report(self):
-        """Build human readable report text."""
+        """Generate the detail explanation.
+
+        :return: A :class:`list` of
+            :class:`~railgun.common.lazy_i18n.GetTextString`.
+        """
 
         # sort the errors in (path, row, col, code) order
         def Comparer(a, b):
@@ -142,5 +143,8 @@ class Pep8DetailReport(pep8.BaseReport):
 
 
 def format_exeception():
-    """Format the exception traceback."""
+    """Format the exception traceback.
+
+    :return: The traceback string.
+    """
     return traceback.format_exec().rstrip()
