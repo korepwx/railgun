@@ -8,18 +8,18 @@
 import os
 import uuid
 
-from flask import render_template, url_for, redirect, flash, request, g, \
-    send_from_directory
+from flask import (render_template, url_for, redirect, flash, request, g,
+                   send_from_directory)
 from flask.ext.babel import lazy_gettext, get_locale, gettext as _
-from flask.ext.login import login_user, logout_user, current_user, \
-    confirm_login
+from flask.ext.login import (login_user, logout_user, current_user,
+                             confirm_login)
 from werkzeug.exceptions import NotFound, Forbidden
 
 from .context import app, db
 from .navibar import navigates, NaviItem, set_navibar_identity
 from .forms import SignupForm, SigninForm, ProfileForm, ReAuthenticateForm
-from .credential import UserContext, login_required, fresh_login_required, \
-    should_update_email, redirect_update_email
+from .credential import (UserContext, login_required, fresh_login_required,
+                         should_update_email, redirect_update_email)
 from .userauth import authenticate, auth_providers
 from .codelang import languages
 from .models import User, Handin

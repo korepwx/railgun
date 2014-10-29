@@ -10,6 +10,7 @@ import json
 import requests
 
 from railgun.common.crypto import EncryptMessage
+from railgun.common.hw import HwScore
 from . import runconfig
 
 
@@ -62,3 +63,18 @@ class ApiClient(object):
         obj = {'uuid': handid, 'exitcode': exitcode, 'stdout': stdout,
                'stderr': stderr}
         return self.post('/handin/proclog/%s/' % handid, payload=obj)
+
+
+def report_error(handid, err):
+    """Report a `RunnerError` to remote api."""
+
+    api = ApiClient(runconfig.WEBSITE_API_BASEURL)
+    score = HwScore(False, result=err.message, compile_error=err.compile_error)
+    api.report(handid, score)
+
+
+def report_start(handid):
+    """Report a handin is running."""
+
+    api = ApiClient(runconfig.WEBSITE_API_BASEURL)
+    api.start(handid)

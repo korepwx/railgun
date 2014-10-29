@@ -5,33 +5,59 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # This file is released under BSD 2-clause license.
 
+"""This module defines all :class:`celery.Task` objects.
+
+A :class:`~celery.Task` object is a proxy for the foreground process to
+queue their jobs into the Celery background runner.  The communications
+are managed by the Celery framework, and the client may not care about
+these details.
+
+For example, if you want to run a long-time job in the background
+runner, you may decorate the job method with :meth:`app.task`::
+
+    @app.task
+    def RestartService(name):
+        os.system('sudo service %s restart' % name)
+
+Then you can tell Celery to queue and run that method in your foreground
+process::
+
+    from tasks import RestartService
+
+    RestartService.delay('dnsmasq')
+
+:class:`~celery.Task` defined in this module are mainly used in
+:mod:`railgun.website.codelang`.  You may also refer to
+:ref:`celery:guide-tasks` to learn more about how to define a task, and
+:ref:`celery:guide-calling` about how to call a task.
+"""
+
 from . import runconfig, permcheck
-from .apiclient import ApiClient
+from .apiclient import ApiClient, report_error, report_start
 from .context import app, logger
 from .handin import PythonHandin, NetApiHandin, InputClassHandin
-from .errors import RunnerError, InternalServerError, NonUTF8OutputError, \
-    RunnerPermissionError
+from .errors import (RunnerError, InternalServerError, NonUTF8OutputError,
+                     RunnerPermissionError)
 from railgun.common.hw import HwScore
 from railgun.common.lazy_i18n import lazy_gettext
 
 
-def report_error(handid, err):
-    """Report a `RunnerError` to remote api."""
-
-    api = ApiClient(runconfig.WEBSITE_API_BASEURL)
-    score = HwScore(False, result=err.message, compile_error=err.compile_error)
-    api.report(handid, score)
-
-
-def report_start(handid):
-    """Report a handin is running."""
-
-    api = ApiClient(runconfig.WEBSITE_API_BASEURL)
-    api.start(handid)
-
-
 def run_handin(handler, handid, hwid):
-    """Run given handin with `handler_class`."""
+    """Common pattern to run a submission.  Its main function is to
+    glue :class:`~railgun.runner.handin.BaseHandin`,
+    :class:`~railgun.runner.host.BaseHost` and
+    :class:`~railgun.runner.apiclient.ApiClient` together.
+
+    It is guaranteed that all errors are handled and logged correctly in this
+    method.
+
+    :param handler: A factory to create a
+        :class:`~railgun.runner.handin.BaseHandin` handler object.
+    :param handid: The uuid of this submission.
+    :type handid: :class:`str`
+    :param hwid: The uuid of the homework.
+    :type hwid: :class:`str`
+    """
     # Create the api client, we may use it once or twice
     api = ApiClient(runconfig.WEBSITE_API_BASEURL)
     # Immediately report error if permcheck has error
@@ -105,7 +131,18 @@ def run_handin(handler, handid, hwid):
 
 @app.task
 def run_python(handid, hwid, upload, options):
-    """Run a given handin as Python."""
+    """Run the given Python submission.
+
+    :handler: :class:`~railgun.common.handin.PythonHandin`
+    :param handid: The uuid of this submission.
+    :type handid: :class:`str`
+    :param hwid: The uuid of the homework.
+    :type hwid: :class:`str`
+    :param upload: The uploaded archive file content encoded in base64.
+    :type upload: :class:`str`
+    :param options: {'filename': the uploaded filename}
+    :type options: :class:`dict`
+    """
     # The actual creation of `PythonHandin` is delayed until `run_handin` is
     # started, so that exceptions raised in the constructor can be reported.
     return run_handin(
@@ -117,7 +154,18 @@ def run_python(handid, hwid, upload, options):
 
 @app.task
 def run_netapi(handid, hwid, remote_addr, options):
-    """Check the given `remote_addr` as NetAPI handin."""
+    """Run the given NetAPI submission.
+
+    :handler: :class:`~railgun.common.handin.NetApiHandin`
+    :param handid: The uuid of this submission.
+    :type handid: :class:`str`
+    :param hwid: The uuid of the homework.
+    :type hwid: :class:`str`
+    :param remote_addr: The submitted url address.
+    :type remote_addr: :class:`str`
+    :param options: {}
+    :type options: :class:`dict`
+    """
     return run_handin(
         (lambda: NetApiHandin(handid, hwid, remote_addr, options)),
         handid,
@@ -127,7 +175,18 @@ def run_netapi(handid, hwid, remote_addr, options):
 
 @app.task
 def run_input(handid, hwid, csvdata, options):
-    """Run black-box test with given `csvdata`."""
+    """Run the given CSV data submission.
+
+    :handler: :class:`~railgun.common.handin.InputClassHandin`
+    :param handid: The uuid of this submission.
+    :type handid: :class:`str`
+    :param hwid: The uuid of the homework.
+    :type hwid: :class:`str`
+    :param csvdata: The submitted csv file content.
+    :type csvdata: :class:`str`
+    :param options: {}
+    :type options: :class:`dict`
+    """
     return run_handin(
         (lambda: InputClassHandin(handid, hwid, csvdata, options)),
         handid,

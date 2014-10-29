@@ -19,11 +19,12 @@ from railgun.common.osutil import ProcessTimeout, execute
 from railgun.common.tempdir import TempDir
 from . import runconfig
 from .context import logger
-from .credential import acquire_offline_user, release_offline_user, \
-    acquire_online_user, release_online_user
-from .errors import RunnerError, FileDenyError, RunnerTimeout, \
-    NetApiAddressRejected, ExtractFileFailure, RuntimeFileCopyFailure, \
-    SpawnProcessFailure, ArchiveContainTooManyFileError
+from .credential import (acquire_offline_user, release_offline_user,
+                         acquire_online_user, release_online_user)
+from .errors import (RunnerError, FileDenyError, RunnerTimeout,
+                     NetApiAddressRejected, ExtractFileFailure,
+                     RuntimeFileCopyFailure, SpawnProcessFailure,
+                     ArchiveContainTooManyFileError)
 
 
 class HostConfig(object):

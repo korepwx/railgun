@@ -10,8 +10,8 @@ import base64
 
 from . import runconfig
 from .hw import homeworks
-from .errors import InternalServerError, LanguageNotSupportError, \
-    ExtractFileFailure
+from .errors import (InternalServerError, LanguageNotSupportError,
+                     ExtractFileFailure)
 from .host import PythonHost, NetApiHost, InputClassHost
 from railgun.common.fileutil import Extractor
 
@@ -39,7 +39,16 @@ class TempDiskUploadFile(object):
 
 
 class BaseHandin(object):
-    """Basic handin management class."""
+    """Basic handin management class.
+
+    :param upload: The uploaded data of this submission.
+        It may be base64 encoded byte sequence to represent an archive file
+        in a `Python` submission, or a url address in a `NetAPI` submission.
+    :type upload: :class:`str`
+    :param options: The extra options of this submission.
+        Vary for different types of submissions.
+    :type options: :class:`dict`
+    """
 
     def __init__(self, handid, hwid, lang, upload, options):
         # check whether options is dict

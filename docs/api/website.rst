@@ -4,7 +4,7 @@ Website Package
 .. module:: railgun.website
 
 This part of the documentation describes the website package.
-It includes all parts of website implementation.
+It includes all parts of the website.
 
 
 Flask Context Objects

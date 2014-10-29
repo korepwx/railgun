@@ -294,15 +294,16 @@ autodoc_member_order = 'groupwise'
 # Link to other projects
 # Example configuration for intersphinx: refer to the Python standard library.
 intersphinx_mapping = {
-    'http://docs.python.org/': None,
-    'http://www.sqlalchemy.org/docs/': None,
-    'http://flask.pocoo.org/docs/': None,
-    'http://flask-wtf.readthedocs.org/en/latest/': None,
-    'http://flask-login.readthedocs.org/en/latest/': None,
-    'http://pythonhosted.org/Flask-Babel/': None,
-    'http://pythonhosted.org/Flask-SQLAlchemy/': None,
-    'http://babel.pocoo.org/docs/': None,
-    'http://wtforms.readthedocs.org/en/latest/': None,
+    'python': ('http://docs.python.org/', None),
+    'sqlalchemy': ('http://www.sqlalchemy.org/docs/', None),
+    'flask': ('http://flask.pocoo.org/docs/', None),
+    'flaskwtf': ('http://flask-wtf.readthedocs.org/en/latest/', None),
+    'flasklogin': ('http://flask-login.readthedocs.org/en/latest/', None),
+    'flaskbabel': ('http://pythonhosted.org/Flask-Babel/', None),
+    'flasksqlalchemy': ('http://pythonhosted.org/Flask-SQLAlchemy/', None),
+    'babel': ('http://babel.pocoo.org/docs/', None),
+    'wtforms': ('http://wtforms.readthedocs.org/en/latest/', None),
+    'celery': ('http://docs.celeryproject.org/en/latest/', None),
 }
 
 # Chinese support for LaTeX
