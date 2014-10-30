@@ -530,7 +530,9 @@ def hwcharts(hwid):
         raise NotFound(lazy_gettext('Requested homework not found.'))
 
     # Query about all the submission for this homework
-    handins = db.session.query(Handin).filter(Handin.hwid == hwid).all()
+    handins = (db.session.query(Handin).join(User).
+               filter(Handin.hwid == hwid).
+               filter(User.is_admin == 0)).all()
 
     # The date histogram to count every submissions.
     date_bucket = {}
