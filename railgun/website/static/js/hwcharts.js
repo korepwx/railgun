@@ -2,7 +2,7 @@ $(document).ready(function() {
     // Set global options
     // Chart.defaults.global.responsive = true;
 
-    // Render the date histogram
+    // Prepare for the date histogram.
     var labels = [];
     var day_freq = [];
     var day_ac_freq = [];
@@ -55,6 +55,25 @@ $(document).ready(function() {
             }
         ]
     };
-    var ctx = $("#dayfreq").get(0).getContext("2d");
-    var chart = new Chart(ctx).Line(day_freq_data);
+
+    // The drawing method of the charts.
+    function redraw() {
+        new Chart($("#dayfreq").get(0).getContext("2d")).Line(day_freq_data);
+    }
+
+    // Update the canvas properties when resizing window
+    function resizeCanvas() {
+        $("canvas").each(function(i, e) {
+            var new_canvasWidth = $(e).parent().width();
+            console.log(new_canvasWidth);
+            if (new_canvasWidth != $(e).width()) {
+                $(e).attr('width', new_canvasWidth);
+            }
+        })
+        redraw();
+    }
+    $(window).resize(resizeCanvas);
+
+    // Initialize the size of canvas
+    resizeCanvas();
 });
