@@ -10,6 +10,8 @@ Software enginneering is a special course among all programming courses.  The sk
 
 We need a new online judger!  Then Railgun was born.
 
+.. _requirement:
+
 Requirements
 ------------
 

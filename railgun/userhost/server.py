@@ -41,10 +41,12 @@ class UserHostServer(object):
     def run(self, port, interface='', backlog=100):
         """Run the user credential server.
 
-        Args:
-            port: the port of user credential server.
-            interface: the interface of server to bind to. [default '']
-            backlog: tcp backlog size [default 100]
+        :param port: The port of the user credential server.
+        :type port: :class:`int`
+        :param interface: The interface for the server to listen.
+        :type interface: :class:`str`
+        :param backlog: The TCP backlog size.
+        :type backlog: :class:`int`
         """
         sck = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         sck.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)

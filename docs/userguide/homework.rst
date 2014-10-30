@@ -613,6 +613,8 @@ The main script may not be ``run.py``, but must match the value
 provided in ``code.xml``.  It is not restricted, but recommended,
 since ``run.py`` is not so bad a name.
 
+.. _python_saferunner:
+
 SafeRunner
 ~~~~~~~~~~
 

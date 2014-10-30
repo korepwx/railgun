@@ -28,15 +28,24 @@ class UserHostClient(object):
 
     def acquire(self, expires=10):
         """Get a free user, which will expire in `expires` seconds.
-        Returns the user name if available, None otherwise.
+
+        :param expires: Seconds before the user is exipred and recycled for
+            next request.
+        :type expires: :class:`int`
+
+        :return: The user name if available, :data:`None` otherwise.
         """
         ret = self._communicate('get %d' % expires).split(' ')
         if ret[0] == 'okay':
             return ret[1]
 
     def release(self, user):
-        """Release the required user immediately.
-        Returns True if success, False otherwise.
+        """Release the acquired user immediately.
+
+        :param user: The name of acquired user.
+        :type user: :class:`str`
+
+        :return: :data:`True` if succeeded, :data:`False` otherwise.
         """
         ret = self._communicate('put %s' % user)
         return ret == 'okay'

@@ -42,3 +42,4 @@ this part of the documentation is for you.
    api/website
    api/runner
    api/runlib
+   api/userhost

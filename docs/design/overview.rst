@@ -76,12 +76,31 @@ The following block shows a simplified tree of directory structure.  Only the mo
 Away from Exploit
 -----------------
 
+As an online judger that gives scores to the students, security is indeed one of the most important topics.  We must design the system carefully so that the database will not be filled with fake scores.
+
+However, as is mentioned in :ref:`requirement`, we have so many different ways to evaluate a software engineering homework submission.  So I decided to run every submission in a separated process, use a homework provided script to generate the scores in that process, and to send the score back to database via :ref:`design_webapi`.
+
+To protect the system from being exploit under such a framework, I mainly takes the advantage of system accounts, and thus forms a number of safety guards.
+
+The first critical guard is to run the submission process at a low-privilege system account.  This is efficient and powerful, in that we can protect our whole computer system by such a simple strategy.  Furthermore, if we want to run multiple submissions on a single machine simultaneously, we can also create multiple system accounts, and run each submission at a dedicated account.
+
+In order to assign each submission process a different system account, we must run our :ref:`runner_package` at root privilege, so that we can use `setuid` and `setgid` to downgrade the processes to desired users.  This is not done in the :ref:`runner_package` itself, instead it sets some environmental variables to tell the submission process (we call it a :ref:`runlib_package`) which user they should `setuid` to, since the :ref:`runlib_package` may want to do some extra preparation before the downgrading.
+
+You may refer to :class:`~railgun.runner.host.BaseHost` to see how the process is launched.  In addition, if you want to enable the dedicated system account for each simultaneous submission process, you may refer to :mod:`railgun.userhost` and :mod:`railgun.runner.credential`.
+
+The second guard is to use the encrypted website api.  We want to send back scores in the same process that the user submitted code are running; this is dangerous, because the users may construct a fake score and send to our system.
+
+To make sure the posted score is reliable, we use AES to encrypt the whole communication, while the secret key is stored in a disk file readable only by `root` users.  Because of this, the user code will not have the chance to get in touch with the key after the privilege has been downgraded.  You may refer to the source code of :ref:`Python SafeRunner <python_saferunner>` to learn more about this behaviour.
+
+Finally, to make sure the safety guards are working properly, you may turn on ``config.RUNNER_CHECK_PERM``.  If it is enabled, the file system permissions will be detected at the startup of :ref:`runner_package`.  You may refer to the source code of :mod:`railgun.runner.context` to see more explanation.
+
+
 .. _i18n_everywhere:
 
 I18n Everywhere
 ---------------
 
-When I start to draft the Railgun system, I decide to support multi-language for everything, even for the detailed reports of evaluated submissions.
+When I started to draft the Railgun system, I decided to support multi-language for everything, even for the detailed reports of evaluated submissions.
 
 This is not a trivial task.  I must be careful when I'm playing with the texts.  All string literals must be wrapped by a :func:`~flask.ext.babel.gettext`, while the global constants must be wrapped with :func:`~flask.ext.babel.lazy_gettext`.
 
