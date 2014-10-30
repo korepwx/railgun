@@ -1,0 +1,19 @@
+{% extends "admin.html" %}
+{% block subtitle -%}{{ _('Statistics for %(hw)s', hw=hw.title) }}{%- endblock %}
+{% block content -%}
+  <h3 class="maintain-heading">{{ _('Statistics for %(hw)s', hw=hw.title) }}</h3>
+
+  <!-- Summary panel -->
+  <div class="panel panel-default maintain-log">
+    <div class="panel-heading">{{ _('Everyday Submission') }}</div>
+    <div class="panel-body">
+        <canvas id="dayfreq" height="300px" width="900px"></canvas>
+    </div>
+  </div>
+{%- endblock %}
+{% block tail -%}
+    <script type="text/javascript">
+        window.chart_data = {{ chart_data | safe }};
+    </script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/hwcharts.js') }}"></script>
+{%- endblock %}

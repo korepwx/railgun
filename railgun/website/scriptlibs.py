@@ -432,6 +432,7 @@ def __inject_page_scripts():
 #: In Railgun system, these libraries are registered by default:
 #:
 #: *    jquery == 1.11.1
+#: *    chart.js == 1.0.1
 #: *    bootstrap == 3.2.0
 #: *    railgun == 1.0.0
 #: *    handlebars == 1.3.0
@@ -448,6 +449,13 @@ scripts.addScript(ScriptLib(
     ]
 ))
 scripts.addScript(ScriptLib(
+    name='chart.js',
+    version='1.0.1',
+    tailScripts=[
+        lambda: url_for('static', filename='js/Chart.min.js'),
+    ]
+))
+scripts.addScript(ScriptLib(
     name='bootstrap',
     version='3.2.0',
     deps=[
@@ -459,20 +467,6 @@ scripts.addScript(ScriptLib(
     ],
     tailScripts=[
         lambda: url_for('static', filename='js/bootstrap.min.js'),
-    ],
-))
-scripts.addScript(ScriptLib(
-    name='railgun',
-    version='1.0.0',
-    deps=[
-        'bootstrap >= 3',
-    ],
-    headStyles=[
-        lambda: url_for('static', filename='css/railgun.css'),
-        lambda: url_for('static', filename='css/codehilite.css'),
-    ],
-    tailScripts=[
-        lambda: url_for('static', filename='js/railgun.js'),
     ],
 ))
 scripts.addScript(ScriptLib(
@@ -497,4 +491,19 @@ scripts.addScript(ScriptLib(
         lambda: url_for('static', filename='js/typeahead.jquery.min.js'),
         lambda: url_for('static', filename='js/bloodhound.min.js'),
     ]
+))
+
+scripts.addScript(ScriptLib(
+    name='railgun',
+    version='1.0.0',
+    deps=[
+        'bootstrap >= 3',
+    ],
+    headStyles=[
+        lambda: url_for('static', filename='css/railgun.css'),
+        lambda: url_for('static', filename='css/codehilite.css'),
+    ],
+    tailScripts=[
+        lambda: url_for('static', filename='js/railgun.js'),
+    ],
 ))

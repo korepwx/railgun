@@ -6,12 +6,14 @@
 # This file is released under BSD 2-clause license.
 
 import csv
+import json
 from functools import wraps
 from cStringIO import StringIO
 
 from flask import (Blueprint, render_template, request, g, flash, redirect,
                    url_for, send_file)
-from flask.ext.babel import get_locale, lazy_gettext, gettext as _
+from flask.ext.babel import gettext as _
+from flask.ext.babel import get_locale, to_user_timezone, lazy_gettext
 from flask.ext.login import login_fresh, current_user
 from sqlalchemy import func
 from sqlalchemy.orm import contains_eager
@@ -24,7 +26,7 @@ from .forms import AdminUserEditForm, CreateUserForm
 from .userauth import auth_providers
 from .credential import login_manager
 from .navibar import navigates, NaviItem
-from .utility import round_score
+from .utility import round_score, date_histogram
 
 #: A :class:`~flask.Blueprint` object.  All the views for administration
 #: are registered to this blueprint.
@@ -515,6 +517,43 @@ def hwscores(hwid):
         pagetitle,
         filename
     )
+
+
+@bp.route('/hwcharts/<hwid>/')
+@admin_required
+def hwcharts(hwid):
+    g.scripts.deps('chart.js')
+
+    # Query about given homework
+    hw = g.homeworks.get_by_uuid(hwid)
+    if hw is None:
+        raise NotFound(lazy_gettext('Requested homework not found.'))
+
+    # Query about all the submission for this homework
+    handins = db.session.query(Handin).filter(Handin.hwid == hwid).all()
+
+    # The date histogram to count every submissions.
+    date_bucket = {}
+    for obj in handins:
+        dt = to_user_timezone(obj.get_ctime())
+        key = dt.month, dt.day
+        value = (1, int(obj.is_accepted()), int(not obj.is_accepted()))
+
+        if key in date_bucket:
+            for i in xrange(3):
+                date_bucket[key][i] += value[i]
+        else:
+            date_bucket[key] = list(value)
+
+    # Generate the JSON data
+    json_obj = {
+        'day_freq': sorted(date_bucket.items()),
+    }
+    json_text = json.dumps(json_obj)
+
+    # Render the page
+    return render_template('admin.hwcharts.html', chart_data=json_text,
+                           hw=hw)
 
 # Register the blue print
 app.register_blueprint(bp, url_prefix='/admin')

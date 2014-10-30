@@ -9,7 +9,7 @@ import colorsys
 import hashlib
 
 from flask import request
-from flask.ext.babel import gettext as _
+from flask.ext.babel import to_user_timezone, gettext as _
 
 
 def float_color(value):
@@ -114,3 +114,30 @@ def is_email(login):
     # TODO: Since the sign up and admin create user page all restrict the
     #       characters to A-Za-z0-9_, just test whether '@' exists is enough.
     return '@' in login
+
+
+def date_histogram(data, getter, ignore_year=False):
+    """Get the date histogram from given objects.
+
+    :param data: Iterable objects to be analyzed.
+    :param getter: A :func:`callable` object to get a
+        :class:`~datetime.datetime` from an object.
+    :param ignore_year: Ignore the year in the date.  Only month and day
+        will be used in histogram.
+
+    :return: A sorted :class:`list` of :class:`tuple`
+        ((year, month, day), freq).
+    """
+    ret = {}
+    if ignore_year:
+        get_key = lambda dt: (dt.month, dt.day)
+    else:
+        get_key = lambda dt: (dt.year, dt.month, dt.day)
+
+    for obj in data:
+        key = get_key(to_user_timezone(getter(obj)))
+        if key in ret:
+            ret[key] += 1
+        else:
+            ret[key] = 1
+    return sorted(ret.items())
