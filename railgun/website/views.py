@@ -621,6 +621,36 @@ def about_source():
     return translated_page_source('about')
 
 
+@app.route('/docs/')
+def docs_index():
+    """The index page of the documentation.
+
+    Documentation pages should be placed at `docs/_build/html`.
+    You may generate the documentation files by executing ``make html`` under
+    `docs` directory.
+
+    :route: /docs/
+    :method: GET
+    """
+    return send_from_directory(
+        os.path.join(app.config['RAILGUN_ROOT'], 'docs/_build/html'),
+        'index.html'
+    )
+
+
+@app.route('/docs/<path:filename>')
+def docs_static(filename):
+    """The static resources of the documentation.
+
+    :route: /docs/
+    :method: GET
+    """
+    return send_from_directory(
+        os.path.join(app.config['RAILGUN_ROOT'], 'docs/_build/html'),
+        filename
+    )
+
+
 # Register all pages into navibar
 navigates.add_view(title=lazy_gettext('Home'), endpoint='index')
 navigates.add(
