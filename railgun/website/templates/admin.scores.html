@@ -9,7 +9,7 @@
       <th>{{ _('Name') }}</th>
       <th>{{ _('Type') }}</th>
       <th>{{ _('Last Due') }}</th>
-      <th>{{ _('Report') }}</th>
+      <th class="hw-action">{{ _('Reports') }}</th>
     </tr>
     {%- for hw in g.homeworks %}
       {%- set next_deadline = hw.get_last_deadline() -%}
@@ -40,9 +40,8 @@
         {%- endif %}
       </td>
       <td class="hw-action">
-        <a href="{{ url_for('admin.hwscores', hwid=hw.uuid) }}">
-          {{ _('View') }}
-        </a>
+        <a href="{{ url_for('admin.hwscores', hwid=hw.uuid) }}" class="btn btn-xs btn-default">{{ _('Scores') }}</a>
+        <a href="{{ url_for('admin.hwcharts', hwid=hw.uuid) }}" class="btn btn-xs btn-default">{{ _('Charts') }}</a>
       </td>
     </tr>
     {%- endfor %}

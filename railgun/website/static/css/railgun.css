@@ -255,9 +255,17 @@ ul.affix-bottom {
 }
 
 .legend .title {
-    display: inline;
-    margin: 0.5em 0.6em;
-    border-style: solid;
-    border-width: 0 0 0 1em;
-    padding: 0 0.3em;
+  display: inline;
+  margin: 0.5em 0.6em;
+  border-style: solid;
+  border-width: 0 0 0 1em;
+  padding: 0 0.3em;
+}
+
+/* Tweak admin.scores.html */
+.hw-action {
+  width: 20%;
+}
+.hw-action a.btn {
+  margin-right: 5px;
 }
