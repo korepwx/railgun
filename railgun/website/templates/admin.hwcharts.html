@@ -1,7 +1,7 @@
 {% extends "admin.html" %}
-{% block subtitle -%}{{ _('Statistics for %(hw)s', hw=hw.title) }}{%- endblock %}
+{% block subtitle -%}{{ _('Statistics for %(hw)s', hw=hw.name) }}{%- endblock %}
 {% block content -%}
-  <h3 class="maintain-heading">{{ _('Statistics for %(hw)s', hw=hw.title) }}</h3>
+  <h3 class="maintain-heading">{{ _('Statistics for %(hw)s', hw=hw.name) }}</h3>
 
   <!-- Summary panel -->
   <div class="panel panel-default maintain-log">

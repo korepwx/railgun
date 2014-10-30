@@ -51,7 +51,7 @@ $(document).ready(function() {
         datasets: [
             {
                 label: msg("Accepted"),
-                fillColor: "rgba(70,191,189,0.2)",
+                fillColor: "rgba(70,191,189,0.7)",
                 strokeColor: "rgba(70,191,189,1)",
                 pointColor: "rgba(70,191,189,1)",
                 pointStrokeColor: "#fff",
@@ -61,7 +61,7 @@ $(document).ready(function() {
             },
             {
                 label: msg("Rejected"),
-                fillColor: "rgba(247,70,74,0.2)",
+                fillColor: "rgba(247,70,74,0.7)",
                 strokeColor: "rgba(247,70,74,1)",
                 pointColor: "rgba(247,70,74,1)",
                 pointStrokeColor: "#fff",
