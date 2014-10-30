@@ -694,7 +694,8 @@ navigates.add(
                                endpoint='scores'),
             NaviItem(
                 title=lazy_gettext('Documentation'),
-                url=app.config['ONLINE_DOC_URL'],
+                url=(app.config['ONLINE_DOC_URL'] or
+                     (lambda: url_for('docs_index'))),
                 identity='documentation',
             ),
             NaviItem.make_view(title=lazy_gettext('FAQ'),

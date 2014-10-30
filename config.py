@@ -179,7 +179,8 @@ EXAMPLE_USER_EMAIL_SUFFIX = '@not-a-email.secoder.net'
 WEBSITE_BASEURL = 'http://localhost:5000'
 
 # ONLINE_DOC_URL defines the base url of online documentations
-ONLINE_DOC_URL = WEBSITE_BASEURL + '/docs/'
+# If not given, use url_for('docs_index').
+ONLINE_DOC_URL = None
 
 # Load un-versioned general config values from config/general.py
 LoadConfig(
