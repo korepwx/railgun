@@ -102,7 +102,7 @@ DEFAULT_HIDE_RULES = (
     '\\.py[cdo]$',          # hide all python binary files
     # prevent system libraries from overwritten
     '^(railgun|pyhost|javahost|unittest|coverage|pep8|traceback|SafeRunner)'
-    '(\.py$|/.*)',
+    '(\\.py$|/.*)',
 )
 
 # HOMEWORK_DIR stores the definitions of homeworks
@@ -146,6 +146,24 @@ RUNLIB_DIR = os.path.join(RAILGUN_ROOT, 'runlib')
 # TRANSLATION_DIR is the root directory of all translation resources
 TRANSLATION_DIR = os.path.join(RAILGUN_ROOT, 'railgun/website/translations')
 
+# The user id and group id for submissions on offline run queue
+# If group id is not defined, the group id of the user will be selected.
+OFFLINE_USER_ID = None
+OFFLINE_GROUP_ID = None
+
+# The offline user host, or None if host server is not used.
+# OFFLINE_USER_HOST = ('127.0.0.1', 9777)
+OFFLINE_USER_HOST = None
+
+# The user id and group id for submissions on online run queue
+# If group id is not defined, the group id of the user will be selected.
+ONLINE_USER_ID = None
+ONLINE_GROUP_ID = None
+
+# The online user host, or None if host server is not used.
+# OFFLINE_USER_HOST = ('127.0.0.1', 9778)
+ONLINE_USER_HOST = None
+
 # RUNNER_CHECK_PERM determines whether the system will check the file
 # permissions of runner host, and show warnings if the permissions not
 # match requirements
@@ -177,6 +195,9 @@ EXAMPLE_USER_EMAIL_SUFFIX = '@not-a-email.secoder.net'
 
 # WEBSITE_BASEURL tells runner what is the base url of railgun
 WEBSITE_BASEURL = 'http://localhost:5000'
+
+# The base url of API for the runner to interact with
+WEBSITE_API_BASEURL = WEBSITE_BASEURL + '/api'
 
 # ONLINE_DOC_URL defines the base url of online documentations
 # If not given, use url_for('docs_index').
