@@ -453,6 +453,7 @@ scripts.addScript(ScriptLib(
     version='1.0.1',
     tailScripts=[
         lambda: url_for('static', filename='js/Chart.min.js'),
+        lambda: url_for('static', filename='js/Chart.StackedBar.js'),
     ]
 ))
 scripts.addScript(ScriptLib(

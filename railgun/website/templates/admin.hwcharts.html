@@ -7,6 +7,7 @@
   <div class="panel panel-default maintain-log">
     <div class="panel-heading">{{ _('Everyday Submission') }}</div>
     <div class="panel-body">
+        <div id="dayfreq-legend"></div>
         <canvas id="dayfreq" height="300px"></canvas>
     </div>
   </div>
@@ -14,6 +15,10 @@
 {% block tail -%}
     <script type="text/javascript">
         window.chart_data = {{ chart_data | safe }};
+        window.chart_i18n = {
+            "Accepted": "{{ _('Accepted') }}",
+            "Rejected": "{{ _('Rejected') }}",
+        };
     </script>
     <script type="text/javascript" src="{{ url_for('static', filename='js/hwcharts.js') }}"></script>
 {%- endblock %}
