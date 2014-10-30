@@ -208,14 +208,6 @@ class StandardLanguage(CodeLanguage):
     def upload_form(self, hw):
         return UploadHandinForm()
 
-    def do_handle_upload(self, handid, hw, form):
-        filename = form.handin.data.filename
-        fcnt = base64.b64encode(form.handin.data.stream.read())
-        # We store the user uploaded file in local storage!
-        self.store_content(handid, {'fname': filename, 'fcnt': fcnt})
-        # Push the submission to run queue
-        run_python.delay(handid, hw.uuid, fcnt, {'filename': filename})
-
     def do_handle_download(self, stored_content):
         fcnt = base64.b64decode(stored_content['fcnt'])
         fname = stored_content['fname']
@@ -231,6 +223,14 @@ class PythonLanguage(StandardLanguage):
 
     def __init__(self):
         super(PythonLanguage, self).__init__('python', lazy_gettext('Python'))
+
+    def do_handle_upload(self, handid, hw, form):
+        filename = form.handin.data.filename
+        fcnt = base64.b64encode(form.handin.data.stream.read())
+        # We store the user uploaded file in local storage!
+        self.store_content(handid, {'fname': filename, 'fcnt': fcnt})
+        # Push the submission to run queue
+        run_python.delay(handid, hw.uuid, fcnt, {'filename': filename})
 
 
 class JavaLanguage(StandardLanguage):
