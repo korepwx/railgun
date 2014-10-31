@@ -52,6 +52,16 @@
         <canvas id="user-submit" height="300px"></canvas>
     </div>
   </div>
+
+  <div class="panel panel-default chart-panel final-score-panel">
+    <div class="panel-heading">{{ _('Final Scores') }}</div>
+    <div class="panel-body">
+        <div class="legend-holder">
+            <div id="final-score-legend"></div>
+        </div>
+        <canvas id="final-score" height="300px"></canvas>
+    </div>
+  </div>
 {%- endblock %}
 {% block tail -%}
     <script type="text/javascript">
@@ -61,6 +71,7 @@
             "Rejected": "{{ _('Rejected') }}",
             "User": "{{ _('User') }}",
             "Count of Users": "{{ _('Count of Users') }}",
+            "Final Scores": "{{ _('Final Scores') }}",
         };
     </script>
     <script type="text/javascript" src="{{ url_for('static', filename='js/hwcharts.js') }}"></script>

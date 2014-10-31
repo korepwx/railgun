@@ -124,14 +124,13 @@ $(document).ready(function() {
     })();
 
     // Prepare for the user submits
-    var user_submit = null;
+    var user_submit_data = null;
 
     (function() {
         var labels = [];
         var data = [];
 
         $(window.chart_data["user_submit"]).each(function(i, e) {
-            console.log(e);
             labels.push(e[0]);
             data.push(e[1]);
         });
@@ -141,9 +140,38 @@ $(document).ready(function() {
             datasets: [
                 {
                     label: "Count of Users",
-                    fillColor: "rgba(151,187,205,0.7)",
-                    strokeColor: "rgba(151,187,205,1)",
-                    pointColor: "rgba(151,187,205,1)",
+                    fillColor: "rgba(253,180,92,0.7)",
+                    strokeColor: "rgba(253,180,92,1)",
+                    pointColor: "rgba(253,180,92,1)",
+                    pointStrokeColor: "#fff",
+                    pointHighlightFill: "#fff",
+                    pointHighlightStroke: "rgba(151,187,205,1)",
+                    data: data
+                }
+            ]
+        });
+    })();
+
+    // Prepare for the final scores
+    var final_score_data = null;
+
+    (function() {
+        var labels = [];
+        var data = [];
+
+        $(window.chart_data["final_score"]).each(function(i, e) {
+            labels.push(e[0]);
+            data.push(e[1]);
+        });
+
+        final_score_data = translate({
+            labels: labels,
+            datasets: [
+                {
+                    label: "Final Scores",
+                    fillColor: "rgba(70,191,189,0.7)",
+                    strokeColor: "rgba(70,191,189,1)",
+                    pointColor: "rgba(70,191,189,1)",
                     pointStrokeColor: "#fff",
                     pointHighlightFill: "#fff",
                     pointHighlightStroke: "rgba(151,187,205,1)",
@@ -184,6 +212,7 @@ $(document).ready(function() {
         var day_freq = null;
         var day_author = null;
         var user_submit = null;
+        var final_score = null;
 
         // Function to (re)create the canvas
         this.createAll = function() {
@@ -197,12 +226,15 @@ $(document).ready(function() {
                 day_author.destroy();
             if (user_submit)
                 user_submit.destroy();
+            if (final_score)
+                final_score.destroy();
 
             acc_reject = new Chart($("#acc-reject").get(0).getContext("2d")).Pie(acc_reject_data);
             reject_brief = new Chart($("#reject-brief").get(0).getContext("2d")).Pie(reject_brief_data);
             day_freq = new Chart($("#day-freq").get(0).getContext("2d")).StackedBar(day_freq_data);
             day_author = new Chart($("#day-author").get(0).getContext("2d")).Bar(day_author_data);
             user_submit = new Chart($("#user-submit").get(0).getContext("2d")).Bar(user_submit_data);
+            final_score = new Chart($("#final-score").get(0).getContext("2d")).Bar(final_score_data);
         };
         this.createAll();
 
@@ -213,6 +245,7 @@ $(document).ready(function() {
         /*
         legend($('#day-author-legend').get(0), day_author_data);
         legend($('#user-submit-legend').get(0), user_submit_data);
+        legend($('#final-score-legend').get(0), final_score_data);
         */
 
         return this;

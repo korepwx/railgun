@@ -591,6 +591,22 @@ def hwcharts(hwid):
         user_submit.setdefault(total, 0)
         user_submit[total] += 1
 
+    # Get the score frequency of Accepted submissions
+    user_finalscores = {}
+    for obj in handins:
+        name = obj.user.name
+        score = obj.score or 0.0
+
+        if name not in user_finalscores:
+            user_finalscores[name] = score
+        elif score > user_finalscores[name]:
+            user_finalscores[name] = score
+
+    final_score = group_histogram(
+        user_finalscores.itervalues(),
+        lambda v: round_score(v)
+    )
+
     # Count the Accepted and Rejected submissions.
     acc_reject = group_histogram(
         handins,
@@ -613,6 +629,7 @@ def hwcharts(hwid):
         ],
         'reject_brief': sorted(reject_brief.items()),
         'user_submit': sorted(user_submit.items()),
+        'final_score': sorted(final_score.items()),
     }
     json_text = json.dumps(json_obj)
 
