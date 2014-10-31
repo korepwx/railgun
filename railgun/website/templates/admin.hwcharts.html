@@ -6,7 +6,9 @@
   <div class="panel panel-default chart-panel dayfreq-panel">
     <div class="panel-heading">{{ _('Everyday Submission') }}</div>
     <div class="panel-body">
-        <div id="dayfreq-legend"></div>
+        <div class="legend-holder">
+            <div id="dayfreq-legend"></div>
+        </div>
         <canvas id="dayfreq" height="300px"></canvas>
     </div>
   </div>
@@ -14,7 +16,9 @@
   <div class="panel panel-default chart-panel acc-reject-panel">
     <div class="panel-heading">{{ _('Rate of Accepted') }}</div>
     <div class="panel-body">
-        <div id="acc-reject-legend"></div>
+        <div class="legend-holder">
+            <div id="acc-reject-legend"></div>
+        </div>
         <canvas id="acc-reject" height="300px"></canvas>
     </div>
   </div>
@@ -22,7 +26,9 @@
   <div class="panel panel-default chart-panel reject-brief-panel">
     <div class="panel-heading">{{ _('Reasons for Rejected') }}</div>
     <div class="panel-body">
-        <div id="reject-brief-legend"></div>
+        <div class="legend-holder">
+            <div id="reject-brief-legend"></div>
+        </div>
         <canvas id="reject-brief" height="300px"></canvas>
     </div>
   </div>
