@@ -250,8 +250,12 @@ ul.affix-bottom {
 }
 
 /* Tweak chart.js display */
-.legend {
+.chart-panel .panel-body {
   text-align: center;
+}
+
+.legend {
+  display: inline-block;
   padding-bottom: 20px;
 }
 

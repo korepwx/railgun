@@ -25,7 +25,7 @@ $(document).ready(function() {
             parent.appendChild(title);
 
             var text = d.label;
-            if (d.value)
+            if (d.value != undefined)
                 text += ' (' + d.value + ')';
             var text = document.createTextNode(text);
             title.appendChild(text);
