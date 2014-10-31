@@ -413,7 +413,8 @@ def scores():
     return render_template('admin.scores.html')
 
 
-def _make_csv_report(q, display_headers, raw_headers, pagetitle, filename):
+def _make_csv_report(q, display_headers, raw_headers, pagetitle, filename,
+                     linker=(lambda colid, value: None)):
     def make_record(itm, hdr):
         if isinstance(itm, dict):
             return tuple(itm[h] for h in hdr)
@@ -440,6 +441,7 @@ def _make_csv_report(q, display_headers, raw_headers, pagetitle, filename):
         headers=display_headers,
         items=[make_record(itm, raw_headers) for itm in q],
         pagetitle=pagetitle,
+        linker=linker,
     )
 
 
@@ -510,12 +512,18 @@ def hwscores(hwid):
         for u in users
     ]
 
+    # Link users to their submission page
+    def LinkUser(idx, name):
+        if idx == 0:
+            return url_for('.handins_for_user', username=name)
+
     return _make_csv_report(
         csvdata,
         display_headers,
         raw_headers,
         pagetitle,
-        filename
+        filename,
+        linker=LinkUser
     )
 
 

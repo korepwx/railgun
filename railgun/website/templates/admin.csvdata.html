@@ -18,7 +18,15 @@
     {%- for itm in items %}
     <tr>
       {% for d in itm -%}
-        <td>{{ d if not (d is none) else '' }}</td>
+        <td>
+          {%- set link = linker(loop.index0, d) -%}
+          {%- set text = d if not (d is none) else '' -%}
+          {%- if link -%}
+            <a href="{{ link }}">{{ text }}</a>
+          {%- else -%}
+            {{ text }}
+          {%- endif -%}
+        </td>
       {%- endfor %}
     </tr>
     {%- endfor %}
