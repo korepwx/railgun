@@ -185,6 +185,7 @@ $(document).ready(function() {
     function pieData(raw, colors) {
         var N = raw.length;
         var data = [];
+        colors = colors || [];
 
         $(raw).each(function(i, e) {
             var hue = colors[i] || Math.floor(i * 360 / N);
