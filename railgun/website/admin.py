@@ -623,7 +623,7 @@ def hwcharts(hwid):
 
     # Count the number of the reasons for Rejected
     reject_brief = group_histogram(
-        handins,
+        (h for h in handins if not h.is_accepted()),
         lambda d: unicode(d.result)
     )
 
