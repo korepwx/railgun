@@ -629,7 +629,10 @@ def hwcharts(hwid):
         ],
         'reject_brief': sorted(reject_brief.items()),
         'user_submit': sorted(user_submit.items()),
-        'final_score': sorted(final_score.items()),
+        'final_score': [
+            (str(v[0]), v[1])
+            for v in sorted(final_score.items())
+        ],
     }
     json_text = json.dumps(json_obj)
 
