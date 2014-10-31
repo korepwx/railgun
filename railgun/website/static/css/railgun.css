@@ -252,6 +252,7 @@ ul.affix-bottom {
 /* Tweak chart.js display */
 .legend {
   text-align: center;
+  padding-bottom: 20px;
 }
 
 .legend .title {

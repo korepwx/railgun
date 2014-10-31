@@ -24,9 +24,20 @@ $(document).ready(function() {
             title.style.borderStyle = 'solid';
             parent.appendChild(title);
 
-            var text = document.createTextNode(msg(d.label));
+            var text = d.label;
+            if (d.value)
+                text += ' (' + d.value + ')';
+            var text = document.createTextNode(text);
             title.appendChild(text);
         });
+    }
+
+    function translate(data) {
+        var dataset = data.datasets || data;
+        $(dataset).each(function(i, e) {
+            e.label = msg(e.label);
+        });
+        return data;
     }
 
     // Prepare for the date histogram.
@@ -46,7 +57,7 @@ $(document).ready(function() {
         day_rj_freq.push(freq[2]);
     });
 
-    var day_freq_data = {
+    var day_freq_data = translate({
         labels: labels,
         datasets: [
             {
@@ -70,7 +81,7 @@ $(document).ready(function() {
                 data: day_rj_freq,
             }
         ]
-    };
+    });
 
     // Prepare for various pie charts
     function pieData(raw, colors=[]) {
@@ -87,7 +98,7 @@ $(document).ready(function() {
             });
         });
 
-        return data;
+        return translate(data);
     }
     var acc_reject_data = pieData(
         window.chart_data['acc_reject'],
