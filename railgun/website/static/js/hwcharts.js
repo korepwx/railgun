@@ -24,7 +24,7 @@ $(document).ready(function() {
             title.style.borderStyle = 'solid';
             parent.appendChild(title);
 
-            var text = document.createTextNode(d.label);
+            var text = document.createTextNode(msg(d.label));
             title.appendChild(text);
         });
     }
@@ -50,7 +50,7 @@ $(document).ready(function() {
         labels: labels,
         datasets: [
             {
-                label: msg("Accepted"),
+                label: "Accepted",
                 fillColor: "rgba(70,191,189,0.7)",
                 strokeColor: "rgba(70,191,189,1)",
                 pointColor: "rgba(70,191,189,1)",
@@ -60,7 +60,7 @@ $(document).ready(function() {
                 data: day_ac_freq,
             },
             {
-                label: msg("Rejected"),
+                label: "Rejected",
                 fillColor: "rgba(247,70,74,0.7)",
                 strokeColor: "rgba(247,70,74,1)",
                 pointColor: "rgba(247,70,74,1)",
@@ -72,19 +72,54 @@ $(document).ready(function() {
         ]
     };
 
+    // Prepare for various pie charts
+    function pieData(raw, colors=[]) {
+        var N = raw.length;
+        var data = [];
+
+        $(raw).each(function(i, e) {
+            var hue = colors[i] || Math.floor(i * 360 / N);
+            data.push({
+                value: e[1],
+                color: "hsla(" + hue + ",75%,50%,0.7)",
+                highlight: "hsla(" + hue + ",75%,50%,1)",
+                label: e[0]
+            });
+        });
+
+        return data;
+    }
+    var acc_reject_data = pieData(
+        window.chart_data['acc_reject'],
+        [110, 360]
+    );
+    var reject_brief_data = pieData(window.chart_data['reject_brief']);
+
     // The drawing method of the charts.
     function redraw() {
+        // Everyday Submissions
         var dayfreq =
             new Chart($("#dayfreq").get(0).getContext("2d")).StackedBar(
                 day_freq_data);
         legend($('#dayfreq-legend').get(0), day_freq_data);
+
+        // Accepted and Rejected
+        var acc_reject =
+            new Chart($("#acc-reject").get(0).getContext("2d")).Pie(
+                acc_reject_data);
+        legend($('#acc-reject-legend').get(0), acc_reject_data);
+
+        // Reject Category
+        var reject_brief =
+            new Chart($("#reject-brief").get(0).getContext("2d")).Pie(
+                reject_brief_data);
+        legend($('#reject-brief-legend').get(0), reject_brief_data);
     }
 
     // Update the canvas properties when resizing window
     function resizeCanvas() {
         $("canvas").each(function(i, e) {
             var new_canvasWidth = $(e).parent().width();
-            console.log(new_canvasWidth);
             if (new_canvasWidth != $(e).width()) {
                 $(e).attr('width', new_canvasWidth);
             }

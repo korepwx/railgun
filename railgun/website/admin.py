@@ -26,7 +26,7 @@ from .forms import AdminUserEditForm, CreateUserForm
 from .userauth import auth_providers
 from .credential import login_manager
 from .navibar import navigates, NaviItem
-from .utility import round_score, date_histogram
+from .utility import round_score, group_histogram
 
 #: A :class:`~flask.Blueprint` object.  All the views for administration
 #: are registered to this blueprint.
@@ -522,6 +522,16 @@ def hwscores(hwid):
 @bp.route('/hwcharts/<hwid>/')
 @admin_required
 def hwcharts(hwid):
+    """The admin page to view various of charts of a given homework.
+
+    All users except the administrators will be considered to generate the
+    charts.
+
+    :route: /admin/hwcharts/<hwid>/
+    :method: GET
+    :template: admin.hwcharts.html
+    """
+    ACCEPTED_AND_REJECTED = ('Accepted', 'Rejected')
     g.scripts.deps('chart.js')
 
     # Query about given homework
@@ -532,9 +542,10 @@ def hwcharts(hwid):
     # Query about all the submission for this homework
     handins = (db.session.query(Handin).join(User).
                filter(Handin.hwid == hwid).
+               filter(Handin.state.in_(ACCEPTED_AND_REJECTED)).
                filter(User.is_admin == 0)).all()
 
-    # The date histogram to count every submissions.
+    # The date histogram to count everyday submissions.
     date_bucket = {}
     for obj in handins:
         dt = to_user_timezone(obj.get_ctime())
@@ -547,9 +558,26 @@ def hwcharts(hwid):
         else:
             date_bucket[key] = list(value)
 
+    # Count the Accepted and Rejected submissions.
+    acc_reject = group_histogram(
+        handins,
+        lambda d: d.state
+    )
+
+    # Count the number of the reasons for Rejected
+    reject_brief = group_histogram(
+        handins,
+        lambda d: unicode(d.result)
+    )
+
     # Generate the JSON data
     json_obj = {
         'day_freq': sorted(date_bucket.items()),
+        'acc_reject': [
+            (k, acc_reject.get(k, 0))
+            for k in ACCEPTED_AND_REJECTED
+        ],
+        'reject_brief': sorted(reject_brief.items()),
     }
     json_text = json.dumps(json_obj)
 

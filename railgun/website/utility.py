@@ -116,6 +116,30 @@ def is_email(login):
     return '@' in login
 
 
+def group_histogram(data, getter):
+    """Get the group histogram from given objects.
+
+    The frequency of each group will be counted and the histogram will be
+    based on the groups.
+
+    :param data: Iterable objects to be analyzed.
+    :param getter: A :func:`callable` object to get the group name from
+        an object.
+
+    :return: A :class:`dict` {group: frequency}.
+    """
+    ret = {}
+
+    for d in data:
+        g = getter(d)
+        if g in ret:
+            ret[g] += 1
+        else:
+            ret[g] = 1
+
+    return ret
+
+
 def date_histogram(data, getter, ignore_year=False):
     """Get the date histogram from given objects.
 

@@ -3,12 +3,27 @@
 {% block content -%}
   <h3 class="maintain-heading">{{ _('Statistics for %(hw)s', hw=hw.info.name) }}</h3>
 
-  <!-- Summary panel -->
+  <div class="panel panel-default maintain-log">
+    <div class="panel-heading">{{ _('Overview') }}</div>
+    <div class="panel-body">
+        <div id="acc-reject-legend"></div>
+        <canvas id="acc-reject" height="300px"></canvas>
+    </div>
+  </div>
+
   <div class="panel panel-default maintain-log">
     <div class="panel-heading">{{ _('Everyday Submission') }}</div>
     <div class="panel-body">
         <div id="dayfreq-legend"></div>
         <canvas id="dayfreq" height="300px"></canvas>
+    </div>
+  </div>
+
+  <div class="panel panel-default maintain-log">
+    <div class="panel-heading">{{ _('Reasons for Rejected') }}</div>
+    <div class="panel-body">
+        <div id="reject-brief-legend"></div>
+        <canvas id="reject-brief" height="300px"></canvas>
     </div>
   </div>
 {%- endblock %}
