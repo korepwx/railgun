@@ -182,7 +182,7 @@ $(document).ready(function() {
     })();
 
     // Prepare for various pie charts
-    function pieData(raw, colors=[]) {
+    function pieData(raw, colors) {
         var N = raw.length;
         var data = [];
 
