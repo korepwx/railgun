@@ -7,9 +7,19 @@
     <div class="panel-heading">{{ _('Everyday Submission') }}</div>
     <div class="panel-body">
         <div class="legend-holder">
-            <div id="dayfreq-legend"></div>
+            <div id="day-freq-legend"></div>
         </div>
-        <canvas id="dayfreq" height="300px"></canvas>
+        <canvas id="day-freq" height="300px"></canvas>
+    </div>
+  </div>
+
+  <div class="panel panel-default chart-panel day-freq-panel">
+    <div class="panel-heading">{{ _('Everyday Submitting Users') }}</div>
+    <div class="panel-body">
+        <div class="legend-holder">
+            <div id="day-author-legend"></div>
+        </div>
+        <canvas id="day-author" height="300px"></canvas>
     </div>
   </div>
 
@@ -32,6 +42,16 @@
         <canvas id="reject-brief" height="300px"></canvas>
     </div>
   </div>
+
+  <div class="panel panel-default chart-panel user-submit-panel">
+    <div class="panel-heading">{{ _('Submission Count Per-User') }}</div>
+    <div class="panel-body">
+        <div class="legend-holder">
+            <div id="user-submit-legend"></div>
+        </div>
+        <canvas id="user-submit" height="300px"></canvas>
+    </div>
+  </div>
 {%- endblock %}
 {% block tail -%}
     <script type="text/javascript">
@@ -39,6 +59,8 @@
         window.chart_i18n = {
             "Accepted": "{{ _('Accepted') }}",
             "Rejected": "{{ _('Rejected') }}",
+            "User": "{{ _('User') }}",
+            "Count of Users": "{{ _('Count of Users') }}",
         };
     </script>
     <script type="text/javascript" src="{{ url_for('static', filename='js/hwcharts.js') }}"></script>

@@ -546,17 +546,50 @@ def hwcharts(hwid):
                filter(User.is_admin == 0)).all()
 
     # The date histogram to count everyday submissions.
+    def ListAdd(target, addition):
+        for i, v in enumerate(addition):
+            target[i] += v
+        return target
+
     date_bucket = {}
+    date_author_bucket = {}
+
     for obj in handins:
         dt = to_user_timezone(obj.get_ctime())
         key = dt.month, dt.day
         value = (1, int(obj.is_accepted()), int(not obj.is_accepted()))
 
+        # We count the day freq
         if key in date_bucket:
-            for i in xrange(3):
-                date_bucket[key][i] += value[i]
+            ListAdd(date_bucket[key], value)
         else:
             date_bucket[key] = list(value)
+
+        # We count the day author freq
+        if key not in date_author_bucket:
+            date_author_bucket[key] = {obj.user.name}
+        else:
+            date_author_bucket[key].add(obj.user.name)
+
+    date_author_bucket = {k: len(v) for k, v in date_author_bucket.iteritems()}
+
+    # Cache the submission count of each user
+    user_submit_bucket = {}
+
+    for obj in handins:
+        name = obj.user.name
+        value = (1, int(obj.is_accepted()), int(not obj.is_accepted()))
+
+        if name not in user_submit_bucket:
+            user_submit_bucket[name] = list(value)
+        else:
+            ListAdd(user_submit_bucket[name], value)
+
+    # Get the frequency of user submissions
+    user_submit = {}
+    for __, (total, __, __) in user_submit_bucket.iteritems():
+        user_submit.setdefault(total, 0)
+        user_submit[total] += 1
 
     # Count the Accepted and Rejected submissions.
     acc_reject = group_histogram(
@@ -573,11 +606,13 @@ def hwcharts(hwid):
     # Generate the JSON data
     json_obj = {
         'day_freq': sorted(date_bucket.items()),
+        'day_author': sorted(date_author_bucket.items()),
         'acc_reject': [
             (k, acc_reject.get(k, 0))
             for k in ACCEPTED_AND_REJECTED
         ],
         'reject_brief': sorted(reject_brief.items()),
+        'user_submit': sorted(user_submit.items()),
     }
     json_text = json.dumps(json_obj)
 

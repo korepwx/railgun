@@ -37,20 +37,25 @@ $(document).ready(function() {
         $(dataset).each(function(i, e) {
             e.label = msg(e.label);
         });
+
+        if (data.labels) {
+            $(data.labels).each(function(i, e) {
+                data.labels[i] = msg(e);
+            });
+        }
         return data;
     }
 
     // Prepare for the date histogram.
-    var labels = [];
     var day_freq_data = null;
 
     (function() {
+        var labels = [];
         var day_freq = [];
         var day_ac_freq = [];
         var day_rj_freq = [];
 
-        $(window.chart_data["day_freq"]).each(function(i, e) {
-            var itm = e;
+        $(window.chart_data["day_freq"]).each(function(i, itm) {
             var key = itm[0];
             var freq = itm[1];
             key = key[0] + '/' + key[1];
@@ -87,6 +92,67 @@ $(document).ready(function() {
         });
     })();
 
+    // Prepare for the day author count
+    var day_author_data = null;
+
+    (function() {
+        var labels = [];
+        var data = [];
+
+        $(window.chart_data["day_author"]).each(function(i, e) {
+            var key = e[0];
+            key = key[0] + '/' + key[1];
+            labels.push(key);
+            data.push(e[1]);
+        });
+
+        day_author_data = translate({
+            labels: labels,
+            datasets: [
+                {
+                    label: "User",
+                    fillColor: "rgba(151,187,205,0.7)",
+                    strokeColor: "rgba(151,187,205,1)",
+                    pointColor: "rgba(151,187,205,1)",
+                    pointStrokeColor: "#fff",
+                    pointHighlightFill: "#fff",
+                    pointHighlightStroke: "rgba(151,187,205,1)",
+                    data: data
+                }
+            ]
+        });
+    })();
+
+    // Prepare for the user submits
+    var user_submit = null;
+
+    (function() {
+        var labels = [];
+        var data = [];
+
+        $(window.chart_data["user_submit"]).each(function(i, e) {
+            console.log(e);
+            labels.push(e[0]);
+            data.push(e[1]);
+        });
+
+        user_submit_data = translate({
+            labels: labels,
+            datasets: [
+                {
+                    label: "Count of Users",
+                    fillColor: "rgba(151,187,205,0.7)",
+                    strokeColor: "rgba(151,187,205,1)",
+                    pointColor: "rgba(151,187,205,1)",
+                    pointStrokeColor: "#fff",
+                    pointHighlightFill: "#fff",
+                    pointHighlightStroke: "rgba(151,187,205,1)",
+                    data: data
+                }
+            ]
+        });
+    })();
+
     // Prepare for various pie charts
     function pieData(raw, colors=[]) {
         var N = raw.length;
@@ -114,28 +180,38 @@ $(document).ready(function() {
     function Charts() {
         // Everyday Submissions
         var day_freq = null;
+        var day_author = null;
         var acc_reject = null;
         var reject_brief = null;
+        var user_submit = null;
 
         // Function to (re)create the canvas
         this.createAll = function() {
             if (day_freq)
                 day_freq.destroy();
+            if (day_author)
+                day_author.destroy();
             if (acc_reject)
                 acc_reject.destroy();
             if (reject_brief)
                 reject_brief.destroy();
+            if (user_submit)
+                user_submit.destroy();
 
-            day_freq = new Chart($("#dayfreq").get(0).getContext("2d")).StackedBar(day_freq_data);
+            day_freq = new Chart($("#day-freq").get(0).getContext("2d")).StackedBar(day_freq_data);
+            day_author = new Chart($("#day-author").get(0).getContext("2d")).Bar(day_author_data);
             acc_reject = new Chart($("#acc-reject").get(0).getContext("2d")).Pie(acc_reject_data);
             reject_brief = new Chart($("#reject-brief").get(0).getContext("2d")).Pie(reject_brief_data);
+            user_submit = new Chart($("#user-submit").get(0).getContext("2d")).Bar(user_submit_data);
         };
         this.createAll();
 
         // Create the legends
-        legend($('#dayfreq-legend').get(0), day_freq_data);
+        legend($('#day-freq-legend').get(0), day_freq_data);
+        legend($('#day-author-legend').get(0), day_author_data);
         legend($('#acc-reject-legend').get(0), acc_reject_data);
         legend($('#reject-brief-legend').get(0), reject_brief_data);
+        legend($('#user-submit-legend').get(0), user_submit_data);
 
         return this;
     }
