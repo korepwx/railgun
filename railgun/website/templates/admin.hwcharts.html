@@ -3,26 +3,6 @@
 {% block content -%}
   <h3 class="maintain-heading">{{ _('Statistics for %(hw)s', hw=hw.info.name) }}</h3>
 
-  <div class="panel panel-default chart-panel dayfreq-panel">
-    <div class="panel-heading">{{ _('Everyday Submission') }}</div>
-    <div class="panel-body">
-        <div class="legend-holder">
-            <div id="day-freq-legend"></div>
-        </div>
-        <canvas id="day-freq" height="300px"></canvas>
-    </div>
-  </div>
-
-  <div class="panel panel-default chart-panel day-freq-panel">
-    <div class="panel-heading">{{ _('Everyday Submitting Users') }}</div>
-    <div class="panel-body">
-        <div class="legend-holder">
-            <div id="day-author-legend"></div>
-        </div>
-        <canvas id="day-author" height="300px"></canvas>
-    </div>
-  </div>
-
   <div class="panel panel-default chart-panel acc-reject-panel">
     <div class="panel-heading">{{ _('Rate of Accepted') }}</div>
     <div class="panel-body">
@@ -43,8 +23,28 @@
     </div>
   </div>
 
+  <div class="panel panel-default chart-panel dayfreq-panel">
+    <div class="panel-heading">{{ _('Everyday Submission') }}</div>
+    <div class="panel-body">
+        <div class="legend-holder">
+            <div id="day-freq-legend"></div>
+        </div>
+        <canvas id="day-freq" height="300px"></canvas>
+    </div>
+  </div>
+
+  <div class="panel panel-default chart-panel day-freq-panel">
+    <div class="panel-heading">{{ _('Everyday Submitting Users') }}</div>
+    <div class="panel-body">
+        <div class="legend-holder">
+            <div id="day-author-legend"></div>
+        </div>
+        <canvas id="day-author" height="300px"></canvas>
+    </div>
+  </div>
+
   <div class="panel panel-default chart-panel user-submit-panel">
-    <div class="panel-heading">{{ _('Submission Count Per-User') }}</div>
+    <div class="panel-heading">{{ _('Submissions Per User') }}</div>
     <div class="panel-body">
         <div class="legend-holder">
             <div id="user-submit-legend"></div>

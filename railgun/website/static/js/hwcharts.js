@@ -179,39 +179,41 @@ $(document).ready(function() {
     // The drawing method of the charts.
     function Charts() {
         // Everyday Submissions
-        var day_freq = null;
-        var day_author = null;
         var acc_reject = null;
         var reject_brief = null;
+        var day_freq = null;
+        var day_author = null;
         var user_submit = null;
 
         // Function to (re)create the canvas
         this.createAll = function() {
-            if (day_freq)
-                day_freq.destroy();
-            if (day_author)
-                day_author.destroy();
             if (acc_reject)
                 acc_reject.destroy();
             if (reject_brief)
                 reject_brief.destroy();
+            if (day_freq)
+                day_freq.destroy();
+            if (day_author)
+                day_author.destroy();
             if (user_submit)
                 user_submit.destroy();
 
-            day_freq = new Chart($("#day-freq").get(0).getContext("2d")).StackedBar(day_freq_data);
-            day_author = new Chart($("#day-author").get(0).getContext("2d")).Bar(day_author_data);
             acc_reject = new Chart($("#acc-reject").get(0).getContext("2d")).Pie(acc_reject_data);
             reject_brief = new Chart($("#reject-brief").get(0).getContext("2d")).Pie(reject_brief_data);
+            day_freq = new Chart($("#day-freq").get(0).getContext("2d")).StackedBar(day_freq_data);
+            day_author = new Chart($("#day-author").get(0).getContext("2d")).Bar(day_author_data);
             user_submit = new Chart($("#user-submit").get(0).getContext("2d")).Bar(user_submit_data);
         };
         this.createAll();
 
         // Create the legends
-        legend($('#day-freq-legend').get(0), day_freq_data);
-        legend($('#day-author-legend').get(0), day_author_data);
         legend($('#acc-reject-legend').get(0), acc_reject_data);
         legend($('#reject-brief-legend').get(0), reject_brief_data);
+        legend($('#day-freq-legend').get(0), day_freq_data);
+        /*
+        legend($('#day-author-legend').get(0), day_author_data);
         legend($('#user-submit-legend').get(0), user_submit_data);
+        */
 
         return this;
     }
