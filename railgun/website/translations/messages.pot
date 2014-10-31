@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2014-10-15 19:17+0800\n"
+"POT-Creation-Date: 2014-10-31 11:31+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -22,464 +22,466 @@ msgstr ""
 msgid "Cannot convert \"%(value)s\" to %(type)s."
 msgstr ""
 
-#: railgun/common/csvdata.py:186
+#: railgun/common/csvdata.py:191
 #, python-format
 msgid "Field \"%(field)s\" not found in CSV data."
 msgstr ""
 
-#: railgun/runner/errors.py:24
+#: railgun/runner/errors.py:42
 msgid "Internal server error."
 msgstr ""
 
-#: railgun/runner/errors.py:33
+#: railgun/runner/errors.py:58
 msgid "File permissions of the runner is wrong."
 msgstr ""
 
-#: railgun/runner/errors.py:42
+#: railgun/runner/errors.py:68
 msgid "Couldn't start submitted program."
 msgstr ""
 
-#: railgun/runner/errors.py:51
+#: railgun/runner/errors.py:80
 msgid "Couldn't copy runtime files, please contact TA."
 msgstr ""
 
-#: railgun/runner/errors.py:60
+#: railgun/runner/errors.py:92
 msgid "Couldn't extract your archive file."
 msgstr ""
 
-#: railgun/runner/errors.py:69
+#: railgun/runner/errors.py:104
 msgid "Archive contains too many files."
 msgstr ""
 
-#: railgun/runner/errors.py:78
+#: railgun/runner/errors.py:117
 #, python-format
 msgid "Language \"%(lang)s\" is not provided."
 msgstr ""
 
-#: railgun/runner/errors.py:88
+#: railgun/runner/errors.py:130
 msgid "Your submission is not a valid archive file."
 msgstr ""
 
-#: railgun/runner/errors.py:97
+#: railgun/runner/errors.py:144
 #, python-format
 msgid "Archive contains denied file %(filename)s."
 msgstr ""
 
-#: railgun/runner/errors.py:107
+#: railgun/runner/errors.py:154
 msgid "Your submission has run out of time."
 msgstr ""
 
-#: railgun/runner/errors.py:116 runlib/python/pyhost/cppmessages.py:16
+#: railgun/runner/errors.py:165 runlib/python/pyhost/cppmessages.py:16
 msgid "Not valid UTF-8 sequence produced."
 msgstr ""
 
-#: railgun/runner/errors.py:125
+#: railgun/runner/errors.py:178
 msgid "Given address is rejected."
 msgstr ""
 
-#: railgun/runner/host.py:308
+#: railgun/runner/host.py:447
 #, python-format
 msgid "Address \"%(url)s\" does not match pattern \"%(rule)s\""
 msgstr ""
 
-#: railgun/runner/host.py:328
+#: railgun/runner/host.py:467
 #, python-format
 msgid "IP address \"%(ip)s\" does not match pattern \"%(rule)s\""
 msgstr ""
 
-#: railgun/runner/tasks.py:74
+#: railgun/runner/tasks.py:100
 #, python-format
 msgid "Exitcode %(exitcode)s != 0."
 msgstr ""
 
-#: railgun/website/admin.py:42
+#: railgun/website/admin.py:59
 msgid "Only admin can view this page!"
 msgstr ""
 
-#: railgun/website/admin.py:86 railgun/website/admin.py:131
-#: railgun/website/views.py:58 railgun/website/views.py:141
+#: railgun/website/admin.py:130 railgun/website/admin.py:188
+#: railgun/website/views.py:76 railgun/website/views.py:216
 msgid "I'm sorry but we may have met some trouble. Please try again."
 msgstr ""
 
-#: railgun/website/admin.py:128 railgun/website/views.py:137
+#: railgun/website/admin.py:185 railgun/website/views.py:212
 msgid "Profile saved."
 msgstr ""
 
-#: railgun/website/admin.py:155
+#: railgun/website/admin.py:224
 msgid "User activated."
 msgstr ""
 
-#: railgun/website/admin.py:166
+#: railgun/website/admin.py:251
 msgid "You cannot deactivate yourself!"
 msgstr ""
 
-#: railgun/website/admin.py:170
+#: railgun/website/admin.py:255
 msgid "User deactivated."
 msgstr ""
 
-#: railgun/website/admin.py:181
+#: railgun/website/admin.py:282
 msgid "You cannot delete yourself!"
 msgstr ""
 
-#: railgun/website/admin.py:192
+#: railgun/website/admin.py:293
 msgid "User deleted."
 msgstr ""
 
-#: railgun/website/admin.py:229
+#: railgun/website/admin.py:391
 msgid "Submission discarded by admin."
 msgstr ""
 
-#: railgun/website/admin.py:234
+#: railgun/website/admin.py:396
 msgid "All pending submissions are cleared."
 msgstr ""
 
-#: railgun/website/admin.py:237
+#: railgun/website/admin.py:399
 msgid "Could not discard the pending submissions."
 msgstr ""
 
-#: railgun/website/admin.py:285
+#: railgun/website/admin.py:469 railgun/website/admin.py:540
 msgid "Requested homework not found."
 msgstr ""
 
-#: railgun/website/admin.py:299 railgun/website/forms.py:41
+#: railgun/website/admin.py:483 railgun/website/forms.py:58
 #: railgun/website/templates/base.user_edit.html:32
 msgid "Username"
 msgstr ""
 
-#: railgun/website/admin.py:299 railgun/website/templates/base.handins.html:17
+#: railgun/website/admin.py:483 railgun/website/templates/base.handins.html:17
 #: railgun/website/templates/handin_detail.html:140
 #: railgun/website/templates/index.html:30
 msgid "Score"
 msgstr ""
 
-#: railgun/website/admin.py:300
+#: railgun/website/admin.py:484
 #, python-format
 msgid "Scores for \"%(hw)s\""
 msgstr ""
 
-#: railgun/website/admin.py:347
+#: railgun/website/admin.py:650
 msgid "Manage"
 msgstr ""
 
-#: railgun/website/admin.py:352 railgun/website/templates/admin.users.html:4
+#: railgun/website/admin.py:655 railgun/website/templates/admin.users.html:4
 msgid "Users"
 msgstr ""
 
-#: railgun/website/admin.py:354 railgun/website/views.py:402
+#: railgun/website/admin.py:657 railgun/website/views.py:672
 msgid "Submissions"
 msgstr ""
 
-#: railgun/website/admin.py:356
+#: railgun/website/admin.py:659 railgun/website/templates/admin.scores.html:43
 msgid "Scores"
 msgstr ""
 
-#: railgun/website/api.py:79
+#: railgun/website/api.py:116
 msgid "No test passed, submission rejected."
 msgstr ""
 
-#: railgun/website/api.py:84
+#: railgun/website/api.py:121
 msgid "Your submission is accepted."
 msgstr ""
 
-#: railgun/website/api.py:88
+#: railgun/website/api.py:125
 msgid "Your submission is rejected."
 msgstr ""
 
-#: railgun/website/api.py:165
+#: railgun/website/api.py:242
 msgid "Process exited before reporting score."
 msgstr ""
 
-#: railgun/website/codelang.py:75
+#: railgun/website/codelang.py:160
 msgid "Could not commit to run queue."
 msgstr ""
 
-#: railgun/website/codelang.py:121
+#: railgun/website/codelang.py:225
 msgid "Python"
 msgstr ""
 
-#: railgun/website/codelang.py:128
+#: railgun/website/codelang.py:243
 msgid "Java"
 msgstr ""
 
-#: railgun/website/credential.py:60
+#: railgun/website/credential.py:142
 msgid "You should update your email before start working!"
 msgstr ""
 
-#: railgun/website/credential.py:115
+#: railgun/website/credential.py:223
 msgid "Please log in to access this page."
 msgstr ""
 
-#: railgun/website/credential.py:122
+#: railgun/website/credential.py:230
 msgid "To protect your account, please reauthenticate to access this page."
 msgstr ""
 
-#: railgun/website/forms.py:42
+#: railgun/website/forms.py:59
 msgid "Only letters, digits and '_' can appear in username."
 msgstr ""
 
-#: railgun/website/forms.py:44
+#: railgun/website/forms.py:61
 msgid "Username can't be blank"
 msgstr ""
 
-#: railgun/website/forms.py:45
+#: railgun/website/forms.py:62
 msgid "Username must be no shorter than 3 and no longer than 32 characters"
 msgstr ""
 
-#: railgun/website/forms.py:48 railgun/website/forms.py:80
-#: railgun/website/forms.py:87 railgun/website/forms.py:105
+#: railgun/website/forms.py:67 railgun/website/forms.py:110
+#: railgun/website/forms.py:123 railgun/website/forms.py:152
 #: railgun/website/templates/base.user_edit.html:34
 msgid "Password"
 msgstr ""
 
-#: railgun/website/forms.py:49
+#: railgun/website/forms.py:68
 msgid "Password can't be blank"
 msgstr ""
 
-#: railgun/website/forms.py:50 railgun/website/forms.py:106
+#: railgun/website/forms.py:69 railgun/website/forms.py:153
 msgid "Passwords must match"
 msgstr ""
 
-#: railgun/website/forms.py:51 railgun/website/forms.py:156
+#: railgun/website/forms.py:70 railgun/website/forms.py:230
 msgid "Password must be no shorter than 7 and no longer than 32 characters"
 msgstr ""
 
-#: railgun/website/forms.py:54 railgun/website/forms.py:108
+#: railgun/website/forms.py:74 railgun/website/forms.py:156
 msgid "Confirm your password"
 msgstr ""
 
-#: railgun/website/forms.py:58
+#: railgun/website/forms.py:79
 msgid "Username already taken"
 msgstr ""
 
-#: railgun/website/forms.py:64 railgun/website/forms.py:99
+#: railgun/website/forms.py:89 railgun/website/forms.py:144
 #: railgun/website/templates/base.user_edit.html:33
 msgid "Email Address"
 msgstr ""
 
-#: railgun/website/forms.py:65 railgun/website/forms.py:100
+#: railgun/website/forms.py:90 railgun/website/forms.py:145
 msgid "Email can't be blank"
 msgstr ""
 
-#: railgun/website/forms.py:66 railgun/website/forms.py:101
+#: railgun/website/forms.py:91 railgun/website/forms.py:146
 msgid "Email is invalid"
 msgstr ""
 
-#: railgun/website/forms.py:67 railgun/website/forms.py:102
+#: railgun/website/forms.py:92 railgun/website/forms.py:147
 msgid "Email must be no longer than 80 characters"
 msgstr ""
 
-#: railgun/website/forms.py:73 railgun/website/forms.py:147
+#: railgun/website/forms.py:99 railgun/website/forms.py:215
 msgid "Email already taken"
 msgstr ""
 
-#: railgun/website/forms.py:79
+#: railgun/website/forms.py:108
 msgid "Username or Email"
 msgstr ""
 
-#: railgun/website/forms.py:81
+#: railgun/website/forms.py:114
 msgid "Remember me?"
 msgstr ""
 
-#: railgun/website/forms.py:111
+#: railgun/website/forms.py:159
 #: railgun/website/templates/base.user_edit.html:75
 msgid "Given Name"
 msgstr ""
 
-#: railgun/website/forms.py:112
+#: railgun/website/forms.py:160
 msgid "Given name must be no longer than 64 characters"
 msgstr ""
 
-#: railgun/website/forms.py:115
+#: railgun/website/forms.py:164
 #: railgun/website/templates/base.user_edit.html:76
 msgid "Family Name"
 msgstr ""
 
-#: railgun/website/forms.py:116
+#: railgun/website/forms.py:165
 msgid "Family name must be no longer than 64 characters"
 msgstr ""
 
-#: railgun/website/forms.py:122
+#: railgun/website/forms.py:172
 #: railgun/website/templates/base.user_edit.html:51
 msgid "Speaking Language"
 msgstr ""
 
-#: railgun/website/forms.py:125
+#: railgun/website/forms.py:175
 msgid "Speaking language can't be blank"
 msgstr ""
 
-#: railgun/website/forms.py:128
+#: railgun/website/forms.py:179
 #: railgun/website/templates/base.user_edit.html:66
 msgid "Timezone"
 msgstr ""
 
-#: railgun/website/forms.py:129
+#: railgun/website/forms.py:180
 msgid "Timezone can't be blank"
 msgstr ""
 
-#: railgun/website/forms.py:150
+#: railgun/website/forms.py:218
 msgid "You should provide a valid email."
 msgstr ""
 
-#: railgun/website/forms.py:165
+#: railgun/website/forms.py:240
 msgid "Please select a valid locale from above."
 msgstr ""
 
-#: railgun/website/forms.py:171
+#: railgun/website/forms.py:250
 msgid "Please enter a valid timezone."
 msgstr ""
 
-#: railgun/website/forms.py:177
+#: railgun/website/forms.py:261
 msgid "Is administrator?"
 msgstr ""
 
-#: railgun/website/forms.py:184
+#: railgun/website/forms.py:269
 msgid "Please choose an archive to submit:"
 msgstr ""
 
-#: railgun/website/forms.py:189
+#: railgun/website/forms.py:274
 msgid ""
 "Only these file formats are accepted: rar, zip, tar, tar.gz, tgz, "
 "tar.bz2, tbz"
 msgstr ""
 
-#: railgun/website/forms.py:205
+#: railgun/website/forms.py:292
 #, python-format
 msgid "Archive files larger than %(size)s is not allowed."
 msgstr ""
 
-#: railgun/website/forms.py:213
+#: railgun/website/forms.py:301
 msgid "Please enter your API address:"
 msgstr ""
 
-#: railgun/website/forms.py:216
+#: railgun/website/forms.py:304
 msgid "Please input a valid url address!"
 msgstr ""
 
-#: railgun/website/forms.py:225
+#: railgun/website/forms.py:315
 msgid "Csv data:"
 msgstr ""
 
-#: railgun/website/models.py:19
+#: railgun/website/models.py:28
 msgid "Pending"
 msgstr ""
 
-#: railgun/website/models.py:19
+#: railgun/website/models.py:28
 msgid "Running"
 msgstr ""
 
-#: railgun/website/models.py:19
+#: railgun/website/models.py:28
+#: railgun/website/templates/admin.hwcharts.html:71
 msgid "Rejected"
 msgstr ""
 
-#: railgun/website/models.py:19
+#: railgun/website/models.py:28
+#: railgun/website/templates/admin.hwcharts.html:70
 msgid "Accepted"
 msgstr ""
 
-#: railgun/website/thuauth.py:41
+#: railgun/website/thuauth.py:64
 msgid "Tsinghua"
 msgstr ""
 
-#: railgun/website/userauth.py:152
+#: railgun/website/userauth.py:216
 msgid "Csv File"
 msgstr ""
 
-#: railgun/website/utility.py:52
+#: railgun/website/utility.py:63
 #, python-format
 msgid "%(size).2fG"
 msgstr ""
 
-#: railgun/website/utility.py:54
+#: railgun/website/utility.py:65
 #, python-format
 msgid "%(size).2fM"
 msgstr ""
 
-#: railgun/website/utility.py:56
+#: railgun/website/utility.py:67
 #, python-format
 msgid "%(size).2fK"
 msgstr ""
 
-#: railgun/website/utility.py:57
+#: railgun/website/utility.py:68
 #, python-format
 msgid "%(size)dB"
 msgstr ""
 
-#: railgun/website/views.py:44
+#: railgun/website/views.py:62
 msgid "Sign up is turned off."
 msgstr ""
 
-#: railgun/website/views.py:75
+#: railgun/website/views.py:104
 msgid "Your account is locked by admin."
 msgstr ""
 
-#: railgun/website/views.py:77
+#: railgun/website/views.py:106
 msgid "Incorrect username or password."
 msgstr ""
 
-#: railgun/website/views.py:95
+#: railgun/website/views.py:151
 msgid "Incorrect password."
 msgstr ""
 
-#: railgun/website/views.py:148
+#: railgun/website/views.py:223
 msgid "You've got some errors in the form, please check your input."
 msgstr ""
 
-#: railgun/website/views.py:188
+#: railgun/website/views.py:303
 #, python-format
 msgid ""
 "You can only have at most %(count)d pending or running submission(s) for "
 "this homework."
 msgstr ""
 
-#: railgun/website/views.py:195 railgun/website/templates/homework.html:83
+#: railgun/website/views.py:310 railgun/website/templates/homework.html:83
 msgid "This homework is locked and cannot be submitted."
 msgstr ""
 
-#: railgun/website/views.py:201
+#: railgun/website/views.py:316
 msgid "This homework is out of date! You cannot upload your submission."
 msgstr ""
 
-#: railgun/website/views.py:217
+#: railgun/website/views.py:334
 msgid "You submission is accepted, please wait for results."
 msgstr ""
 
-#: railgun/website/views.py:223
+#: railgun/website/views.py:340
 msgid "Internal server error, please try again."
 msgstr ""
 
-#: railgun/website/views.py:301 railgun/website/views.py:326
+#: railgun/website/views.py:481 railgun/website/views.py:518
 msgid "Submission not found"
 msgstr ""
 
-#: railgun/website/views.py:385
+#: railgun/website/views.py:655
 msgid "Home"
 msgstr ""
 
-#: railgun/website/views.py:388 railgun/website/templates/base.handins.html:11
+#: railgun/website/views.py:658 railgun/website/templates/base.handins.html:11
 #: railgun/website/templates/homework.html:30
 msgid "Homework"
 msgstr ""
 
-#: railgun/website/views.py:417
+#: railgun/website/views.py:687
 msgid "Manual"
 msgstr ""
 
-#: railgun/website/views.py:421
+#: railgun/website/views.py:691
 msgid "User Guide"
 msgstr ""
 
-#: railgun/website/views.py:423
+#: railgun/website/views.py:693
 msgid "Scoring Details"
 msgstr ""
 
-#: railgun/website/views.py:426
+#: railgun/website/views.py:696
 msgid "Documentation"
 msgstr ""
 
-#: railgun/website/views.py:430
+#: railgun/website/views.py:701
 msgid "FAQ"
 msgstr ""
 
-#: railgun/website/views.py:432
+#: railgun/website/views.py:703
 msgid "About"
 msgstr ""
 
@@ -531,6 +533,46 @@ msgstr ""
 msgid "Railgun"
 msgstr ""
 
+#: railgun/website/templates/admin.hwcharts.html:2
+#: railgun/website/templates/admin.hwcharts.html:4
+#, python-format
+msgid "Statistics for %(hw)s"
+msgstr ""
+
+#: railgun/website/templates/admin.hwcharts.html:7
+msgid "Rate of Accepted"
+msgstr ""
+
+#: railgun/website/templates/admin.hwcharts.html:17
+msgid "Reasons for Rejected"
+msgstr ""
+
+#: railgun/website/templates/admin.hwcharts.html:27
+msgid "Everyday Submission"
+msgstr ""
+
+#: railgun/website/templates/admin.hwcharts.html:37
+msgid "Everyday Submitting Users"
+msgstr ""
+
+#: railgun/website/templates/admin.hwcharts.html:47
+msgid "Submissions Per User"
+msgstr ""
+
+#: railgun/website/templates/admin.hwcharts.html:57
+#: railgun/website/templates/admin.hwcharts.html:74
+msgid "Final Scores"
+msgstr ""
+
+#: railgun/website/templates/admin.hwcharts.html:72
+#: railgun/website/templates/base.handins.html:13
+msgid "User"
+msgstr ""
+
+#: railgun/website/templates/admin.hwcharts.html:73
+msgid "Count of Users"
+msgstr ""
+
 #: railgun/website/templates/admin.maintain.html:10
 msgid "Task Log"
 msgstr ""
@@ -559,7 +601,7 @@ msgid "Last Due"
 msgstr ""
 
 #: railgun/website/templates/admin.scores.html:12
-msgid "Report"
+msgid "Reports"
 msgstr ""
 
 #: railgun/website/templates/admin.scores.html:39
@@ -568,7 +610,7 @@ msgid "Out of date"
 msgstr ""
 
 #: railgun/website/templates/admin.scores.html:44
-msgid "View"
+msgid "Charts"
 msgstr ""
 
 #: railgun/website/templates/admin.user_edit.html:3
@@ -621,10 +663,6 @@ msgstr ""
 
 #: railgun/website/templates/admin.users.html:53
 msgid "Edit"
-msgstr ""
-
-#: railgun/website/templates/base.handins.html:13
-msgid "User"
 msgstr ""
 
 #: railgun/website/templates/base.handins.html:15
@@ -950,45 +988,45 @@ msgstr ""
 msgid "No scorer defined, please contact TA."
 msgstr ""
 
-#: runlib/python/pyhost/objschema.py:151
+#: runlib/python/pyhost/objschema.py:178
 #, python-format
 msgid ""
 "%(schema)s is required but the object does not exist or could not be "
 "loaded."
 msgstr ""
 
-#: runlib/python/pyhost/objschema.py:156
+#: runlib/python/pyhost/objschema.py:183
 #, python-format
 msgid "%(schema)s is denied but the object exists."
 msgstr ""
 
-#: runlib/python/pyhost/scorer.py:69
+#: runlib/python/pyhost/scorer.py:119
 msgid "Functionality Scorer"
 msgstr ""
 
-#: runlib/python/pyhost/scorer.py:87
+#: runlib/python/pyhost/scorer.py:142
 #, python-format
 msgid "%(rate).2f%% tests (%(success)d out of %(total)d) passed"
 msgstr ""
 
-#: runlib/python/pyhost/scorer.py:131
+#: runlib/python/pyhost/scorer.py:211
 msgid "CodeStyle Scorer"
 msgstr ""
 
-#: runlib/python/pyhost/scorer.py:153
+#: runlib/python/pyhost/scorer.py:233
 #, python-format
 msgid "%(trouble)d problem(s) found in %(file)d file(s)"
 msgstr ""
 
-#: runlib/python/pyhost/scorer.py:158
+#: runlib/python/pyhost/scorer.py:238
 msgid "All files passed PEP8 code style check"
 msgstr ""
 
-#: runlib/python/pyhost/scorer.py:183
+#: runlib/python/pyhost/scorer.py:283
 msgid "Coverage Scorer"
 msgstr ""
 
-#: runlib/python/pyhost/scorer.py:288
+#: runlib/python/pyhost/scorer.py:388
 #, python-format
 msgid ""
 "%(filename)s: %(miss)d statement(s) not covered.\n"
@@ -996,7 +1034,7 @@ msgid ""
 "%(source)s"
 msgstr ""
 
-#: runlib/python/pyhost/scorer.py:299
+#: runlib/python/pyhost/scorer.py:399
 #, python-format
 msgid ""
 "%(filename)s: %(partial)d branch(es) partially taken and %(notaken)d "
@@ -1005,7 +1043,7 @@ msgid ""
 "%(source)s"
 msgstr ""
 
-#: runlib/python/pyhost/scorer.py:323
+#: runlib/python/pyhost/scorer.py:423
 #, python-format
 msgid ""
 "Coverage Results:\n"
@@ -1020,7 +1058,7 @@ msgid ""
 "%(branch_partial_cov).2f%%"
 msgstr ""
 
-#: runlib/python/pyhost/scorer.py:340
+#: runlib/python/pyhost/scorer.py:440
 #, python-format
 msgid ""
 "%(stmt).2f%% statements covered (%(stmt_score).2f pts), %(branch).2f%% "
@@ -1028,78 +1066,78 @@ msgid ""
 "partially covered (%(partial_score).2f pts)."
 msgstr ""
 
-#: runlib/python/pyhost/scorer.py:428
+#: runlib/python/pyhost/scorer.py:585
 #, python-format
 msgid "%(rate).2f%% rules (%(cover)s out of %(total)s) covered"
 msgstr ""
 
-#: runlib/python/pyhost/scorer.py:436
+#: runlib/python/pyhost/scorer.py:593
 #, python-format
 msgid "COVERED: %(checker)s"
 msgstr ""
 
-#: runlib/python/pyhost/scorer.py:441
+#: runlib/python/pyhost/scorer.py:598
 #, python-format
 msgid "NOT COVERED: %(checker)s"
 msgstr ""
 
-#: runlib/python/pyhost/scorer.py:445 runlib/python/pyhost/scorer.py:450
+#: runlib/python/pyhost/scorer.py:602 runlib/python/pyhost/scorer.py:607
 msgid "CSV data does not match schema."
 msgstr ""
 
-#: runlib/python/pyhost/scorer.py:459
+#: runlib/python/pyhost/scorer.py:620
 msgid "InputClass Scorer"
 msgstr ""
 
-#: runlib/python/pyhost/scorer.py:470
+#: runlib/python/pyhost/scorer.py:635
 msgid "BoundaryValue Scorer"
 msgstr ""
 
-#: runlib/python/pyhost/scorer.py:515
+#: runlib/python/pyhost/scorer.py:716
 msgid "Object Structure Scorer"
 msgstr ""
 
-#: runlib/python/pyhost/scorer.py:525
+#: runlib/python/pyhost/scorer.py:726
 #, python-format
 msgid "%(rate).2f%% check points (%(success)d out of %(total)d) passed"
 msgstr ""
 
-#: runlib/python/pyhost/scorer.py:536
+#: runlib/python/pyhost/scorer.py:744
 msgid "Object Structure Scorer exited with error."
 msgstr ""
 
-#: runlib/python/pyhost/utility.py:35
+#: runlib/python/pyhost/utility.py:34
 #, python-format
 msgid "PASSED: %(test)s."
 msgstr ""
 
-#: runlib/python/pyhost/utility.py:43
+#: runlib/python/pyhost/utility.py:42
 #, python-format
 msgid ""
 "ERROR: %(test)s.\n"
 "%(error)s"
 msgstr ""
 
-#: runlib/python/pyhost/utility.py:51
+#: runlib/python/pyhost/utility.py:50
 #, python-format
 msgid ""
 "FAIL: %(test)s.\n"
 "%(error)s"
 msgstr ""
 
-#: runlib/python/pyhost/utility.py:58
+#: runlib/python/pyhost/utility.py:57
 #, python-format
 msgid "SKIP: %(test)s: %(reason)s."
 msgstr ""
 
-#: runlib/python/pyhost/utility.py:67
+#: runlib/python/pyhost/utility.py:66
 #, python-format
 msgid ""
 "EXPECTED FAIL: %(test)s.\n"
 "%(error)s"
 msgstr ""
 
-#: runlib/python/pyhost/utility.py:74
+#: runlib/python/pyhost/utility.py:73
 #, python-format
 msgid "UNEXPECTED SUCCESS: %(test)s."
 msgstr ""
