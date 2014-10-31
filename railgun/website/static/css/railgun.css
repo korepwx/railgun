@@ -256,6 +256,7 @@ ul.affix-bottom {
 
 .legend {
   display: inline-block;
+  text-align: left;
   padding-bottom: 20px;
 }
 
