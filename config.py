@@ -196,9 +196,6 @@ EXAMPLE_USER_EMAIL_SUFFIX = '@not-a-email.secoder.net'
 # WEBSITE_BASEURL tells runner what is the base url of railgun
 WEBSITE_BASEURL = 'http://localhost:5000'
 
-# The base url of API for the runner to interact with
-WEBSITE_API_BASEURL = WEBSITE_BASEURL + '/api'
-
 # ONLINE_DOC_URL defines the base url of online documentations
 # If not given, use url_for('docs_index').
 ONLINE_DOC_URL = None

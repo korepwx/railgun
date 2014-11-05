@@ -7,6 +7,12 @@
 
 from config import *
 
+# The base url of API for the runner to interact with.
+#
+# We put this config value here, so that WEBSITE_BASEURL has already been
+# given in `config/general.py`.
+WEBSITE_API_BASEURL = WEBSITE_BASEURL + '/api'
+
 # ---- specify the broker of Celery ----
 # NOTE: format of Redis server is redis://:password@hostname:port/db_number
 BROKER_URL = 'redis://localhost:6379/0'
