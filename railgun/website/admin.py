@@ -27,6 +27,7 @@ from .userauth import auth_providers
 from .credential import login_manager
 from .navibar import navigates, NaviItem
 from .utility import round_score, group_histogram
+from .codelang import languages
 
 #: A :class:`~flask.Blueprint` object.  All the views for administration
 #: are registered to this blueprint.
@@ -362,6 +363,44 @@ def handins_for_user(username):
     :type username: :class:`str`
     """
     return _show_handins(username)
+
+
+@bp.route('/runqueue/rerun/<handid>/')
+@admin_required
+def runqueue_rerun(handid):
+    """Reset the state of given submission and put it into runqueue again.
+    This operation is only enabled if `config.STORE_UPLOAD` is turned on.
+
+    If the operation is successful, the visitor will be redirected to
+    the query string argument `next`, or :func:`~railgun.website.admin.handins`
+    if `next` is not given.
+
+    :route: /admin/runqueue/rerun/<handid>/
+    :method: GET
+
+    :param handid: The uuid of submission.
+    :type handid: :class:`str`
+    """
+    nexturl = request.args.get('next') or url_for('.handins')
+
+    # Query about the handin record
+    handin = Handin.query.filter(Handin.uuid == handid)
+    handin = handin.first()
+
+    # If not found, result 404
+    if not handin:
+        return _('Submission not found'), 404
+
+    # Get the homework
+    hw = g.homeworks.get_by_uuid(handin.hwid)
+
+    # Now reput the submission into runqueue
+    if not languages[handin.lang].rerun(handid, hw):
+        flash(_('The original submission is not stored.'), 'danger')
+    else:
+        flash(_('Successfully reput the submission into queue!'), 'success')
+
+    return redirect(nexturl)
 
 
 @bp.route('/runqueue/clear/')

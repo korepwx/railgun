@@ -15,6 +15,9 @@
     {% if original_submission_exist -%}
     <span class="pull-right">
       <a href="{{ url_for('handin_download', uuid=handin.uuid) }}" class="btn btn-primary">{{ _('Original Submission') }}</a>
+      {% if current_user.is_admin -%}
+        <a href="{{ url_for('admin.runqueue_rerun', handid=handin.uuid) }}" class="btn btn-default">{{ _('ReRun') }}</a>
+      {%- endif %}
     </span>
     {%- endif %}
   </h3>

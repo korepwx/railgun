@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2014-10-31 11:31+0800\n"
+"POT-Creation-Date: 2014-11-05 10:44+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -92,84 +92,97 @@ msgstr ""
 msgid "Exitcode %(exitcode)s != 0."
 msgstr ""
 
-#: railgun/website/admin.py:59
+#: railgun/website/admin.py:60
 msgid "Only admin can view this page!"
 msgstr ""
 
-#: railgun/website/admin.py:130 railgun/website/admin.py:188
+#: railgun/website/admin.py:131 railgun/website/admin.py:189
 #: railgun/website/views.py:76 railgun/website/views.py:216
 msgid "I'm sorry but we may have met some trouble. Please try again."
 msgstr ""
 
-#: railgun/website/admin.py:185 railgun/website/views.py:212
+#: railgun/website/admin.py:186 railgun/website/views.py:212
 msgid "Profile saved."
 msgstr ""
 
-#: railgun/website/admin.py:224
+#: railgun/website/admin.py:225
 msgid "User activated."
 msgstr ""
 
-#: railgun/website/admin.py:251
+#: railgun/website/admin.py:252
 msgid "You cannot deactivate yourself!"
 msgstr ""
 
-#: railgun/website/admin.py:255
+#: railgun/website/admin.py:256
 msgid "User deactivated."
 msgstr ""
 
-#: railgun/website/admin.py:282
+#: railgun/website/admin.py:283
 msgid "You cannot delete yourself!"
 msgstr ""
 
-#: railgun/website/admin.py:293
+#: railgun/website/admin.py:294
 msgid "User deleted."
 msgstr ""
 
-#: railgun/website/admin.py:391
-msgid "Submission discarded by admin."
-msgstr ""
-
-#: railgun/website/admin.py:396
-msgid "All pending submissions are cleared."
+#: railgun/website/admin.py:392 railgun/website/views.py:481
+#: railgun/website/views.py:518
+msgid "Submission not found"
 msgstr ""
 
 #: railgun/website/admin.py:399
+msgid "The original submission is not stored."
+msgstr ""
+
+#: railgun/website/admin.py:401
+msgid "Successfully reput the submission into queue!"
+msgstr ""
+
+#: railgun/website/admin.py:430
+msgid "Submission discarded by admin."
+msgstr ""
+
+#: railgun/website/admin.py:435
+msgid "All pending submissions are cleared."
+msgstr ""
+
+#: railgun/website/admin.py:438
 msgid "Could not discard the pending submissions."
 msgstr ""
 
-#: railgun/website/admin.py:469 railgun/website/admin.py:540
+#: railgun/website/admin.py:510 railgun/website/admin.py:587
 msgid "Requested homework not found."
 msgstr ""
 
-#: railgun/website/admin.py:483 railgun/website/forms.py:58
+#: railgun/website/admin.py:524 railgun/website/forms.py:58
 #: railgun/website/templates/base.user_edit.html:32
 msgid "Username"
 msgstr ""
 
-#: railgun/website/admin.py:483 railgun/website/templates/base.handins.html:17
-#: railgun/website/templates/handin_detail.html:140
+#: railgun/website/admin.py:524 railgun/website/templates/base.handins.html:17
+#: railgun/website/templates/handin_detail.html:143
 #: railgun/website/templates/index.html:30
 msgid "Score"
 msgstr ""
 
-#: railgun/website/admin.py:484
+#: railgun/website/admin.py:525
 #, python-format
 msgid "Scores for \"%(hw)s\""
 msgstr ""
 
-#: railgun/website/admin.py:650
+#: railgun/website/admin.py:700
 msgid "Manage"
 msgstr ""
 
-#: railgun/website/admin.py:655 railgun/website/templates/admin.users.html:4
+#: railgun/website/admin.py:705 railgun/website/templates/admin.users.html:4
 msgid "Users"
 msgstr ""
 
-#: railgun/website/admin.py:657 railgun/website/views.py:672
+#: railgun/website/admin.py:707 railgun/website/views.py:672
 msgid "Submissions"
 msgstr ""
 
-#: railgun/website/admin.py:659 railgun/website/templates/admin.scores.html:43
+#: railgun/website/admin.py:709 railgun/website/templates/admin.scores.html:43
 msgid "Scores"
 msgstr ""
 
@@ -189,15 +202,15 @@ msgstr ""
 msgid "Process exited before reporting score."
 msgstr ""
 
-#: railgun/website/codelang.py:160
+#: railgun/website/codelang.py:160 railgun/website/codelang.py:208
 msgid "Could not commit to run queue."
 msgstr ""
 
-#: railgun/website/codelang.py:225
+#: railgun/website/codelang.py:274
 msgid "Python"
 msgstr ""
 
-#: railgun/website/codelang.py:243
+#: railgun/website/codelang.py:296
 msgid "Java"
 msgstr ""
 
@@ -448,10 +461,6 @@ msgstr ""
 msgid "Internal server error, please try again."
 msgstr ""
 
-#: railgun/website/views.py:481 railgun/website/views.py:518
-msgid "Submission not found"
-msgstr ""
-
 #: railgun/website/views.py:655
 msgid "Home"
 msgstr ""
@@ -670,9 +679,9 @@ msgid "Submit Date"
 msgstr ""
 
 #: railgun/website/templates/base.handins.html:18
-#: railgun/website/templates/handin_detail.html:34
-#: railgun/website/templates/handin_detail.html:79
-#: railgun/website/templates/handin_detail.html:160
+#: railgun/website/templates/handin_detail.html:37
+#: railgun/website/templates/handin_detail.html:82
+#: railgun/website/templates/handin_detail.html:163
 msgid "Summary"
 msgstr ""
 
@@ -689,8 +698,8 @@ msgid "More &raquo;"
 msgstr ""
 
 #: railgun/website/templates/base.handins.html:55
-#: railgun/website/templates/handin_detail.html:84
-#: railgun/website/templates/handin_detail.html:165
+#: railgun/website/templates/handin_detail.html:87
+#: railgun/website/templates/handin_detail.html:168
 msgid "No summary"
 msgstr ""
 
@@ -792,63 +801,67 @@ msgstr ""
 msgid "Original Submission"
 msgstr ""
 
-#: railgun/website/templates/handin_detail.html:37
+#: railgun/website/templates/handin_detail.html:19
+msgid "ReRun"
+msgstr ""
+
+#: railgun/website/templates/handin_detail.html:40
 msgid "Upload user"
 msgstr ""
 
-#: railgun/website/templates/handin_detail.html:41
+#: railgun/website/templates/handin_detail.html:44
 msgid "Upload time"
 msgstr ""
 
-#: railgun/website/templates/handin_detail.html:45
+#: railgun/website/templates/handin_detail.html:48
 msgid "Submission Type"
 msgstr ""
 
-#: railgun/website/templates/handin_detail.html:50
+#: railgun/website/templates/handin_detail.html:53
 msgid "Base Score"
 msgstr ""
 
-#: railgun/website/templates/handin_detail.html:56
+#: railgun/website/templates/handin_detail.html:59
 msgid "Score Scale"
 msgstr ""
 
-#: railgun/website/templates/handin_detail.html:60
+#: railgun/website/templates/handin_detail.html:63
 msgid "Final Score"
 msgstr ""
 
-#: railgun/website/templates/handin_detail.html:66
+#: railgun/website/templates/handin_detail.html:69
 msgid "Exit Code"
 msgstr ""
 
-#: railgun/website/templates/handin_detail.html:69
+#: railgun/website/templates/handin_detail.html:72
 msgid "Not started"
 msgstr ""
 
-#: railgun/website/templates/handin_detail.html:94
+#: railgun/website/templates/handin_detail.html:97
 msgid "Compilation Output"
 msgstr ""
 
-#: railgun/website/templates/handin_detail.html:104
+#: railgun/website/templates/handin_detail.html:107
 msgid "Standard Output"
 msgstr ""
 
-#: railgun/website/templates/handin_detail.html:112
+#: railgun/website/templates/handin_detail.html:115
 msgid "Standard Error Output"
 msgstr ""
 
-#: railgun/website/templates/handin_detail.html:146
+#: railgun/website/templates/handin_detail.html:149
 msgid "Weight"
 msgstr ""
 
-#: railgun/website/templates/handin_detail.html:150
+#: railgun/website/templates/handin_detail.html:153
 msgid "Run time"
 msgstr ""
 
-#: railgun/website/templates/handin_detail.html:155
+#: railgun/website/templates/handin_detail.html:158
 msgid "Not measured"
 msgstr ""
 
-#: railgun/website/templates/handin_detail.html:171
+#: railgun/website/templates/handin_detail.html:174
 msgid "Details"
 msgstr ""
 

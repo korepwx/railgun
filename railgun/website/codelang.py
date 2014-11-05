@@ -163,6 +163,55 @@ class CodeLanguage(object):
             # re-raise this exception
             raise
 
+    def do_rerun(self, handid, hw, stored_content):
+        """Called by :meth:`rerun` to reput the submission into runqueue.
+        Derived classes should implement this.
+
+        :param handid: The submission uuid.
+        :type handid: :class:`str`
+        :param hw: The homework instance.
+        :type hw: :class:`~railgun.common.hw.Homework`
+        :param stored_content: The stored object of this submission.
+            Loading object from disk is finished in :meth:`do_handle_download`.
+        :type stored_content: :class:`object`
+        """
+        raise NotImplementedError()
+
+    def rerun(self, handid, hw):
+        """Reput the submission into runqueue.  This operation should be called
+        only if `config.STORE_UPLOAD` is enabled.
+
+        :param handid: The submission uuid.
+        :type handid: :class:`str`
+        :param hw: The homework instance.
+        :type hw: :class:`~railgun.common.hw.Homework`
+
+        :return: :data:`True` if successfully put into runqueue,
+            :data:`False` if original file is not stored, raises otherwise.
+        """
+        stored_content = self.load_content(handid)
+        if not stored_content:
+            return False
+        handin = db.session.query(Handin).filter(Handin.uuid == handid).first()
+
+        try:
+            handin.state = 'Pending'
+            handin.result = None
+            handin.partials = None
+            handin.exitcode = None
+            db.session.commit()
+
+            self.do_rerun(handid, hw, stored_content)
+        except Exception:
+            # if we cannot post to run queue, modify the handin status to error
+            handin.state = 'Rejected'
+            handin.result = lazy_gettext('Could not commit to run queue.')
+            handin.partials = []
+            db.session.commit()
+            # re-raise this exception
+            raise
+        return True
+
     def do_handle_download(self, stored_content):
         """Called by :meth:`handle_download` to help send the original
         submission data to the client. Derived classes should override
@@ -224,6 +273,10 @@ class PythonLanguage(StandardLanguage):
     def __init__(self):
         super(PythonLanguage, self).__init__('python', lazy_gettext('Python'))
 
+    def do_rerun(self, handid, hw, stored_content):
+        fcnt, fname = stored_content['fcnt'], stored_content['fname']
+        run_python.delay(handid, hw.uuid, fcnt, {'filename': fname})
+
     def do_handle_upload(self, handid, hw, form):
         filename = form.handin.data.filename
         fcnt = base64.b64encode(form.handin.data.stream.read())
@@ -252,6 +305,9 @@ class NetApiLanguage(CodeLanguage):
     def __init__(self):
         super(NetApiLanguage, self).__init__('netapi', 'NetAPI')
 
+    def do_rerun(self, handid, hw, stored_content):
+        run_netapi.delay(handid, hw.uuid, stored_content, {})
+
     def do_handle_upload(self, handid, hw, form):
         # We store the user uploaded file in local storage!
         self.store_content(handid, form.address.data)
@@ -274,6 +330,9 @@ class InputLanguage(CodeLanguage):
 
     def __init__(self):
         super(InputLanguage, self).__init__('input', 'CsvData')
+
+    def do_rerun(self, handid, hw, stored_content):
+        run_input.delay(handid, hw.uuid, stored_content, {})
 
     def do_handle_upload(self, handid, hw, form):
         # We store the user uploaded file in local storage!
