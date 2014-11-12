@@ -19,6 +19,7 @@ from multiple scorers are composed up.  Also, you may refer to
 import re
 import os
 from time import time
+from functools import wraps
 
 import pep8
 import unittest
@@ -560,43 +561,34 @@ class InputDataScorer(Scorer):
             def a_must_not_less_than_1_and_b_must_not_greater_than_2(a, b):
                 return a >= 1 and b <= 2
 
+        .. note::
+
+            If the check method raises any exception, this rule will be
+            regarded as `not matched`.  This design purpose is to ease
+            the rules like `matching a string that can be converted into
+            int`.
+
         :return: The decorator.
         """
         def outer(method):
-            setattr(method, 'description', description)
-            self.check_classes.append(method)
+            @wraps(method)
+            def inner(*args, **kwargs):
+                try:
+                    return method(*args, **kwargs)
+                except Exception:
+                    return False
+
+            setattr(inner, 'description', description)
+            self.check_classes.append(inner)
             return method
+
         return outer
 
     def do_run(self):
+        # First, load the data, and format the error message if schema
+        # is not matched.
         try:
-            self.detail = []
-            covered = set()
-            for obj in CsvSchema.LoadCSV(self.schema, self.csvdata):
-                # each record should be sent to all check classes, to see
-                # what classes it covered
-                for i, c in enumerate(self.check_classes):
-                    if c(obj):
-                        covered.add(i)
-            # total up score by len(covered) / total_classes
-            self.score = 100.0 * len(covered) / len(self.check_classes)
-            self.brief = lazy_gettext(
-                '%(rate).2f%% rules (%(cover)s out of %(total)s) covered',
-                cover=len(covered), total=len(self.check_classes),
-                rate=self.score
-            )
-            # build more detailed report
-            for i, c in enumerate(self.check_classes):
-                if i in covered:
-                    self.detail.append(lazy_gettext(
-                        'COVERED: %(checker)s',
-                        checker=self.getDescription(c)
-                    ))
-                else:
-                    self.detail.append(lazy_gettext(
-                        'NOT COVERED: %(checker)s',
-                        checker=self.getDescription(c)
-                    ))
+            loaded_data = list(CsvSchema.LoadCSV(self.schema, self.csvdata))
         except KeyError, ex:
             raise ScorerFailure(
                 brief=lazy_gettext('CSV data does not match schema.'),
@@ -607,6 +599,34 @@ class InputDataScorer(Scorer):
                 brief=lazy_gettext('CSV data does not match schema.'),
                 detail=[ex.args[0]]
             )
+        # Next, check the loaded data
+        self.detail = []
+        covered = set()
+        for obj in loaded_data:
+            # each record should be sent to all check classes, to see
+            # what classes it covered
+            for i, c in enumerate(self.check_classes):
+                if c(obj):
+                    covered.add(i)
+        # total up score by len(covered) / total_classes
+        self.score = 100.0 * len(covered) / len(self.check_classes)
+        self.brief = lazy_gettext(
+            '%(rate).2f%% rules (%(cover)s out of %(total)s) covered',
+            cover=len(covered), total=len(self.check_classes),
+            rate=self.score
+        )
+        # build more detailed report
+        for i, c in enumerate(self.check_classes):
+            if i in covered:
+                self.detail.append(lazy_gettext(
+                    'COVERED: %(checker)s',
+                    checker=self.getDescription(c)
+                ))
+            else:
+                self.detail.append(lazy_gettext(
+                    'NOT COVERED: %(checker)s',
+                    checker=self.getDescription(c)
+                ))
 
 
 class InputClassScorer(InputDataScorer):
