@@ -578,13 +578,21 @@ def get_evil_handin():
                                                   sys.exc_traceback))
 
     err = []
+    ids = []
     for o in db.session.query(Handin.id):
         idx = o.id
         try:
             hd = db.session.query(Handin).filter(Handin.id == idx).one()
         except Exception:
             err.append('%s:\n%s' % (idx, format_exception()))
-    return make_response('\n'.join(err), 200, {'Content-Type': 'text/plain'})
+            ids.append(str(idx))
+    recommend_sql = 'UPDATE handins SET partisl = NULL WHERE id in (%s)' % (
+        ','.join(ids))
+    return make_response(
+        recommend_sql + '\n' + '\n'.join(err),
+        200,
+        {'Content-Type': 'text/plain'}
+    )
 
 
 @bp.route('/hwcharts/<hwid>/')
