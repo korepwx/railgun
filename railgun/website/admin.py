@@ -11,7 +11,7 @@ from functools import wraps
 from cStringIO import StringIO
 
 from flask import (Blueprint, render_template, request, g, flash, redirect,
-                   url_for, send_file)
+                   url_for, send_file, make_response)
 from flask.ext.babel import gettext as _
 from flask.ext.babel import get_locale, to_user_timezone, lazy_gettext
 from flask.ext.login import login_fresh, current_user
@@ -566,6 +566,27 @@ def hwscores(hwid):
     )
 
 
+@bp.route('/get_evil_handin/')
+@admin_required
+def get_evil_handin():
+    """Find the evil handin objects."""
+    import sys
+    import traceback
+
+    def format_exception():
+        return ''.join(traceback.format_exception(sys.exc_type, sys.exc_value,
+                                                  sys.exc_traceback))
+
+    err = []
+    for o in db.session.query(Handin.id):
+        idx = o.id
+        try:
+            hd = db.session.query(Handin).filter(Handin.id == idx).one()
+        except Exception:
+            err.append('%s:\n%s' % (idx, format_exception()))
+    return make_response('\n'.join(err), 200, {'Content-Type': 'text/plain'})
+
+
 @bp.route('/hwcharts/<hwid>/')
 @admin_required
 def hwcharts(hwid):
@@ -590,7 +611,7 @@ def hwcharts(hwid):
     handins = (db.session.query(Handin).join(User).
                filter(Handin.hwid == hwid).
                filter(Handin.state.in_(ACCEPTED_AND_REJECTED)).
-               filter(User.is_admin == 0)).all()
+               filter(User.is_admin == 0))
 
     # The date histogram to count everyday submissions.
     def ListAdd(target, addition):
