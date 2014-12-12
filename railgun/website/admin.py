@@ -566,10 +566,19 @@ def hwscores(hwid):
     )
 
 
-@bp.route('/get_evil_handin/')
+@bp.route('/get_longblob_patch_command/')
 @admin_required
-def get_evil_handin():
-    """Find the evil handin objects."""
+def get_longblob_patch_command():
+    """As is mentioned in `models.py`, SQLAlchemy uses BLOB as the backend of
+    PickleType in default, where the size of BLOB in MySQL is only 64K.  This
+    will cause some Handin records be truncated, thus they cannot be fetched
+    back into Railgun.
+
+    We've now added patch to prevent this situation.  The existing broken
+    records may be repaired simply by purging its detailed report data.
+    This view just provides the SQL command to do so.
+    """
+
     import sys
     import traceback
 
@@ -582,11 +591,12 @@ def get_evil_handin():
     for o in db.session.query(Handin.id):
         idx = o.id
         try:
-            hd = db.session.query(Handin).filter(Handin.id == idx).one()
+            db.session.query(Handin).filter(Handin.id == idx).one()
         except Exception:
             err.append('%s:\n%s' % (idx, format_exception()))
             ids.append(str(idx))
-    recommend_sql = 'UPDATE handins SET partisl = NULL WHERE id in (%s)' % (
+
+    recommend_sql = 'UPDATE handins SET partials = NULL WHERE id in (%s)' % (
         ','.join(ids))
     return make_response(
         recommend_sql + '\n' + '\n'.join(err),

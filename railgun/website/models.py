@@ -28,6 +28,17 @@ _ = lambda s: s
 HANDIN_STATES = (_('Pending'), _('Running'), _('Rejected'), _('Accepted'))
 
 
+if app.config['SQLALCHEMY_DATABASE_URI'].startswith('mysql'):
+    # Special patch: SQLAlchemy will use BLOB as the default backend for
+    # PickleType in MySQL database.  However, `partials` may exceeds the
+    # limit of 64K.  So Use LongBlob instead for LongPickleType.
+    class LongPickleType(db.PickleType):
+        from sqlalchemy.databases.mysql import MSLongBlob
+        impl = MSLongBlob
+else:
+    LongPickleType = db.PickleType
+
+
 class User(db.Model):
     """A user represents a registered account in Railgun."""
 
@@ -231,7 +242,7 @@ class Handin(db.Model):
     #:
     #: Actual type should be :class:`railgun.common.lazy_i18n.GetTextString`,
     #: serialized by :mod:`pickle` and stored as byte sequence.
-    compile_error = db.Column(db.PickleType, default=None)
+    compile_error = db.Column(LongPickleType, default=None)
 
     #: The program exit code of this submission.
     exitcode = db.Column(db.Integer)
@@ -246,7 +257,7 @@ class Handin(db.Model):
     #:
     #: Actual type is :class:`list` of `railgun.common.hw.HwPartialScore`,
     #: serialized by :mod:`pickle` and stored as byte sequence.
-    partials = db.Column(db.PickleType)
+    partials = db.Column(LongPickleType)
 
     #: Link with the associated user, usually mapped to a foreign key.
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
