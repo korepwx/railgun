@@ -33,8 +33,8 @@ if app.config['SQLALCHEMY_DATABASE_URI'].startswith('mysql'):
     # PickleType in MySQL database.  However, `partials` may exceeds the
     # limit of 64K.  So Use LongBlob instead for LongPickleType.
     class LongPickleType(db.PickleType):
-        from sqlalchemy.databases.mysql import MSLongBlob
-        impl = MSLongBlob
+        from sqlalchemy.databases import mysql
+        impl = mysql.MSLongBlob
 else:
     LongPickleType = db.PickleType
 
