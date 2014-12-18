@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+{% block subtitle -%}{{ _('Active Vote') }}{%- endblock %}
+{% block content -%}
+<form action="{{ url_for('vote_index') }}" method="POST">
+  <h3 class="hw-heading">{{ _('Vote in Progress') }}</h3>
+
+  <table class="table table-hover">
+    {% for itm in vote.items -%}
+    <tr onclick="javascript: $('#vote-item-{{ itm.id }}').click();">
+      <td class="vote-item-check">
+        <input type="checkbox" name="vote-item-{{ itm.id }}" id="vote-item-{{ itm.id }}" onclick="javascript: onCheckboxClicked(event, {{itm.id}})"{% if itm.id in selected %} checked{% endif %}/>
+      </td>
+      {%- if has_any_logo -%}
+      <td class="vote-item-icon">
+        {%- if itm.logo -%}
+          <img alt="{{ itm.title }}" src="{{ itm.logo }}" />
+        {%- endif -%}
+      </td>
+      {%- endif -%}
+      <td class="vote-item-main">
+        <h1>{{ itm.title }}</h1>
+        <div class="vote-item-description">{{ itm.desc | safe }}</div>
+      </td>
+    </tr>
+    {%- endfor %}
+  </table>
+  <div class="button-group">
+    <button type="submit" class="btn btn-primary">{{ _('Submit') }}</button>
+    <a href="{{ url_for('vote_result') }}" class="btn btn-default">{{ _('View Result') }}</a>
+  </div>
+  <input type="hidden" style="display: none" name="csrf_token" value="{{ csrf_token() }}" />
+</form>
+{%- endblock %}
+{%- block tail -%}
+<script type="text/javascript">
+  var min_select = {{ vote.min_select }};
+  var max_select = {{ vote.max_select }};
+
+  function countChecked() {
+    var count = 0;
+    $(':checkbox').each(function(idx, obj) {
+      if ($(obj).is(':checked'))
+        ++count;
+    });
+    return count;
+  }
+
+  function updateCheckbox() {
+    var checked = countChecked();
+
+    if (checked >= max_select) {
+      // disable the unchecked boxes
+      $(':checkbox').each(function(idx, obj) {
+        if (!$(obj).is(':checked')) {
+          $(obj).prop('disabled', true);
+        }
+      });
+    } else {
+      // enable all boxes
+      $(':checkbox').each(function(idx, obj) {
+        $(obj).prop('disabled', false);
+      });
+    }
+  }
+
+  function onCheckboxClicked(event, id) {
+    var obj = $("#vote-item-" + id);
+    updateCheckbox();
+    event.stopPropagation();
+  }
+
+  updateCheckbox();
+</script>
+{%- endblock -%}

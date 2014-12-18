@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block subtitle -%}{{ _('Active Vote') }}{%- endblock %}
+{% block content -%}
+  <h3 class="hw-heading">{{ _('Vote Result') }}</h3>
+
+  <table class="table table-hover">
+    {% for (itm, count) in items -%}
+    <tr>
+      {%- if has_any_logo -%}
+      <td class="vote-item-icon">
+        {%- if itm.logo -%}
+          <img alt="{{ itm.title }}" src="{{ itm.logo }}" />
+        {%- endif -%}
+      </td>
+      {%- endif -%}
+      <td class="vote-item-main">
+        <h1>{{ itm.title }}</h1>
+        <div class="vote-item-description">{{ itm.desc | safe }}</div>
+        <div class="vote-item-count">
+          <div class="progress">
+            <div class="progress-bar" role="progressbar" aria-valuenow="count" aria-valuemin="0" aria-valuemax="{{ max_count }}" style="width: {{ percent[loop.index0]*100 }}%;">
+              {{ _('%(count)s votes', count=count) }}
+            </div>
+          </div>
+        </div>
+      </td>
+    </tr>
+    {%- endfor %}
+  </table>
+{%- endblock %}

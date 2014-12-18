@@ -75,6 +75,8 @@ body {
 .content-admin_handins_for_user .handin-heading,
 .content-admin_scores .hw-heading,
 .content .csv-heading,
+.content-vote_index .hw-heading,
+.content-vote_result .hw-heading,
 .content .maintain-heading {
   padding-bottom: 20px;
 }
@@ -274,4 +276,47 @@ ul.affix-bottom {
 }
 .hw-action a.btn {
   margin-right: 5px;
+}
+
+/* Tweak admin.edit_vote.html */
+.form-edit_vote #json_source {
+  font-family: monospace;
+}
+
+/* Tweak vote_index.html */
+.content-vote_index .button-group {
+  padding-top: 10px;
+}
+.content-vote_index td.vote-item-check {
+  width: 24px;
+  vertical-align: middle;
+}
+.content-vote_index td.vote-item-icon,
+.content-vote_result td.vote-item-icon {
+  width: 220px;
+}
+.content-vote_index td.vote-item-icon img,
+.content-vote_result td.vote-item-icon img {
+  width: 200px;
+}
+.content-vote_index td.vote-item-main h1,
+.content-vote_result td.vote-item-main h1 {
+  font-size: 24px;
+  margin: 5px 0 10px 0;
+}
+.content-vote_index td.vote-item-main .vote-item-description {
+  margin: 5px 0 5px 0;
+}
+.content-vote_result td.vote-item-main .vote-item-description {
+  margin: 5px 0 35px 0;
+}
+
+.content-vote_result td.vote-item-main {
+  position: relative;
+}
+.content-vote_result td.vote-item-main .vote-item-count {
+  position: absolute;
+  left: 8px;
+  right: 8px;
+  bottom: -10px;
 }

@@ -21,8 +21,8 @@ from werkzeug.exceptions import NotFound
 
 from railgun.runner.context import app as runner_app
 from .context import app, db
-from .models import User, Handin, FinalScore
-from .forms import AdminUserEditForm, CreateUserForm
+from .models import User, Handin, FinalScore, Vote, VoteItem, assign_values
+from .forms import AdminUserEditForm, CreateUserForm, VoteJsonEditForm
 from .userauth import auth_providers
 from .credential import login_manager
 from .navibar import navigates, NaviItem
@@ -727,6 +727,69 @@ def hwcharts(hwid):
     return render_template('admin.hwcharts.html', chart_data=json_text,
                            hw=hw)
 
+
+@bp.route('/vote/', methods=['GET', 'POST'])
+@admin_required
+def edit_vote():
+    """Admin page to edit the vote.
+
+    Railgun only supports one vote at this time.  The existing vote data
+    will be purged.
+
+    :route: /admin/vote/
+    :method: GET, POST
+    :template: admin.edit_vote.html
+    """
+    the_vote = Vote.query.filter().first()
+    form = VoteJsonEditForm(obj=the_vote)
+
+    if form.validate_on_submit():
+        try:
+            # try to construct a new vote object
+            obj = json.loads(form.json_source.data)
+            obj['json_source'] = form.json_source.data
+            new_vote = Vote()
+            assign_values(new_vote, obj)
+
+            # create the corresponding options
+            for itm in obj['items']:
+                new_option = VoteItem()
+                assign_values(new_option, itm)
+                new_vote.items.append(new_option)
+
+            # now insert the vote into database, and delete the original one
+            db.session.add(new_vote)
+            if the_vote:
+                db.session.delete(the_vote)
+            db.session.commit()
+
+            flash(_('Vote updated successfully.'), 'success')
+            return redirect(url_for('.edit_vote'))
+        except Exception:
+            app.logger.exception('Error when updating vote.')
+            flash(_('Internal server error, please try again.'), 'danger')
+
+    return render_template('admin.edit_vote.html', form=form, vote=the_vote)
+
+
+@bp.route('/vote/switch/<isopen>/')
+@admin_required
+def switch_vote(isopen):
+    """Admin page to open or close the vote.
+
+    :param isopen: "1" or "0" to indicate whether to open the vote.
+
+    :route: /admin/switch/<isopen>/
+    :method: GET
+    """
+    the_vote = Vote.query.filter().first()
+    if not the_vote:
+        raise NotFound()
+    the_vote.is_open = (isopen == '1')
+    db.session.commit()
+    return redirect(url_for('.edit_vote'))
+
+
 # Register the blue print
 app.register_blueprint(bp, url_prefix='/admin')
 
@@ -748,6 +811,8 @@ navigates.add(
                                endpoint='admin.handins'),
             NaviItem.make_view(title=lazy_gettext('Scores'),
                                endpoint='admin.scores'),
+            NaviItem.make_view(title=lazy_gettext('Vote'),
+                               endpoint='admin.edit_vote'),
         ]
     )
 )

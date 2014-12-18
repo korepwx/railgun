@@ -319,6 +319,117 @@ class Handin(db.Model):
         return unicode(self.compile_error) if self.compile_error else u''
 
 
+class Vote(db.Model):
+    """An instance of :class:`Vote` is a vote initiated by an admini."""
+
+    __tablename__ = 'vote'
+
+    # Table arguments. Inrecognized arguments will be ignored by certain
+    # database engine.
+    __table_args__ = {'mysql_engine': 'InnoDB'}
+
+    #: The main id of a vote in the relational database.
+    id = db.Column(db.Integer, db.Sequence('vote_id_seq'), primary_key=True)
+
+    #: Whether the vote is open?
+    is_open = db.Column(db.Boolean, default=False)
+
+    #: The title of this vote, maximum 255 characters.
+    title = db.Column(db.String(255))
+
+    #: The description of this vote (in HTML)
+    desc = db.Column(db.Text, default='')
+
+    #: How many options should a user select at least?
+    min_select = db.Column(db.Integer, default=0)
+
+    #: How many options should a user select at most?
+    max_select = db.Column(db.Integer, default=65535)
+
+    #: The JSON definition of this vote.
+    #:
+    #: This field is used to store "JSON source code", which we use to quickly
+    #: create a new vote.  It is not a permanent design, only used when I'm
+    #: preparing for voting system in a hurry, and do not have enough time
+    #: to provide a powerful administration interface.  Further developers
+    #: may remove this field and abolish this feature.
+    json_source = db.Column(db.Text)
+
+    def __repr__(self):
+        return '<Vote(%s)>' % self.title
+
+
+class VoteItem(db.Model):
+    """An instance of :class:`VoteItem` is an option in a vote."""
+
+    __tablename__ = 'vote_items'
+
+    # Table arguments. Inrecognized arguments will be ignored by certain
+    # database engine.
+    __table_args__ = {'mysql_engine': 'InnoDB'}
+
+    #: The main id of a vote in the relational database.
+    id = db.Column(db.Integer, db.Sequence('vote_item_id_seq'),
+                   primary_key=True)
+
+    #: The logo url of this option, maximum 255 characters.
+    logo = db.Column(db.String(255))
+
+    #: The title of this option, maximum 255 characters.
+    title = db.Column(db.String(255))
+
+    #: The short description of this vote (in HTML)
+    desc = db.Column(db.Text, default='')
+
+    #: Link with the associated vote, usually mapped to a foreign key.
+    vote_id = db.Column(db.Integer, db.ForeignKey(Vote.id))
+
+    #: Refer to the associated vote object.
+    vote = db.relationship(
+        Vote,
+        backref=db.backref('items', cascade="all, delete-orphan", uselist=True)
+    )
+
+    def __repr__(self):
+        return '<VoteItem(%s)>' % self.title
+
+
+class UserVote(db.Model):
+    """An instance of :class:`UserVote` is an option made by a user."""
+
+    __tablename__ = 'user_votes'
+
+    # Table arguments. Inrecognized arguments will be ignored by certain
+    # database engine.
+    __table_args__ = {'mysql_engine': 'InnoDB'}
+
+    #: The main id of a vote in the relational database.
+    id = db.Column(db.Integer, db.Sequence('user_vote_id_seq'),
+                   primary_key=True)
+
+    #: Link with the associated vote item.
+    vote_item_id = db.Column(db.Integer, db.ForeignKey(VoteItem.id))
+
+    #: Refer to the associated vote item object.
+    vote_item = db.relationship(
+        VoteItem,
+        backref=db.backref('user_votes', cascade="all, delete-orphan")
+    )
+
+    #: Link with the associated vote user.
+    user_id = db.Column(db.Integer, db.ForeignKey(User.id))
+
+    def __repr__(self):
+        return '<UserVote(%s on %s)>' % (self.user_id, self.vote_item_id)
+
+
+def assign_values(obj, dict):
+    """Assign `obj` the field values from `dict`."""
+    for c in obj.__table__.columns:
+        if c.name in dict:
+            setattr(obj, c.name, dict[c.name])
+
+
 # If the system uses SQL database, we try to create "db" directory.
 if app.config['SQLALCHEMY_DATABASE_URI'].startswith('sqlite://'):
     dpath = os.path.join(app.config['RAILGUN_ROOT'], 'db')

@@ -5,6 +5,8 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # This file is released under BSD 2-clause license.
 
+import json
+
 from flask_wtf import Form
 from flask_wtf.file import FileField, FileAllowed, FileRequired
 from wtforms import StringField, PasswordField, SelectField, BooleanField
@@ -316,3 +318,48 @@ class CsvHandinForm(BaseForm):
         validators=[InputRequired()],
         widget=MultiRowsTextArea()
     )
+
+
+class VoteJsonEditForm(BaseForm):
+    """The form to edit a vote using JSON source code."""
+
+    json_source = StringField(
+        _('Json Source:'),
+        validators=[InputRequired()],
+        widget=MultiRowsTextArea(rows=24)
+    )
+
+    def validate_json_source(form, field):
+        """Extract the vote data from JSON source code and and construct
+        object representation."""
+
+        if not field.data:
+            return
+        try:
+            obj = json.loads(field.data)
+            if not isinstance(obj, dict):
+                raise ValidationError(_('Object must be a dictionary.'))
+
+            for k in ('title', 'desc', 'items'):
+                if k not in obj:
+                    raise ValidationError(
+                        _('Field "%(field)s" is required in a vote.',
+                          field=k)
+                    )
+            if 'items' not in obj or not obj['items']:
+                raise ValidationError(_('No option is defined for this vote.'))
+
+            for itm in obj['items']:
+                for k in ('title', 'desc'):
+                    if k not in itm:
+                        raise ValidationError(
+                            _('Field "%(field)s" is requied in an option.',
+                              field=k)
+                        )
+                for k in ('logo', ):
+                    if k not in itm:
+                        itm[k] = None
+        except ValidationError:
+            raise
+        except Exception:
+            raise ValidationError(_('Could not parse the JSON text.'))

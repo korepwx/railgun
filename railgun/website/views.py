@@ -13,6 +13,8 @@ from flask import (render_template, url_for, redirect, flash, request, g,
 from flask.ext.babel import lazy_gettext, get_locale, gettext as _
 from flask.ext.login import (login_user, logout_user, current_user,
                              confirm_login)
+from sqlalchemy import func
+from sqlalchemy.orm import contains_eager
 from werkzeug.exceptions import NotFound, Forbidden
 
 from .context import app, db
@@ -22,7 +24,7 @@ from .credential import (UserContext, login_required, fresh_login_required,
                          should_update_email, redirect_update_email)
 from .userauth import authenticate, auth_providers
 from .codelang import languages
-from .models import User, Handin
+from .models import User, Handin, Vote, VoteItem, UserVote
 from .manual import translated_page, translated_page_source
 
 
@@ -649,6 +651,103 @@ def docs_static(filename):
         os.path.join(app.config['RAILGUN_ROOT'], 'docs/_build/html'),
         filename
     )
+
+
+@app.route('/vote/', methods=['GET', 'POST'])
+@login_required
+def vote_index():
+    """The page to display vote options to the user.
+
+    :route: /vote/
+    :method: GET, POST
+    :template: vote_index.html
+    """
+    vote = Vote.query.filter().first()
+    if not vote:
+        raise NotFound()
+    # check whether the vote has ended
+    if not vote.is_open:
+        flash(_('Vote is not open, you can only view the result.'), 'warning')
+        return redirect(url_for('vote_result'))
+
+    item_ids = [i.id for i in vote.items]
+    user_votes = UserVote.query.filter(UserVote.user_id == current_user.id,
+                                       UserVote.vote_item_id.in_(item_ids))
+    has_any_logo = sum(i.logo is not None for i in vote.items) > 0
+    selected_ids = [i.vote_item_id for i in user_votes]
+
+    # if the method is POST, we check the user input
+    if request.method == 'POST':
+        # gather the selected ids
+        selected_ids = []
+        for k, v in request.form.iteritems():
+            if k.startswith('vote-item-'):
+                itm_id = int(k[10:])
+                selected_ids.append(itm_id)
+        # check whether the min & max selection exeeds
+        selected_ids = set(selected_ids)
+        if len(selected_ids) > vote.max_select:
+            flash(_("You can only vote for at most %(max)s items.",
+                    max=vote.max_select))
+        elif len(selected_ids) < vote.min_select:
+            flash(_("You should at least vote for %(min)s items.",
+                    min=vote.min_select))
+        else:
+            exist_votes = set(i.vote_item_id for i in user_votes)
+            # if idx already voted but not in this request, delete it
+            for itm in user_votes:
+                if itm.vote_item_id not in selected_ids:
+                    db.session.delete(itm)
+            # if idx in selected ids but not in db, add it
+            for idx in selected_ids:
+                if idx not in exist_votes:
+                    db.session.add(
+                        UserVote(vote_item_id=idx, user_id=current_user.id))
+            # now submit it!
+            try:
+                db.session.commit()
+                flash(_('You voted successfully!'), 'success')
+                return redirect(url_for('vote_result'))
+            except Exception:
+                app.logger.exception('Error when updating user vote')
+                flash(_('Internal server error, please try again.'), 'danger')
+
+    return render_template('vote_index.html', vote=vote, user_votes=user_votes,
+                           has_any_logo=has_any_logo, selected=selected_ids)
+
+
+@app.route('/vote/result/')
+@login_required
+def vote_result():
+    """The page to display vote result to the user.
+
+    :route: /vote/result/
+    :method: GET
+    :template: vote_result.html
+    """
+    vote = Vote.query.filter().first()
+    if not vote:
+        raise NotFound()
+
+    # total up the votes for each item
+    q = (db.session.query(VoteItem, func.count(UserVote.user_id).label('C')).
+         join(UserVote).
+         filter(VoteItem.vote_id == vote.id).
+         group_by(UserVote.vote_item_id).
+         order_by('-C', VoteItem.id))
+    vote_items = q.all()
+
+    # check the vote objects
+    has_any_logo = sum(i[0].logo is not None for i in vote_items)
+    max_count = max(i[1] for i in vote_items)
+    if max_count > 0:
+        percent = [float(i[1]) / max_count for i in vote_items]
+    else:
+        percent = [0] * len(vote_items)
+
+    return render_template(
+        'vote_result.html', items=vote_items, has_any_logo=has_any_logo,
+        max_count=max_count, percent=percent)
 
 
 # Register all pages into navibar
