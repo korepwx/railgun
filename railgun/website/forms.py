@@ -353,7 +353,7 @@ class VoteJsonEditForm(BaseForm):
                 for k in ('title', 'desc'):
                     if k not in itm:
                         raise ValidationError(
-                            _('Field "%(field)s" is requied in an option.',
+                            _('Field "%(field)s" is required in an option.',
                               field=k)
                         )
                 for k in ('logo', ):
@@ -363,3 +363,53 @@ class VoteJsonEditForm(BaseForm):
             raise
         except Exception:
             raise ValidationError(_('Could not parse the JSON text.'))
+
+
+class VoteSignupForm(BaseForm):
+    """The form to signup a project for the voting."""
+
+    #: File upload input.  Only image files are allowed.
+    logo = FileField(
+        _('Please upload your logo:'),
+        validators=[
+            FileAllowed(
+                ['jpg', 'png', 'bmp', 'gif'],
+                message=_('Only these file formats are accepted: '
+                          'jpg, png, bmp, gif')
+            )
+        ])
+
+    #: The group name input.
+    group_name = StringField(_('Group Name'), validators=[
+        Length(max=80, message=_("Group name must be no longer than 80 "
+                                 "characters")),
+        DataRequired(),
+    ])
+
+    #: The project name input.
+    project_name = StringField(_('Project Name'), validators=[
+        Length(max=80, message=_("Project name must be no longer than 80 "
+                                 "characters")),
+        DataRequired(),
+    ])
+
+    #: The description input.
+    description = StringField(_('Description'), validators=[
+        DataRequired()
+    ], widget=MultiRowsTextArea(rows=12))
+
+    def validate_logo(form, field):
+        """Extra validation on :attr:`logo` that the uploaded file
+        must not be larger than ``config.VOTE_LOGO_MAXIMUM_FILE_SIZE``.
+        """
+        if not field.data:
+            return
+        # try to get the file size of uploaded file
+        field.data.stream.seek(0, 2)
+        fsize = field.data.stream.tell()
+        field.data.stream.seek(0)
+        if fsize > app.config['VOTE_LOGO_MAXIMUM_FILE_SIZE']:
+            raise ValidationError(_(
+                "Image files larger than %(size)s is not allowed.",
+                size=format_size(app.config['VOTE_LOGO_MAXIMUM_FILE_SIZE'])
+            ))

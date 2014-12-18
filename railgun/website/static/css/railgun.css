@@ -77,6 +77,7 @@ body {
 .content .csv-heading,
 .content-vote_index .hw-heading,
 .content-vote_result .hw-heading,
+.content-vote_signup .form-heading,
 .content .maintain-heading {
   padding-bottom: 20px;
 }
@@ -294,10 +295,11 @@ ul.affix-bottom {
 .content-vote_index td.vote-item-icon,
 .content-vote_result td.vote-item-icon {
   width: 220px;
+  text-align: center;
 }
 .content-vote_index td.vote-item-icon img,
 .content-vote_result td.vote-item-icon img {
-  width: 200px;
+  max-width: 200px;
 }
 .content-vote_index td.vote-item-main h1,
 .content-vote_result td.vote-item-main h1 {
@@ -319,4 +321,13 @@ ul.affix-bottom {
   left: 8px;
   right: 8px;
   bottom: -10px;
+}
+
+/* Tweak the vote signup page */
+.content-vote_signup .vote-logo img {
+  max-width: 200px;
+  margin-bottom: 20px;
+}
+.content-vote_signup .buttons {
+  padding-top: 20px;
 }

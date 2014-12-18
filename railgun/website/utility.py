@@ -5,11 +5,15 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # This file is released under BSD 2-clause license.
 
+import os
 import colorsys
 import hashlib
+import cPickle as pickle
 
-from flask import request
 from flask.ext.babel import to_user_timezone, gettext as _
+from flask.ext.login import current_user
+
+from .context import app
 
 
 def float_color(value):
@@ -166,3 +170,48 @@ def date_histogram(data, getter, ignore_year=False):
         else:
             ret[key] = 1
     return sorted(ret.items())
+
+
+def load_vote_signup(username=None):
+    """Load voting signup data from directory."""
+    username = username or current_user.name
+    fpath = os.path.join(app.config['VOTE_SIGNUP_DATA_DIR'],
+                         '%s.dat' % username)
+    if os.path.isfile(fpath):
+        try:
+            with open(fpath, 'rb') as f:
+                return pickle.load(f)
+        except Exception:
+            app.logger.exception('Cannot load signup data from "%s"' % fpath)
+    return {'project_name': '', 'group_name': '', 'description': '',
+            'logo_file': ''}
+
+
+def list_vote_signup():
+    """List all signup data."""
+    if os.path.isdir(app.config['VOTE_SIGNUP_DATA_DIR']):
+        for f in os.listdir(app.config['VOTE_SIGNUP_DATA_DIR']):
+            if f.endswith('.dat'):
+                yield f[: -4]
+
+
+def store_vote_signup(project_name, group_name, description, logo_file,
+                      username=None):
+    """Store voting signup data to directory."""
+    username = username or current_user.name
+    fpath = os.path.join(app.config['VOTE_SIGNUP_DATA_DIR'],
+                         '%s.dat' % username)
+    try:
+        if not os.path.isdir(app.config['VOTE_SIGNUP_DATA_DIR']):
+            os.makedirs(app.config['VOTE_SIGNUP_DATA_DIR'])
+        with open(fpath, 'wb') as f:
+            pickle.dump({
+                'project_name': project_name,
+                'group_name': group_name,
+                'description': description,
+                'logo_file': logo_file,
+            }, f)
+        return True
+    except Exception:
+        app.logger.exception('Cannot write signup data to "%s"' % fpath)
+    return False

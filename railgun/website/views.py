@@ -14,12 +14,12 @@ from flask.ext.babel import lazy_gettext, get_locale, gettext as _
 from flask.ext.login import (login_user, logout_user, current_user,
                              confirm_login)
 from sqlalchemy import func
-from sqlalchemy.orm import contains_eager
 from werkzeug.exceptions import NotFound, Forbidden
 
 from .context import app, db
 from .navibar import navigates, NaviItem, set_navibar_identity
-from .forms import SignupForm, SigninForm, ProfileForm, ReAuthenticateForm
+from .forms import (SignupForm, SigninForm, ProfileForm, ReAuthenticateForm,
+                    VoteSignupForm)
 from .credential import (UserContext, login_required, fresh_login_required,
                          should_update_email, redirect_update_email)
 from .userauth import authenticate, auth_providers
@@ -653,6 +653,19 @@ def docs_static(filename):
     )
 
 
+@app.route('/vote/static/<path:filename>')
+def vote_static(filename):
+    """The static resources of the voting signup.
+
+    :route: /vote/static/
+    :method: GET
+    """
+    return send_from_directory(
+        app.config['VOTE_SIGNUP_DATA_DIR'],
+        filename
+    )
+
+
 @app.route('/vote/', methods=['GET', 'POST'])
 @login_required
 def vote_index():
@@ -735,7 +748,6 @@ def vote_result():
          filter(VoteItem.vote_id == vote.id).
          group_by(UserVote.vote_item_id))
     vote_count = {k: v for (k, v) in q.all()}
-    print vote_count
 
     def C(a, b):
         t = -cmp(a[1], b[1])
@@ -759,6 +771,80 @@ def vote_result():
     return render_template(
         'vote_result.html', items=vote_items, has_any_logo=has_any_logo,
         max_count=max_count, percent=percent)
+
+
+@app.route('/vote/signup/', methods=['GET', 'POST'])
+@login_required
+def vote_signup():
+    """The page to signup a project for voting.
+
+    :route: /vote/signup/
+    :method: GET, POST
+    :template: vote_signup.html
+    """
+    if not app.config['VOTE_SIGNUP_ENABLED']:
+        raise Forbidden()
+
+    from .utility import load_vote_signup, store_vote_signup
+    obj = load_vote_signup()
+
+    # we put obj into an object because the form cannot access dict
+    class Struct(object):
+        def __init__(self, **params):
+            self.__dict__.update(params)
+
+    form = VoteSignupForm(obj=Struct(**obj))
+
+    if form.validate_on_submit():
+        try:
+            # store the image file
+            if form.logo.data:
+                fext = os.path.splitext(form.logo.data.filename)[1]
+                fname = '%s%s' % (current_user.name, fext)
+                if not os.path.isdir(app.config['VOTE_SIGNUP_DATA_DIR']):
+                    os.makedirs(app.config['VOTE_SIGNUP_DATA_DIR'])
+                fpath = os.path.join(app.config['VOTE_SIGNUP_DATA_DIR'], fname)
+                form.logo.data.save(fpath)
+
+                # try to make thumbnail of the image
+                support_pil = True
+                try:
+                    import Image
+                except Exception:
+                    try:
+                        from PIL import Image
+                    except Exception:
+                        support_pil = False
+
+                if not support_pil:
+                    app.logger.exception('PIL is not enabled, uploaded logo '
+                                         'cannot be resized!')
+
+                if support_pil:
+                    im = Image.open(fpath)
+                    os.remove(fpath)
+                    if im.size[0] > 200 or im.size[1] > 200:
+                        im.thumbnail((200, 200))
+                    if fext.lower() in ('.jpg', '.bmp', '.png'):
+                        fext = '.jpg'
+                    fname = '%s%s' % (current_user.name, fext)
+                    fpath = os.path.join(app.config['VOTE_SIGNUP_DATA_DIR'],
+                                         fname)
+                    im.save(fpath)
+            else:
+                fname = obj['logo_file']
+
+            # store the data
+            store_vote_signup(form.project_name.data, form.group_name.data,
+                              form.description.data, fname)
+
+            flash(_('Project data saved.'), 'info')
+            return redirect(url_for('vote_signup'))
+        except Exception:
+            app.logger.exception('Could not save voting signup data')
+            flash(_('Internal server error, please try again.'), 'danger')
+
+    return render_template('vote_signup.html', form=form, obj=obj)
 
 
 # Register all pages into navibar
@@ -812,6 +898,19 @@ navigates.add(
                                endpoint='faq'),
             NaviItem.make_view(title=lazy_gettext('About'),
                                endpoint='about'),
+        ]
+    )
+)
+navigates.add(
+    NaviItem(
+        title=lazy_gettext('Vote'),
+        url=None,
+        identity='vote',
+        subitems=[
+            NaviItem.make_view(title=lazy_gettext('Sign up for Vote'),
+                               endpoint='vote_signup'),
+            NaviItem.make_view(title=lazy_gettext('Engage in Vote'),
+                               endpoint='vote_index'),
         ]
     )
 )

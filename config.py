@@ -200,6 +200,15 @@ WEBSITE_BASEURL = 'http://localhost:5000'
 # If not given, use url_for('docs_index').
 ONLINE_DOC_URL = None
 
+# Whether :method:`railgun.website.views.vote_signup` is enabled.
+VOTE_SIGNUP_ENABLED = False
+
+# The vote signup data storage directory
+VOTE_SIGNUP_DATA_DIR = os.path.join(RAILGUN_ROOT, 'vote_signup')
+
+# The maximum image file size allowed to upload as project logo.
+VOTE_LOGO_MAXIMUM_FILE_SIZE = 1024 * 1024
+
 # Load un-versioned general config values from config/general.py
 LoadConfig(
     sys.modules[__name__],

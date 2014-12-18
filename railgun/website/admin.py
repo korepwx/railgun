@@ -10,6 +10,7 @@ import json
 from functools import wraps
 from cStringIO import StringIO
 
+from markdown import markdown
 from flask import (Blueprint, render_template, request, g, flash, redirect,
                    url_for, send_file, make_response)
 from flask.ext.babel import gettext as _
@@ -514,7 +515,7 @@ def hwscores(hwid):
     q = (db.session.query(Handin.user_id,
                           Handin.state,
                           User.name,
-                          func.max(Handin.score*Handin.scale).label('score')).
+                          func.max(Handin.score * Handin.scale).label('score')).
          filter(Handin.hwid == hwid).
          join(User).
          group_by(Handin.user_id, Handin.state).
@@ -743,6 +744,45 @@ def edit_vote():
     the_vote = Vote.query.filter().first()
     form = VoteJsonEditForm(obj=the_vote)
 
+    # Import json source string from signup data
+    from .utility import load_vote_signup, list_vote_signup
+    if request.args.get('import') == '1':
+        def MakeItem(itm):
+            return {
+                'title': u'%s by %s' % (itm['project_name'], itm['group_name']),
+                'logo': url_for('vote_static', filename=itm['logo_file']),
+                'desc': markdown(
+                    text=itm['description'],
+                    output_format='xhtml1',
+                    extensions=[
+                        'extra',
+                        'tables',
+                        'smart_strong',
+                        'codehilite',
+                        'nl2br',
+                        'toc',
+                        'fenced_code',
+                    ]
+                )
+            }
+
+        def C(a, b):
+            t = cmp(a['project_name'], b['project_name'])
+            if t == 0:
+                t = cmp(a['group_name'], b['group_name'])
+            return t
+        original_items = sorted(
+            [load_vote_signup(fn) for fn in list_vote_signup()],
+            cmp=C
+        )
+        items = [MakeItem(o) for o in original_items]
+        json_obj = {
+            'title': _('Vote for the Best Project'),
+            'desc': _('Please vote for your favourite project!'),
+            'items': items,
+        }
+        form.json_source.data = json.dumps(json_obj)
+
     if form.validate_on_submit():
         try:
             # try to construct a new vote object
@@ -770,6 +810,25 @@ def edit_vote():
             flash(_('Internal server error, please try again.'), 'danger')
 
     return render_template('admin.edit_vote.html', form=form, vote=the_vote)
+
+
+@bp.route('/vote/clear/')
+@admin_required
+def clear_vote():
+    """Admin page to clear the vote.
+
+    :route: /admin/vote/clear/
+    """
+    the_vote = Vote.query.filter().first()
+    if the_vote is not None:
+        db.session.delete(the_vote)
+        try:
+            db.session.commit()
+            flash(_('Successfully purged the vote data.'), 'success')
+        except Exception:
+            app.logger.exception('Error when clearing the vote.')
+            flash(_('Internal server error, please try again.'), 'danger')
+    return redirect(url_for('.edit_vote'))
 
 
 @bp.route('/vote/switch/<isopen>/')

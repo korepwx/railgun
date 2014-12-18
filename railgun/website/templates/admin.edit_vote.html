@@ -9,7 +9,16 @@
   {{ utility.form_group(form.json_source) }}
   <div class="buttons">
     {% if vote %}
-      <button type="submit" class="btn btn-danger">{{ _('Destroy and Recreate') }}</button>
+      <div class="btn-group">
+        <button type="submit" class="btn btn-danger">{{ _('Destroy and Recreate') }}</button>
+        <button type="button" class="btn btn-danger dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+            <span class="caret"></span>
+            <span class="sr-only">{{ _('More Actions') }}</span>
+          </button>
+          <ul class="dropdown-menu" role="menu">
+            <li><a href="{{ url_for('.clear_vote') }}">{{ _('Destroy Only') }}</a></li>
+          </ul>
+      </div>
     {% else %}
       <button type="submit" class="btn btn-success">{{ _('Create') }}{% endif %}</button>
     {% if vote -%}
@@ -19,6 +28,7 @@
         <a href="{{ url_for('.switch_vote', isopen='1') }}" class="btn btn-primary">{{ _('Open Vote') }}</a>
       {%- endif %}
     {%- endif %}
+    <a class="btn btn-default" href="{{ url_for('.edit_vote', import='1') }}">{{ _('Import Signup Data') }}</a>
   </div>
   {{ form.hidden_tag() }}
 </form>

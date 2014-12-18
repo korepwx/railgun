@@ -18,7 +18,7 @@ INTERFACE = ('127.0.0.1', 5000)
 # NOTE: we want to display a message instead of HTTP error when the user
 #       uploads a large (but not too large) archive file, so we limit
 #       flask MAX_CONTENT_LENGTH to 10 * MAX_SUBMISSION_SIZE
-MAX_CONTENT_LENGTH = MAX_SUBMISSION_SIZE * 10
+MAX_CONTENT_LENGTH = max(MAX_SUBMISSION_SIZE, VOTE_LOGO_MAXIMUM_FILE_SIZE) * 10
 
 # SECRET_KEY is the private key for session encryption.
 SECRET_KEY = (
