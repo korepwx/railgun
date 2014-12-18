@@ -712,7 +712,7 @@ def make_charts_data(hw):
 @bp.route('/hwcharts/<hwid>/pack/')
 @admin_required
 def hwcharts_pack(hwid):
-    """Download the packed homework chart CSV files.
+    """Download the packed homework chart data.
 
     :route: /admin/hwcharts/<hwid>/pack/
     :method: GET
@@ -722,7 +722,10 @@ def hwcharts_pack(hwid):
         raise NotFound(lazy_gettext('Requested homework not found.'))
     obj = make_charts_data(hw)
 
-    # now we generate the different CSV files
+    # now we generate the different data text.
+    resp = []
+
+    
 
 
 @bp.route('/hwcharts/<hwid>/')
