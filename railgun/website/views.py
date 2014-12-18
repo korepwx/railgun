@@ -688,10 +688,10 @@ def vote_index():
         selected_ids = set(selected_ids)
         if len(selected_ids) > vote.max_select:
             flash(_("You can only vote for at most %(max)s items.",
-                    max=vote.max_select))
+                    max=vote.max_select), 'warning')
         elif len(selected_ids) < vote.min_select:
             flash(_("You should at least vote for %(min)s items.",
-                    min=vote.min_select))
+                    min=vote.min_select), 'warning')
         else:
             exist_votes = set(i.vote_item_id for i in user_votes)
             # if idx already voted but not in this request, delete it
