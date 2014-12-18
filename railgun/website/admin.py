@@ -615,8 +615,8 @@ def make_charts_data(hw):
     handins = (db.session.query(Handin).options(db.defer('partials')).
                join(User).
                filter(Handin.hwid == hw.uuid).
-               filter(Handin.state.in_(ACCEPTED_AND_REJECTED)))
-#               filter(User.is_admin == 0))
+               filter(Handin.state.in_(ACCEPTED_AND_REJECTED)).
+               filter(User.is_admin == 0))
 
     # The date histogram to count everyday submissions.
     def ListAdd(target, addition):
