@@ -382,6 +382,7 @@ def runqueue_rerun(handid):
     :type handid: :class:`str`
     """
     nexturl = request.args.get('next') or url_for('.handins')
+    fullscale = request.args.get('fullscale', False)
 
     # Query about the handin record
     handin = Handin.query.filter(Handin.uuid == handid)
@@ -395,7 +396,7 @@ def runqueue_rerun(handid):
     hw = g.homeworks.get_by_uuid(handin.hwid)
 
     # Now reput the submission into runqueue
-    if not languages[handin.lang].rerun(handid, hw):
+    if not languages[handin.lang].rerun(handid, hw, fullscale):
         flash(_('The original submission is not stored.'), 'danger')
     else:
         flash(_('Successfully reput the submission into queue!'), 'success')

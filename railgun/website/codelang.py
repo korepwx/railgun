@@ -177,7 +177,7 @@ class CodeLanguage(object):
         """
         raise NotImplementedError()
 
-    def rerun(self, handid, hw):
+    def rerun(self, handid, hw, fullscale=False):
         """Reput the submission into runqueue.  This operation should be called
         only if `config.STORE_UPLOAD` is enabled.
 
@@ -185,6 +185,8 @@ class CodeLanguage(object):
         :type handid: :class:`str`
         :param hw: The homework instance.
         :type hw: :class:`~railgun.common.hw.Homework`
+        :param fullscale: Whether to set the submission score scale to 1.0?
+        :type fullscale: :class:`bool`
 
         :return: :data:`True` if successfully put into runqueue,
             :data:`False` if original file is not stored, raises otherwise.
@@ -199,6 +201,8 @@ class CodeLanguage(object):
             handin.result = None
             handin.partials = None
             handin.exitcode = None
+            if fullscale:
+                handin.scale = 1.0
             db.session.commit()
 
             self.do_rerun(handid, hw, stored_content)

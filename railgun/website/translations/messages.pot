@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2014-11-05 10:44+0800\n"
+"POT-Creation-Date: 2014-12-18 14:29+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -125,64 +125,64 @@ msgstr ""
 msgid "User deleted."
 msgstr ""
 
-#: railgun/website/admin.py:392 railgun/website/views.py:481
+#: railgun/website/admin.py:393 railgun/website/views.py:481
 #: railgun/website/views.py:518
 msgid "Submission not found"
 msgstr ""
 
-#: railgun/website/admin.py:399
+#: railgun/website/admin.py:400
 msgid "The original submission is not stored."
 msgstr ""
 
-#: railgun/website/admin.py:401
+#: railgun/website/admin.py:402
 msgid "Successfully reput the submission into queue!"
 msgstr ""
 
-#: railgun/website/admin.py:430
+#: railgun/website/admin.py:431
 msgid "Submission discarded by admin."
 msgstr ""
 
-#: railgun/website/admin.py:435
+#: railgun/website/admin.py:436
 msgid "All pending submissions are cleared."
 msgstr ""
 
-#: railgun/website/admin.py:438
+#: railgun/website/admin.py:439
 msgid "Could not discard the pending submissions."
 msgstr ""
 
-#: railgun/website/admin.py:510 railgun/website/admin.py:587
+#: railgun/website/admin.py:511 railgun/website/admin.py:588
 msgid "Requested homework not found."
 msgstr ""
 
-#: railgun/website/admin.py:524 railgun/website/forms.py:58
+#: railgun/website/admin.py:525 railgun/website/forms.py:58
 #: railgun/website/templates/base.user_edit.html:32
 msgid "Username"
 msgstr ""
 
-#: railgun/website/admin.py:524 railgun/website/templates/base.handins.html:17
-#: railgun/website/templates/handin_detail.html:143
+#: railgun/website/admin.py:525 railgun/website/templates/base.handins.html:17
+#: railgun/website/templates/handin_detail.html:152
 #: railgun/website/templates/index.html:30
 msgid "Score"
 msgstr ""
 
-#: railgun/website/admin.py:525
+#: railgun/website/admin.py:526
 #, python-format
 msgid "Scores for \"%(hw)s\""
 msgstr ""
 
-#: railgun/website/admin.py:700
+#: railgun/website/admin.py:701
 msgid "Manage"
 msgstr ""
 
-#: railgun/website/admin.py:705 railgun/website/templates/admin.users.html:4
+#: railgun/website/admin.py:706 railgun/website/templates/admin.users.html:4
 msgid "Users"
 msgstr ""
 
-#: railgun/website/admin.py:707 railgun/website/views.py:672
+#: railgun/website/admin.py:708 railgun/website/views.py:672
 msgid "Submissions"
 msgstr ""
 
-#: railgun/website/admin.py:709 railgun/website/templates/admin.scores.html:43
+#: railgun/website/admin.py:710 railgun/website/templates/admin.scores.html:43
 msgid "Scores"
 msgstr ""
 
@@ -202,15 +202,15 @@ msgstr ""
 msgid "Process exited before reporting score."
 msgstr ""
 
-#: railgun/website/codelang.py:160 railgun/website/codelang.py:208
+#: railgun/website/codelang.py:160 railgun/website/codelang.py:212
 msgid "Could not commit to run queue."
 msgstr ""
 
-#: railgun/website/codelang.py:274
+#: railgun/website/codelang.py:278
 msgid "Python"
 msgstr ""
 
-#: railgun/website/codelang.py:296
+#: railgun/website/codelang.py:300
 msgid "Java"
 msgstr ""
 
@@ -679,9 +679,9 @@ msgid "Submit Date"
 msgstr ""
 
 #: railgun/website/templates/base.handins.html:18
-#: railgun/website/templates/handin_detail.html:37
-#: railgun/website/templates/handin_detail.html:82
-#: railgun/website/templates/handin_detail.html:163
+#: railgun/website/templates/handin_detail.html:46
+#: railgun/website/templates/handin_detail.html:91
+#: railgun/website/templates/handin_detail.html:172
 msgid "Summary"
 msgstr ""
 
@@ -698,8 +698,8 @@ msgid "More &raquo;"
 msgstr ""
 
 #: railgun/website/templates/base.handins.html:55
-#: railgun/website/templates/handin_detail.html:87
-#: railgun/website/templates/handin_detail.html:168
+#: railgun/website/templates/handin_detail.html:96
+#: railgun/website/templates/handin_detail.html:177
 msgid "No summary"
 msgstr ""
 
@@ -801,67 +801,75 @@ msgstr ""
 msgid "Original Submission"
 msgstr ""
 
-#: railgun/website/templates/handin_detail.html:19
+#: railgun/website/templates/handin_detail.html:20
 msgid "ReRun"
 msgstr ""
 
-#: railgun/website/templates/handin_detail.html:40
+#: railgun/website/templates/handin_detail.html:23
+msgid "More Actions"
+msgstr ""
+
+#: railgun/website/templates/handin_detail.html:26
+msgid "With Full Score"
+msgstr ""
+
+#: railgun/website/templates/handin_detail.html:49
 msgid "Upload user"
 msgstr ""
 
-#: railgun/website/templates/handin_detail.html:44
+#: railgun/website/templates/handin_detail.html:53
 msgid "Upload time"
 msgstr ""
 
-#: railgun/website/templates/handin_detail.html:48
+#: railgun/website/templates/handin_detail.html:57
 msgid "Submission Type"
 msgstr ""
 
-#: railgun/website/templates/handin_detail.html:53
+#: railgun/website/templates/handin_detail.html:62
 msgid "Base Score"
 msgstr ""
 
-#: railgun/website/templates/handin_detail.html:59
+#: railgun/website/templates/handin_detail.html:68
 msgid "Score Scale"
 msgstr ""
 
-#: railgun/website/templates/handin_detail.html:63
+#: railgun/website/templates/handin_detail.html:72
 msgid "Final Score"
 msgstr ""
 
-#: railgun/website/templates/handin_detail.html:69
+#: railgun/website/templates/handin_detail.html:78
 msgid "Exit Code"
 msgstr ""
 
-#: railgun/website/templates/handin_detail.html:72
+#: railgun/website/templates/handin_detail.html:81
 msgid "Not started"
 msgstr ""
 
-#: railgun/website/templates/handin_detail.html:97
+#: railgun/website/templates/handin_detail.html:106
 msgid "Compilation Output"
 msgstr ""
 
-#: railgun/website/templates/handin_detail.html:107
+#: railgun/website/templates/handin_detail.html:116
 msgid "Standard Output"
 msgstr ""
 
-#: railgun/website/templates/handin_detail.html:115
+#: railgun/website/templates/handin_detail.html:124
 msgid "Standard Error Output"
 msgstr ""
 
-#: railgun/website/templates/handin_detail.html:149
+#: railgun/website/templates/handin_detail.html:158
 msgid "Weight"
 msgstr ""
 
-#: railgun/website/templates/handin_detail.html:153
+#: railgun/website/templates/handin_detail.html:162
 msgid "Run time"
 msgstr ""
 
-#: railgun/website/templates/handin_detail.html:158
+#: railgun/website/templates/handin_detail.html:167
 msgid "Not measured"
 msgstr ""
 
-#: railgun/website/templates/handin_detail.html:174
+#: railgun/website/templates/handin_detail.html:183
 msgid "Details"
 msgstr ""
 
@@ -1013,33 +1021,33 @@ msgstr ""
 msgid "%(schema)s is denied but the object exists."
 msgstr ""
 
-#: runlib/python/pyhost/scorer.py:119
+#: runlib/python/pyhost/scorer.py:120
 msgid "Functionality Scorer"
 msgstr ""
 
-#: runlib/python/pyhost/scorer.py:142
+#: runlib/python/pyhost/scorer.py:143
 #, python-format
 msgid "%(rate).2f%% tests (%(success)d out of %(total)d) passed"
 msgstr ""
 
-#: runlib/python/pyhost/scorer.py:211
+#: runlib/python/pyhost/scorer.py:212
 msgid "CodeStyle Scorer"
 msgstr ""
 
-#: runlib/python/pyhost/scorer.py:233
+#: runlib/python/pyhost/scorer.py:234
 #, python-format
 msgid "%(trouble)d problem(s) found in %(file)d file(s)"
 msgstr ""
 
-#: runlib/python/pyhost/scorer.py:238
+#: runlib/python/pyhost/scorer.py:239
 msgid "All files passed PEP8 code style check"
 msgstr ""
 
-#: runlib/python/pyhost/scorer.py:283
+#: runlib/python/pyhost/scorer.py:284
 msgid "Coverage Scorer"
 msgstr ""
 
-#: runlib/python/pyhost/scorer.py:388
+#: runlib/python/pyhost/scorer.py:389
 #, python-format
 msgid ""
 "%(filename)s: %(miss)d statement(s) not covered.\n"
@@ -1047,7 +1055,7 @@ msgid ""
 "%(source)s"
 msgstr ""
 
-#: runlib/python/pyhost/scorer.py:399
+#: runlib/python/pyhost/scorer.py:400
 #, python-format
 msgid ""
 "%(filename)s: %(partial)d branch(es) partially taken and %(notaken)d "
@@ -1056,7 +1064,7 @@ msgid ""
 "%(source)s"
 msgstr ""
 
-#: runlib/python/pyhost/scorer.py:423
+#: runlib/python/pyhost/scorer.py:424
 #, python-format
 msgid ""
 "Coverage Results:\n"
@@ -1071,7 +1079,7 @@ msgid ""
 "%(branch_partial_cov).2f%%"
 msgstr ""
 
-#: runlib/python/pyhost/scorer.py:440
+#: runlib/python/pyhost/scorer.py:441
 #, python-format
 msgid ""
 "%(stmt).2f%% statements covered (%(stmt_score).2f pts), %(branch).2f%% "
@@ -1079,43 +1087,43 @@ msgid ""
 "partially covered (%(partial_score).2f pts)."
 msgstr ""
 
-#: runlib/python/pyhost/scorer.py:585
+#: runlib/python/pyhost/scorer.py:594 runlib/python/pyhost/scorer.py:599
+msgid "CSV data does not match schema."
+msgstr ""
+
+#: runlib/python/pyhost/scorer.py:615
 #, python-format
 msgid "%(rate).2f%% rules (%(cover)s out of %(total)s) covered"
 msgstr ""
 
-#: runlib/python/pyhost/scorer.py:593
+#: runlib/python/pyhost/scorer.py:623
 #, python-format
 msgid "COVERED: %(checker)s"
 msgstr ""
 
-#: runlib/python/pyhost/scorer.py:598
+#: runlib/python/pyhost/scorer.py:628
 #, python-format
 msgid "NOT COVERED: %(checker)s"
 msgstr ""
 
-#: runlib/python/pyhost/scorer.py:602 runlib/python/pyhost/scorer.py:607
-msgid "CSV data does not match schema."
-msgstr ""
-
-#: runlib/python/pyhost/scorer.py:620
+#: runlib/python/pyhost/scorer.py:640
 msgid "InputClass Scorer"
 msgstr ""
 
-#: runlib/python/pyhost/scorer.py:635
+#: runlib/python/pyhost/scorer.py:655
 msgid "BoundaryValue Scorer"
 msgstr ""
 
-#: runlib/python/pyhost/scorer.py:716
+#: runlib/python/pyhost/scorer.py:736
 msgid "Object Structure Scorer"
 msgstr ""
 
-#: runlib/python/pyhost/scorer.py:726
+#: runlib/python/pyhost/scorer.py:746
 #, python-format
 msgid "%(rate).2f%% check points (%(success)d out of %(total)d) passed"
 msgstr ""
 
-#: runlib/python/pyhost/scorer.py:744
+#: runlib/python/pyhost/scorer.py:764
 msgid "Object Structure Scorer exited with error."
 msgstr ""
 
