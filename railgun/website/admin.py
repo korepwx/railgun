@@ -781,7 +781,7 @@ def edit_vote():
             'desc': _('Please vote for your favourite project!'),
             'items': items,
         }
-        form.json_source.data = json.dumps(json_obj)
+        form.json_source.data = json.dumps(json_obj, ident=2)
 
     if form.validate_on_submit():
         try:
