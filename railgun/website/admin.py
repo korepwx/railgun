@@ -11,7 +11,7 @@ from functools import wraps
 from cStringIO import StringIO
 
 from flask import (Blueprint, render_template, request, g, flash, redirect,
-                   url_for, send_file)
+                   url_for, send_file, make_response)
 from flask.ext.babel import gettext as _
 from flask.ext.babel import get_locale, to_user_timezone, lazy_gettext
 from flask.ext.login import login_fresh, current_user
@@ -567,6 +567,45 @@ def hwscores(hwid):
     )
 
 
+@bp.route('/get_longblob_patch_command/')
+@admin_required
+def get_longblob_patch_command():
+    """As is mentioned in `models.py`, SQLAlchemy uses BLOB as the backend of
+    PickleType in default, where the size of BLOB in MySQL is only 64K.  This
+    will cause some Handin records be truncated, thus they cannot be fetched
+    back into Railgun.
+
+    We've now added patch to prevent this situation.  The existing broken
+    records may be repaired simply by purging its detailed report data.
+    This view just provides the SQL command to do so.
+    """
+
+    import sys
+    import traceback
+
+    def format_exception():
+        return ''.join(traceback.format_exception(sys.exc_type, sys.exc_value,
+                                                  sys.exc_traceback))
+
+    err = []
+    ids = []
+    for o in db.session.query(Handin.id):
+        idx = o.id
+        try:
+            db.session.query(Handin).filter(Handin.id == idx).one()
+        except Exception:
+            err.append('%s:\n%s' % (idx, format_exception()))
+            ids.append(str(idx))
+
+    recommend_sql = 'UPDATE handins SET partials = NULL WHERE id in (%s)' % (
+        ','.join(ids))
+    return make_response(
+        recommend_sql + '\n' + '\n'.join(err),
+        200,
+        {'Content-Type': 'text/plain'}
+    )
+
+
 @bp.route('/hwcharts/<hwid>/')
 @admin_required
 def hwcharts(hwid):
@@ -591,7 +630,7 @@ def hwcharts(hwid):
     handins = (db.session.query(Handin).join(User).
                filter(Handin.hwid == hwid).
                filter(Handin.state.in_(ACCEPTED_AND_REJECTED)).
-               filter(User.is_admin == 0)).all()
+               filter(User.is_admin == 0))
 
     # The date histogram to count everyday submissions.
     def ListAdd(target, addition):

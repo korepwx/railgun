@@ -1,6 +1,7 @@
 $(document).ready(function() {
     // Set global options
-    // Chart.defaults.global.responsive = true;
+    Chart.defaults.global.animation = false;
+    Chart.defaults.global.animateRotate = false;
 
     // Utility to do translation
     function msg(text) {

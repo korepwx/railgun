@@ -99,9 +99,10 @@ def get_avatar(user_or_email, size):
         hashcode = hashlib.md5(email.lower()).hexdigest()
     else:
         hashcode = '00000000000000000000000000000000'
-    schema = 'http://' if request.url.startswith('http://') else 'https://'
-    ret = '%(schema)swww.gravatar.com/avatar/%(hashcode)s.jpg?s=%(size)d&d=mm'
-    return ret % {'schema': schema, 'hashcode': hashcode, 'size': size}
+    # CDN of gravatar.com is blocked by GFW, so we use secure.gravatar.com
+    # instead.
+    ret = 'https://secure.gravatar.com/avatar/%(hashcode)s.jpg?s=%(size)d&d=mm'
+    return ret % {'hashcode': hashcode, 'size': size}
 
 
 def is_email(login):
