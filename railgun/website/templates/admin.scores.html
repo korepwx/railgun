@@ -42,6 +42,7 @@
       <td class="hw-action">
         <a href="{{ url_for('admin.hwscores', hwid=hw.uuid) }}" class="btn btn-xs btn-default">{{ _('Scores') }}</a>
         <a href="{{ url_for('admin.hwcharts', hwid=hw.uuid) }}" class="btn btn-xs btn-default">{{ _('Charts') }}</a>
+        <a href="{{ url_for('admin.hwcharts_pack', hwid=hw.uuid) }}" class="btn btn-xs btn-default">{{ _('Data') }}</a>
       </td>
     </tr>
     {%- endfor %}

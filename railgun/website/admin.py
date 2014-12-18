@@ -612,10 +612,11 @@ def make_charts_data(hw):
     ACCEPTED_AND_REJECTED = ('Accepted', 'Rejected')
 
     # Query about all the submission for this homework
-    handins = (db.session.query(Handin).join(User).
+    handins = (db.session.query(Handin).options(db.defer('partials')).
+               join(User).
                filter(Handin.hwid == hw.uuid).
-               filter(Handin.state.in_(ACCEPTED_AND_REJECTED)).
-               filter(User.is_admin == 0))
+               filter(Handin.state.in_(ACCEPTED_AND_REJECTED)))
+#               filter(User.is_admin == 0))
 
     # The date histogram to count everyday submissions.
     def ListAdd(target, addition):
@@ -724,8 +725,59 @@ def hwcharts_pack(hwid):
 
     # now we generate the different data text.
     resp = []
+    delimeter = '-' * 79
 
-    
+    # first part, acc rate
+    resp.append(_('Rate of Accepted'))
+    resp.append(delimeter)
+    for k, v in obj['acc_reject']:
+        resp.append('%s\t%s' % (_(k), _(v)))
+    resp.append('')
+
+    # second part, the reason of rejected
+    resp.append(_('Reasons for Rejected'))
+    resp.append(delimeter)
+    for k, v in obj['reject_brief']:
+        resp.append('%s\t%s' % (k, v))
+    resp.append('')
+
+    # third part, every submission
+    resp.append(_('Everyday Submission'))
+    resp.append(delimeter)
+    resp.append('%s\t%s\t%s' % (_('Date'), _('Accepted'), _('Rejected')))
+    for k, v in obj['day_freq']:
+        resp.append('%s/%s\t%s\t%s' % (k[0], k[1], v[1], v[2]))
+    resp.append('')
+
+    # fourth part, everyday submission author
+    resp.append(_('Everyday Submitting Users'))
+    resp.append(delimeter)
+    resp.append('%s\t%s' % (_('Date'), _('User Count')))
+    for k, v in obj['day_author']:
+        resp.append('%s/%s\t%s' % (k[0], k[1], v))
+    resp.append('')
+
+    # fifth part, every author submission
+    resp.append(_('Submissions Per User'))
+    resp.append(delimeter)
+    resp.append('%s\t%s' % (_('Submission'), _('User Count')))
+    for k, v in obj['user_submit']:
+        resp.append('%s\t%s' % (k, v))
+    resp.append('')
+
+    # sixth part, final score
+    resp.append(_('Final Scores'))
+    resp.append(delimeter)
+    resp.append('%s\t%s' % (_('Score'), _('User Count')))
+    for k, v in obj['final_score']:
+        resp.append('%s\t%s' % (k, v))
+    resp.append('')
+
+    return make_response(
+        '\n'.join(resp),
+        200,
+        {'Content-Type': 'text/plain; charset=utf-8'}
+    )
 
 
 @bp.route('/hwcharts/<hwid>/')

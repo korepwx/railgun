@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2014-12-18 23:47+0800\n"
+"POT-Creation-Date: 2014-12-19 00:38+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -150,7 +150,8 @@ msgstr ""
 msgid "Could not discard the pending submissions."
 msgstr ""
 
-#: railgun/website/admin.py:512 railgun/website/admin.py:628
+#: railgun/website/admin.py:512 railgun/website/admin.py:723
+#: railgun/website/admin.py:798
 msgid "Requested homework not found."
 msgstr ""
 
@@ -159,7 +160,8 @@ msgstr ""
 msgid "Username"
 msgstr ""
 
-#: railgun/website/admin.py:526 railgun/website/templates/base.handins.html:17
+#: railgun/website/admin.py:526 railgun/website/admin.py:771
+#: railgun/website/templates/base.handins.html:17
 #: railgun/website/templates/handin_detail.html:152
 #: railgun/website/templates/index.html:30
 msgid "Score"
@@ -170,45 +172,98 @@ msgstr ""
 msgid "Scores for \"%(hw)s\""
 msgstr ""
 
-#: railgun/website/admin.py:780
+#: railgun/website/admin.py:731 railgun/website/templates/admin.hwcharts.html:7
+msgid "Rate of Accepted"
+msgstr ""
+
+#: railgun/website/admin.py:738
+#: railgun/website/templates/admin.hwcharts.html:17
+msgid "Reasons for Rejected"
+msgstr ""
+
+#: railgun/website/admin.py:745
+#: railgun/website/templates/admin.hwcharts.html:27
+msgid "Everyday Submission"
+msgstr ""
+
+#: railgun/website/admin.py:747 railgun/website/admin.py:755
+msgid "Date"
+msgstr ""
+
+#: railgun/website/admin.py:747 railgun/website/models.py:28
+#: railgun/website/templates/admin.hwcharts.html:70
+msgid "Accepted"
+msgstr ""
+
+#: railgun/website/admin.py:747 railgun/website/models.py:28
+#: railgun/website/templates/admin.hwcharts.html:71
+msgid "Rejected"
+msgstr ""
+
+#: railgun/website/admin.py:753
+#: railgun/website/templates/admin.hwcharts.html:37
+msgid "Everyday Submitting Users"
+msgstr ""
+
+#: railgun/website/admin.py:755 railgun/website/admin.py:763
+#: railgun/website/admin.py:771
+msgid "User Count"
+msgstr ""
+
+#: railgun/website/admin.py:761
+#: railgun/website/templates/admin.hwcharts.html:47
+msgid "Submissions Per User"
+msgstr ""
+
+#: railgun/website/admin.py:763 railgun/website/templates/homework.html:120
+msgid "Submission"
+msgstr ""
+
+#: railgun/website/admin.py:769
+#: railgun/website/templates/admin.hwcharts.html:57
+#: railgun/website/templates/admin.hwcharts.html:74
+msgid "Final Scores"
+msgstr ""
+
+#: railgun/website/admin.py:856
 msgid "Vote for the Best Project"
 msgstr ""
 
-#: railgun/website/admin.py:781
+#: railgun/website/admin.py:857
 msgid "Please vote for your favourite project!"
 msgstr ""
 
-#: railgun/website/admin.py:806
+#: railgun/website/admin.py:882
 msgid "Vote updated successfully."
 msgstr ""
 
-#: railgun/website/admin.py:810 railgun/website/admin.py:830
+#: railgun/website/admin.py:886 railgun/website/admin.py:906
 #: railgun/website/views.py:342 railgun/website/views.py:726
 #: railgun/website/views.py:845
 msgid "Internal server error, please try again."
 msgstr ""
 
-#: railgun/website/admin.py:827
+#: railgun/website/admin.py:903
 msgid "Successfully purged the vote data."
 msgstr ""
 
-#: railgun/website/admin.py:862
+#: railgun/website/admin.py:938
 msgid "Manage"
 msgstr ""
 
-#: railgun/website/admin.py:867 railgun/website/templates/admin.users.html:4
+#: railgun/website/admin.py:943 railgun/website/templates/admin.users.html:4
 msgid "Users"
 msgstr ""
 
-#: railgun/website/admin.py:869 railgun/website/views.py:868
+#: railgun/website/admin.py:945 railgun/website/views.py:868
 msgid "Submissions"
 msgstr ""
 
-#: railgun/website/admin.py:871 railgun/website/templates/admin.scores.html:43
+#: railgun/website/admin.py:947 railgun/website/templates/admin.scores.html:43
 msgid "Scores"
 msgstr ""
 
-#: railgun/website/admin.py:873 railgun/website/views.py:906
+#: railgun/website/admin.py:949 railgun/website/views.py:906
 msgid "Vote"
 msgstr ""
 
@@ -465,16 +520,6 @@ msgstr ""
 msgid "Running"
 msgstr ""
 
-#: railgun/website/models.py:28
-#: railgun/website/templates/admin.hwcharts.html:71
-msgid "Rejected"
-msgstr ""
-
-#: railgun/website/models.py:28
-#: railgun/website/templates/admin.hwcharts.html:70
-msgid "Accepted"
-msgstr ""
-
 #: railgun/website/thuauth.py:64
 msgid "Tsinghua"
 msgstr ""
@@ -693,31 +738,6 @@ msgstr ""
 msgid "Statistics for %(hw)s"
 msgstr ""
 
-#: railgun/website/templates/admin.hwcharts.html:7
-msgid "Rate of Accepted"
-msgstr ""
-
-#: railgun/website/templates/admin.hwcharts.html:17
-msgid "Reasons for Rejected"
-msgstr ""
-
-#: railgun/website/templates/admin.hwcharts.html:27
-msgid "Everyday Submission"
-msgstr ""
-
-#: railgun/website/templates/admin.hwcharts.html:37
-msgid "Everyday Submitting Users"
-msgstr ""
-
-#: railgun/website/templates/admin.hwcharts.html:47
-msgid "Submissions Per User"
-msgstr ""
-
-#: railgun/website/templates/admin.hwcharts.html:57
-#: railgun/website/templates/admin.hwcharts.html:74
-msgid "Final Scores"
-msgstr ""
-
 #: railgun/website/templates/admin.hwcharts.html:72
 #: railgun/website/templates/base.handins.html:13
 msgid "User"
@@ -765,6 +785,10 @@ msgstr ""
 
 #: railgun/website/templates/admin.scores.html:44
 msgid "Charts"
+msgstr ""
+
+#: railgun/website/templates/admin.scores.html:45
+msgid "Data"
 msgstr ""
 
 #: railgun/website/templates/admin.user_edit.html:3
@@ -1068,10 +1092,6 @@ msgstr ""
 
 #: railgun/website/templates/homework.html:99
 msgid "Score scale "
-msgstr ""
-
-#: railgun/website/templates/homework.html:120
-msgid "Submission"
 msgstr ""
 
 #: railgun/website/templates/index.html:3
