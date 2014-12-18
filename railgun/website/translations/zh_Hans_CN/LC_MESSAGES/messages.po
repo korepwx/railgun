@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version:  railgun\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2014-12-18 20:28+0800\n"
+"POT-Creation-Date: 2014-12-18 20:42+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: zh_Hans_CN <LL@li.org>\n"
@@ -183,7 +183,7 @@ msgstr "管理"
 msgid "Users"
 msgstr "用户"
 
-#: railgun/website/admin.py:810 railgun/website/views.py:771
+#: railgun/website/admin.py:810 railgun/website/views.py:782
 msgid "Submissions"
 msgstr "提交"
 
@@ -510,36 +510,36 @@ msgstr "你必须为至少 %(min)s 个项目投票。"
 msgid "You voted successfully!"
 msgstr "投票成功！"
 
-#: railgun/website/views.py:754
+#: railgun/website/views.py:765
 msgid "Home"
 msgstr "首页"
 
-#: railgun/website/views.py:757 railgun/website/templates/base.handins.html:11
+#: railgun/website/views.py:768 railgun/website/templates/base.handins.html:11
 #: railgun/website/templates/homework.html:30
 msgid "Homework"
 msgstr "作业"
 
-#: railgun/website/views.py:786
+#: railgun/website/views.py:797
 msgid "Manual"
 msgstr "帮助"
 
-#: railgun/website/views.py:790
+#: railgun/website/views.py:801
 msgid "User Guide"
 msgstr "用户手册"
 
-#: railgun/website/views.py:792
+#: railgun/website/views.py:803
 msgid "Scoring Details"
 msgstr "得分细则"
 
-#: railgun/website/views.py:795
+#: railgun/website/views.py:806
 msgid "Documentation"
 msgstr "开发文档"
 
-#: railgun/website/views.py:800
+#: railgun/website/views.py:811
 msgid "FAQ"
 msgstr "常见问题"
 
-#: railgun/website/views.py:802
+#: railgun/website/views.py:813
 msgid "About"
 msgstr "关于"
 
@@ -1087,7 +1087,11 @@ msgstr "查看结果"
 msgid "Vote Result"
 msgstr "投票结果"
 
-#: railgun/website/templates/vote_result.html:22
+#: railgun/website/templates/vote_result.html:6
+msgid "Back to Vote"
+msgstr "返回投票"
+
+#: railgun/website/templates/vote_result.html:26
 #, python-format
 msgid "%(count)s votes"
 msgstr "%(count)s 票"

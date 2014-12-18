@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2014-12-18 20:28+0800\n"
+"POT-Creation-Date: 2014-12-18 20:42+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -187,7 +187,7 @@ msgstr ""
 msgid "Users"
 msgstr ""
 
-#: railgun/website/admin.py:810 railgun/website/views.py:771
+#: railgun/website/admin.py:810 railgun/website/views.py:782
 msgid "Submissions"
 msgstr ""
 
@@ -514,36 +514,36 @@ msgstr ""
 msgid "You voted successfully!"
 msgstr ""
 
-#: railgun/website/views.py:754
+#: railgun/website/views.py:765
 msgid "Home"
 msgstr ""
 
-#: railgun/website/views.py:757 railgun/website/templates/base.handins.html:11
+#: railgun/website/views.py:768 railgun/website/templates/base.handins.html:11
 #: railgun/website/templates/homework.html:30
 msgid "Homework"
 msgstr ""
 
-#: railgun/website/views.py:786
+#: railgun/website/views.py:797
 msgid "Manual"
 msgstr ""
 
-#: railgun/website/views.py:790
+#: railgun/website/views.py:801
 msgid "User Guide"
 msgstr ""
 
-#: railgun/website/views.py:792
+#: railgun/website/views.py:803
 msgid "Scoring Details"
 msgstr ""
 
-#: railgun/website/views.py:795
+#: railgun/website/views.py:806
 msgid "Documentation"
 msgstr ""
 
-#: railgun/website/views.py:800
+#: railgun/website/views.py:811
 msgid "FAQ"
 msgstr ""
 
-#: railgun/website/views.py:802
+#: railgun/website/views.py:813
 msgid "About"
 msgstr ""
 
@@ -1089,7 +1089,11 @@ msgstr ""
 msgid "Vote Result"
 msgstr ""
 
-#: railgun/website/templates/vote_result.html:22
+#: railgun/website/templates/vote_result.html:6
+msgid "Back to Vote"
+msgstr ""
+
+#: railgun/website/templates/vote_result.html:26
 #, python-format
 msgid "%(count)s votes"
 msgstr ""

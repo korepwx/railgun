@@ -730,16 +730,27 @@ def vote_result():
         raise NotFound()
 
     # total up the votes for each item
-    q = (db.session.query(VoteItem, func.count(UserVote.user_id).label('C')).
+    q = (db.session.query(VoteItem.id, func.count(UserVote.user_id).label('C')).
          join(UserVote).
          filter(VoteItem.vote_id == vote.id).
-         group_by(UserVote.vote_item_id).
-         order_by('-C', VoteItem.id))
-    vote_items = q.all()
+         group_by(UserVote.vote_item_id))
+    vote_count = {k: v for (k, v) in q.all()}
+    print vote_count
+
+    def C(a, b):
+        t = -cmp(a[1], b[1])
+        if t == 0:
+            t = cmp(a[0].id, b[0].id)
+        return t
+    vote_items = sorted(
+        ((itm, vote_count.get(itm.id, 0))
+         for itm in VoteItem.query.filter(VoteItem.vote_id == vote.id).all()),
+        cmp=C
+    )
 
     # check the vote objects
     has_any_logo = sum(i[0].logo is not None for i in vote_items)
-    max_count = max(i[1] for i in vote_items)
+    max_count = max([0] + [i[1] for i in vote_items])
     if max_count > 0:
         percent = [float(i[1]) / max_count for i in vote_items]
     else:

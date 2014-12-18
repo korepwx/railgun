@@ -1,7 +1,11 @@
 {% extends "base.html" %}
 {% block subtitle -%}{{ _('Active Vote') }}{%- endblock %}
 {% block content -%}
-  <h3 class="hw-heading">{{ _('Vote Result') }}</h3>
+  <h3 class="hw-heading">{{ _('Vote Result') }}
+    <span class="pull-right">
+      <a href="{{ url_for('vote_index') }}" class="btn btn-default">{{ _('Back to Vote') }}</a>
+    </span>
+  </h3>
 
   <table class="table table-hover">
     {% for (itm, count) in items -%}
