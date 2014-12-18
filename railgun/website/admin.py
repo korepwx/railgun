@@ -607,29 +607,13 @@ def get_longblob_patch_command():
     )
 
 
-@bp.route('/hwcharts/<hwid>/')
-@admin_required
-def hwcharts(hwid):
-    """The admin page to view various of charts of a given homework.
-
-    All users except the administrators will be considered to generate the
-    charts.
-
-    :route: /admin/hwcharts/<hwid>/
-    :method: GET
-    :template: admin.hwcharts.html
-    """
+def make_charts_data(hw):
+    """Make hwcharts data object."""
     ACCEPTED_AND_REJECTED = ('Accepted', 'Rejected')
-    g.scripts.deps('chart.js')
-
-    # Query about given homework
-    hw = g.homeworks.get_by_uuid(hwid)
-    if hw is None:
-        raise NotFound(lazy_gettext('Requested homework not found.'))
 
     # Query about all the submission for this homework
     handins = (db.session.query(Handin).join(User).
-               filter(Handin.hwid == hwid).
+               filter(Handin.hwid == hw.uuid).
                filter(Handin.state.in_(ACCEPTED_AND_REJECTED)).
                filter(User.is_admin == 0))
 
@@ -722,7 +706,44 @@ def hwcharts(hwid):
             for v in sorted(final_score.items())
         ],
     }
-    json_text = json.dumps(json_obj)
+    return json_obj
+
+
+@bp.route('/hwcharts/<hwid>/pack/')
+@admin_required
+def hwcharts_pack(hwid):
+    """Download the packed homework chart CSV files.
+
+    :route: /admin/hwcharts/<hwid>/pack/
+    :method: GET
+    """
+    hw = g.homeworks.get_by_uuid(hwid)
+    if hw is None:
+        raise NotFound(lazy_gettext('Requested homework not found.'))
+    obj = make_charts_data(hw)
+
+    # now we generate the different CSV files
+
+
+@bp.route('/hwcharts/<hwid>/')
+@admin_required
+def hwcharts(hwid):
+    """The admin page to view various of charts of a given homework.
+
+    All users except the administrators will be considered to generate the
+    charts.
+
+    :route: /admin/hwcharts/<hwid>/
+    :method: GET
+    :template: admin.hwcharts.html
+    """
+    # Query about given homework
+    hw = g.homeworks.get_by_uuid(hwid)
+    if hw is None:
+        raise NotFound(lazy_gettext('Requested homework not found.'))
+
+    g.scripts.deps('chart.js')
+    json_text = json.dumps(make_charts_data(hw))
 
     # Render the page
     return render_template('admin.hwcharts.html', chart_data=json_text,
@@ -781,7 +802,7 @@ def edit_vote():
             'desc': _('Please vote for your favourite project!'),
             'items': items,
         }
-        form.json_source.data = json.dumps(json_obj, ident=2)
+        form.json_source.data = json.dumps(json_obj, indent=2)
 
     if form.validate_on_submit():
         try:
