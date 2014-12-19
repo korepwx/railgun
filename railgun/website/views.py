@@ -796,6 +796,7 @@ def vote_signup():
     form = VoteSignupForm(obj=Struct(**obj))
 
     if form.validate_on_submit():
+        pil_failed = False
         try:
             # store the image file
             if form.logo.data:
@@ -821,30 +822,40 @@ def vote_signup():
                                          'cannot be resized!')
 
                 if support_pil:
-                    im = Image.open(fpath)
-                    os.remove(fpath)
-                    if im.size[0] > 200 or im.size[1] > 200:
-                        im.thumbnail((200, 200))
-                    if fext.lower() in ('.jpg', '.bmp', '.png'):
-                        fext = '.jpg'
-                    fname = '%s%s' % (current_user.name, fext)
-                    fpath = os.path.join(app.config['VOTE_SIGNUP_DATA_DIR'],
-                                         fname)
-                    im.save(fpath)
+                    try:
+                        im = Image.open(fpath)
+                        os.remove(fpath)
+                        if im.size[0] > 200 or im.size[1] > 200:
+                            im.thumbnail((200, 200))
+                        if fext.lower() in ('.jpg', '.bmp', '.png'):
+                            fext = '.jpg'
+                        fname = '%s%s' % (current_user.name, fext)
+                        fpath = os.path.join(app.config['VOTE_SIGNUP_DATA_DIR'],
+                                             fname)
+                        im.save(fpath)
+                    except Exception:
+                        app.logger.exception('Could not process the image.')
+                        flash(_('Your image file is not supported by our '
+                                'system, please upload another one.'),
+                              'warning')
+                        pil_failed = True
             else:
                 fname = obj['logo_file']
 
             # store the data
-            store_vote_signup(form.project_name.data, form.group_name.data,
-                              form.description.data, fname)
+            if not pil_failed:
+                store_vote_signup(form.project_id.data, form.group_name.data,
+                                  form.description.data, fname)
 
-            flash(_('Project data saved.'), 'info')
-            return redirect(url_for('vote_signup'))
+                flash(_('Project data saved.'), 'info')
+                return redirect(url_for('vote_signup'))
         except Exception:
             app.logger.exception('Could not save voting signup data')
             flash(_('Internal server error, please try again.'), 'danger')
 
-    return render_template('vote_signup.html', form=form, obj=obj)
+    import random
+    return render_template('vote_signup.html', form=form, obj=obj,
+                           random=random.random())
 
 
 # Register all pages into navibar

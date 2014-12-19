@@ -824,8 +824,14 @@ def edit_vote():
     from .utility import load_vote_signup, list_vote_signup
     if request.args.get('import') == '1':
         def MakeItem(itm):
+            v = app.config['VOTE_PROJECT_NAMES']
+            idx = itm['project_id']
+            if idx < 0 or idx >= len(v):
+                prjname = _('Unknown Project')
+            else:
+                prjname = v[idx]
             return {
-                'title': u'%s by %s' % (itm['project_name'], itm['group_name']),
+                'title': u'%s by %s' % (prjname, itm['group_name']),
                 'logo': url_for('vote_static', filename=itm['logo_file']),
                 'desc': markdown(
                     text=itm['description'],
@@ -843,7 +849,7 @@ def edit_vote():
             }
 
         def C(a, b):
-            t = cmp(a['project_name'], b['project_name'])
+            t = cmp(a['project_id'], b['project_id'])
             if t == 0:
                 t = cmp(a['group_name'], b['group_name'])
             return t
@@ -854,7 +860,9 @@ def edit_vote():
         items = [MakeItem(o) for o in original_items]
         json_obj = {
             'title': _('Vote for the Best Project'),
-            'desc': _('Please vote for your favourite project!'),
+            'desc': _('Please vote for your favourite project! '
+                      'You may vote for at least %(min)s project and '
+                      'at most %(max)s project.', min=5, max=10),
             'items': items,
         }
         form.json_source.data = json.dumps(json_obj, indent=2)

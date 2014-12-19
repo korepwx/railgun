@@ -3,6 +3,9 @@
 {% block content -%}
 <form action="{{ url_for('vote_index') }}" method="POST">
   <h3 class="hw-heading">{{ _('Vote in Progress') }}</h3>
+  <div class="vote-description">
+    {{ vote.desc | safe}}
+  </div>
 
   <table class="table table-hover">
     {% for itm in vote.items -%}

@@ -8,11 +8,11 @@
   <h2 class="form-heading">{{ _('Sign up for the Vote') }}</h2>
   <div class="vote-logo">
     {%- if obj['logo_file'] -%}
-      <img src="{{ url_for('vote_static', filename=obj['logo_file']) }}" />
+      <img src="{{ url_for('vote_static', filename=obj['logo_file'], random=random) }}" />
     {%- endif -%}
   </div>
   {{ utility.form_group(form.logo) }}
-  {{ utility.form_group(form.project_name) }}
+  {{ utility.form_group(form.project_id) }}
   {{ utility.form_group(form.group_name) }}
   {{ utility.form_group(form.description) }}
   <div class="buttons">

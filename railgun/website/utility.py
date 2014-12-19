@@ -183,7 +183,7 @@ def load_vote_signup(username=None):
                 return pickle.load(f)
         except Exception:
             app.logger.exception('Cannot load signup data from "%s"' % fpath)
-    return {'project_name': '', 'group_name': '', 'description': '',
+    return {'project_id': -1, 'group_name': '', 'description': '',
             'logo_file': ''}
 
 
@@ -195,7 +195,7 @@ def list_vote_signup():
                 yield f[: -4]
 
 
-def store_vote_signup(project_name, group_name, description, logo_file,
+def store_vote_signup(project_id, group_name, description, logo_file,
                       username=None):
     """Store voting signup data to directory."""
     username = username or current_user.name
@@ -206,7 +206,7 @@ def store_vote_signup(project_name, group_name, description, logo_file,
             os.makedirs(app.config['VOTE_SIGNUP_DATA_DIR'])
         with open(fpath, 'wb') as f:
             pickle.dump({
-                'project_name': project_name,
+                'project_id': project_id,
                 'group_name': group_name,
                 'description': description,
                 'logo_file': logo_file,

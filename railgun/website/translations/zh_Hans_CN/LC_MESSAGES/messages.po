@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version:  railgun\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2014-12-19 00:38+0800\n"
+"POT-Creation-Date: 2014-12-19 08:56+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: zh_Hans_CN <LL@li.org>\n"
@@ -221,45 +221,52 @@ msgstr "提交"
 msgid "Final Scores"
 msgstr "用户最终成绩"
 
-#: railgun/website/admin.py:856
+#: railgun/website/admin.py:830
+msgid "Unknown Project"
+msgstr "未知项目"
+
+#: railgun/website/admin.py:862
 msgid "Vote for the Best Project"
 msgstr "投票选出最好的项目"
 
-#: railgun/website/admin.py:857
-msgid "Please vote for your favourite project!"
-msgstr "为你最喜欢的项目投票"
+#: railgun/website/admin.py:863
+#, python-format
+msgid ""
+"Please vote for your favourite project! You may vote for at least %(min)s"
+" project and at most %(max)s project."
+msgstr "为你最喜欢的项目投票！你至少要为 %(min)s 个项目投票，至多为 %(max)s 个项目投票。"
 
-#: railgun/website/admin.py:882
+#: railgun/website/admin.py:890
 msgid "Vote updated successfully."
 msgstr "投票更新成功。"
 
-#: railgun/website/admin.py:886 railgun/website/admin.py:906
+#: railgun/website/admin.py:894 railgun/website/admin.py:914
 #: railgun/website/views.py:342 railgun/website/views.py:726
-#: railgun/website/views.py:845
+#: railgun/website/views.py:854
 msgid "Internal server error, please try again."
 msgstr "内部服务器错误，请重试。"
 
-#: railgun/website/admin.py:903
+#: railgun/website/admin.py:911
 msgid "Successfully purged the vote data."
 msgstr "成功清空了投票数据。"
 
-#: railgun/website/admin.py:938
+#: railgun/website/admin.py:946
 msgid "Manage"
 msgstr "管理"
 
-#: railgun/website/admin.py:943 railgun/website/templates/admin.users.html:4
+#: railgun/website/admin.py:951 railgun/website/templates/admin.users.html:4
 msgid "Users"
 msgstr "用户"
 
-#: railgun/website/admin.py:945 railgun/website/views.py:868
+#: railgun/website/admin.py:953 railgun/website/views.py:879
 msgid "Submissions"
 msgstr "提交"
 
-#: railgun/website/admin.py:947 railgun/website/templates/admin.scores.html:43
+#: railgun/website/admin.py:955 railgun/website/templates/admin.scores.html:43
 msgid "Scores"
 msgstr "得分"
 
-#: railgun/website/admin.py:949 railgun/website/views.py:906
+#: railgun/website/admin.py:957 railgun/website/views.py:917
 msgid "Vote"
 msgstr "投票"
 
@@ -491,19 +498,15 @@ msgstr "小组名称"
 msgid "Group name must be no longer than 80 characters"
 msgstr "小组名称最长不超过 80 个字符"
 
-#: railgun/website/forms.py:390
+#: railgun/website/forms.py:391
 msgid "Project Name"
 msgstr "项目名称"
 
-#: railgun/website/forms.py:391
-msgid "Project name must be no longer than 80 characters"
-msgstr "项目名称最长不能超过 80 个字符"
-
-#: railgun/website/forms.py:397 railgun/website/templates/homework.html:43
+#: railgun/website/forms.py:401 railgun/website/templates/homework.html:43
 msgid "Description"
 msgstr "描述"
 
-#: railgun/website/forms.py:414
+#: railgun/website/forms.py:418
 #, python-format
 msgid "Image files larger than %(size)s is not allowed."
 msgstr "不能上传大于 %(size)s 的图片。"
@@ -601,48 +604,52 @@ msgstr "你必须为至少 %(min)s 个项目投票。"
 msgid "You voted successfully!"
 msgstr "投票成功！"
 
-#: railgun/website/views.py:841
+#: railgun/website/views.py:838
+msgid "Your image file is not supported by our system, please upload another one."
+msgstr "你的图片文件不能被我们的系统支持，请重新上传一个。"
+
+#: railgun/website/views.py:850
 msgid "Project data saved."
 msgstr "项目信息已保存。"
 
-#: railgun/website/views.py:851
+#: railgun/website/views.py:862
 msgid "Home"
 msgstr "首页"
 
-#: railgun/website/views.py:854 railgun/website/templates/base.handins.html:11
+#: railgun/website/views.py:865 railgun/website/templates/base.handins.html:11
 #: railgun/website/templates/homework.html:30
 msgid "Homework"
 msgstr "作业"
 
-#: railgun/website/views.py:883
+#: railgun/website/views.py:894
 msgid "Manual"
 msgstr "帮助"
 
-#: railgun/website/views.py:887
+#: railgun/website/views.py:898
 msgid "User Guide"
 msgstr "用户手册"
 
-#: railgun/website/views.py:889
+#: railgun/website/views.py:900
 msgid "Scoring Details"
 msgstr "得分细则"
 
-#: railgun/website/views.py:892
+#: railgun/website/views.py:903
 msgid "Documentation"
 msgstr "开发文档"
 
-#: railgun/website/views.py:897
+#: railgun/website/views.py:908
 msgid "FAQ"
 msgstr "常见问题"
 
-#: railgun/website/views.py:899
+#: railgun/website/views.py:910
 msgid "About"
 msgstr "关于"
 
-#: railgun/website/views.py:910
+#: railgun/website/views.py:921
 msgid "Sign up for Vote"
 msgstr "登记投票"
 
-#: railgun/website/views.py:912
+#: railgun/website/views.py:923
 msgid "Engage in Vote"
 msgstr "参与投票"
 
@@ -1046,7 +1053,7 @@ msgid "Submissions for \"%(hw)s\""
 msgstr "“%(hw)s”的所有提交"
 
 #: railgun/website/templates/homework.html:25
-#: railgun/website/templates/vote_index.html:28
+#: railgun/website/templates/vote_index.html:31
 msgid "Submit"
 msgstr "提交"
 
@@ -1162,7 +1169,7 @@ msgstr "活跃的投票"
 msgid "Vote in Progress"
 msgstr "进行中的投票"
 
-#: railgun/website/templates/vote_index.html:29
+#: railgun/website/templates/vote_index.html:32
 msgid "View Result"
 msgstr "查看结果"
 
@@ -1470,4 +1477,10 @@ msgstr "未预期的成功：％（测试）秒。"
 
 #~ msgid "View Submission"
 #~ msgstr "查看提交"
+
+#~ msgid "Please vote for your favourite project!"
+#~ msgstr "为你最喜欢的项目投票"
+
+#~ msgid "Project name must be no longer than 80 characters"
+#~ msgstr "项目名称最长不能超过 80 个字符"
 

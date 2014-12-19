@@ -209,6 +209,21 @@ VOTE_SIGNUP_DATA_DIR = os.path.join(RAILGUN_ROOT, 'vote_signup')
 # The maximum image file size allowed to upload as project logo.
 VOTE_LOGO_MAXIMUM_FILE_SIZE = 1024 * 1024
 
+# Configure the project names for signup options.
+VOTE_PROJECT_NAMES = (
+    u'体育信息管理平台',
+    u'音视频点播直博平台',
+    u'广播门户网站',
+    u'FileUtils',
+    u'生物信息展示平台',
+    u'MOOC学习社区',
+    u'实验室物资管理系统',
+    u'Railgun作业库管理',
+    u'Railgun作业在线编辑器',
+    u'组成原理扩展作业',
+)
+
+
 # Load un-versioned general config values from config/general.py
 LoadConfig(
     sys.modules[__name__],

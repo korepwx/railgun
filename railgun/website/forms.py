@@ -387,11 +387,15 @@ class VoteSignupForm(BaseForm):
     ])
 
     #: The project name input.
-    project_name = StringField(_('Project Name'), validators=[
-        Length(max=80, message=_("Project name must be no longer than 80 "
-                                 "characters")),
-        DataRequired(),
-    ])
+    project_id = SelectField(
+        _('Project Name'),
+        choices=[
+            (idx, name)
+            for idx, name in enumerate(app.config['VOTE_PROJECT_NAMES'])
+        ],
+        coerce=int,
+        validators=[DataRequired()],
+    )
 
     #: The description input.
     description = StringField(_('Description'), validators=[
