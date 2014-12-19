@@ -864,6 +864,8 @@ def edit_vote():
                       'You may vote for at least %(min)s project and '
                       'at most %(max)s project.', min=5, max=10),
             'items': items,
+            'min_select': 5,
+            'max_select': 10,
         }
         form.json_source.data = json.dumps(json_obj, indent=2)
 
