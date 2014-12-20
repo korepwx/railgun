@@ -383,7 +383,7 @@ class VoteSignupForm(BaseForm):
     group_name = StringField(_('Group Name'), validators=[
         Length(max=80, message=_("Group name must be no longer than 80 "
                                  "characters")),
-        InputRequired(),
+        DataRequired(),
     ])
 
     #: The project name input.
@@ -394,7 +394,7 @@ class VoteSignupForm(BaseForm):
             for idx, name in enumerate(app.config['VOTE_PROJECT_NAMES'])
         ],
         coerce=int,
-        validators=[DataRequired()],
+        validators=[InputRequired()],
     )
 
     #: The description input.
