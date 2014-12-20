@@ -383,7 +383,7 @@ class VoteSignupForm(BaseForm):
     group_name = StringField(_('Group Name'), validators=[
         Length(max=80, message=_("Group name must be no longer than 80 "
                                  "characters")),
-        DataRequired(),
+        InputRequired(),
     ])
 
     #: The project name input.
