@@ -773,20 +773,9 @@ def vote_result():
         max_count=max_count, percent=percent)
 
 
-@app.route('/vote/signup/', methods=['GET', 'POST'])
-@login_required
-def vote_signup():
-    """The page to signup a project for voting.
-
-    :route: /vote/signup/
-    :method: GET, POST
-    :template: vote_signup.html
-    """
-    if not app.config['VOTE_SIGNUP_ENABLED']:
-        raise Forbidden()
-
+def render_edit_vote_signup(filename, tpl='vote_signup.html', rdr='vote_signup'):
     from .utility import load_vote_signup, store_vote_signup
-    obj = load_vote_signup()
+    obj = load_vote_signup(username=filename)
 
     # we put obj into an object because the form cannot access dict
     class Struct(object):
@@ -801,7 +790,7 @@ def vote_signup():
             # store the image file
             if form.logo.data:
                 fext = os.path.splitext(form.logo.data.filename)[1]
-                fname = '%s%s' % (current_user.name, fext)
+                fname = '%s%s' % (filename, fext)
                 if not os.path.isdir(app.config['VOTE_SIGNUP_DATA_DIR']):
                     os.makedirs(app.config['VOTE_SIGNUP_DATA_DIR'])
                 fpath = os.path.join(app.config['VOTE_SIGNUP_DATA_DIR'], fname)
@@ -829,7 +818,7 @@ def vote_signup():
                             im.thumbnail((200, 200))
                         if fext.lower() in ('.jpg', '.bmp', '.png'):
                             fext = '.jpg'
-                        fname = '%s%s' % (current_user.name, fext)
+                        fname = '%s%s' % (filename, fext)
                         fpath = os.path.join(app.config['VOTE_SIGNUP_DATA_DIR'],
                                              fname)
                         im.save(fpath)
@@ -845,17 +834,31 @@ def vote_signup():
             # store the data
             if not pil_failed:
                 store_vote_signup(form.project_id.data, form.group_name.data,
-                                  form.description.data, fname)
+                                  form.description.data, fname,
+                                  username=filename)
 
                 flash(_('Project data saved.'), 'info')
-                return redirect(url_for('vote_signup'))
+                return redirect(url_for(rdr))
         except Exception:
             app.logger.exception('Could not save voting signup data')
             flash(_('Internal server error, please try again.'), 'danger')
 
     import random
-    return render_template('vote_signup.html', form=form, obj=obj,
-                           random=random.random())
+    return render_template(tpl, form=form, obj=obj, random=random.random())
+
+
+@app.route('/vote/signup/', methods=['GET', 'POST'])
+@login_required
+def vote_signup():
+    """The page to signup a project for voting.
+
+    :route: /vote/signup/
+    :method: GET, POST
+    :template: vote_signup.html
+    """
+    if not app.config['VOTE_SIGNUP_ENABLED']:
+        raise Forbidden()
+    return render_edit_vote_signup(current_user.name)
 
 
 # Register all pages into navibar
@@ -922,6 +925,8 @@ navigates.add(
                                endpoint='vote_signup'),
             NaviItem.make_view(title=lazy_gettext('Engage in Vote'),
                                endpoint='vote_index'),
+            NaviItem.make_view(title=lazy_gettext('View Vote Result'),
+                               endpoint='vote_result'),
         ]
     )
 )

@@ -78,6 +78,9 @@ body {
 .content-vote_index .hw-heading,
 .content-vote_result .hw-heading,
 .content-vote_signup .form-heading,
+.content-admin_manage_vote_signup .hw-heading,
+.content-admin_edit_vote .hw-heading,
+.content-admin_edit_vote_signup .form-heading,
 .content .maintain-heading {
   padding-bottom: 20px;
 }
@@ -283,34 +286,34 @@ ul.affix-bottom {
 .form-edit_vote #json_source {
   font-family: monospace;
 }
+.content-admin_edit_vote .buttons {
+  padding-top: 20px;
+}
 
 /* Tweak vote_index.html */
 .content-vote_index .button-group {
   padding-top: 10px;
 }
-.content-vote_index .vote-description {
+.vote-description {
   font-size: 16px;
   padding-bottom: 20px;
 }
-.content-vote_index td.vote-item-check {
+td.vote-item-check {
   width: 24px;
   vertical-align: middle;
 }
-.content-vote_index td.vote-item-icon,
-.content-vote_result td.vote-item-icon {
+td.vote-item-icon {
   width: 220px;
   text-align: center;
 }
-.content-vote_index td.vote-item-icon img,
-.content-vote_result td.vote-item-icon img {
+td.vote-item-icon img {
   max-width: 200px;
 }
-.content-vote_index td.vote-item-main h1,
-.content-vote_result td.vote-item-main h1 {
+td.vote-item-main h1 {
   font-size: 24px;
   margin: 5px 0 10px 0;
 }
-.content-vote_index td.vote-item-main .vote-item-description {
+td.vote-item-main .vote-item-description {
   margin: 5px 0 5px 0;
 }
 .content-vote_result td.vote-item-main .vote-item-description {
@@ -328,10 +331,15 @@ ul.affix-bottom {
 }
 
 /* Tweak the vote signup page */
-.content-vote_signup .vote-logo img {
+.form-edit_vote .vote-logo img {
   max-width: 200px;
   margin-bottom: 20px;
 }
-.content-vote_signup .buttons {
+.form-edit_vote .buttons {
   padding-top: 20px;
+}
+
+/* Tweak the vote signup manage page */
+.content-admin_manage_vote_signup .vote-item-action {
+  text-align: right;
 }

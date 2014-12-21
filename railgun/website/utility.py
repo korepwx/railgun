@@ -16,6 +16,23 @@ from flask.ext.login import current_user
 from .context import app
 
 
+def render_markdown(s):
+    from markdown import markdown
+    return markdown(
+        text=s,
+        output_format='xhtml1',
+        extensions=[
+            'extra',
+            'tables',
+            'smart_strong',
+            'codehilite',
+            'nl2br',
+            'toc',
+            'fenced_code',
+        ]
+    )
+
+
 def float_color(value):
     """Get a color to describe the safety level.
 

@@ -10,7 +10,6 @@ import json
 from functools import wraps
 from cStringIO import StringIO
 
-from markdown import markdown
 from flask import (Blueprint, render_template, request, g, flash, redirect,
                    url_for, send_file, make_response)
 from flask.ext.babel import gettext as _
@@ -821,31 +820,25 @@ def edit_vote():
     form = VoteJsonEditForm(obj=the_vote)
 
     # Import json source string from signup data
-    from .utility import load_vote_signup, list_vote_signup
+    from .utility import load_vote_signup, list_vote_signup, render_markdown
     if request.args.get('import') == '1':
         def MakeItem(itm):
+            # determine the project name by project_id
             v = app.config['VOTE_PROJECT_NAMES']
             idx = itm['project_id']
             if idx < 0 or idx >= len(v):
                 prjname = _('Unknown Project')
             else:
                 prjname = v[idx]
+            # determine the logo url
+            if itm['logo_file']:
+                logo_url = url_for('vote_static', filename=itm['logo_file'])
+            else:
+                logo_url = ''
             return {
                 'title': u'%s by %s' % (prjname, itm['group_name']),
-                'logo': url_for('vote_static', filename=itm['logo_file']),
-                'desc': markdown(
-                    text=itm['description'],
-                    output_format='xhtml1',
-                    extensions=[
-                        'extra',
-                        'tables',
-                        'smart_strong',
-                        'codehilite',
-                        'nl2br',
-                        'toc',
-                        'fenced_code',
-                    ]
-                )
+                'logo': logo_url,
+                'desc': render_markdown(itm['description']),
             }
 
         def C(a, b):
@@ -935,6 +928,78 @@ def switch_vote(isopen):
     return redirect(url_for('.edit_vote'))
 
 
+@bp.route('/vote/signup/')
+@admin_required
+def manage_vote_signup():
+    """The page to manage vote signup data.
+
+    :route: /admin/vote/signup/
+    :method: GET
+    :template: admin.manage_vote_signup.html
+    """
+    from .utility import list_vote_signup, load_vote_signup, render_markdown
+
+    def MakeItem(itm, fn):
+        # determine the project name by project_id
+        v = app.config['VOTE_PROJECT_NAMES']
+        idx = itm['project_id']
+        if idx < 0 or idx >= len(v):
+            prjname = _('Unknown Project')
+        else:
+            prjname = v[idx]
+        itm['filename'] = fn
+        itm['project_name'] = prjname
+        itm['description'] = render_markdown(itm['description'])
+        return itm
+
+    def C(a, b):
+        t = cmp(a['project_id'], b['project_id'])
+        if t == 0:
+            t = cmp(a['group_name'], b['group_name'])
+        return t
+
+    items = sorted(
+        [MakeItem(load_vote_signup(fn), fn) for fn in list_vote_signup()],
+        cmp=C
+    )
+    has_any_logo = sum(not not i['logo_file'] for i in items)
+
+    return render_template(
+        'admin.manage_vote_signup.html',
+        items=items,
+        has_any_logo=has_any_logo,
+    )
+
+
+@bp.route('/vote/signup/delete/<filename>/')
+@admin_required
+def delete_vote_signup(filename):
+    """The page to delete vote signup data.
+
+    :route: /admin/vote/signup/delete/<filename>/
+    :method: GET
+    """
+    import os
+    fpath = os.path.join(app.config['VOTE_SIGNUP_DATA_DIR'],
+                         '%s.dat' % filename)
+    if os.path.isfile(fpath):
+        os.remove(fpath)
+    return redirect(url_for('.manage_vote_signup'))
+
+
+@bp.route('/vote/signup/edit/<filename>/', methods=['GET', 'POST'])
+@admin_required
+def edit_vote_signup(filename):
+    """The page to edit vote signup data.
+
+    :route: /admin/vote/signup/edit/<filename>/
+    :method: GET
+    """
+    from .views import render_edit_vote_signup
+    return render_edit_vote_signup(filename, 'admin.edit_vote_signup.html',
+                                   '.manage_vote_signup')
+
+
 # Register the blue print
 app.register_blueprint(bp, url_prefix='/admin')
 
@@ -958,6 +1023,8 @@ navigates.add(
                                endpoint='admin.scores'),
             NaviItem.make_view(title=lazy_gettext('Vote'),
                                endpoint='admin.edit_vote'),
+            NaviItem.make_view(title=lazy_gettext('Vote Signup'),
+                               endpoint='admin.manage_vote_signup'),
         ]
     )
 )

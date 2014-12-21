@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version:  railgun\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2014-12-19 08:56+0800\n"
+"POT-Creation-Date: 2014-12-21 09:52+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: zh_Hans_CN <LL@li.org>\n"
@@ -88,187 +88,192 @@ msgstr "IP 地址 ”%(ip)s\" 不符合正则表达式 \"%(rule)s\""
 msgid "Exitcode %(exitcode)s != 0."
 msgstr "程序返回值 %(exitcode)s != 0。"
 
-#: railgun/website/admin.py:61
+#: railgun/website/admin.py:60
 msgid "Only admin can view this page!"
 msgstr "只有管理员才能访问这个页面！"
 
-#: railgun/website/admin.py:132 railgun/website/admin.py:190
+#: railgun/website/admin.py:131 railgun/website/admin.py:189
 #: railgun/website/views.py:78 railgun/website/views.py:218
 msgid "I'm sorry but we may have met some trouble. Please try again."
 msgstr "对不起，程序出错，请再试一次。"
 
-#: railgun/website/admin.py:187 railgun/website/views.py:214
+#: railgun/website/admin.py:186 railgun/website/views.py:214
 msgid "Profile saved."
 msgstr "资料已保存。"
 
-#: railgun/website/admin.py:226
+#: railgun/website/admin.py:225
 msgid "User activated."
 msgstr "用户已启用。"
 
-#: railgun/website/admin.py:253
+#: railgun/website/admin.py:252
 msgid "You cannot deactivate yourself!"
 msgstr "你不能禁用自己的账户！"
 
-#: railgun/website/admin.py:257
+#: railgun/website/admin.py:256
 msgid "User deactivated."
 msgstr "用户已禁用。"
 
-#: railgun/website/admin.py:284
+#: railgun/website/admin.py:283
 msgid "You cannot delete yourself!"
 msgstr "你不能删除自己的账户！"
 
-#: railgun/website/admin.py:295
+#: railgun/website/admin.py:294
 msgid "User deleted."
 msgstr "用户已删除。"
 
-#: railgun/website/admin.py:394 railgun/website/views.py:483
+#: railgun/website/admin.py:393 railgun/website/views.py:483
 #: railgun/website/views.py:520
 msgid "Submission not found"
 msgstr "无法找到你所要的提交"
 
-#: railgun/website/admin.py:401
+#: railgun/website/admin.py:400
 msgid "The original submission is not stored."
 msgstr "没有存储原始提交。"
 
-#: railgun/website/admin.py:403
+#: railgun/website/admin.py:402
 msgid "Successfully reput the submission into queue!"
 msgstr "提交已经重新地被放入执行队列！"
 
-#: railgun/website/admin.py:432
+#: railgun/website/admin.py:431
 msgid "Submission discarded by admin."
 msgstr "提交被管理员取消执行。"
 
-#: railgun/website/admin.py:437
+#: railgun/website/admin.py:436
 msgid "All pending submissions are cleared."
 msgstr "所有等待的提交已经被取消。"
 
-#: railgun/website/admin.py:440
+#: railgun/website/admin.py:439
 msgid "Could not discard the pending submissions."
 msgstr "无法取消等待中的提交。"
 
-#: railgun/website/admin.py:512 railgun/website/admin.py:723
-#: railgun/website/admin.py:798
+#: railgun/website/admin.py:511 railgun/website/admin.py:722
+#: railgun/website/admin.py:797
 msgid "Requested homework not found."
 msgstr "所请求的作业不存在。"
 
-#: railgun/website/admin.py:526 railgun/website/forms.py:60
+#: railgun/website/admin.py:525 railgun/website/forms.py:60
 #: railgun/website/templates/base.user_edit.html:32
 msgid "Username"
 msgstr "用户名"
 
-#: railgun/website/admin.py:526 railgun/website/admin.py:771
+#: railgun/website/admin.py:525 railgun/website/admin.py:770
 #: railgun/website/templates/base.handins.html:17
 #: railgun/website/templates/handin_detail.html:152
 #: railgun/website/templates/index.html:30
 msgid "Score"
 msgstr "得分"
 
-#: railgun/website/admin.py:527
+#: railgun/website/admin.py:526
 #, python-format
 msgid "Scores for \"%(hw)s\""
 msgstr "\"%(hw)s\"的得分"
 
-#: railgun/website/admin.py:731 railgun/website/templates/admin.hwcharts.html:7
+#: railgun/website/admin.py:730 railgun/website/templates/admin.hwcharts.html:7
 msgid "Rate of Accepted"
 msgstr "合格率"
 
-#: railgun/website/admin.py:738
+#: railgun/website/admin.py:737
 #: railgun/website/templates/admin.hwcharts.html:17
 msgid "Reasons for Rejected"
 msgstr "被拒绝的原因"
 
-#: railgun/website/admin.py:745
+#: railgun/website/admin.py:744
 #: railgun/website/templates/admin.hwcharts.html:27
 msgid "Everyday Submission"
 msgstr "每日提交数"
 
-#: railgun/website/admin.py:747 railgun/website/admin.py:755
+#: railgun/website/admin.py:746 railgun/website/admin.py:754
 msgid "Date"
 msgstr "日期"
 
-#: railgun/website/admin.py:747 railgun/website/models.py:28
+#: railgun/website/admin.py:746 railgun/website/models.py:28
 #: railgun/website/templates/admin.hwcharts.html:70
 msgid "Accepted"
 msgstr "合格"
 
-#: railgun/website/admin.py:747 railgun/website/models.py:28
+#: railgun/website/admin.py:746 railgun/website/models.py:28
 #: railgun/website/templates/admin.hwcharts.html:71
 msgid "Rejected"
 msgstr "不合格"
 
-#: railgun/website/admin.py:753
+#: railgun/website/admin.py:752
 #: railgun/website/templates/admin.hwcharts.html:37
 msgid "Everyday Submitting Users"
 msgstr "每日提交人数"
 
-#: railgun/website/admin.py:755 railgun/website/admin.py:763
-#: railgun/website/admin.py:771
+#: railgun/website/admin.py:754 railgun/website/admin.py:762
+#: railgun/website/admin.py:770
 msgid "User Count"
 msgstr "用户数量"
 
-#: railgun/website/admin.py:761
+#: railgun/website/admin.py:760
 #: railgun/website/templates/admin.hwcharts.html:47
 msgid "Submissions Per User"
 msgstr "每用户提交数"
 
-#: railgun/website/admin.py:763 railgun/website/templates/homework.html:120
+#: railgun/website/admin.py:762 railgun/website/templates/homework.html:120
 msgid "Submission"
 msgstr "提交"
 
-#: railgun/website/admin.py:769
+#: railgun/website/admin.py:768
 #: railgun/website/templates/admin.hwcharts.html:57
 #: railgun/website/templates/admin.hwcharts.html:74
 msgid "Final Scores"
 msgstr "用户最终成绩"
 
-#: railgun/website/admin.py:830
+#: railgun/website/admin.py:830 railgun/website/admin.py:947
 msgid "Unknown Project"
 msgstr "未知项目"
 
-#: railgun/website/admin.py:862
+#: railgun/website/admin.py:855
 msgid "Vote for the Best Project"
 msgstr "投票选出最好的项目"
 
-#: railgun/website/admin.py:863
+#: railgun/website/admin.py:856
 #, python-format
 msgid ""
 "Please vote for your favourite project! You may vote for at least %(min)s"
 " project and at most %(max)s project."
 msgstr "为你最喜欢的项目投票！你至少要为 %(min)s 个项目投票，至多为 %(max)s 个项目投票。"
 
-#: railgun/website/admin.py:890
+#: railgun/website/admin.py:885
 msgid "Vote updated successfully."
 msgstr "投票更新成功。"
 
-#: railgun/website/admin.py:894 railgun/website/admin.py:914
+#: railgun/website/admin.py:889 railgun/website/admin.py:909
 #: railgun/website/views.py:342 railgun/website/views.py:726
-#: railgun/website/views.py:854
+#: railgun/website/views.py:844
 msgid "Internal server error, please try again."
 msgstr "内部服务器错误，请重试。"
 
-#: railgun/website/admin.py:911
+#: railgun/website/admin.py:906
 msgid "Successfully purged the vote data."
 msgstr "成功清空了投票数据。"
 
-#: railgun/website/admin.py:946
+#: railgun/website/admin.py:1013
 msgid "Manage"
 msgstr "管理"
 
-#: railgun/website/admin.py:951 railgun/website/templates/admin.users.html:4
+#: railgun/website/admin.py:1018 railgun/website/templates/admin.users.html:4
 msgid "Users"
 msgstr "用户"
 
-#: railgun/website/admin.py:953 railgun/website/views.py:879
+#: railgun/website/admin.py:1020 railgun/website/views.py:882
 msgid "Submissions"
 msgstr "提交"
 
-#: railgun/website/admin.py:955 railgun/website/templates/admin.scores.html:43
+#: railgun/website/admin.py:1022 railgun/website/templates/admin.scores.html:43
 msgid "Scores"
 msgstr "得分"
 
-#: railgun/website/admin.py:957 railgun/website/views.py:917
+#: railgun/website/admin.py:1024 railgun/website/views.py:920
 msgid "Vote"
 msgstr "投票"
+
+#: railgun/website/admin.py:1026
+#: railgun/website/templates/admin.manage_vote_signup.html:4
+msgid "Vote Signup"
+msgstr "投票登记"
 
 #: railgun/website/api.py:116
 msgid "No test passed, submission rejected."
@@ -527,22 +532,22 @@ msgstr "清华学堂"
 msgid "Csv File"
 msgstr "CSV文件"
 
-#: railgun/website/utility.py:67
+#: railgun/website/utility.py:84
 #, python-format
 msgid "%(size).2fG"
 msgstr "%(size).2fG"
 
-#: railgun/website/utility.py:69
+#: railgun/website/utility.py:86
 #, python-format
 msgid "%(size).2fM"
 msgstr "%(size).2fM"
 
-#: railgun/website/utility.py:71
+#: railgun/website/utility.py:88
 #, python-format
 msgid "%(size).2fK"
 msgstr "%(size).2fK"
 
-#: railgun/website/utility.py:72
+#: railgun/website/utility.py:89
 #, python-format
 msgid "%(size)dB"
 msgstr "%(size)dB"
@@ -604,54 +609,58 @@ msgstr "你必须为至少 %(min)s 个项目投票。"
 msgid "You voted successfully!"
 msgstr "投票成功！"
 
-#: railgun/website/views.py:838
+#: railgun/website/views.py:827
 msgid "Your image file is not supported by our system, please upload another one."
 msgstr "你的图片文件不能被我们的系统支持，请重新上传一个。"
 
-#: railgun/website/views.py:850
+#: railgun/website/views.py:840
 msgid "Project data saved."
 msgstr "项目信息已保存。"
 
-#: railgun/website/views.py:862
+#: railgun/website/views.py:865
 msgid "Home"
 msgstr "首页"
 
-#: railgun/website/views.py:865 railgun/website/templates/base.handins.html:11
+#: railgun/website/views.py:868 railgun/website/templates/base.handins.html:11
 #: railgun/website/templates/homework.html:30
 msgid "Homework"
 msgstr "作业"
 
-#: railgun/website/views.py:894
+#: railgun/website/views.py:897
 msgid "Manual"
 msgstr "帮助"
 
-#: railgun/website/views.py:898
+#: railgun/website/views.py:901
 msgid "User Guide"
 msgstr "用户手册"
 
-#: railgun/website/views.py:900
+#: railgun/website/views.py:903
 msgid "Scoring Details"
 msgstr "得分细则"
 
-#: railgun/website/views.py:903
+#: railgun/website/views.py:906
 msgid "Documentation"
 msgstr "开发文档"
 
-#: railgun/website/views.py:908
+#: railgun/website/views.py:911
 msgid "FAQ"
 msgstr "常见问题"
 
-#: railgun/website/views.py:910
+#: railgun/website/views.py:913
 msgid "About"
 msgstr "关于"
 
-#: railgun/website/views.py:921
+#: railgun/website/views.py:924
 msgid "Sign up for Vote"
 msgstr "登记投票"
 
-#: railgun/website/views.py:923
+#: railgun/website/views.py:926
 msgid "Engage in Vote"
 msgstr "参与投票"
+
+#: railgun/website/views.py:928
+msgid "View Vote Result"
+msgstr "投票结果"
 
 #: railgun/website/templates/404.html:30
 msgid "You got lost."
@@ -715,6 +724,21 @@ msgstr "打开投票"
 msgid "Import Signup Data"
 msgstr "从投票报名数据导入"
 
+#: railgun/website/templates/admin.edit_vote.html:32
+#: railgun/website/templates/admin.manage_vote_signup.html:2
+msgid "Manage Vote Signup"
+msgstr "管理投票登记"
+
+#: railgun/website/templates/admin.edit_vote_signup.html:4
+#: railgun/website/templates/admin.edit_vote_signup.html:8
+msgid "Edit Vote Signup"
+msgstr "编辑投票登记"
+
+#: railgun/website/templates/admin.edit_vote_signup.html:19
+#: railgun/website/templates/vote_signup.html:19
+msgid "Save Project"
+msgstr "保存项目"
+
 #: railgun/website/templates/admin.handins.html:3
 #: railgun/website/templates/admin.handins.html:6
 msgid "All Submissions"
@@ -753,6 +777,16 @@ msgstr "用户数量"
 #: railgun/website/templates/admin.maintain.html:10
 msgid "Task Log"
 msgstr "任务日志"
+
+#: railgun/website/templates/admin.manage_vote_signup.html:21
+#: railgun/website/templates/admin.users.html:53
+msgid "Edit"
+msgstr "编辑"
+
+#: railgun/website/templates/admin.manage_vote_signup.html:23
+#: railgun/website/templates/base.user_edit.html:23
+msgid "Delete"
+msgstr "删除"
 
 #: railgun/website/templates/admin.scores.html:3
 msgid "Score Table"
@@ -842,10 +876,6 @@ msgstr "启用中"
 msgid "Disabled"
 msgstr "已禁用"
 
-#: railgun/website/templates/admin.users.html:53
-msgid "Edit"
-msgstr "编辑"
-
 #: railgun/website/templates/base.handins.html:15
 msgid "Submit Date"
 msgstr "提交日期"
@@ -901,10 +931,6 @@ msgstr "禁用"
 #: railgun/website/templates/base.user_edit.html:21
 msgid "Enable"
 msgstr "启用"
-
-#: railgun/website/templates/base.user_edit.html:23
-msgid "Delete"
-msgstr "删除"
 
 #: railgun/website/templates/base.user_edit.html:30
 msgid "Passport"
@@ -1190,10 +1216,6 @@ msgstr "%(count)s 票"
 #: railgun/website/templates/vote_signup.html:8
 msgid "Sign up for the Vote"
 msgstr "登记投票"
-
-#: railgun/website/templates/vote_signup.html:19
-msgid "Save Project"
-msgstr "保存项目"
 
 #: runlib/python/pyhost/cppmessages.py:13
 msgid "Functionality Checker"

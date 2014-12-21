@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2014-12-19 08:56+0800\n"
+"POT-Creation-Date: 2014-12-21 09:52+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -92,186 +92,191 @@ msgstr ""
 msgid "Exitcode %(exitcode)s != 0."
 msgstr ""
 
-#: railgun/website/admin.py:61
+#: railgun/website/admin.py:60
 msgid "Only admin can view this page!"
 msgstr ""
 
-#: railgun/website/admin.py:132 railgun/website/admin.py:190
+#: railgun/website/admin.py:131 railgun/website/admin.py:189
 #: railgun/website/views.py:78 railgun/website/views.py:218
 msgid "I'm sorry but we may have met some trouble. Please try again."
 msgstr ""
 
-#: railgun/website/admin.py:187 railgun/website/views.py:214
+#: railgun/website/admin.py:186 railgun/website/views.py:214
 msgid "Profile saved."
 msgstr ""
 
-#: railgun/website/admin.py:226
+#: railgun/website/admin.py:225
 msgid "User activated."
 msgstr ""
 
-#: railgun/website/admin.py:253
+#: railgun/website/admin.py:252
 msgid "You cannot deactivate yourself!"
 msgstr ""
 
-#: railgun/website/admin.py:257
+#: railgun/website/admin.py:256
 msgid "User deactivated."
 msgstr ""
 
-#: railgun/website/admin.py:284
+#: railgun/website/admin.py:283
 msgid "You cannot delete yourself!"
 msgstr ""
 
-#: railgun/website/admin.py:295
+#: railgun/website/admin.py:294
 msgid "User deleted."
 msgstr ""
 
-#: railgun/website/admin.py:394 railgun/website/views.py:483
+#: railgun/website/admin.py:393 railgun/website/views.py:483
 #: railgun/website/views.py:520
 msgid "Submission not found"
 msgstr ""
 
-#: railgun/website/admin.py:401
+#: railgun/website/admin.py:400
 msgid "The original submission is not stored."
 msgstr ""
 
-#: railgun/website/admin.py:403
+#: railgun/website/admin.py:402
 msgid "Successfully reput the submission into queue!"
 msgstr ""
 
-#: railgun/website/admin.py:432
+#: railgun/website/admin.py:431
 msgid "Submission discarded by admin."
 msgstr ""
 
-#: railgun/website/admin.py:437
+#: railgun/website/admin.py:436
 msgid "All pending submissions are cleared."
 msgstr ""
 
-#: railgun/website/admin.py:440
+#: railgun/website/admin.py:439
 msgid "Could not discard the pending submissions."
 msgstr ""
 
-#: railgun/website/admin.py:512 railgun/website/admin.py:723
-#: railgun/website/admin.py:798
+#: railgun/website/admin.py:511 railgun/website/admin.py:722
+#: railgun/website/admin.py:797
 msgid "Requested homework not found."
 msgstr ""
 
-#: railgun/website/admin.py:526 railgun/website/forms.py:60
+#: railgun/website/admin.py:525 railgun/website/forms.py:60
 #: railgun/website/templates/base.user_edit.html:32
 msgid "Username"
 msgstr ""
 
-#: railgun/website/admin.py:526 railgun/website/admin.py:771
+#: railgun/website/admin.py:525 railgun/website/admin.py:770
 #: railgun/website/templates/base.handins.html:17
 #: railgun/website/templates/handin_detail.html:152
 #: railgun/website/templates/index.html:30
 msgid "Score"
 msgstr ""
 
-#: railgun/website/admin.py:527
+#: railgun/website/admin.py:526
 #, python-format
 msgid "Scores for \"%(hw)s\""
 msgstr ""
 
-#: railgun/website/admin.py:731 railgun/website/templates/admin.hwcharts.html:7
+#: railgun/website/admin.py:730 railgun/website/templates/admin.hwcharts.html:7
 msgid "Rate of Accepted"
 msgstr ""
 
-#: railgun/website/admin.py:738
+#: railgun/website/admin.py:737
 #: railgun/website/templates/admin.hwcharts.html:17
 msgid "Reasons for Rejected"
 msgstr ""
 
-#: railgun/website/admin.py:745
+#: railgun/website/admin.py:744
 #: railgun/website/templates/admin.hwcharts.html:27
 msgid "Everyday Submission"
 msgstr ""
 
-#: railgun/website/admin.py:747 railgun/website/admin.py:755
+#: railgun/website/admin.py:746 railgun/website/admin.py:754
 msgid "Date"
 msgstr ""
 
-#: railgun/website/admin.py:747 railgun/website/models.py:28
+#: railgun/website/admin.py:746 railgun/website/models.py:28
 #: railgun/website/templates/admin.hwcharts.html:70
 msgid "Accepted"
 msgstr ""
 
-#: railgun/website/admin.py:747 railgun/website/models.py:28
+#: railgun/website/admin.py:746 railgun/website/models.py:28
 #: railgun/website/templates/admin.hwcharts.html:71
 msgid "Rejected"
 msgstr ""
 
-#: railgun/website/admin.py:753
+#: railgun/website/admin.py:752
 #: railgun/website/templates/admin.hwcharts.html:37
 msgid "Everyday Submitting Users"
 msgstr ""
 
-#: railgun/website/admin.py:755 railgun/website/admin.py:763
-#: railgun/website/admin.py:771
+#: railgun/website/admin.py:754 railgun/website/admin.py:762
+#: railgun/website/admin.py:770
 msgid "User Count"
 msgstr ""
 
-#: railgun/website/admin.py:761
+#: railgun/website/admin.py:760
 #: railgun/website/templates/admin.hwcharts.html:47
 msgid "Submissions Per User"
 msgstr ""
 
-#: railgun/website/admin.py:763 railgun/website/templates/homework.html:120
+#: railgun/website/admin.py:762 railgun/website/templates/homework.html:120
 msgid "Submission"
 msgstr ""
 
-#: railgun/website/admin.py:769
+#: railgun/website/admin.py:768
 #: railgun/website/templates/admin.hwcharts.html:57
 #: railgun/website/templates/admin.hwcharts.html:74
 msgid "Final Scores"
 msgstr ""
 
-#: railgun/website/admin.py:830
+#: railgun/website/admin.py:830 railgun/website/admin.py:947
 msgid "Unknown Project"
 msgstr ""
 
-#: railgun/website/admin.py:862
+#: railgun/website/admin.py:855
 msgid "Vote for the Best Project"
 msgstr ""
 
-#: railgun/website/admin.py:863
+#: railgun/website/admin.py:856
 #, python-format
 msgid ""
 "Please vote for your favourite project! You may vote for at least %(min)s"
 " project and at most %(max)s project."
 msgstr ""
 
-#: railgun/website/admin.py:890
+#: railgun/website/admin.py:885
 msgid "Vote updated successfully."
 msgstr ""
 
-#: railgun/website/admin.py:894 railgun/website/admin.py:914
+#: railgun/website/admin.py:889 railgun/website/admin.py:909
 #: railgun/website/views.py:342 railgun/website/views.py:726
-#: railgun/website/views.py:854
+#: railgun/website/views.py:844
 msgid "Internal server error, please try again."
 msgstr ""
 
-#: railgun/website/admin.py:911
+#: railgun/website/admin.py:906
 msgid "Successfully purged the vote data."
 msgstr ""
 
-#: railgun/website/admin.py:946
+#: railgun/website/admin.py:1013
 msgid "Manage"
 msgstr ""
 
-#: railgun/website/admin.py:951 railgun/website/templates/admin.users.html:4
+#: railgun/website/admin.py:1018 railgun/website/templates/admin.users.html:4
 msgid "Users"
 msgstr ""
 
-#: railgun/website/admin.py:953 railgun/website/views.py:879
+#: railgun/website/admin.py:1020 railgun/website/views.py:882
 msgid "Submissions"
 msgstr ""
 
-#: railgun/website/admin.py:955 railgun/website/templates/admin.scores.html:43
+#: railgun/website/admin.py:1022 railgun/website/templates/admin.scores.html:43
 msgid "Scores"
 msgstr ""
 
-#: railgun/website/admin.py:957 railgun/website/views.py:917
+#: railgun/website/admin.py:1024 railgun/website/views.py:920
 msgid "Vote"
+msgstr ""
+
+#: railgun/website/admin.py:1026
+#: railgun/website/templates/admin.manage_vote_signup.html:4
+msgid "Vote Signup"
 msgstr ""
 
 #: railgun/website/api.py:116
@@ -531,22 +536,22 @@ msgstr ""
 msgid "Csv File"
 msgstr ""
 
-#: railgun/website/utility.py:67
+#: railgun/website/utility.py:84
 #, python-format
 msgid "%(size).2fG"
 msgstr ""
 
-#: railgun/website/utility.py:69
+#: railgun/website/utility.py:86
 #, python-format
 msgid "%(size).2fM"
 msgstr ""
 
-#: railgun/website/utility.py:71
+#: railgun/website/utility.py:88
 #, python-format
 msgid "%(size).2fK"
 msgstr ""
 
-#: railgun/website/utility.py:72
+#: railgun/website/utility.py:89
 #, python-format
 msgid "%(size)dB"
 msgstr ""
@@ -608,53 +613,57 @@ msgstr ""
 msgid "You voted successfully!"
 msgstr ""
 
-#: railgun/website/views.py:838
+#: railgun/website/views.py:827
 msgid "Your image file is not supported by our system, please upload another one."
 msgstr ""
 
-#: railgun/website/views.py:850
+#: railgun/website/views.py:840
 msgid "Project data saved."
 msgstr ""
 
-#: railgun/website/views.py:862
+#: railgun/website/views.py:865
 msgid "Home"
 msgstr ""
 
-#: railgun/website/views.py:865 railgun/website/templates/base.handins.html:11
+#: railgun/website/views.py:868 railgun/website/templates/base.handins.html:11
 #: railgun/website/templates/homework.html:30
 msgid "Homework"
 msgstr ""
 
-#: railgun/website/views.py:894
+#: railgun/website/views.py:897
 msgid "Manual"
 msgstr ""
 
-#: railgun/website/views.py:898
+#: railgun/website/views.py:901
 msgid "User Guide"
 msgstr ""
 
-#: railgun/website/views.py:900
+#: railgun/website/views.py:903
 msgid "Scoring Details"
 msgstr ""
 
-#: railgun/website/views.py:903
+#: railgun/website/views.py:906
 msgid "Documentation"
 msgstr ""
 
-#: railgun/website/views.py:908
+#: railgun/website/views.py:911
 msgid "FAQ"
 msgstr ""
 
-#: railgun/website/views.py:910
+#: railgun/website/views.py:913
 msgid "About"
 msgstr ""
 
-#: railgun/website/views.py:921
+#: railgun/website/views.py:924
 msgid "Sign up for Vote"
 msgstr ""
 
-#: railgun/website/views.py:923
+#: railgun/website/views.py:926
 msgid "Engage in Vote"
+msgstr ""
+
+#: railgun/website/views.py:928
+msgid "View Vote Result"
 msgstr ""
 
 #: railgun/website/templates/404.html:30
@@ -719,6 +728,21 @@ msgstr ""
 msgid "Import Signup Data"
 msgstr ""
 
+#: railgun/website/templates/admin.edit_vote.html:32
+#: railgun/website/templates/admin.manage_vote_signup.html:2
+msgid "Manage Vote Signup"
+msgstr ""
+
+#: railgun/website/templates/admin.edit_vote_signup.html:4
+#: railgun/website/templates/admin.edit_vote_signup.html:8
+msgid "Edit Vote Signup"
+msgstr ""
+
+#: railgun/website/templates/admin.edit_vote_signup.html:19
+#: railgun/website/templates/vote_signup.html:19
+msgid "Save Project"
+msgstr ""
+
 #: railgun/website/templates/admin.handins.html:3
 #: railgun/website/templates/admin.handins.html:6
 msgid "All Submissions"
@@ -756,6 +780,16 @@ msgstr ""
 
 #: railgun/website/templates/admin.maintain.html:10
 msgid "Task Log"
+msgstr ""
+
+#: railgun/website/templates/admin.manage_vote_signup.html:21
+#: railgun/website/templates/admin.users.html:53
+msgid "Edit"
+msgstr ""
+
+#: railgun/website/templates/admin.manage_vote_signup.html:23
+#: railgun/website/templates/base.user_edit.html:23
+msgid "Delete"
 msgstr ""
 
 #: railgun/website/templates/admin.scores.html:3
@@ -846,10 +880,6 @@ msgstr ""
 msgid "Disabled"
 msgstr ""
 
-#: railgun/website/templates/admin.users.html:53
-msgid "Edit"
-msgstr ""
-
 #: railgun/website/templates/base.handins.html:15
 msgid "Submit Date"
 msgstr ""
@@ -904,10 +934,6 @@ msgstr ""
 
 #: railgun/website/templates/base.user_edit.html:21
 msgid "Enable"
-msgstr ""
-
-#: railgun/website/templates/base.user_edit.html:23
-msgid "Delete"
 msgstr ""
 
 #: railgun/website/templates/base.user_edit.html:30
@@ -1191,10 +1217,6 @@ msgstr ""
 #: railgun/website/templates/vote_signup.html:4
 #: railgun/website/templates/vote_signup.html:8
 msgid "Sign up for the Vote"
-msgstr ""
-
-#: railgun/website/templates/vote_signup.html:19
-msgid "Save Project"
 msgstr ""
 
 #: runlib/python/pyhost/cppmessages.py:13

@@ -5,7 +5,7 @@
 {%- endblock %}
 {% block content -%}
 <form role="form" class="form-edit_vote" method="POST" action="{{ url_for('.edit_vote') }}">
-  <h2 class="form-heading">{{ _('Edit Vote') }}</h2>
+  <h2 class="hw-heading">{{ _('Edit Vote') }}</h2>
   {{ utility.form_group(form.json_source) }}
   <div class="buttons">
     {% if vote %}
@@ -29,6 +29,7 @@
       {%- endif %}
     {%- endif %}
     <a class="btn btn-default" href="{{ url_for('.edit_vote', import='1') }}">{{ _('Import Signup Data') }}</a>
+    <a class="btn btn-default" href="{{ url_for('.manage_vote_signup') }}">{{ _('Manage Vote Signup') }}</a>
   </div>
   {{ form.hidden_tag() }}
 </form>

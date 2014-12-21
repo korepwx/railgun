@@ -1,11 +1,11 @@
-{% extends "base.html" %}
+{% extends "admin.html" %}
 {% import "utility.html" as utility %}
 {% block subtitle -%}
-{{ _('Sign up for the Vote') }}
+{{ _('Edit Vote Signup') }}
 {%- endblock %}
 {% block content -%}
-<form role="form" class="form-edit_vote" method="POST" action="{{ url_for('vote_signup') }}" enctype="multipart/form-data">
-  <h2 class="form-heading">{{ _('Sign up for the Vote') }}</h2>
+<form role="form" class="form-edit_vote" method="POST" action="{{ url_for('.edit_vote_signup', **request.view_args) }}" enctype="multipart/form-data">
+  <h2 class="form-heading">{{ _('Edit Vote Signup') }}</h2>
   <div class="vote-logo">
     {%- if obj['logo_file'] -%}
       <img src="{{ url_for('vote_static', filename=obj['logo_file'], random=random) }}" />

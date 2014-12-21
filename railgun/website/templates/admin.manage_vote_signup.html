@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block subtitle -%}{{ _('Manage Vote Signup') }}{%- endblock %}
+{% block content -%}
+  <h3 class="hw-heading">{{ _('Vote Signup') }}</h3>
+  <table class="table table-hover">
+    {% for itm in items -%}
+    <tr>
+      {%- if has_any_logo -%}
+      <td class="vote-item-icon">
+        {%- if itm['logo_file'] -%}
+          <img src="{{ url_for('vote_static', filename=itm['logo_file']) }}" />
+        {%- endif -%}
+      </td>
+      {%- endif -%}
+      <td class="vote-item-main">
+        <h1>{{ itm['project_name'] }} by {{ itm['group_name'] }}</h1>
+        <div class="vote-item-description">{{ itm['description'] | safe }}</div>
+      </td>
+      <td class="vote-item-action">
+        <a href="{{ url_for('.edit_vote_signup', filename=itm['filename']) }}"
+           class="btn btn-small btn-default">{{ _('Edit') }}</a>
+        <a href="{{ url_for('.delete_vote_signup', filename=itm['filename']) }}"
+           class="btn btn-small btn-danger">{{ _('Delete') }}</a>
+      </td>
+    </tr>
+    {%- endfor %}
+  </table>
+{%- endblock %}
