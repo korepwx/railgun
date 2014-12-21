@@ -343,3 +343,6 @@ td.vote-item-main .vote-item-description {
 .content-admin_manage_vote_signup .vote-item-action {
   text-align: right;
 }
+.content-admin_manage_vote_signup .vote-item-action .btn {
+  margin-bottom: 10px;
+}
