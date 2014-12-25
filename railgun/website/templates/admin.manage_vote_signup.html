@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% block subtitle -%}{{ _('Manage Vote Signup') }}{%- endblock %}
 {% block content -%}
-  <h3 class="hw-heading">{{ _('Vote Signup') }}</h3>
+  <h3 class="hw-heading">{{ _('Vote Signup') }} ({{ items | count }})</h3>
   <table class="table table-hover">
     {% for itm in items -%}
     <tr>
