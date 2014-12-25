@@ -16,7 +16,7 @@ from flask.ext.login import (login_user, logout_user, current_user,
 from sqlalchemy import func
 from werkzeug.exceptions import NotFound, Forbidden
 
-from .context import app, db
+from .context import app, db, cache
 from .navibar import navigates, NaviItem, set_navibar_identity
 from .forms import (SignupForm, SigninForm, ProfileForm, ReAuthenticateForm,
                     VoteSignupForm)
@@ -719,6 +719,7 @@ def vote_index():
             # now submit it!
             try:
                 db.session.commit()
+                load_vote_result.delete_memoized()
                 flash(_('You voted successfully!'), 'success')
                 return redirect(url_for('vote_result'))
             except Exception:
@@ -729,15 +730,20 @@ def vote_index():
                            has_any_logo=has_any_logo, selected=selected_ids)
 
 
-@app.route('/vote/result/')
-@login_required
-def vote_result():
-    """The page to display vote result to the user.
+class CachedVoteItem(object):
+    """Copy values from :class:`models.VoteItem` so that it can be pickled
+    and cached."""
 
-    :route: /vote/result/
-    :method: GET
-    :template: vote_result.html
-    """
+    def __init__(self, dbitm):
+        self.id = dbitm.id
+        self.logo = dbitm.logo
+        self.title = dbitm.title
+        self.desc = dbitm.desc
+        self.vote_id = dbitm.vote_id
+
+
+@cache.memoize(timeout=50)
+def load_vote_result():
     vote = Vote.query.filter().first()
     if not vote:
         raise NotFound()
@@ -755,10 +761,24 @@ def vote_result():
             t = cmp(a[0].id, b[0].id)
         return t
     vote_items = sorted(
-        ((itm, vote_count.get(itm.id, 0))
+        ((CachedVoteItem(itm), vote_count.get(itm.id, 0))
          for itm in VoteItem.query.filter(VoteItem.vote_id == vote.id).all()),
         cmp=C
     )
+
+    return vote_items
+
+
+@app.route('/vote/result/')
+@login_required
+def vote_result():
+    """The page to display vote result to the user.
+
+    :route: /vote/result/
+    :method: GET
+    :template: vote_result.html
+    """
+    vote_items = load_vote_result()
 
     # check the vote objects
     has_any_logo = sum(i[0].logo is not None for i in vote_items)
@@ -773,7 +793,8 @@ def vote_result():
         max_count=max_count, percent=percent)
 
 
-def render_edit_vote_signup(filename, tpl='vote_signup.html', rdr='vote_signup'):
+def render_edit_vote_signup(filename, tpl='vote_signup.html',
+                            rdr='vote_signup'):
     from .utility import load_vote_signup, store_vote_signup
     obj = load_vote_signup(username=filename)
 

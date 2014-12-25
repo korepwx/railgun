@@ -1,7 +1,7 @@
-sqlalchemy >= 0.9.7
-celery >= 3.1.13
-requests >= 2.3.0
-flask >= 0.10.1
+sqlalchemy
+celery
+requests
+flask
 flask-wtf
 flask-babel
 flask-cache
@@ -9,14 +9,14 @@ flask-sqlalchemy
 flask-login
 flask-debugtoolbar
 rarfile
-markdown >= 2.4.1
-pygments >= 1.6
-redis >= 2.10.1
-pycrypto >= 2.6.1
-coverage >= 3.7.1
-pep8 >= 1.5.7
+markdown
+pygments
+redis
+pycrypto
+coverage
+pep8
 passlib
-MySQL-python >= 1.2.5
+MySQL-python
 alabaster
 sphinx
 sphinxcontrib-plantuml

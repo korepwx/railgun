@@ -11,6 +11,7 @@ import logging.config
 from flask import Flask
 from flask_wtf.csrf import CsrfProtect
 from flask.ext.sqlalchemy import SQLAlchemy
+from flask.ext.cache import Cache
 
 from . import webconfig
 
@@ -37,6 +38,10 @@ csrf = CsrfProtect(app)
 #: :data:`~railgun.website.context.app` so that each request will bind
 #: a database session.
 db = SQLAlchemy(app)
+
+#: A :class:`flask.ext.cache.Cache` object.  It extends the
+#: :data:`~railgun.website.context.app` to bring in cache facility.
+cache = Cache(app, config=app.config['WEBSITE_CACHE'])
 
 # Create the debugging toolbar
 if app.config['DEBUG'] and app.config.get('DEBUG_TOOLBAR', True):

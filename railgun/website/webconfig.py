@@ -103,6 +103,11 @@ WEBSITE_LOGGING = {
     }
 }
 
+# WEBSITE_CACHE configures the Flask-Cache in website package.
+WEBSITE_CACHE = {
+    'CACHE_TYPE': 'simple',
+}
+
 # Load un-versioned general config values from config/general.py
 LoadConfig(
     sys.modules[__name__],
